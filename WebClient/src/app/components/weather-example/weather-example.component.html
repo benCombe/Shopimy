@@ -1,0 +1,25 @@
+<h1>WEATHER COMPONENT</h1>
+<div *ngIf="weather$ | async as weatherData; else loading">
+  <h2>Weather Forecast</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Temperature (°C)</th>
+        <th>Temperature (°F)</th>
+        <th>Summary</th>
+      </tr>
+    </thead>
+    <tbody >
+      <tr *ngFor="let weather of weatherData" [ngStyle]="getStyle(weather.temperatureC)">
+        <td>{{ weather.date }}</td>
+        <td>{{ weather.temperatureC }}</td>
+        <td>{{ weather.temperatureF }}</td>
+        <td>{{ weather.summary }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<ng-template #loading>
+  <p>Loading weather data...</p>
+</ng-template>
