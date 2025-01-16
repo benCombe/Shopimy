@@ -15,6 +15,7 @@ public class WeatherForecastController : ControllerBase
     [HttpGet]
     public IEnumerable<WeatherForecast> Get()
     {
+        //Console.WriteLine("API Call Received");
         var forecast = Enumerable.Range(1, 5).Select(index =>
         {
             int tempC = Random.Shared.Next(-50, 55);
@@ -25,6 +26,8 @@ public class WeatherForecastController : ControllerBase
                 Summaries[Random.Shared.Next(0, Summaries.Length)]
             );
         }).ToArray();
+
+        //Console.WriteLine($"Returning: {forecast}");
         return forecast;
     }
 }

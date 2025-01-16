@@ -11,6 +11,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:4200") // Angular app's URL
               .AllowAnyHeader()
               .AllowAnyMethod()
+              .SetIsOriginAllowed(_ => true) // Allow any origin (for debugging)
               .AllowCredentials(); // Add this if cookies or credentials are involved
     });
 });
@@ -19,6 +20,12 @@ var app = builder.Build();
 
 // Apply the CORS policy
 app.UseCors("AllowAngularApp");
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Request: {context.Request.Method} {context.Request.Path}");
+    await next();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

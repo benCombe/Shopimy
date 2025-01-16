@@ -20,19 +20,21 @@ export class WeatherExampleComponent implements OnInit {
 
 
 
-  constructor(private weatherService: WeatherExampleService) {
-    //this.weather$ = this.weatherService.weather$
-
-  }
+  constructor(private weatherService: WeatherExampleService) {}
 
   //this method runs on the componentent initialization
   ngOnInit(): void {
     // Subscribe to the weather$ observable to get data
     //the data from observables will automatically update within any component subscribed to it
-    this.weatherService.weather$.subscribe({
+    this.weatherService.GetWeatherForecast().subscribe({
       next: (data) => {
-        this.weatherData = data; // Update weatherData with fetched data
+        if (data && data.length > 0){
+          this.weatherData = data; // Update weatherData with fetched data
+          console.log("DATA: "+data);
+        }
         this.loading = false; // Set loading to false
+        console.log("DATA: "+data);
+        console.log("loading should be false: " + this.loading)
       },
       error: (err) => {
         console.error('Error fetching weather data:', err);
