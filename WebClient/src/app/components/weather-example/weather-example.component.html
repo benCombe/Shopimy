@@ -1,5 +1,5 @@
 <h1>WEATHER COMPONENT</h1>
-<div *ngIf="weather$ | async as weatherData; else loading">
+<!-- <div *ngIf="!loading; else loading"> -->
   <h2>Weather Forecast</h2>
   <table>
     <thead>
@@ -19,7 +19,7 @@
       </tr>
     </tbody>
   </table>
-</div>
+<!-- </div> -->
 <ng-template #loading>
   <p>Loading weather data...</p>
 </ng-template>
