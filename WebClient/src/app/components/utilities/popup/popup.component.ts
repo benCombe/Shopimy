@@ -1,11 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-popup',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './popup.component.html',
-  styleUrl: './popup.component.css'
+  styleUrls: ['./popup.component.css']
 })
-export class PopupComponent {
 
+export class PopupComponent {
+  @Input() question: string = 'Are you sure?';
+  @Input() responses: string[] = ['Yes', 'No'];
+  @Input() isVisible: boolean = false;
+
+  @Output() responseSelected = new EventEmitter<string>();
+
+  selectResponse(response: string) {
+    this.responseSelected.emit(response);
+  }
 }

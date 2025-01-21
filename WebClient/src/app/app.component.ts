@@ -1,14 +1,26 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { PopupComponent } from './components/utilities/popup/popup.component'; // Import PopupComponent
 import { WeatherExampleComponent } from './components/weather-example/weather-example.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, WeatherExampleComponent],
+  standalone: true,  // ✅ Standalone component
+  imports: [PopupComponent, WeatherExampleComponent], // ✅ Import child components
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'WebClient';
-  router: RouterOutlet | undefined;
+  showPopup = false;
+  question = 'Do you want to continue?';
+  responses = ['Yes', 'No', 'Maybe'];
+
+  handleResponse(response: string) {
+    console.log('User selected:', response);
+    this.showPopup = false; // Hide popup after selection
+  }
+
+  openPopup() {
+    this.showPopup = true;
+  }
 }
