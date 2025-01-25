@@ -1,8 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* *{
+  border: 1px solid red;
+} */
+
+:root{
+  --main-color: #393727;
+  --second-color: #D0933D;
+  --third-color: #D3CEBB;
+  --main-font-fam: "Inria Serif", serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* Prevents horizontal scrolling */
+  overflow-y: auto;
+}
 
 .center{
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+.center-spaced{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+

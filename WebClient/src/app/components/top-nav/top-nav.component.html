@@ -1,0 +1,18 @@
+<div id="main" class="center-spaced">
+  <div id="shopimy-logo">Shopimy</div>
+
+  <div id="nav-wrapper" class="center">
+    <div id="dropdown" class="dropdown">
+      <div class="dropdown-header" (click)="toggleDropdown()">
+        Resources <i class="fa-solid fa-angle-down"></i>
+      </div>
+      <ul class="dropdown-options" [ngClass]="{ 'show': isDropdownOpen }">
+        <li *ngFor="let option of options" class="opt">
+          {{ option.label }}
+        </li>
+      </ul>
+    </div>
+
+    <div id="login-btn">Log In</div>
+  </div>
+</div>
