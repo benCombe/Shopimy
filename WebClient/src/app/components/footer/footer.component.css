@@ -1,11 +1,43 @@
 #main{
-  position: absolute;
+  display: flex;
   bottom: 0;
+  LEFT:0;
 
+  height: 155px;
+  width: 100vw;
+  background-color: var(--main-color);
+  padding: 10px;
 
-  height: 25px;
-  width: 25px;
-  background-color: aqua;
-  border: 1px solid red;
 
 }
+
+#footer-logo{
+  margin-right: 200px;
+  margin-left: 100px;
+  color: var(--second-color);
+  font-family: var(--main-font-fam);
+}
+
+
+#footer-links{
+
+  position: relative;
+  right: 0;
+  width: 80%;
+  margin-right: -100px;
+  font-family: var(--main-font-fam);
+}
+
+.foot-link{
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
+  font-size: 24pt;
+  transition: color 0.2s ease-in-out;
+}
+
+.foot-link:hover{
+  cursor: pointer;
+  color: var(--second-color);
+}
+
