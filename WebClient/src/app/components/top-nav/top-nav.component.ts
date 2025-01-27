@@ -1,9 +1,10 @@
 import { Component, HostListener } from '@angular/core';
 import { NgIf, NgFor, NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-top-nav',
-  imports: [NgIf, NgFor, NgClass],
+  imports: [NgIf, NgFor, NgClass, RouterLink],
   templateUrl: './top-nav.component.html',
   styleUrl: './top-nav.component.css'
 })

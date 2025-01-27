@@ -3,11 +3,11 @@
 } */
 
 #main{
- /*  position: fixed; */
+  /* position: absolute; */
   top: 0;
   left: 0;
   width: 100vw;
-  height: 150px;
+  height: 10vh;
   background-color: var(--main-color);
   padding: 10px;
   z-index: 1000;

@@ -3,11 +3,13 @@ import { PopupComponent } from './components/utilities/popup/popup.component'; /
 import { WeatherExampleComponent } from './components/weather-example/weather-example.component';
 import { CommonModule } from '@angular/common';
 import { LandingPageComponent } from "./components/landing-page/landing-page.component";
+import { RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,  // ✅ Standalone component
-  imports: [PopupComponent, LandingPageComponent], // ✅ Import child components
+  imports: [PopupComponent, LandingPageComponent, RouterOutlet, RouterLink], // ✅ Import child components
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
