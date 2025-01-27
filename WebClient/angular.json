@@ -24,7 +24,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/resources"
             ],
             "styles": [
               "src/styles.css"

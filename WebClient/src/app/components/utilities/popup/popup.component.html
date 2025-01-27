@@ -1,1 +1,10 @@
-<p>popup works!</p>
+<div class="popup-overlay center" *ngIf="isVisible">
+  <div class="popup-box">
+    <p>{{ question }}</p>
+    <div class="popup-buttons">
+      <button *ngFor="let response of responses" (click)="selectResponse(response)">
+        {{ response }}
+      </button>
+    </div>
+  </div>
+</div>

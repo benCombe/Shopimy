@@ -1,0 +1,124 @@
+/* *{
+  border: 1px solid red;
+} */
+
+#main{
+ /*  position: fixed; */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 150px;
+  background-color: var(--main-color);
+  padding: 10px;
+  z-index: 1000;
+
+  /* overflow-x: hidden; */
+}
+
+#shopimy-logo{
+  color: var(--second-color);
+  font-family: var(--main-font-fam);
+  font-weight: bold;
+  font-size: 52pt;
+  cursor: pointer;
+  margin-left: 25px;
+}
+
+#nav-wrapper{
+  width: 600px;
+  margin-top: 3%;
+}
+
+#nav-wrapper div{
+  margin: 10px;
+  margin-left: 35px;
+  margin-right: 35px;
+  font-size: 24pt;
+  font-family: var(--main-font-fam);
+  font-weight: bold;
+  color: var(--third-color);
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+#nav-wrapper div:hover{
+  transform: scale(1.1);
+  color: var(--second-color);
+}
+
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  z-index: 2000; /* Ensure dropdown appears above other content */
+}
+
+.dropdown-header {
+  cursor: pointer;
+  font-size: 24pt;
+  font-family: var(--main-font-fam);
+  font-weight: bold;
+  color: var(--third-color);
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 2001; /* Ensure it's above other elements */
+}
+
+.dropdown-header i {
+  margin-left: 5px;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-header:hover {
+  color: var(--second-color);
+}
+
+/* Dropdown menu styles */
+.dropdown-options {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0 0;
+  background: #2C2A1F;
+  border-radius: 8px;
+  position: absolute;
+  top: 100%;
+  left: -125px;
+  width: 350px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  visibility: hidden;
+  pointer-events: none; /* Prevents interaction when hidden */
+  z-index: 2002;
+}
+
+/* Make dropdown visible when it's open */
+.dropdown-options.show {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto; /* Enable click */
+}
+
+.opt {
+  padding: 12px;
+  color: #D3CEBB;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.opt:hover {
+  background-color: #3A382B;
+}
+
+.opt:active {
+  background-color: #D0933D;
+}
+
+
+
+

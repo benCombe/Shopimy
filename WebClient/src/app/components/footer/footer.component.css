@@ -1,0 +1,44 @@
+#main{
+  display: flex;
+  bottom: 0;
+  LEFT:0;
+
+  height: 155px;
+  width: 100vw;
+  background-color: var(--main-color);
+  padding: 10px;
+
+
+}
+
+#footer-logo{
+  font-size: 52pt;
+  margin-right: 400px;
+  margin-left: 80px;
+  color: var(--second-color);
+  font-family: var(--main-font-fam);
+}
+
+
+#footer-links{
+
+  position: relative;
+  right: 0;
+  width: 80%;
+  margin-right: -100px;
+  font-family: var(--main-font-fam);
+}
+
+.foot-link{
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
+  font-size: 24pt;
+  transition: color 0.2s ease-in-out;
+}
+
+.foot-link:hover{
+  cursor: pointer;
+  color: var(--second-color);
+}
+
