@@ -11,6 +11,8 @@
   background-color: var(--main-color);
   padding: 10px;
   z-index: 1000;
+
+  /* overflow-x: hidden; */
 }
 
 #shopimy-logo{

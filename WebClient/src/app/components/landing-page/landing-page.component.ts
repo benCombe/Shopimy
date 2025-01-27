@@ -13,5 +13,6 @@ export class LandingPageComponent {
 
   topImageUrl: String = "resources/images/woman-typing.jpg";
   midImageUrl: String = "resources/images/workgroup.jpg"
+  bottomImageUrl: String = "resources/images/mancheckwatch.jpg"
 
 }

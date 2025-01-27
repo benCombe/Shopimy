@@ -4,11 +4,11 @@
   top: 0;
   flex-direction: column;
   width: 100vw;
-  height: 500vh;
+  height: 530vh;
   overflow-y: auto;
   color: white;
   font-size: 48pt;
-  /* overflow-x: hidden; */
+  overflow-x: hidden;
 }
 
 
@@ -31,19 +31,32 @@
 
 #top-img{
   width: 100%;
+  height: auto;
+}
+
+/* #top-overlay *{
+  border: 1px solid red;
+} */
+
+#top-overlay{
+  position: absolute;
+  top: 8vh;
+
+  width: 100%;
+  z-index: 10;
+  padding: 2.5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #left-block {
-  position: absolute; /* Keeps it positioned within the image container */
-  z-index: 10; /* Ensures it sits above the image */
-  top: 27%; /* Center it vertically */
-  left: 100px; /* Adjust as needed to align properly */
-  transform: translateY(-50%); /* Centers the div relative to its height */
   background-color: rgba(0, 0, 0, 0.25); /* Semi-transparent background */
-  height: 48%; /* Adjust height as needed */
-  width: 600px; /* Adjust width as needed */
+  height: 215vh; /* Adjust height as needed */
+  width: 25vw; /* Adjust width as needed */
   border-radius: 25px;
   padding: 20px;
+  padding-top: 100px;
   display: flex;
   flex-direction: column;
   /* justify-content: center; */
@@ -58,32 +71,37 @@
 #left-block h1{
   font-family: var(--main-font-fam);
   font-size: 40pt;
-  margin-bottom: 850px;
+  margin-bottom: 80vh;
 }
 
 
 .icon-wrapper{
-  margin-top: 100px;
-  margin-bottom: 100px;
-  width: 300px;
-  height: 300px;
+  top: 100px;
+  margin-bottom: 12vh;
+  width: 275px;
+  height: 275px;
   border-radius: 50%;
   background-color: var(--second-color);
-}
-
-.icon-wrapper i{
   font-size: 120pt;
 }
+
+.icon-wrapper:nth-child(1){
+  margin-bottom: 20px;
+}
+
+/* .icon-wrapper i{
+  font-size: 120pt;
+} */
 
 
 #feature-card-container{
   position: absolute;
   right: 50px;
-
+  bottom: 2.5%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 24.5%;
+  height: 45%;
   width: 68%;
   padding: 25px;
 }
@@ -94,7 +112,7 @@
 
 .feature-card {
   flex-direction: column;
-  margin-top: 140px;
+  margin-top: 75px;
   width: 80%;
   height: 300px;
   padding: 25px;
@@ -153,13 +171,13 @@
 } */
 
 #mid-section{
-  position: absolute;
-  top:3400px;
+  position: relative;
+  top:1500px;
   width: 100%;
 }
 
 #tabs{
-  margin-right:80px
+  margin-right:50px
 }
 
 .tab{
@@ -172,6 +190,14 @@
   background-color: #2C2A1F;
   border-radius: 20px;
   margin: 30px;
+
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.tab:hover{
+  cursor: pointer;
+  background-color: var(--second-color);
+
 }
 
 #img-overlay{
@@ -196,15 +222,15 @@
 
 
 #demos{
-  position: absolute;
-  top: 4500px;
+  position: relative;
+  top: 1500px;
   font-family: var(--main-font-fam);
   color: var(--third-color);
   width: 100%;
 }
 
 #demos h1{
-  margin-left: 100px;
+  margin-left: 190px;
   font-size: 48pt;
 }
 
@@ -222,5 +248,93 @@
   background-color: #2C2A1F;
   padding: 50px;
   border-radius: 35px;
+
 }
 
+
+#lower-section{
+  position: relative;
+  top:1650px
+}
+
+#bottom-img{
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+
+#bottom-overlay{
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  right: 0;
+  /* border: 1px solid red; */
+}
+
+#bottom-overlay h1{
+  color: #2C2A1F;
+  font-size: 40pt;
+}
+
+#step-container{
+  width: 100%;
+  height: 70%;
+  background-color: #2C2A1F;
+  border-radius: 50px;
+}
+
+.step{
+  width: 75%;
+}
+
+.step h2{
+  color: var(--third-color);
+  font-size: 48pt;
+}
+
+.step div{
+  color: #2C2A1F;
+  width: 62%;
+  height: 50%;
+  background-color: var(--third-color);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.463);
+
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.step div:hover{
+  cursor: pointer;
+  background-color: #e9e4d3;
+  transform: scale(1.05);
+}
+
+
+@media only screen and (max-width: 2200px){
+  #left-block{
+    height: 180vh;
+    top:100vh;
+  }
+
+  #left-block h1{
+    font-size: 32pt;
+    margin-bottom: 74vh;
+  }
+
+  .icon-wrapper{
+    width: 200px;
+    height: 200px;
+    margin-bottom: 10vh;
+    font-size: 85pt;
+  }
+
+  .feature-card{
+    scale: 85%;
+  }
+
+  .feature-card:nth-child(1){
+    margin-top: 10px;
+  }
+}
