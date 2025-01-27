@@ -1,1 +1,25 @@
-<p>login works!</p>
+<div id="container">
+  <app-top-nav></app-top-nav>
+  <div id="main" class="center">
+    <div id="login">
+      <h1>Login</h1>
+      <form id="login-form" class="center-col">
+        <div class="form-entry">
+          <label id="email-lbl" for="email" class="form-lbl">Email</label><br>
+          <input type="text" id="email" required>
+        </div>
+        <div class="fomr-entry">
+          <label id="password-lbl" for="password" class="form-lbl">Password</label><br>
+          <input type="text" id="password" required>
+        </div>
+      </form>
+      <div id="alt-logins" class="center-col">
+        <div id="google-btn" class="center-spaced">
+          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
+          <span>Sign In with Google</span>
+        </div>
+      </div>
+      <span id="no-account">Don't Have and Account? Sign up <span id="register-link" routerLink="/register" routerLinkActive="router-link-active" >Here</span></span>
+    </div>
+  </div>
+</div>
