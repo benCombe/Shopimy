@@ -1,0 +1,85 @@
+
+#main{
+  position: relative;
+  flex-grow: 1;
+  width: 100%;
+  height: 88.5vh;
+  background-color: var(--main-color);
+}
+
+#login{
+  position: relative;
+  height:50vh;
+  width: 25vw;
+  margin-top: -10%;
+  background-color: var(--third-color);
+  border-radius: 25px;
+  box-shadow: 5px 4px rgba(0, 0, 0, 0.638);
+  padding: 15px;
+}
+
+#login h1{
+  font-family: var(--main-font-fam);
+  font-size: 32pt;
+  margin-left: 25px;
+  margin-top: 0px;
+}
+
+#login-form{
+  width: 100%;
+  height: 50%;
+  font-family: var(--main-font-fam);
+  font-size: 18pt;
+}
+
+.form-entry{
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+#login-form label{
+  font-weight: bold;
+}
+
+#login-form input{
+  width: 350px;
+  height: 35px;
+}
+
+
+#google-btn{
+  width: 40%;
+  height: 50px;
+  padding-left: 15px;
+  padding-right: 15px;
+  background-color: white;
+  color: rgb(86, 86, 86);
+  font-size: 16pt;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border-radius: 10px;
+}
+
+#google-btn:hover{
+
+}
+
+#google-btn img{
+  height: 35px;
+  width: auto;
+}
+
+#no-account{
+  position: absolute;
+  left: calc(50% - 250px);
+  bottom: 50px;
+  width: 500px;
+  font-size: 16pt;
+  text-align: center;
+}
+
+#register-link{
+  text-decoration: underline;
+  font-weight: bold;
+  color: blue;
+  cursor: pointer;
+}

@@ -1,1 +1,101 @@
-<p>register works!</p>
+<div id="container">
+  <app-top-nav></app-top-nav>
+  <div id="main" class="center">
+    <div id="register-form-wrapper">
+      <h2>Register</h2>
+      <form id="register-form">
+        <div id="name" class="center-spaced form-entry-container">
+          <div class="form-entry">
+            <label id="firstname-lbl" for="firstname" class="form-lbl">First Name *</label><br>
+            <input type="text" id="firstname" required>
+          </div>
+
+          <div class="form-entry">
+            <label id="lastname-lbl" for="lastname" class="form-lbl">Last Name *</label><br>
+            <input type="text" id="lastname" required>
+          </div>
+
+        </div>
+
+        <div id="contact" class="center-spaced form-entry-container">
+          <div class="form-entry">
+            <label id="email-lbl" for="email" class="form-lbl">Email *</label><br>
+            <input type="text" id="email" required>
+          </div>
+          <div class="form-entry">
+            <label id="phone-lbl" for="phone" class="form-lbl">Phone *</label><br>
+            <input type="phone" id="phone" placeholder="(###) - ### - ####" required>
+          </div>
+        </div>
+
+        <div class="form-entry-container">
+          <div class="form-entry">
+            <label id="dob-lbl" for="dob" class="form-lbl">Date of Birth *</label><br>
+            <input type="date" id="dob" required>
+          </div>
+        </div>
+
+        <div class="form-entry-container">
+          <div class="form-entry">
+            <label id="country-lbl" for="country" class="form-lbl">Country *</label><br>
+            <select id="country" [(ngModel)]="selectedCountry" required>
+              <option *ngFor="let country of countries" [value]="country.value">
+                {{ country.label }} ({{country.value}})
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div id="password-container">
+          <div id="pw-wrapper">
+            <div class="form-entry">
+              <label id="pw-lbl" for="dob" class="form-lbl">Password *</label><br>
+              <input type="password" id="pw" [(ngModel)]="password" required (change)="checkStength()">
+            </div>
+            <div class="form-entry">
+              <label id="cpw-lbl" for="dob" class="form-lbl">Confirm Password *</label><br>
+              <input type="password" id="cpw" [(ngModel)]="confirmPassword" required (change)="checkMatch()">
+            </div>
+          </div>
+          <div id="pw-strength">
+            <h4 id="pws-title">Password Must Include:</h4>
+            <div class="pwcheck" id="charlength-check">
+              <div class="icon-wrapper center" [ngClass]="{'valid': hasValidLength, 'invalid': !hasValidLength}">
+                <i *ngIf="!hasValidLength" class="fa-solid fa-x"></i>
+                <i *ngIf="hasValidLength" class="fa-solid fa-check"></i>
+              </div>
+              <h4>8-20 Characters</h4>
+            </div>
+            <div class="pwcheck" id="charlength-check">
+              <div class="icon-wrapper center" [ngClass]="{'valid': hasUpperLower, 'invalid': !hasUpperLower}">
+                <i *ngIf="!hasUpperLower" class="fa-solid fa-x"></i>
+                <i *ngIf="hasUpperLower" class="fa-solid fa-check"></i>
+              </div>
+              <h4>At least 1 each uppercase letter, lowercase letter, number and symbol ($,!,etc.)</h4>
+            </div>
+            <div class="pwcheck" id="charlength-check">
+              <div class="icon-wrapper center" [ngClass]="{'valid': pwMatch, 'invalid': !pwMatch}">
+                <i *ngIf="!pwMatch" class="fa-solid fa-x"></i>
+                <i *ngIf="pwMatch" class="fa-solid fa-check"></i>
+              </div>
+              <h4>Passwords Match</h4>
+            </div>
+          </div>
+        </div>
+        <div class="divider" style="margin-top: 30px;"></div>
+        <div id="checkboxes">
+          <input type="checkbox" id="subscribe">
+          <label id="subscribe-lbl" for="subscribe" class="form-lbl">Subscribe to receive emails about news and products</label><br><br>
+          <input type="checkbox" id="accept-tc" required>
+          <label id="accept-tc-lbl" for="accept-tc" class="form-lbl">I Accept Terms and conditions</label>
+        </div>
+        <button type="submit" id="submit-btn">Register</button>
+      </form>
+    </div>
+    <!-- <img [src]="imgURL"> -->
+    <img src="resources/images/workfromhome.jpg">
+  </div>
+
+</div>
