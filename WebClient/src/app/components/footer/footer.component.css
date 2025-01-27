@@ -12,8 +12,9 @@
 }
 
 #footer-logo{
-  margin-right: 200px;
-  margin-left: 100px;
+  font-size: 52pt;
+  margin-right: 400px;
+  margin-left: 80px;
   color: var(--second-color);
   font-family: var(--main-font-fam);
 }
