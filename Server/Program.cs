@@ -1,7 +1,38 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Server.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Load additional configurations (including secrets)
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+    .AddJsonFile("appsettings.secrets.json", optional: true, reloadOnChange: true) // Load secrets if available
+    .AddEnvironmentVariables(); // Allow override via environment variables
+
+// Now the connection string is available
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+//Database Context
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers(); // Add controller services
 builder.Services.AddOpenApi(); // Add services to the container.
+
+// Register Swagger (Swashbuckle)
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "My API",
+        Version = "v1"
+    });
+});
+
+
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -31,13 +62,20 @@ app.Use(async (context, next) =>
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
+    });
 }
 
 //app.UseHttpsRedirection();
 
 app.UseRouting();
 //app.UseAuthorization();
-app.MapControllers(); // Map controllers
+app.MapControllers();
+
+
 app.Run();
 
 
