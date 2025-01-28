@@ -1,2 +1,3 @@
-obj/Server.AssemblyInfo.cs
-obj/Server.AssemblyInfoInputs.cache
+obj/
+
+appsettings.secrets.json
