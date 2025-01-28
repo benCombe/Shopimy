@@ -198,5 +198,5 @@ input[type="password"]{
   box-shadow: 5px 4px rgba(0, 0, 0, 0.564);
   border-top-right-radius: 25px;
   border-bottom-right-radius: 25px;
-  animation: fadein 0.8s ease-in-out;
+  animation: fadein 0.7s ease-in-out;
 }
