@@ -6,7 +6,8 @@ CREATE TABLE Users (
     phone NVARCHAR(20) NOT NULL,
     address NVARCHAR(255) NOT NULL,
     region NVARCHAR(50) NOT NULL,
-    password NVARCHAR(255) NOT NULL
+    password NVARCHAR(255) NOT NULL,
+    verified BIT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE ActiveUsers (
