@@ -12,6 +12,10 @@
   padding: 10px;
   z-index: 1000;
 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   /* overflow-x: hidden; */
 }
 
@@ -27,12 +31,19 @@
 #nav-wrapper{
   width: 600px;
   margin-top: 3%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.mobile-menu #login-btn{
+  margin-right: -15px;
 }
 
 #nav-wrapper div{
   margin: 10px;
-  margin-left: 35px;
-  margin-right: 35px;
+  /* margin-left: 35px;
+  margin-right: 35px; */
   font-size: 24pt;
   font-family: var(--main-font-fam);
   font-weight: bold;
@@ -41,10 +52,50 @@
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
+#hamburger{
+  display: flex;
+  justify-content: flex-end;
+  margin-left: -200px;
+  width: 100px;
+}
+
 #nav-wrapper div:hover{
   transform: scale(1.1);
   color: var(--second-color);
 }
+
+/* Mobile Menu */
+#mobile-menu {
+  position: absolute;
+  top: 140px;
+  right: 30px;
+  background: var(--main-color);
+  border-radius: 8px;
+  border: 2px solid rgba(217, 217, 217, 0.659);
+  width: 250px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 2002;
+}
+
+#mobile-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+}
+
+#mobile-menu .opt {
+  padding: 12px;
+  color: var(--third-color);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+#mobile-menu .opt:hover {
+  background-color: var(--second-color);
+}
+
 
 
 .dropdown {
