@@ -101,3 +101,11 @@
   color: blue;
   cursor: pointer;
 }
+
+@media only screen and (max-width:715px){
+  #login{
+    height:50vh;
+    width: 78vw;
+    margin-top: -20%;
+  }
+}
