@@ -5,10 +5,13 @@ CREATE TABLE Users (
     email NVARCHAR(100) UNIQUE NOT NULL,
     phone NVARCHAR(20) NOT NULL,
     address NVARCHAR(255) NOT NULL,
-    region NVARCHAR(50) NOT NULL,
+    country NVARCHAR(50) NOT NULL,
+    dob DATE NOT NULL,
     password NVARCHAR(255) NOT NULL,
-    verified BIT NOT NULL DEFAULT 0
+    verified BIT NOT NULL DEFAULT 0,
+    subscribed BIT NOT NULL DEFAULT 0
 );
+
 
 CREATE TABLE ActiveUsers (
     user_id INT NOT NULL,

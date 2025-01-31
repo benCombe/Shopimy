@@ -8,7 +8,7 @@ namespace Server.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<TestItem> TestTable { get; set; }
-         public DbSet<User> Users { get; set; }  // ✅ Add this line
+        public DbSet<User> Users { get; set; }  // ✅ Add this line
         public DbSet<ActiveUser> ActiveUsers { get; set; }  // ✅ Add this too
 
          // Ensure table names match conventions
