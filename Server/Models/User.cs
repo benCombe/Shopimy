@@ -18,6 +18,8 @@ public class User
 
     public string Region { get; set; }
 
+    public bool Verified { get; set; }
+
     public string PaymentInfo { get; set; }
 
     public User(
@@ -30,7 +32,8 @@ public class User
         string phone,
         string address,
         string region,
-        string paymentInfo
+        string paymentInfo,
+        bool verified
     )
     {
         Id = id;
@@ -43,6 +46,7 @@ public class User
         Address = address;
         Region = region;
         PaymentInfo = paymentInfo;
+        Verified = verified;
     }
         
 
