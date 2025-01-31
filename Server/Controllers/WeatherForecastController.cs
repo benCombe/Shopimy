@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 //basic api controller
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]

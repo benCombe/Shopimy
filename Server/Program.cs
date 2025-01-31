@@ -1,7 +1,44 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Server.Data;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Load additional configurations (including secrets)
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+    .AddJsonFile("appsettings.secrets.json", optional: true, reloadOnChange: true) // Load secrets if available
+    .AddEnvironmentVariables(); // Allow override via environment variables
+
+// Now the connection string is available
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+//Database Context
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
 builder.Services.AddControllers(); // Add controller services
-builder.Services.AddOpenApi(); // Add services to the container.
+//builder.Services.AddOpenApi(); // Add services to the container.
+builder.Services.AddEndpointsApiExplorer();
+
+
+// Register Swagger (Swashbuckle)
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "My API",
+        Version = "v1"
+    });
+});
+
+
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -15,6 +52,37 @@ builder.Services.AddCors(options =>
               .AllowCredentials(); // Add this if cookies or credentials are involved
     });
 });
+
+
+// 🔐 Add JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+            )
+        };
+    });
+
+// 🔐 Add Authorization Policies (Global Requirement)
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
+
+
+
 
 var app = builder.Build();
 
@@ -31,13 +99,21 @@ app.Use(async (context, next) =>
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
+    });
 }
 
 //app.UseHttpsRedirection();
 
 app.UseRouting();
-//app.UseAuthorization();
-app.MapControllers(); // Map controllers
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+
+
 app.Run();
 
 

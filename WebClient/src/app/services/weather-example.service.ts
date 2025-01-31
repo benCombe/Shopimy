@@ -32,4 +32,5 @@ export class WeatherExampleService {
       tap((data: WeatherForecast[]) => this.weatherSubject.next(data)) // Update BehaviorSubject with new data, this will also ubdate the weather$ observable
     );
   }
+
 }

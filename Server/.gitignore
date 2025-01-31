@@ -1,2 +1,9 @@
-obj/Server.AssemblyInfo.cs
-obj/Server.AssemblyInfoInputs.cache
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore NuGet packages
+*.nupkg
+packages/
+
+appsettings.secrets.json

@@ -1,20 +1,21 @@
 #main{
   display: flex;
   bottom: 0;
-  LEFT:0;
+  left:0;
 
-  height: 155px;
+  height: 10vh;
   width: 100vw;
   background-color: var(--main-color);
   padding: 10px;
+  align-items: center;
 
 
 }
 
 #footer-logo{
-  font-size: 52pt;
-  margin-right: 400px;
-  margin-left: 80px;
+  font-size: 3rem;
+  margin-right: 30%;
+  margin-left: 2.5%;
   color: var(--second-color);
   font-family: var(--main-font-fam);
 }
@@ -22,10 +23,9 @@
 
 #footer-links{
 
-  position: relative;
-  right: 0;
+  /* position: relative; */
+  margin-right: 20px;
   width: 80%;
-  margin-right: -100px;
   font-family: var(--main-font-fam);
 }
 
@@ -41,4 +41,29 @@
   cursor: pointer;
   color: var(--second-color);
 }
+
+@media only screen and (max-width: 715px){
+
+  #footer-logo{
+   display: none;
+  }
+
+  #footer-links{
+    right: 50%;
+    width: 95%;
+    margin-right: 0px;
+  }
+
+  .foot-link{
+    margin-top: 50px;
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 20%;
+    font-size: 12pt;
+    text-align: center;
+    transition: color 0.2s ease-in-out;
+  }
+
+}
+
 
