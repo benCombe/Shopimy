@@ -7,3 +7,5 @@ namespace Server.Models
         public string? Description { get; set; }
     }
 }
+
+//im a bad developer
