@@ -11,7 +11,7 @@
         Resources <i class="fa-solid fa-angle-down"></i>
       </div>
       <ul class="dropdown-options" [ngClass]="{ 'show': isDropdownOpen }">
-        <li *ngFor="let option of options" class="opt">
+        <li *ngFor="let option of options" class="opt" [routerLink]="option.link">
           {{ option.label }}
         </li>
       </ul>
