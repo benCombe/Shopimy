@@ -1,0 +1,17 @@
+<div>
+    <h2>{{ isEditMode ? 'Edit Category' : 'Create Category' }}</h2>
+    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label>Name</label>
+        <input formControlName="name">
+      </div>
+      <div>
+        <label>Parent Category (optional)</label>
+        <input formControlName="parentCategory" placeholder="Enter parent category id">
+      </div>
+      <button type="submit" [disabled]="categoryForm.invalid">
+        {{ isEditMode ? 'Update' : 'Create' }}
+      </button>
+    </form>
+  </div>
+  
