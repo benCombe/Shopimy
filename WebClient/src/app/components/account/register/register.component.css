@@ -45,7 +45,7 @@
 }
 
 .form-entry-container{
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 
 .form-entry{
@@ -69,8 +69,15 @@
   height: 25px;
   padding: 5px;
   font-size: 14pt;
-  border: 2px solid white;
   border-radius: 10px;
+}
+
+.valid-input{
+  border: 2px solid white;
+}
+
+.invalid-input{
+  border: 2px solid red;
 }
 
 .form-entry select{
@@ -94,6 +101,40 @@
 .form-entry input[type="text"]:focus{
   border: 2px solid rgb(220, 220, 220);
 }
+
+#location{
+  display: flex;
+}
+
+#location .form-entry:nth-child(1){
+  width: 40%;
+  margin-right: 15px;
+}
+
+#location .form-entry:nth-child(2){
+  width: 25%;
+  margin-right: 20px;
+}
+
+#location .form-entry:nth-child(3){
+  width: 25%;
+}
+
+#address{
+  margin-top: 0px;
+  width: 95%;
+}
+
+#provstate{
+  margin-top: 0px;
+  width: 95%;
+}
+
+#zip{
+  margin-top: 0px;
+  width: 95%;
+}
+
 
 .divider{
   width: 95%;
