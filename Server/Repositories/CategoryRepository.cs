@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
+using Shopimy.Server.Models;
 
 public interface ICategoryRepository
 {
@@ -8,6 +9,8 @@ public interface ICategoryRepository
     Task AddCategoryAsync(Category category);
     Task UpdateCategoryAsync(Category category);
     Task DeleteCategoryAsync(Category category);
+    Task<Category> GetCategoryByStoreAndIdAsync(int storeId, int categoryId);
+    Task DeleteCategoryAsync(int storeId, int categoryId);
 }
 
 public class CategoryRepository : ICategoryRepository
@@ -21,7 +24,9 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<IEnumerable<Category>> GetCategoriesByStoreIdAsync(int storeId)
     {
-        return await _context.Categories.Where(c => c.StoreId == storeId).ToListAsync();
+        return await _context.Categories
+                             .Where(c => c.StoreId == storeId)
+                             .ToListAsync();
     }
 
     public async Task<Category> GetCategoryByIdAsync(int storeId, int categoryId)
@@ -35,13 +40,31 @@ public class CategoryRepository : ICategoryRepository
         await _context.SaveChangesAsync();
     }
 
-    public Task UpdateCategoryAsync(Category category)
+    public async Task UpdateCategoryAsync(Category category)
     {
-        throw new NotImplementedException();
+        _context.Categories.Update(category);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteCategoryAsync(Category category)
+    public async Task DeleteCategoryAsync(Category category)
     {
-        throw new NotImplementedException();
+        _context.Categories.Remove(category);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Category> GetCategoryByStoreAndIdAsync(int storeId, int categoryId)
+    {
+        // This implementation is similar to GetCategoryByIdAsync. 
+        return await _context.Categories.FirstOrDefaultAsync(c => c.StoreId == storeId && c.CategoryId == categoryId);
+    }
+
+    public async Task DeleteCategoryAsync(int storeId, int categoryId)
+    {
+        var category = await GetCategoryByStoreAndIdAsync(storeId, categoryId);
+        if (category != null)
+        {
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+        }
     }
 }

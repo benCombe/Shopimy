@@ -1,4 +1,5 @@
 namespace Shopimy.Server.Models
+{
 
 public class Category
 {
@@ -14,6 +15,7 @@ public class Category
         public string Name { get; set; }
         public int? ParentCategory { get; set; }
     }
+    
 
     public class UpdateCategory
     {
@@ -23,7 +25,8 @@ public class Category
 
 
     // Navigation properties can be added if using EF Core:
-    public virtual Category Parent { get; set; }
-    public virtual ICollection<Category> SubCategories { get; set; }
+    //public virtual Category Parent { get; set; }
+    //public virtual ICollection<Category> SubCategories { get; set; }
     //public virtual ICollection<ProductCategory> ProductCategories { get; set; }
+}
 }

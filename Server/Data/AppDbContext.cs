@@ -10,7 +10,7 @@ namespace Server.Data
         public DbSet<TestItem> TestTable { get; set; }
          public DbSet<User> Users { get; set; }  // ✅ Add this line
         public DbSet<ActiveUser> ActiveUsers { get; set; }  // ✅ Add this too
-        public DbSet<Category> Categories { get; internal set; }
+        public DbSet<Shopimy.Server.Models.Category> Categories { get; internal set; }
 
         // Ensure table names match conventions
         protected override void OnModelCreating(ModelBuilder modelBuilder)

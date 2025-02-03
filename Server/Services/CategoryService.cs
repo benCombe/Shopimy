@@ -8,8 +8,8 @@ public interface ICategoryService
 {
     Task<IEnumerable<Category>> GetCategoriesForStoreAsync(int storeId);
     Task<Category> GetCategoryByIdAsync(int storeId, int categoryId);
-    Task<Category> CreateCategoryAsync(int storeId, CreateCategory model);
-    Task<Category> UpdateCategoryAsync(int storeId, int categoryId, UpdateCategory model);
+    Task<Category> CreateCategoryAsync(int storeId, Category model);
+    Task<Category> UpdateCategoryAsync(int storeId, int categoryId, Category model);
     Task DeleteCategoryAsync(int storeId, int categoryId);
 }
 
@@ -36,7 +36,7 @@ public class CategoryService : ICategoryService
         return category;
     }
 
-    public async Task<Category> CreateCategoryAsync(int storeId, CreateCategory model)
+    public async Task<Category> CreateCategoryAsync(int storeId, Category model)
     {
         // You can add any business rules or validations here.
         var category = new Category
@@ -51,7 +51,7 @@ public class CategoryService : ICategoryService
         return category;
     }
 
-    public async Task<Category> UpdateCategoryAsync(int storeId, int categoryId, UpdateCategory model)
+    public async Task<Category> UpdateCategoryAsync(int storeId, int categoryId, Category model)
     {
         // Fetch the existing category.
         var category = await _repository.GetCategoryByStoreAndIdAsync(storeId, categoryId);
