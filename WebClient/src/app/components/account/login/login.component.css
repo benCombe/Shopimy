@@ -86,6 +86,8 @@
   border-radius: 50%;
 }
 
+
+
 #no-account{
   position: absolute;
   left: calc(50% - 250px);
@@ -108,4 +110,23 @@
     width: 78vw;
     margin-top: -20%;
   }
+}
+
+#login-btn{
+
+  margin-top: 25px;
+  width: 150px;
+  height: 40px;
+  font-family: var(--main-font-fam);
+  font-size: 18pt;
+  background-color: var(--main-color);
+  border-radius: 10px;
+  transition: background-color 0.3s ease-in-out;
+
+  text-align: center;
+  text-decoration: underline;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+
 }
