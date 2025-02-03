@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
+using Shopimy.Server.Models;
+
 [ApiController]
 [Route("api/[controller]")]
 public class CategoriesController : ControllerBase
@@ -21,7 +24,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDTO dto)
+    public async Task<IActionResult> CreateCategory([FromBody] Category dto)
     {
         int storeId = GetCurrentStoreId();
         var createdCategory = await _categoryService.CreateCategoryAsync(storeId, dto);
@@ -38,7 +41,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryDTO dto)
+    public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category dto)
     {
         int storeId = GetCurrentStoreId();
         var updatedCategory = await _categoryService.UpdateCategoryAsync(storeId, id, dto);
@@ -50,9 +53,11 @@ public class CategoriesController : ControllerBase
     public async Task<IActionResult> DeleteCategory(int id)
     {
         int storeId = GetCurrentStoreId();
-        var deletedCategory = await _categoryService.DeleteCategoryAsync(storeId, id);
-        if (deletedCategory == null) return NotFound();
-        return Ok(deletedCategory);
+        var category = await _categoryService.GetCategoryByIdAsync(storeId, id);
+        if (category == null) return NotFound();
+
+        await _categoryService.DeleteCategoryAsync(storeId, id);
+        return Ok(category);
     }
 
 
