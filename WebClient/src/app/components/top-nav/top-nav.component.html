@@ -1,18 +1,36 @@
 <div id="main" class="center-spaced">
-  <div id="shopimy-logo">Shopimy</div>
+  <div id="shopimy-logo" routerLink="">Shopimy</div>
 
-  <div id="nav-wrapper" class="center">
-    <div id="dropdown" class="dropdown">
+  <div id="nav-wrapper" class="center" [ngClass]="{ 'mobile-menu': isMobileMenuOpen }">
+
+
+
+    <!-- Navigation Items -->
+    <div id="dropdown" class="dropdown" *ngIf="!isMobile">
       <div class="dropdown-header" (click)="toggleDropdown()">
         Resources <i class="fa-solid fa-angle-down"></i>
       </div>
       <ul class="dropdown-options" [ngClass]="{ 'show': isDropdownOpen }">
-        <li *ngFor="let option of options" class="opt">
+        <li *ngFor="let option of options" class="opt" [routerLink]="option.link">
           {{ option.label }}
         </li>
       </ul>
     </div>
 
-    <div id="login-btn">Log In</div>
+    <div id="login-btn" routerLink="/login">Log In</div>
+
+
+    <!-- Hamburger Menu Button -->
+    <div id="hamburger" (click)="toggleMobileMenu()" *ngIf="isMobile">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+
+    <!-- Mobile Menu Dropdown -->
+    <div *ngIf="isMobileMenuOpen && isMobile" id="mobile-menu">
+      <ul>
+        <li *ngFor="let option of options" class="opt">{{ option.label }}</li>
+      </ul>
+    </div>
+
   </div>
 </div>
