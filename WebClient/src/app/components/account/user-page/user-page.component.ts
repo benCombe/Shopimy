@@ -4,12 +4,25 @@ import { NgIf, NgFor, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatIconModule} from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-user-page',
-  imports: [TopNavComponent, NgIf, NgFor, FormsModule, NgClass,MatSidenavModule, MatButtonModule],
+  imports: [
+    TopNavComponent, 
+    NgIf, 
+    NgFor, 
+    FormsModule, 
+    NgClass, 
+    MatSidenavModule, 
+    MatButtonModule, 
+    MatIconModule, 
+    ],
+
   templateUrl: './user-page.component.html',
   styleUrl: './user-page.component.css'
+  
 })
 
 
@@ -18,7 +31,7 @@ export class UserPageComponent {
   showFiller = false;
 
   password: string = "";
-  confirmPassword: string = ""
+  confirmPassword: string = "";
 
   hasValidLength: boolean = false;
   hasUpperLower: boolean = false;
