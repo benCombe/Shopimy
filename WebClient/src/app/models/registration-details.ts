@@ -4,19 +4,24 @@ export class RegistrationDetails {
   Email: string;
   Phone: string;
   Address: string;
-  Region: string;
+  Country: string;
+  DOB: Date | null;
   Password: string;
+  Subscribed: boolean;
 
   constructor(
       FirstName: string, LastName: string, Email: string,
-      Phone: string, Address: string, Region: string, Password: string
+      Phone: string, Address: string, Country: string,
+      DOB: Date | null, Password: string, Subscribed: boolean
   ) {
       this.FirstName = FirstName;
       this.LastName = LastName;
       this.Email = Email;
       this.Phone = Phone;
       this.Address = Address;
-      this.Region = Region;
+      this.Country = Country;
+      this.DOB = DOB;
       this.Password = Password;
+      this.Subscribed = Subscribed;
   }
 }

@@ -6,7 +6,7 @@ import { LoginComponent } from './components/account/login/login.component';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent },  // Base URL -> Landing Page
-  { path: 'register', component: RegisterComponent },
+  { path: 'register', component: RegisterComponent},
   { path: 'login', component: LoginComponent }, // /register -> Register Page
 ];
 

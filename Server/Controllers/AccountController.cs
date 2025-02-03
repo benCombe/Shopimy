@@ -46,13 +46,18 @@ namespace Server.Controllers
                 Email = registration.Email,
                 Phone = registration.Phone,
                 Address = registration.Address,
-                Region = registration.Region,
+                Country = registration.Country,
                 Password = hashedPassword,  // Store hashed password
-                Verified = false // Default to not verified
+                Verified = false, // Default to not verified
+                Subscribed = registration.Subscribed,
+                DOB = registration.DOB
             };
 
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
+
+
+            //Here is where to insert email validation using an email service
 
             return Ok(true);
         }
@@ -74,6 +79,8 @@ namespace Server.Controllers
             {
                 return Unauthorized("Invalid email or password.");
             }
+
+            //Here is where to check if user email has been verified yet
 
             // Generate JWT token
             string token = GenerateJwtToken(user);
@@ -101,7 +108,7 @@ namespace Server.Controllers
                     user.Email,
                     user.Phone,
                     user.Address,
-                    user.Region,
+                    user.Country,
                     user.Verified
                 }
             });
@@ -135,7 +142,7 @@ namespace Server.Controllers
                         u.Email,
                         u.Phone,
                         u.Address,
-                        u.Region,
+                        u.Country,
                         u.Verified
                     })
                     .FirstOrDefaultAsync();
@@ -170,7 +177,7 @@ namespace Server.Controllers
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Issuer"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(3),
+                expires: DateTime.UtcNow.AddDays(3), // Expires after 3 days
                 signingCredentials: credentials
             );
 

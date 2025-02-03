@@ -15,7 +15,7 @@ export class TopNavComponent {
   isMobile: boolean = false;
 
   options = [
-    { label: 'A Resource', link: '/docs' },
+    { label: 'Register', link: '/register' },
     { label: 'Another Resource', link: '/tutorials' },
     { label: 'Resource #3', link: '/support' }
   ];
