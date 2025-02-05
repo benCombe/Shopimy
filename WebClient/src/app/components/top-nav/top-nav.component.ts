@@ -9,18 +9,44 @@ import { RouterLink } from '@angular/router';
   styleUrl: './top-nav.component.css'
 })
 export class TopNavComponent {
+
   isDropdownOpen: boolean = false;
+  isMobileMenuOpen: boolean = false;
+  isMobile: boolean = false;
+
   options = [
-    { label: 'A Resource', link: '/docs' },
+    { label: 'Register', link: '/register' },
     { label: 'Another Resource', link: '/tutorials' },
     { label: 'Resource #3', link: '/support' }
   ];
 
+  ngOnInit(): void {
+     this.onLoad();
+  }
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
     console.log(this.isDropdownOpen ? "Open" : "Close");
   }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+
+  @HostListener('window:resize', [])
+  onResize() {
+    this.isMobile = window.innerWidth <= 768;
+    if (!this.isMobile) {
+      this.isMobileMenuOpen = false; // Close mobile menu when resizing to desktop
+    }
+  }
+
+  @HostListener('window:load', [])
+  onLoad() {
+    this.isMobile = window.innerWidth <= 768;
+  }
+
 
   closeDropdown() {
     this.isDropdownOpen = false;
@@ -29,8 +55,11 @@ export class TopNavComponent {
   // Close dropdown if the user clicks outside of it
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: Event) {
-    if (!(event.target as HTMLElement).closest('.dropdown')) {
+    if (!(event.target as HTMLElement).closest('#dropdown')) {
       this.isDropdownOpen = false;
+    }
+    if (!(event.target as HTMLElement).closest('#hamburger')) {
+      this.isMobileMenuOpen = false;
     }
   }
 
