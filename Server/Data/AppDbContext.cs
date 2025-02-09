@@ -11,6 +11,7 @@ namespace Server.Data
         public DbSet<User> Users { get; set; }  // ✅ Add this line
         public DbSet<ActiveUser> ActiveUsers { get; set; }  // ✅ Add this too
         public DbSet<Shopimy.Server.Models.Category> Categories { get; internal set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
 
         // Ensure table names match conventions
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,6 +21,7 @@ namespace Server.Data
             // Define table names explicitly (optional)
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
+            modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
             modelBuilder.Entity<TestItem>().ToTable("TestTable");  
         }
     }

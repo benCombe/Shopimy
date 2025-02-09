@@ -57,5 +57,14 @@ CREATE TABLE Categories (
     CONSTRAINT UQ_Categories UNIQUE (store_id, name)
 );
 
-
+CREATE TABLE ShoppingCarts (
+	cart_id INT IDENTITY(1,1) PRIMARY KEY,
+	store_id INT NOT NULL,
+	user_id INT NOT NULL,
+	item_id INT NOT NULL,
+	quantity INT NOT NULL CHECK (quantity > 0),
+	FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE NO ACTION,
+	FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION,
+	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
+);
 
