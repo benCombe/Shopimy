@@ -5,13 +5,13 @@ export class User {
   Email: string;
   Phone: string;
   Address: string;
-  Region: string;
-  Password: string;
+  Country: string;
+  Password: string | null;
   Verified: boolean;
 
   constructor(
       Id: number, FirstName: string, LastName: string, Email: string,
-      Phone: string, Address: string, Region: string, Password: string, Verified: boolean
+      Phone: string, Address: string, Country: string, Password: string, Verified: boolean
   ) {
       this.Id = Id;
       this.FirstName = FirstName;
@@ -19,7 +19,7 @@ export class User {
       this.Email = Email;
       this.Phone = Phone;
       this.Address = Address;
-      this.Region = Region;
+      this.Country = Country;
       this.Password = Password;
       this.Verified = Verified;
   }
