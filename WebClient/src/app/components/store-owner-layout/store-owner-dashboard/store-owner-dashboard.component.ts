@@ -1,11 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { TopNavComponent } from "../../top-nav/top-nav.component";
+import { SideNavComponent } from "../side-nav/side-nav.component";
+import { NgClass, NgFor, NgIf } from '@angular/common';
+import { UserService } from '../../../services/user.service';
+import { User } from '../../../models/user';
+import { OverviewComponent } from "../overview/overview.component";
+import { ProfileComponent } from "../profile/profile.component";
+import { ProductManagementComponent } from "../product-management/product-management.component";
+import { PromotionsComponent } from "../promotions/promotions.component";
 
 @Component({
   selector: 'app-store-owner-dashboard',
-  imports: [],
+  imports: [TopNavComponent, SideNavComponent, NgIf, NgFor, NgClass, OverviewComponent, ProfileComponent, ProductManagementComponent, PromotionsComponent],
   templateUrl: './store-owner-dashboard.component.html',
   styleUrl: './store-owner-dashboard.component.css'
 })
+
 export class StoreOwnerDashboardComponent {
 
+  user: User | null | undefined;
+
+  currentPage: string = "Overview"; //default page
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(){
+    this.userService.activeUser$.subscribe(u =>{
+      this.user = u;
+    })
+  }
+
+  onPageChange(newPage: string){
+    this.currentPage = newPage;
+    console.log("Navigatiing To: ", newPage);
+  }
 }

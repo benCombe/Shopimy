@@ -3,8 +3,9 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CookieService } from './cookie.service';
 import { RegistrationDetails } from '../models/registration-details';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { LoginDetails } from '../models/login-details';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,10 @@ import { LoginDetails } from '../models/login-details';
 export class UserService {
 
   private apiUrl = `${environment.apiUrl}/account`;
+
+
+  private activeUserSubject = new BehaviorSubject<User>(new User(0, "Guest", "User", "NA", "NA", "NA", "NA", "NA", true));
+  public activeUser$ : Observable<User> = this.activeUserSubject.asObservable();
 
   constructor(private http: HttpClient, private cookieService: CookieService) { }
 
@@ -57,6 +62,11 @@ export class UserService {
   // Check if User is Logged In
   isLoggedIn(): boolean {
     return this.cookieService.check('auth_token');
+  }
+
+
+  getActiveUser(): User{
+    return this.activeUserSubject.getValue();
   }
 }
 

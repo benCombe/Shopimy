@@ -1,0 +1,118 @@
+#main{
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  width: clamp(200px, 12vw, 275px);
+  height: calc(100vh - 20px);
+  background-color: var(--main-color);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  /* border: 1px solid red; */
+  /* overflow-x: hidden; */
+}
+
+#shopimy-logo{
+  color: var(--second-color);
+  font-family: var(--main-font-fam);
+  font-weight: bold;
+  font-size: 40pt;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+
+
+#nav-block {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 80vh;
+  background-color: var(--main-color);
+  padding: 10px;
+}
+
+.nav {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: var(--main-color);
+  font-size: 20pt;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.nav.active, .sub-nav.active {
+  background-color: var(--third-color);
+  color: var(--main-color);
+  font-weight: bold;
+}
+
+.sub-nav-container {
+  background-color: #524f37;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* max-height: 0px; */
+  /* transition: height 1s ease-in-out; */
+}
+
+.sub-nav-container.open{
+  max-height: 200px;
+  animation: opensubnav 0.35s ease-in-out;
+}
+
+.sub-nav-container.close{
+  max-height: 0px;
+  animation: closesubnav 0.35s ease-in-out;
+}
+
+@keyframes opensubnav {
+  from{
+    max-height: 0px;
+  }
+  to{
+    max-height: 200px;
+  }
+}
+
+@keyframes closesubnav{
+  from{
+    max-height: 200px;
+  }
+  to{
+    max-height: 0px;
+  }
+}
+
+.sub-nav {
+  padding: 5px 10px;
+  font-size: 18pt;
+  margin: 2px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sub-nav:hover {
+  background-color: #b0b0b0;
+}
+
+#logout-btn{
+  position: absolute;
+  font-size: 18pt;
+  justify-self: flex-end;
+  bottom: 20px;
+  color: var(--third-color);
+  transition: color 0.2s ease-in-out;
+}
+
+#logout-btn:hover{
+  cursor: pointer;
+  color: #bbb7a5;
+}
