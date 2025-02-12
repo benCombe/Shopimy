@@ -1,3 +1,7 @@
+:root{
+  --alt-color: #d5d5d5;
+}
+
 #main{
   max-width: 100%;
   max-height: auto;
@@ -13,7 +17,7 @@
   max-width: 800px;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 3px 4px rgba(0, 0, 0, 0.671);
   background-color: var(--main-color);
 }
 
@@ -46,7 +50,7 @@
   height: 18px;
   max-width: 75px;
   border-radius: 25px;
-  background-color: var(--third-color);
+  background-color: var(--alt-color);
   color: var(--main-color);
   border: 1px solid white;
   box-shadow: 2px 1px rgba(0, 0, 0, 0.607);
@@ -55,7 +59,7 @@
 
 #edit-btn:hover{
   cursor: pointer;
-  background-color: #bcb7a5;
+  background-color: #aaa79f;
   border: 1px solid rgb(190, 191, 184);
 }
 
@@ -135,7 +139,7 @@ span {
 
 .pm-options div:first-child:hover{
   cursor: pointer;
-  color:rgb(203, 203, 203);
+  color:rgb(255, 255, 255);
 }
 
 .pm-options div:last-child:hover{
@@ -164,7 +168,7 @@ span {
   width: 100%;
   overflow-y: scroll;
   border-radius: 12px;
-  background-color: var(--third-color);
+  background-color: var(--alt-color);
 }
 
 #ph-list{
@@ -207,17 +211,25 @@ span {
 
 
 .wl-item{
-  background-color: var(--third-color);
+  cursor: pointer;
+  background-color: var(--alt-color);
   border-radius: 10px;
   color: black;
   padding: 10px;
   width: 98%;
+  height: 30px;
   margin-bottom: 5px;
 }
 
+.wl-item:hover{
+  background-color: #beb9a8;
+}
+
 .wl-item label{
+  cursor: pointer;
   color: black;
   width: calc(90% - 20px);
+  font-size: 1.2rem;
 }
 
 .wl-options{
