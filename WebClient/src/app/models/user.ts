@@ -11,7 +11,7 @@ export class User {
 
   constructor(
       Id: number, FirstName: string, LastName: string, Email: string,
-      Phone: string, Address: string, Country: string, Password: string, Verified: boolean
+      Phone: string, Address: string, Country: string, Password: string | null, Verified: boolean
   ) {
       this.Id = Id;
       this.FirstName = FirstName;

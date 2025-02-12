@@ -29,9 +29,11 @@ namespace Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<bool>> Register([FromBody] RegistrationDetails registration)
         {
+            Console.WriteLine("HERE");
             // Check if email already exists
             if (await _context.Users.AnyAsync(u => u.Email == registration.Email))
             {
+                Console.WriteLine("Bad Request Here");
                 return BadRequest("Email already exists.");
             }
 
@@ -113,6 +115,32 @@ namespace Server.Controllers
                 }
             });
         }
+
+        // POST: api/account/logout
+        [HttpPost("logout")]
+        [AllowAnonymous] // Allows unauthenticated users to call this endpoint
+        public async Task<IActionResult> Logout([FromBody] string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest("Token is required.");
+            }
+
+            // Find the ActiveUser entry based on the token
+            var activeUser = await _context.ActiveUsers.FirstOrDefaultAsync(u => u.Token == token);
+
+            if (activeUser == null)
+            {
+                return NotFound("Session not found or already logged out.");
+            }
+
+            // Remove the user from ActiveUsers table
+            _context.ActiveUsers.Remove(activeUser);
+            await _context.SaveChangesAsync();
+
+            return Ok("User logged out successfully.");
+        }
+
 
           // 🔐 Protected Endpoint: Get User Profile
         [HttpGet("profile")]

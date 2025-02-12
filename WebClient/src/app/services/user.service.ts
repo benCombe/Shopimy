@@ -15,7 +15,7 @@ export class UserService {
   private apiUrl = `${environment.apiUrl}/account`;
 
 
-  private activeUserSubject = new BehaviorSubject<User>(new User(0, "Guest", "User", "NA", "NA", "NA", "NA", "NA", true));
+  private activeUserSubject = new BehaviorSubject<User>(new User(0, "Guest", "User", "example@gmail.com", "555-555-5555", "123 Nowhere Lane, Someplace, NS", "Canada", null, true));
   public activeUser$ : Observable<User> = this.activeUserSubject.asObservable();
 
   constructor(private http: HttpClient, private cookieService: CookieService) { }
@@ -38,6 +38,7 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         if (response && response.Token) {
+          console.log("Successful Login! ", response.Token); //TODO REMOVE THIS IN PROD
           this.cookieService.set('auth_token', response.Token, 3, '/'); // 3 days expiry
         }
       })

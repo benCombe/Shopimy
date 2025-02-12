@@ -6,11 +6,11 @@
       <form id="login-form" class="center-col">
         <div class="form-entry">
           <label id="email-lbl" for="email" class="form-lbl">Email</label><br>
-          <input type="text" id="email" required>
+          <input type="text" id="email" required name="email" [(ngModel)]="email">
         </div>
         <div class="fomr-entry">
           <label id="password-lbl" for="password" class="form-lbl">Password</label><br>
-          <input type="password" id="password" required>
+          <input type="password" id="password" required name="password" [(ngModel)]="password">
         </div>
         <span><a>I forgot my password</a></span>
       </form>
