@@ -4,6 +4,7 @@
     <div id="login">
       <h1>Login</h1>
       <form id="login-form" class="center-col">
+        <span *ngIf="loginFalied" id="login-fail">Email or Password is incorrect</span>
         <div class="form-entry">
           <label id="email-lbl" for="email" class="form-lbl">Email</label><br>
           <input type="text" id="email" required name="email" [(ngModel)]="email">
@@ -12,9 +13,12 @@
           <label id="password-lbl" for="password" class="form-lbl">Password</label><br>
           <input type="password" id="password" required name="password" [(ngModel)]="password">
         </div>
-        <span><a>I forgot my password</a></span>
+        <span id="forgot-pw"><a>I forgot my password</a></span>
       </form>
       <div id="alt-logins" class="center-col">
+        <div id="login-btn" class="center" (click)="login()">
+          <span>Login</span>
+        </div>
         <div id="google-btn" class="sm-login center-spaced">
           <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
           <span>Sign In with Google</span>
