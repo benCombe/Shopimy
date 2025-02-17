@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { LandingPageComponent } from "./components/landing-page/landing-page.component";
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
+import { StoreOwnerDashboardComponent } from "./components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,  // ✅ Standalone component
-  imports: [PopupComponent, LandingPageComponent, RouterOutlet, RouterLink], // ✅ Import child components
+  imports: [PopupComponent, LandingPageComponent, RouterOutlet, RouterLink, StoreOwnerDashboardComponent], // ✅ Import child components
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

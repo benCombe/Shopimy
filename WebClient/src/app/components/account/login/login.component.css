@@ -27,32 +27,68 @@
 
 #login-form{
   width: 100%;
-  height: 50%;
+  height: 45%;
   font-family: var(--main-font-fam);
-  font-size: 18pt;
 }
 
 .form-entry{
   margin-top: 30px;
   margin-bottom: 30px;
   font-family: var(--main-font-fam);
+  font-size: 1.5rem;
 }
 
 #login-form label{
   font-weight: bold;
+  font-size: 1.4rem;
 }
 
 #login-form input{
   width: 350px;
   height: 35px;
-  font-size: 16pt;
+  font-size: 1.2rem;
 }
 
-#login-form span{
+#forgot-pw{
   margin-top: 10px;
   font-size: 12pt;
   text-decoration: underline;
   color: blue;
+}
+
+#login-fail{
+  font-family: var(--main-font-fam);
+  color: red;
+  font-size: 1.2rem;
+  width: 100%;
+  text-align: center;
+}
+
+#login-btn{
+  width: 45%;
+  height: 50px;
+  padding-left: 15px;
+  padding-right: 15px;
+  background-color: var(--main-color);
+  color: var(--second-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: var(--main-font-fam);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+#login-btn span{
+  margin-right: 10px;
+  text-align: center;
+  width: 80%;
+}
+
+#login-btn:hover{
+  cursor: pointer;
+  background-color: var(--second-color);
+  color: white;
 }
 
 .sm-login{

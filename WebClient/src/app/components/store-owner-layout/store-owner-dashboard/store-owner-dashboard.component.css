@@ -1,0 +1,22 @@
+#container{
+  display: flex;
+  top: 0;
+  width: 100vw;
+  height: auto;
+  overflow-y: auto;
+  color: white;
+  font-size: 48pt;
+  overflow-x: hidden;
+}
+
+
+#main{
+  position:relative;
+  flex-grow: 1;
+  width: 100%;
+  background-color: var(--third-color);
+}
+
+.page{
+  padding: 15px;
+}

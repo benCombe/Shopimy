@@ -1,0 +1,39 @@
+<div id="main">
+  <div id="shopimy-logo" routerLink="">Shopimy</div>
+  <div id="nav-block">
+    <!-- Overview (No Dropdown) -->
+    <div
+      class="nav center"
+      [class.active]="activeNav === 'Overview'"
+      (click)="setActive('Overview')"
+    >
+      Overview
+    </div>
+
+    <!-- Other Nav Items (With Dropdowns) -->
+    <ng-container *ngFor="let item of navItems">
+      <!-- Main Nav Item -->
+      <div
+        class="nav center"
+        (click)="toggleDropdown(item)"
+      >
+        {{ item.name }}
+      </div>
+
+      <!-- Sub-nav items (Placed separately, below parent nav) -->
+      <div class="sub-nav-container close" [class.open]="item.open" [class.close]="!item.open">
+        <div
+          *ngFor="let sub of item.subNav"
+          class="sub-nav"
+          [class.active]="activeNav === sub"
+          (click)="setActive(sub, $event)"
+        >
+          {{ sub }}
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+  <div id="logout-btn" (click)="logout()">Logout</div>
+
+</div>

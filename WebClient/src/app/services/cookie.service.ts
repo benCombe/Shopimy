@@ -16,7 +16,8 @@ export class CookieService {
       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
       expires = `; expires=${date.toUTCString()}`;
     }
-    document.cookie = `${name}=${value}; path=${path}${expires}`;
+    const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; path=${path}${expires}${secure}`;
   }
 
   // Get a cookie value by name
@@ -26,7 +27,7 @@ export class CookieService {
     for (let i = 0; i < cookies.length; i++) {
       let cookie = cookies[i].trim();
       if (cookie.indexOf(nameEQ) === 0) {
-        return cookie.substring(nameEQ.length, cookie.length);
+        return decodeURIComponent(cookie.substring(nameEQ.length, cookie.length));
       }
     }
     return null;
@@ -38,8 +39,10 @@ export class CookieService {
   }
 
   // Delete a cookie by setting its expiration date in the past
-  delete(name: string, path: string = '/') {
-    document.cookie = `${name}=; path=${path}; expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+  delete(name: string, path: string = '/', domain?: string) {
+    let domainStr = domain ? `; domain=${domain}` : '';
+  document.cookie = `${encodeURIComponent(name)}=; path=${path}${domainStr}; expires=Thu, 01 Jan 1970 00:00:00 UTC`;
   }
 
 }
+

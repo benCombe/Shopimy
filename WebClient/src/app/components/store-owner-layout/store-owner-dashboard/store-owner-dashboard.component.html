@@ -1,1 +1,36 @@
-<p>store-owner-dashboard works!</p>
+<div id="container">
+  <app-side-nav (pageChange)="onPageChange($event)"></app-side-nav>
+  <div id="main">
+    <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
+      Overview
+      <app-overview></app-overview>
+    </div>
+    <div *ngIf="currentPage === 'Profile'" id="profile" class="page">
+      <div>{{user?.FirstName + " " + user?.LastName}}</div>
+      <app-profile [user]="user"></app-profile>
+    </div>
+    <div *ngIf="currentPage === 'Settings'" id="settings" class="page">
+      Settings
+    </div>
+    <div *ngIf="currentPage === 'Products'" id="products" class="page">
+      Products
+      <app-product-management></app-product-management>
+    </div>
+    <div *ngIf="currentPage === 'Orders'" id="orders" class="page">
+      Orders
+    </div>
+    <div *ngIf="currentPage === 'Themes & Logos'" id="themes" class="page">
+      Themes & Logos
+    </div>
+    <div *ngIf="currentPage === 'Promotions'" id="promos" class="page">
+      Promotions
+      <app-promotions></app-promotions>
+    </div>
+    <div *ngIf="currentPage === 'Traffic'" id="traffic" class="page">
+      Traffic
+    </div>
+    <div *ngIf="currentPage === 'Sales'" id="sales" class="page">
+      Sales
+    </div>
+  </div>
+</div>

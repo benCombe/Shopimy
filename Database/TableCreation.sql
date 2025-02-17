@@ -16,7 +16,7 @@ CREATE TABLE Users (
 CREATE TABLE ActiveUsers (
     user_id INT NOT NULL,
     login_date DATETIME2 DEFAULT SYSUTCDATETIME(),
-    token NVARCHAR(255) NOT NULL,
+    token NVARCHAR(MAX) NOT NULL,
     PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
@@ -57,5 +57,14 @@ CREATE TABLE Categories (
     CONSTRAINT UQ_Categories UNIQUE (store_id, name)
 );
 
-
+CREATE TABLE ShoppingCarts (
+	cart_id INT IDENTITY(1,1) PRIMARY KEY,
+	store_id INT NOT NULL,
+	user_id INT NOT NULL,
+	item_id INT NOT NULL,
+	quantity INT NOT NULL CHECK (quantity > 0),
+	FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE NO ACTION,
+	FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION,
+	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
+);
 
