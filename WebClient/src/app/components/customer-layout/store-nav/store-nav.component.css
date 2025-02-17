@@ -1,0 +1,13 @@
+#main{
+  width: 100vw;
+  height: 5vh;
+  padding: 2rem;
+}
+
+#store-name{
+  font-size: 2.8rem;
+  max-width: 200px;
+  background-color: none;
+}
+
+

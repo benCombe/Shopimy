@@ -48,3 +48,27 @@ ONE AT A TIME
   "password": "dogmeat",
   "subscribed": false
 }
+
+{
+  "firstName": "Chandler",
+  "lastName": "Bing",
+  "email": "chandlerbing@ads.com",
+  "phone": "555-874-9612",
+  "address": "4 21st, Manhattan, NY, 123456",
+  "country": "US",
+  "dob": "1970-02-14T00:00:00.200Z",
+  "password": "Ch@ndl3r",
+  "subscribed": false
+}
+
+{
+  "firstName": "Scarlett",
+  "lastName": "Johansson",
+  "email": "scarjo@gmail.com",
+  "phone": "555-768-2312",
+  "address": "216 Hollywood Blvd, Los Angeles, CA, 98765",
+  "country": "US",
+  "dob": "1984-11-22T00:00:00.200Z",
+  "password": "Sc@4l3tt",
+  "subscribed": false
+}
