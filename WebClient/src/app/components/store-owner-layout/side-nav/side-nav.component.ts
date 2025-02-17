@@ -1,7 +1,8 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-side-nav',
@@ -20,6 +21,8 @@ export class SideNavComponent {
     {name: 'Analytics', subNav: ['Traffic', 'Sales'], open: false}
   ]
 
+  constructor(private userService: UserService, private router: Router) {}
+
   toggleDropdown(item: any) {
     // Toggle the dropdown menu
     item.open = !item.open;
@@ -32,5 +35,10 @@ export class SideNavComponent {
     if (event) {
       event.stopPropagation();
     }
+  }
+
+  logout(): void{
+    this.userService.logout();
+    this.router.navigate(['/home']);
   }
 }

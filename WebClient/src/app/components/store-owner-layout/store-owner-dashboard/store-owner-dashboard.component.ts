@@ -34,4 +34,5 @@ export class StoreOwnerDashboardComponent {
     this.currentPage = newPage;
     console.log("Navigatiing To: ", newPage);
   }
+
 }

@@ -1,0 +1,54 @@
+<div class="item-card">
+  <!-- If you have an image, you could include it here -->
+  <div class="item-image" *ngIf="item?.imageUrl">
+    <img [src]="item.imageUrl" [alt]="item.name" />
+  </div>
+
+  <div class="item-details">
+    <h2 class="item-name">{{ item?.Name }}</h2>
+
+    <!-- Price Logic -->
+    <p class="item-price">
+      <ng-container *ngIf="item?.OnSale; else normalPrice">
+        <span class="sale-price">\${{ item?.SalePrice }}</span>
+        <span class="original-price strikethrough">\${{ item?.OriginalPrice }}</span>
+      </ng-container>
+      <ng-template #normalPrice>
+        <span>\${{ item?.OriginalPrice }}</span>
+      </ng-template>
+    </p>
+
+    <!-- Description -->
+    <p class="item-description">
+      {{ item?.Description }}
+    </p>
+
+    <!-- Stock & Availability -->
+    <div class="item-stock">
+      <strong>In Stock:</strong> {{ item?.QuantityInStock }}
+    </div>
+    <div class="item-availability">
+      <strong>Available:</strong> {{ item?.AvailFrom | date }} - {{ item?.AvailTo | date }}
+    </div>
+
+    <!-- Rating -->
+    <div class="item-rating">
+      <strong>Rating:</strong> {{ item?.CurrentRating }} / 5
+    </div>
+
+    <!-- Category IDs (optional) -->
+    <div class="item-categories" *ngIf="item?.CategoryIds?.length">
+      <strong>Categories:</strong> {{ item.CategoryIds.join(', ') }}
+    </div>
+
+    <!-- Actions -->
+    <div class="item-actions">
+      <button class="add-to-basket" (click)="addToBasket(item)">
+        Add To Basket
+      </button>
+      <button class="bookmark-button" (click)="bookmarkItem(item)">
+        Bookmark
+      </button>
+    </div>
+  </div>
+</div>

@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   width: clamp(200px, 12vw, 275px);
-  height: calc(100vh - 20px);
+  height: calc(80vh - 20px);
   background-color: var(--main-color);
   padding-top: 10px;
   padding-bottom: 10px;
@@ -104,7 +104,7 @@
 }
 
 #logout-btn{
-  position: absolute;
+  /* position: absolute; */
   font-size: 18pt;
   justify-self: flex-end;
   bottom: 20px;
