@@ -6,11 +6,13 @@ import { LandingPageComponent } from "./components/landing-page/landing-page.com
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { StoreOwnerDashboardComponent } from "./components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component";
+import { ShoppingCartComponent } from "./components/customer-layout/shopping-cart/shopping-cart.component";
+import { CheckoutComponent } from "./components/customer-layout/checkout/checkout.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,  // ✅ Standalone component
-  imports: [PopupComponent, LandingPageComponent, RouterOutlet, RouterLink, StoreOwnerDashboardComponent], // ✅ Import child components
+  imports: [PopupComponent, LandingPageComponent, RouterOutlet, RouterLink, StoreOwnerDashboardComponent, ShoppingCartComponent, CheckoutComponent], // ✅ Import child components
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
