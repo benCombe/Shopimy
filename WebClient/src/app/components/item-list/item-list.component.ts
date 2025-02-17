@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { Item } from '../../models/item.model';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { Item } from '../../models/item';
+import { ItemCardComponent } from '../item-card/item-card.component';
+import { TopNavComponent } from '../top-nav/top-nav.component';
 
 @Component({
   selector: 'app-item-list',
-  templateUrl: './item-list.component.html'
+  templateUrl: './item-list.component.html',
+  standalone: true,  // Declare as standalone
+  imports: [CommonModule, ItemCardComponent, RouterModule, TopNavComponent]  // Import ItemCardComponent here
 })
 export class ItemListComponent implements OnInit {
   items: Item[] = [];
 
   ngOnInit(): void {
-    // Example of how you might instantiate an item:
+    // Example dummy item:
     this.items = [
       new Item({
         Name: 'Joni Sweater (digital pattern)',
@@ -23,8 +29,7 @@ export class ItemListComponent implements OnInit {
         AvailTo: '2025-12-31',
         CurrentRating: 4.5,
         CategoryIds: [101, 102]
-      }),
-      // More items...
+      })
     ];
   }
 }
