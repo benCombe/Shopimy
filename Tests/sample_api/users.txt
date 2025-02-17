@@ -1,0 +1,74 @@
+
+ONE AT A TIME
+
+{
+  "firstName": "Fox",
+  "lastName": "Mulder",
+  "email": "fmulder@fbi.gov",
+  "phone": "555-555-1234",
+  "address": "452 Nowhere Lane, Bethesda, MD",
+  "country": "US",
+  "dob": "1965-02-12T00:00:00.200Z",
+  "password": "123456",
+  "subscribed": false
+}
+
+{
+  "firstName": "John",
+  "lastName": "Oliver",
+  "email": "sadnewsbringer@lwt.org",
+  "phone": "555-456-9870",
+  "address": "78 Whitevoid Drive, New York, NY",
+  "country": "US",
+  "dob": "1975-06-21T00:00:00.200Z",
+  "password": "654321",
+  "subscribed": false
+}
+
+{
+  "firstName": "Rick",
+  "lastName": "Sanchez",
+  "email": "wubbalubbadubdub@butts.net",
+  "phone": "555-888-7541",
+  "address": "1 Earth Rd, Scranton, OH",
+  "country": "US",
+  "dob": "1965-04-18T00:00:00.200Z",
+  "password": "boogeraids",
+  "subscribed": false
+}
+
+{
+  "firstName": "Fooba",
+  "lastName": "Noopnoop",
+  "email": "fnoop@cw.com",
+  "phone": "555-741-2354",
+  "address": "Rocket Repair Station, Commonwealth, MS",
+  "country": "US",
+  "dob": "2050-10-22T00:00:00.200Z",
+  "password": "dogmeat",
+  "subscribed": false
+}
+
+{
+  "firstName": "Chandler",
+  "lastName": "Bing",
+  "email": "chandlerbing@ads.com",
+  "phone": "555-874-9612",
+  "address": "4 21st, Manhattan, NY, 123456",
+  "country": "US",
+  "dob": "1970-02-14T00:00:00.200Z",
+  "password": "Ch@ndl3r",
+  "subscribed": false
+}
+
+{
+  "firstName": "Scarlett",
+  "lastName": "Johansson",
+  "email": "scarjo@gmail.com",
+  "phone": "555-768-2312",
+  "address": "216 Hollywood Blvd, Los Angeles, CA, 98765",
+  "country": "US",
+  "dob": "1984-11-22T00:00:00.200Z",
+  "password": "Sc@4l3tt",
+  "subscribed": false
+}

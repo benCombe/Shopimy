@@ -1,10 +1,3 @@
-INSERT INTO Users (first_name, last_name, email, phone, address, region, password)
-VALUES 
-('John', 'Doe', 'john.doe@example.com', '123-456-7890', '123 Main St, City, Country', 'North America', 'hashed_password_1'),
-('Jane', 'Smith', 'jane.smith@example.com', '234-567-8901', '456 Elm St, City, Country', 'Europe', 'hashed_password_2'),
-('Michael', 'Johnson', 'michael.johnson@example.com', '345-678-9012', '789 Oak St, City, Country', 'Asia', 'hashed_password_3');
-
-
 INSERT INTO Stores (owner, name)
 VALUES 
 (10000001, 'Tech Haven'),

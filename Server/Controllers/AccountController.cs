@@ -7,6 +7,7 @@ using Server.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace Server.Controllers
 {
@@ -29,9 +30,13 @@ namespace Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<bool>> Register([FromBody] RegistrationDetails registration)
         {
+            string json = JsonSerializer.Serialize(registration, new JsonSerializerOptions { WriteIndented = true });
+
+            Console.WriteLine(json);
             // Check if email already exists
             if (await _context.Users.AnyAsync(u => u.Email == registration.Email))
             {
+                Console.WriteLine("Bad Request Here");
                 return BadRequest("Email already exists.");
             }
 
@@ -114,6 +119,30 @@ namespace Server.Controllers
             });
         }
 
+        // POST: api/account/logout
+        [HttpPost("logout")]
+        [AllowAnonymous] // Allows unauthenticated users to call this endpoint
+        public async Task<IActionResult> Logout([FromBody] TokenRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.Token))
+            {
+                return BadRequest("Token is required.");
+            }
+
+            var activeUser = await _context.ActiveUsers.FirstOrDefaultAsync(u => u.Token == request.Token);
+            
+            if (activeUser == null)
+            {
+                return NotFound("Session not found or already logged out.");
+            }
+
+            _context.ActiveUsers.Remove(activeUser);
+            await _context.SaveChangesAsync();
+
+            return Ok(true);
+        }
+
+
           // 🔐 Protected Endpoint: Get User Profile
         [HttpGet("profile")]
         [Authorize]  // Requires JWT authentication
@@ -182,6 +211,11 @@ namespace Server.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public class TokenRequest
+        {
+            public string Token { get; set; }
         }
     }
 }
