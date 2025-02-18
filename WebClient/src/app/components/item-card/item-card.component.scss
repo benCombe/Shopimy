@@ -1,0 +1,76 @@
+.item-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #fdfdf8; /* Slightly off-white or beige */
+  border: 1px solid #eee;
+  border-radius: 6px;
+  overflow: hidden; /* Ensures the border radius applies to child elements */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  .item-image,
+  .item-image-placeholder {
+    width: 100%;
+    height: 200px; /* Fixed height or use aspect-ratio for dynamic sizing */
+    overflow: hidden;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Crops the image nicely */
+    }
+  }
+
+  .item-details {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    .item-name {
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .item-price {
+      margin-bottom: 1rem;
+      font-weight: 600;
+      .sale-price {
+        color: #d00; /* Red text for sale price */
+        margin-right: 0.5rem;
+      }
+      .strikethrough {
+        text-decoration: line-through;
+        color: #888;
+      }
+    }
+
+    .item-description {
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .item-info {
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .item-actions {
+      margin-top: auto; /* Pushes the buttons to the bottom if there's extra space */
+      .btn {
+        background-color: #ccc;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        &:hover {
+          background-color: #bbb;
+        }
+      }
+    }
+  }
+}
