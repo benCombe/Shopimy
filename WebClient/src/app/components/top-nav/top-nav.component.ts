@@ -16,6 +16,8 @@ export class TopNavComponent {
 
   options = [
     { label: 'Register', link: '/register' },
+    { label: 'Items', link: '/items' },
+    { label: 'Categories', link: '/categories' },
     { label: 'Another Resource', link: '/tutorials' },
     { label: 'Resource #3', link: '/support' }
   ];
