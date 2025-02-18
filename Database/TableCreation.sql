@@ -16,7 +16,7 @@ CREATE TABLE Users (
 CREATE TABLE ActiveUsers (
     user_id INT NOT NULL,
     login_date DATETIME2 DEFAULT SYSUTCDATETIME(),
-    token NVARCHAR(255) NOT NULL,
+    token NVARCHAR(MAX) NOT NULL,
     PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
