@@ -17,5 +17,8 @@
       </select>
     </div>
     <button type="submit" [disabled]="productForm.invalid">Save Product</button>
+    <a [routerLink]="['/items', item.Id]" class="details-link">
+      View Details
+    </a>
   </form>
   

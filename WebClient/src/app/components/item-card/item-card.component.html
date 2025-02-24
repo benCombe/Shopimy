@@ -45,4 +45,7 @@
       <!-- <button class="btn bookmark-button" (click)="bookmarkItem(item)">Bookmark</button> -->
     </div>
   </div>
+  <a [routerLink]="['/items', item.Id]" class="details-link">
+    View Details
+  </a>
 </div>

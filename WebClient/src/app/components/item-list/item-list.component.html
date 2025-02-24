@@ -4,4 +4,7 @@
     *ngFor="let item of items"
     [item]="item">
   </app-item-card>
+  <a [routerLink]="['/items', item.Id]" class="details-link">
+    View Details
+  </a>
 </div>
