@@ -1,24 +1,20 @@
 <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-    <div>
-      <label>Name</label>
-      <input formControlName="name">
-    </div>
-    <div>
-      <label>Original Price</label>
-      <input type="number" formControlName="originalPrice">
-    </div>
-    <!-- Other product fields... -->
-    <div>
-      <label>Select Categories</label>
-      <select formControlName="categoryIds" multiple>
-        <option *ngFor="let category of categories" [value]="category.categoryId">
-          {{ category.name }}
-        </option>
-      </select>
-    </div>
-    <button type="submit" [disabled]="productForm.invalid">Save Product</button>
-    <a [routerLink]="['/items', item.Id]" class="details-link">
-      View Details
-    </a>
-  </form>
-  
+  <div>
+    <label>Name</label>
+    <input formControlName="name">
+  </div>
+  <div>
+    <label>Original Price</label>
+    <input type="number" formControlName="originalPrice">
+  </div>
+  <!-- Other product fields... -->
+  <div>
+    <label>Select Categories</label>
+    <select formControlName="categoryIds" multiple>
+      <option *ngFor="let category of categories" [value]="category.categoryId">
+        {{ category.name }}
+      </option>
+    </select>
+  </div>
+  <button type="submit" [disabled]="productForm.invalid">Save Product</button>
+</form>

@@ -1,13 +1,11 @@
-<!-- File: item-card.component.html -->
 <div class="item-card">
   <!-- Image Section -->
-  
   <div class="item-image" *ngIf="item?.ImageUrl; else defaultImage">
     <img [src]="item.ImageUrl" [alt]="item.Name" />
   </div>
   <ng-template #defaultImage>
     <div class="item-image-placeholder">
-      <img src="../../../../public/default.png" alt="Placeholder Image" />
+      <img src="assets/images/default.png" alt="Placeholder Image" />
     </div>
   </ng-template>
   
@@ -16,8 +14,8 @@
     <h3 class="item-name">{{ item?.Name }}</h3>
     <div class="item-price">
       <ng-container *ngIf="item?.OnSale; else notOnSale">
-        <span class="sale-price">${{ item?.SalePrice }}</span>
-        <span class="original-price strikethrough">${{ item?.OriginalPrice }}</span>
+        <span class="sale-price">\${{ item?.SalePrice }}</span>
+        <span class="original-price strikethrough">\${{ item?.OriginalPrice }}</span>
       </ng-container>
       <ng-template #notOnSale>
         \${{ item?.OriginalPrice }}
@@ -30,19 +28,14 @@
 
     <!-- Optional Info -->
     <p class="item-info">
-      <strong>In Stock:</strong> {{ item?.QuantityInStock }}
-      <br>
-      <strong>Available:</strong>
-      {{ item?.AvailFrom | date:'shortDate' }} - {{ item?.AvailTo | date:'shortDate' }}
-      <br>
+      <strong>In Stock:</strong> {{ item?.QuantityInStock }}<br>
+      <strong>Available:</strong> {{ item?.AvailFrom | date:'shortDate' }} - {{ item?.AvailTo | date:'shortDate' }}<br>
       <strong>Rating:</strong> {{ item?.CurrentRating }} / 5
     </p>
 
-    <!-- Action Button(s) -->
+    <!-- Action Buttons -->
     <div class="item-actions">
       <button class="btn add-to-basket" (click)="addToBasket(item)">Add to Bag</button>
-      <!-- Optional second button, e.g., for Bookmark -->
-      <!-- <button class="btn bookmark-button" (click)="bookmarkItem(item)">Bookmark</button> -->
     </div>
   </div>
   <a [routerLink]="['/items', item.Id]" class="details-link">

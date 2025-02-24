@@ -2,7 +2,7 @@
     <!-- Main Info Section -->
     <div class="item-header">
       <div class="item-image">
-        <img [src]="item.ImageUrl || 'assets/images/default-image.jpg'" [alt]="item.Name" />
+        <img [src]="displayImageUrl" [alt]="item?.Name" /> 
       </div>
       <div class="item-info">
         <h2 class="item-name">{{ item.Name }}</h2>

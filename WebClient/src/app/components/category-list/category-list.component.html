@@ -1,11 +1,11 @@
 <div>
-    <h2>Categories</h2>
-    <a routerLink="/categories/new">Create New Category</a>
-    <ul>
-      <li *ngFor="let category of categories">
-        {{ category.name }}
-        <a [routerLink]="['/categories', category.categoryId, 'edit']">Edit</a>
-        <button (click)="deleteCategory(category.categoryId)">Delete</button>
-      </li>
-    </ul>
-  </div>
+  <h2>Categories</h2>
+  <a routerLink="/categories/new">Create New Category</a>
+  <ul>
+    <li *ngFor="let category of categories">
+      {{ category.name }}
+      <a [routerLink]="['/categories', category.categoryId, 'edit']">Edit</a>
+      <button (click)="deleteCategory(category.categoryId)">Delete</button>
+    </li>
+  </ul>
+</div>

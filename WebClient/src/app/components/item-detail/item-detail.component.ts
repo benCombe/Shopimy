@@ -40,4 +40,10 @@ export class ItemDetailComponent implements OnInit {
     console.log('Bookmarking item:', item);
     // Integrate with your bookmark/favorite logic
   }
+  get displayImageUrl(): string {
+    if (this.item && this.item.ImageUrl && this.item.ImageUrl !== 'mock-image-url') {
+      return this.item.ImageUrl;
+    }
+    return 'assets/images/default.png';
+  }  
 }
