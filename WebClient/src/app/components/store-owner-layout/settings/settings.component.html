@@ -1,0 +1,126 @@
+<div id="main">
+    <div id="account-info" class="section">
+      <h2>Account Info</h2>
+      <div class="edit-wrapper">
+        <div id="edit-btn" class="center-spaced">Edit<i class="fa-solid fa-pencil"></i></div>
+      </div>
+      <div class="info-item">
+        <label>First Name:</label>
+        <span>{{ ****** }}</span>
+      </div>
+      <div class="info-item">
+        <label>Last Name:</label>
+        <span>{{ ****** }}</span>
+      </div>
+      <div class="info-item">
+        <label>Email:</label>
+        <span>{{ ****** }}</span>
+      </div>
+      <div class="info-item">
+        <label>Phone Number:</label>
+        <span>{{ ****** }}</span>
+      </div>
+      <div class="info-item">
+        <label>Address:</label>
+        <span>{{ ****** }}</span>
+      </div>
+      <div class="info-item">
+        <label>Country:</label>
+        <span>{{ ****** }}</span>
+      </div>
+    </div>
+    <div id="payment-details" class="section">
+      <h2>Payment Methods</h2> <!-- TODO Dynamic Information -->
+      <div class="payment-item">
+        <label>Visa</label>
+        <div class="card-info center-spaced">
+          <span>*******************1234</span>
+          <span>05/28</span>
+          <span>***</span>
+        </div>
+        <div class="pm-options">
+          <div class="pm-edit"><i class="fa-solid fa-pencil"></i></div>
+          <div class="pm-delete"><i class="fa-solid fa-trash"></i></div>
+        </div>
+      </div>
+      <div class="payment-item">
+        <label>Debit</label>
+        <div class="card-info center-spaced">
+          <span>*******************2468</span>
+          <span>06/27</span>
+          <span>***</span>
+        </div>
+        <div class="pm-options">
+          <div class="pm-edit"><i class="fa-solid fa-pencil"></i></div>
+          <div class="pm-delete"><i class="fa-solid fa-trash"></i></div>
+        </div>
+      </div>
+    </div>
+    <div id="purchase-history" class="section">
+      <h2>Purchase History</h2>
+      <div id="ph-list-wrapper">
+        <table id="ph-list">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Store</th>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>28/09/2024</td>
+              <td>Calvin's Collectibles</td>
+              <td>Replica Anduril - Sword</td>
+              <td>$229.99</td>
+              <td>Shipped</td>
+            </tr>
+            <tr>
+              <td>27/09/2024</td>
+              <td>Bob's Burgers</td>
+              <td>Burger (Cheese)</td>
+              <td>$5.99</td>
+              <td>Delivered</td>
+            </tr>
+            <tr>
+              <td>25/09/2024</td>
+              <td>Foxy Furniture</td>
+              <td>Space Lamp - Black</td>
+              <td>$29.99</td>
+              <td>Delivered</td>
+            </tr>
+          <!-- TODO complete when purchase logs are implemented -->
+            <!-- <tr *ngFor="let item of purchases"> //purchases fetched from api call
+              <td>{{item.date}}</td>
+              <td>{{item.store}}</td>
+              <td>{{item.product}}</td>
+              <td>{{item.price}}</td>
+              <td>{{item.status}}</td>
+            </tr> -->
+          </tbody>
+  
+        </table>
+      </div>
+    </div>
+    <div id="wishlists" class="section">
+      <h2>Wish Lists</h2>
+      <!-- TODO Dynamic Lists -->
+       <div id="lists" class="center-col">
+        <div class="wl-item center-spaced">
+          <label>Stuff I Want</label>
+          <div class="wl-options">
+            <div class="wl-delete"><i class="fa-solid fa-trash"></i></div>
+          </div>
+        </div>
+        <div class="wl-item center-spaced">
+          <label>Stuff I Need</label>
+          <div class="wl-options">
+            <div class="wl-delete"><i class="fa-solid fa-trash"></i></div>
+          </div>
+        </div>
+       </div>
+    </div>
+  </div>
+  
