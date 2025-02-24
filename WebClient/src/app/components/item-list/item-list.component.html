@@ -1,10 +1,12 @@
 <!-- File: item-list.component.html -->
 <div class="item-list">
-  <app-item-card
-    *ngFor="let item of items"
-    [item]="item">
-  </app-item-card>
-  <a [routerLink]="['/items', item.Id]" class="details-link">
-    View Details
-  </a>
+  <div *ngFor="let item of items" class="item-wrapper">
+    <app-item-card
+      *ngFor="let item of items"
+      [item]="item">
+    </app-item-card>
+    <a [routerLink]="['/items', item.Id]" class="details-link">
+      {{ item.Name }}
+    </a>
+  </div>
 </div>

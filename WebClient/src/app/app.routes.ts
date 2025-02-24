@@ -20,5 +20,5 @@ export const appRoutes: Routes = [
   { path: 'categories', component: CategoryListComponent},
   { path: '**', redirectTo: '/home' }
 ];
-
+ 
 export const appRouterProvider = provideRouter(appRoutes);
