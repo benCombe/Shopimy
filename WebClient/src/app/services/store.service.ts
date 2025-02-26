@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Item } from '../models/item'; // Assume you have this model
 
 @Injectable({
@@ -27,5 +27,23 @@ export class StoreService {
   // Example method for fetching categories for a store
   getCategories(): Observable<any[]> {
     return this.http.get<any[]>(this.categoryBaseUrl);
+  }
+  getItemById(id: string): Observable<Item> {
+    // Mock implementation, replace with actual API call
+    const mockItem: Item = { 
+      Id: id, 
+      Name: 'Mock Item', 
+      SalePrice: 100, 
+      OriginalPrice: 150, 
+      OnSale: true, 
+      Description: 'This is a mock item', 
+      QuantityInStock: 10, 
+      CategoryIds: [1], 
+      ImageUrl: 'mock-image-url',
+      AvailFrom: new Date(),
+      AvailTo: new Date(),
+      CurrentRating: 5
+    };
+    return of(mockItem);
   }
 }
