@@ -6,6 +6,7 @@ import { LandingPageComponent } from "./components/landing-page/landing-page.com
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { StoreOwnerDashboardComponent } from "./components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component";
+import { TopNavComponent } from './components/top-nav/top-nav.component';
 import { ShoppingCartComponent } from "./components/customer-layout/shopping-cart/shopping-cart.component";
 import { CheckoutComponent } from "./components/customer-layout/checkout/checkout.component";
 import { LoadingOneComponent } from "./components/utilities/loading-one/loading-one.component";
