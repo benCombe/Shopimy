@@ -16,8 +16,9 @@ export class TopNavComponent {
 
   options = [
     { label: 'Register', link: '/register' },
-    { label: 'Another Resource', link: '/tutorials' },
-    { label: 'Resource #3', link: '/support' }
+    {label: 'Dashboard', link: '/dashboard'},
+    {label: 'Cart', link: '/cart'},
+    {label: 'Checkout', link: '/checkout'}
   ];
 
   ngOnInit(): void {

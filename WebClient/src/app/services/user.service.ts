@@ -116,6 +116,11 @@ export class UserService {
   getActiveUser(): User{
     return this.activeUserSubject.getValue();
   }
+
+  //TODO Implement
+  //getUserPurchaseHistory
+  //getUserPaymentMethods
+  //getUserWishlists
 }
 
 

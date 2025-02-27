@@ -3,18 +3,18 @@
 }
 
 #main{
-  max-width: 100%;
+  max-width: 80%;
   max-height: auto;
   padding: 25px;
   display: grid;
   align-content: center;
-  column-gap: 25px;
-  row-gap: 25px;
+  column-gap: 50px;
+  row-gap: 50px;
   font-family: var(--main-font-fam);
 }
 
 .section{
-  max-width: 800px;
+  max-width: 1000px;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 3px 4px rgba(0, 0, 0, 0.671);
