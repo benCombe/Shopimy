@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
   templateUrl: './store-page.component.html',
   styleUrl: './store-page.component.css'
 })
+
 export class StorePageComponent {
 
 }

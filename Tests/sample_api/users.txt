@@ -72,3 +72,15 @@ ONE AT A TIME
   "password": "Sc@4l3tt",
   "subscribed": false
 }
+
+{
+  "firstName": "Donald",
+  "lastName": "Glover",
+  "email": "gambino@gmail.com",
+  "phone": "555-224-9517",
+  "address": "563 Main Street, Atlanta, GA, 99844",
+  "country": "US",
+  "dob": "1989-06-22T00:00:00.200Z",
+  "password": "CG@mb1n0",
+  "subscribed": false
+}

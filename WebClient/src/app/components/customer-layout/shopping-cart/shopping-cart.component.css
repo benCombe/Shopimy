@@ -22,16 +22,18 @@
 
 #cart-items-container{
   width: calc(70% - 4rem);
+  padding: 10px;
+  max-height: 50vh;
+  overflow-y: scroll;
 }
 
 .cart-item{
   position: relative;
-  max-height: 200px;
   display: flex;
   align-items: center;
   padding: 20px;
   border-top: 2px solid black;
-  height: 250px;
+  height: 275px;
 }
 
 .cart-item:last-child{
@@ -40,7 +42,7 @@
 
 .item-img-container{
   width: 16%;
-  max-width: 600px;
+  max-width: 500px;
 }
 
 .item-img{
