@@ -1,5 +1,6 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { Store } from '../models/store';
+import { StoreTheme } from '../models/store-theme.model';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available throughout the app
@@ -11,6 +12,22 @@ export class ThemeService {
 
   constructor(rendererFactory: RendererFactory2) {
     this.renderer = rendererFactory.createRenderer(null, null);
+  }
+
+  /**
+   * Applies the complete theme to a specific container element.
+   * @param theme - The complete theme object.
+   * @param containerSelector - A CSS selector for the container to update.
+   */
+  applyThemeToContainer(theme: StoreTheme, containerSelector: string): void {
+    const container = document.querySelector(containerSelector);
+    if (container) {
+      this.renderer.setStyle(container, '--main-color', theme.mainColor);
+      this.renderer.setStyle(container, '--second-color', theme.secondColor);
+      this.renderer.setStyle(container, '--third-color', theme.thirdColor);
+      this.renderer.setStyle(container, '--alt-color', theme.altColor);
+      this.renderer.setStyle(container, '--main-font-fam', theme.mainFontFam);
+    }
   }
 
   setThemeOne(elemClass: string) {
