@@ -7,7 +7,7 @@ export class Store {
   FontFamily: string;
   FontColor: string;
 
-  Logo: undefined;
+  LogoUrl?: string;
   Banner: undefined;
 
   constructor(
@@ -16,7 +16,8 @@ export class Store {
     Theme_2: string,
     Theme_3: string,
     FontFamily: string,
-    FontColor: string
+    FontColor: string,
+    LogoUrl?: string
   ){
 
     this.Name = Name;
@@ -25,6 +26,7 @@ export class Store {
     this.Theme_3 = Theme_3;
     this.FontFamily = FontFamily;
     this.FontColor = FontColor;
+    this.LogoUrl = LogoUrl;
   }
 
 
