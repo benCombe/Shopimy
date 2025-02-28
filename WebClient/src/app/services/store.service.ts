@@ -46,4 +46,7 @@ export class StoreService {
     };
     return of(mockItem);
   }
+  updateStock(itemId: string, newStock: number): Observable<Item> {
+    return this.http.put<Item>(`${this.itemBaseUrl}/${itemId}/stock`, { quantityInStock: newStock });
+  }
 }

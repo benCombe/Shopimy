@@ -7,3 +7,13 @@ Setting up developer environment:
 - BEFORE EDITING ANY CODE: Be sure to create a new branch off 'staging' called dev-[your-name]
 - You can make pull requests, but for now wait for me to approve them.
 - If you have any questions let me know.
+
+RUNNING
+
+FrontEnd
+cd webclient
+npm start
+
+Backend
+cd server
+dotnet run
