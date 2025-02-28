@@ -1,0 +1,9 @@
+        #leftPics{width:15%;}
+        #picsHolder{width: 11.5%;display: inline-block;}
+        #smlPic{margin-left: 1vw; padding-bottom: 1vw;width: 8.5vw; height:8.5vw;}
+        #bigPic{width: 80%; height:80%;}
+        #bigPicHolder{width: 45%;display: inline-block;vertical-align: top;height:42vw;}
+        #textSection{width: 20%;height:10vw;display: inline-block;vertical-align: top;}
+        #headerText{font-size: 3.5vw; text-align: left;}
+        #priceText{font-size: 1.5vw;}
+        #descText{font-size:1vw}
