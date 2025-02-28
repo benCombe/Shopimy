@@ -29,5 +29,4 @@ export class Store {
     this.LogoUrl = LogoUrl;
   }
 
-
 }
