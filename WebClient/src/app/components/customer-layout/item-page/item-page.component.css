@@ -1,9 +1,13 @@
+      #TopHalf{margin-top: 5vw}
         #leftPics{width:15%;}
         #picsHolder{width: 11.5%;display: inline-block;}
         #smlPic{margin-left: 1vw; padding-bottom: 1vw;width: 8.5vw; height:8.5vw;}
         #bigPic{width: 80%; height:80%;}
         #bigPicHolder{width: 45%;display: inline-block;vertical-align: top;height:42vw;}
-        #textSection{width: 20%;height:10vw;display: inline-block;vertical-align: top;}
-        #headerText{font-size: 3.5vw; text-align: left;}
-        #priceText{font-size: 1.5vw;}
-        #descText{font-size:1vw}
+        #textSection{width: 40%;height:10vw;display: inline-block;vertical-align: top;}
+        #headerText{font-size: 2.5vw; text-align: left;margin-top:0.3vw;margin-bottom:1vw; }
+        #priceText{font-size: 2.5vw;margin-top:0;}
+        #descText{font-size:1.3vw;width:37vw}
+        #options{font-size: 1.3vw; width: 37vw}
+        #btnHolder{display: inline-block; vertical-align: top;margin-top:12vw}
+        #btn{font-size: 2.5vw;background-color:#2C2A1F; border: none;color: #D3CEBB;border-radius: 40px;padding-left:3vw;padding-right:3vw;padding-top:0.6vw;padding-bottom:0.6vw; margin-right: 1vw}
