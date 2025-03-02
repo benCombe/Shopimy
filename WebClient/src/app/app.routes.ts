@@ -9,6 +9,7 @@ import { CheckoutComponent } from './components/customer-layout/checkout/checkou
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { CategoryListComponent } from './components/category-list/category-list.component';
 import { ItemDetailComponent } from './components/item-detail/item-detail.component'; // Ensure this path is correct
+import { StorePageComponent } from './components/customer-layout/store-page/store-page.component';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
@@ -22,6 +23,7 @@ export const appRoutes: Routes = [
   { path: 'items', component: ItemListComponent },
   { path: 'items/:id', component: ItemDetailComponent },
   { path: 'categories', component: CategoryListComponent},
+  { path: 'store', component: StorePageComponent},
   { path: '**', redirectTo: '/home' }
 
 ];

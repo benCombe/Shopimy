@@ -1,3 +1,11 @@
-<div id="main" class="theme1 center-spaced">
+<div id="main" class="theme1">
   <div id="store-name" class="fc">{{storeDetails.Name}}</div>
+  <div id="categories-wrapper">
+    <div id="categories" class="fc">
+      <span *ngFor="let c of tempCategories" class="cat">{{c}}</span>
+    </div>
+    <div id="cart-btn-wrapper">
+      <div id="cart-btn" class="center fc"><i class="fa-solid fa-cart-shopping"></i></div>
+    </div>
+  </div>
 </div>

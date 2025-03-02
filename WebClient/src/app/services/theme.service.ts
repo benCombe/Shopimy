@@ -1,5 +1,6 @@
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { Store } from '../models/store';
+import { StoreService } from './store.service';
+import { Injectable, Renderer2, RendererFactory2, OnInit } from '@angular/core';
+import { StoreDetails } from '../models/store-details';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available throughout the app
@@ -7,10 +8,13 @@ import { Store } from '../models/store';
 export class ThemeService {
   private renderer: Renderer2;
 
-  storeDetails: Store = new Store("KnittingNut", "#177E89", "#084C61", "#7A917A", "Cambria, Cochin", "#f0f0f0"); //Get via API
+  storeDetails: StoreDetails = new StoreDetails("0000", "knittingnut", "KnittingNut", "#0f5e16", "#88AA99", "#cafadb", "Cambria, Cochin", "#f6f6f6", "Explore Our Knitting Products!", "TEXT ABOUT THE STORE AND WHY IT IS AWHSUM"); //Get via API
 
-  constructor(rendererFactory: RendererFactory2) {
+  constructor(rendererFactory: RendererFactory2, private storeService: StoreService) {
     this.renderer = rendererFactory.createRenderer(null, null);
+    this.storeService.activeStore$.subscribe(s => {
+      this.storeDetails = s;
+    })
   }
 
   setThemeOne(elemClass: string) {

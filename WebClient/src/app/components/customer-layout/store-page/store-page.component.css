@@ -1,21 +1,187 @@
-        :root{
+/*         :root{
             --primaryColor: #2C2A1Faa;
             --textColor: #ffffff;
             --secondaryColor: #D3CEBB;
+        } */
+
+        #main{
+          /* background-color: var(--third-color); */
+          height: 300vh;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-start;
         }
 
+        #banner{
+          position: relative;
+          width: 100%;
+          height: 25vh;
+          border: 1px solid red;
+          background-color: white;
+        }
 
-       
-        #container{padding-bottom: 20px;padding-right: 5%;padding-left: 5%;height: 39vw}
-        #product{display:inline-block;vertical-align: top;margin:1.5% ; width: 30%; height: 100%}
-        #prodText{width:80%; font-size: 2vw; margin-top:2%;margin-bottom:2%;}
-        #btn{background-color: var(--primaryColor);border: none;color: var(--textColor);padding: 5% 18%;border-radius: 40px; font-size: 1vw}
-        #prodImg{object-fit: cover;width: 100%; height: 26vw}
-        img{object-fit: fill;width: 100%;height: 26vw}
-        #hero{background-image: url("hero.png"); width: 100%;height: 15vw;object-fit: fill; position: relative;}
-        #bubble{width: 87.5%;height: 12vw;border-radius: 50px;background: var(--primaryColor);margin-top: 50px;margin-bottom: 50px; }
-        #priceText{font-size: 1.4vw; margin-top: 0px;margin-bottom: 3%;}
-        #iconText{font-size: 1.6vw;width: 66%;display:inline-block;vertical-align: top;}
-        #heroBubble{width: 33%;border-radius: 50px;background: var(--primaryColor);margin-top: 2.3vw;display:inline-block;position: absolute; 
-            bottom: 25; left: 6.5%; word-wrap:break-word;}
-        #heroText{font-size: 2.5vw;width: 66%;display:inline-block;vertical-align: middle;color: var(--textColor); text-align: center;}
+        #banner-text{
+          position: absolute;
+          top: 25%;
+          left: 5%;
+          max-width: 25%;
+          height: 50%;
+
+          border: 1px solid black;
+          padding: 10px 20px;
+          border-radius: 25px;
+          font-size: 2.5rem;
+          font-weight: 600;
+          text-align: center;
+          /* opacity: 80%; */
+        }
+
+        #banner-text span{
+          width: 80%;
+        }
+
+        /* #logo-section *{
+          border: 1px solid red;
+        }
+ */
+        #logo-section{
+          width: 100vw;
+          height: 15vh;
+        }
+
+        #logo-container{
+          width: 58.5%;
+          height: calc(85% - 10px);
+          border: 1px solid black !important;
+          border-radius: 25px;
+          padding: 5px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        #logo-wrapper{
+          width: 30%;
+          height: 90%;
+        }
+
+        #logo-text-wrapper{
+          width: 70%;
+        }
+
+        #product-container{
+          padding-bottom: 20px;
+          padding-right: 5%;
+          padding-left: 5%;
+          width: 60%;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+          row-gap: 50px; /* Optional: adds space between items */
+          column-gap: 100px;
+          padding: 10px;
+        }
+
+        /* .product *{
+          border: 1px solid red;
+        } */
+
+        .product{
+          vertical-align: top;
+          margin: 1.5%;
+          width: 100%;
+          height: 100%;
+          padding: 15px;
+          border: 1px solid black;
+        }
+
+        .prodText{
+          width:100%;
+          text-wrap: wrap;
+          font-size: 1.5rem;
+          margin-top:2%;
+          margin-bottom:2%;
+          text-align: center;
+        }
+
+        .priceText{
+          font-size: 1.4rem;
+          margin-top: 0px;
+          margin-bottom: 3%;
+          text-align: center;
+        }
+
+        .add-btn{
+          background-color: var(--main-color);
+          border: none;
+          color: white;
+          padding: 5% 18%;
+          border-radius: 40px;
+          font-size: 1rem;
+          font-weight: bold;
+        }
+
+        .add-btn:hover{
+          cursor: pointer;
+        }
+
+        .prodImg{
+          object-fit: cover;
+          width: 100%;
+          height: auto;
+        }
+
+        img{
+          object-fit: fill;
+          width: 100%;
+          height: auto;
+        }
+
+        /* #hero{
+        background-image: url("hero.png");
+        width: 100%;
+        height: 15vw;
+        object-fit: fill;
+        position: relative;
+        } */
+
+        #bubble{
+          width: 87.5%;
+          height: 12vw;
+          border-radius: 50px;
+          background: var(--primaryColor);
+          margin-top: 50px;
+          margin-bottom: 50px;
+        }
+
+        .iconText{
+          font-size: 1.6vw;
+          width: 66%;
+          display:inline-block;
+          vertical-align: top;
+        }
+
+        #heroBubble{
+          width: 33%;
+          border-radius: 50px;
+          background: var(--primaryColor);
+          margin-top: 2.3vw;
+          display:inline-block;
+          position: absolute;
+          bottom: 25;
+          left: 6.5%;
+          word-wrap:break-word;
+        }
+
+        #heroText{
+          font-size: 2.5vw;
+          width: 66%;
+          display:inline-block;
+          vertical-align: middle;
+          color: var(--textColor);
+          text-align: center;
+
+          color: #f4f4d3;
+        }

@@ -9,8 +9,9 @@ namespace Server.Data
 
         public DbSet<TestItem> TestTable { get; set; }
         public DbSet<User> Users { get; set; }  // ✅ Add this line
-        
         public DbSet<ActiveUser> ActiveUsers { get; set; }  // ✅ Add this too
+       // public DbSet<Store> Stores { get; set; }
+        public DbSet<StoreDetails> StoreWithTheme { get; set; }
         public DbSet<Shopimy.Server.Models.Category> Categories { get; internal set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
 
@@ -59,7 +60,7 @@ namespace Server.Data
             });
 
 
-
+            modelBuilder.Entity<StoreDetails>().ToView("StoreWithTheme");
             modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
             modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
             modelBuilder.Entity<TestItem>().ToTable("TestTable");  
