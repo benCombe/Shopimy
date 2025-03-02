@@ -1,0 +1,16 @@
+<div class="logo-selector">
+    <h3>Choose Your Shop Logo</h3>
+    <input type="file" (change)="onFileSelected($event)" accept="image/*">
+    <div class="logo-preview" *ngIf="logoPreviewUrl; else currentLogo">
+      <h4>Preview:</h4>
+      <img [src]="logoPreviewUrl" alt="Logo Preview" />
+    </div>
+    <ng-template #currentLogo>
+      <div class="current-logo">
+        <h4>Current Logo:</h4>
+        <img [src]="storeDetails.LogoUrl" alt="Current Logo" />
+      </div>
+    </ng-template>
+    <button (click)="saveLogo()">Save Logo</button>
+  </div>
+  

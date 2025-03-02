@@ -17,6 +17,22 @@ export class ThemeService {
     })
   }
 
+  /**
+   * Applies the complete theme to a specific container element.
+   * @param theme - The complete theme object.
+   * @param containerSelector - A CSS selector for the container to update.
+   */
+  applyThemeToContainer(theme: StoreDetails, containerSelector: string): void {
+    const container = document.querySelector(containerSelector);
+    if (container) {
+      this.renderer.setStyle(container, '--main-color', theme.Theme_1);
+      this.renderer.setStyle(container, '--second-color', theme.Theme_2);
+      this.renderer.setStyle(container, '--third-color', theme.Theme_3);
+      this.renderer.setStyle(container, '--alt-color', theme.FontColor);
+      this.renderer.setStyle(container, '--main-font-fam', theme.FontFamily);
+    }
+  }
+
   setThemeOne(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
     elements.forEach((element) => {

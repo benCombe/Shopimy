@@ -11,7 +11,7 @@ export class StoreDetails {
   BannerText: string;
   LogoText: string;
 
-  Logo: undefined;
+  LogoUrl?: string;
   Banner: undefined;
 
   constructor(
@@ -37,6 +37,5 @@ export class StoreDetails {
     this.BannerText = BannerText;
     this.LogoText = LogoText;
   }
-
 
 }
