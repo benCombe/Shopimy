@@ -1,6 +1,6 @@
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { Store } from '../models/store';
-import { StoreTheme } from '../models/store-theme.model';
+import { StoreService } from './store.service';
+import { Injectable, Renderer2, RendererFactory2, OnInit } from '@angular/core';
+import { StoreDetails } from '../models/store-details';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available throughout the app
@@ -8,10 +8,13 @@ import { StoreTheme } from '../models/store-theme.model';
 export class ThemeService {
   private renderer: Renderer2;
 
-  storeDetails: Store = new Store("KnittingNut", "#177E89", "#084C61", "#7A917A", "Cambria, Cochin", "#f0f0f0"); //Get via API
+  storeDetails: StoreDetails = new StoreDetails("0000", "knittingnut", "KnittingNut", "#0f5e16", "#88AA99", "#cafadb", "Cambria, Cochin", "#f6f6f6", "Explore Our Knitting Products!", "TEXT ABOUT THE STORE AND WHY IT IS AWHSUM"); //Get via API
 
-  constructor(rendererFactory: RendererFactory2) {
+  constructor(rendererFactory: RendererFactory2, private storeService: StoreService) {
     this.renderer = rendererFactory.createRenderer(null, null);
+    this.storeService.activeStore$.subscribe(s => {
+      this.storeDetails = s;
+    })
   }
 
   /**
@@ -19,14 +22,14 @@ export class ThemeService {
    * @param theme - The complete theme object.
    * @param containerSelector - A CSS selector for the container to update.
    */
-  applyThemeToContainer(theme: StoreTheme, containerSelector: string): void {
+  applyThemeToContainer(theme: StoreDetails, containerSelector: string): void {
     const container = document.querySelector(containerSelector);
     if (container) {
-      this.renderer.setStyle(container, '--main-color', theme.mainColor);
-      this.renderer.setStyle(container, '--second-color', theme.secondColor);
-      this.renderer.setStyle(container, '--third-color', theme.thirdColor);
-      this.renderer.setStyle(container, '--alt-color', theme.altColor);
-      this.renderer.setStyle(container, '--main-font-fam', theme.mainFontFam);
+      this.renderer.setStyle(container, '--main-color', theme.Theme_1);
+      this.renderer.setStyle(container, '--second-color', theme.Theme_2);
+      this.renderer.setStyle(container, '--third-color', theme.Theme_3);
+      this.renderer.setStyle(container, '--alt-color', theme.FontColor);
+      this.renderer.setStyle(container, '--main-font-fam', theme.FontFamily);
     }
   }
 

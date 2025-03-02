@@ -2,7 +2,7 @@ import { ThemeService } from './../../../services/theme.service';
 import { AfterViewInit, Component } from '@angular/core';
 import { Item } from '../../../models/item';
 import { StoreNavComponent } from "../store-nav/store-nav.component";
-import { Store } from '../../../models/store';
+import { Store } from '../../../models/store-details';
 
 @Component({
   selector: 'app-shopping-cart',
