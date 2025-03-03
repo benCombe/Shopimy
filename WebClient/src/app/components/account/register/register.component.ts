@@ -4,10 +4,12 @@ import { TopNavComponent } from "../../top-nav/top-nav.component";
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RegistrationDetails } from '../../../models/registration-details';
+import { RouterLink, Router } from '@angular/router';
+import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-register',
-  imports: [TopNavComponent, NgIf, NgFor, FormsModule, NgClass],
+  imports: [TopNavComponent, NgIf, NgFor, FormsModule, NgClass, RouterLink],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -50,11 +52,11 @@ export class RegisterComponent {
   dataValid: boolean = false;
 
   countries = [
-    { value: 'us', label: 'United States' },
-    { value: 'ca', label: 'Canada' }
+    { value: 'US', label: 'United States' },
+    { value: 'CA', label: 'Canada' }
   ];
 
-  constructor(private userService: UserService){}
+  constructor(private userService: UserService, private router: Router, private loadingService: LoadingService){}
 
   ngOnInit() {
     //this.selectedCountry = this.countries[0].value;
@@ -142,13 +144,18 @@ export class RegisterComponent {
 
   register(): void{
     if(this.isFormValid()){
+      this.loadingService.setIsLoading(true);
       const user = new RegistrationDetails(this.firstname, this.lastname,
                                            this.email, this.phone,
-                                           this.concatAddr(), this.selectedCountry,
+                                           this.concatAddr(), this.selectedCountry.toUpperCase(),
                                            this.dob, this.password, this.subscribed);
 
       this.userService.register(user).subscribe({
-        next: () => console.log('Registration Successful, Logging in...'),
+        next: () => {
+          console.log('Registration Successful, Logging in...'),
+          this.router.navigate(['/dashboard']);
+          this.loadingService.setIsLoading(false);
+        },
         error: err => console.error("Registartion Failed", err)
       });
     }

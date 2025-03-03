@@ -1,0 +1,95 @@
+/* #main{
+  position: relative;
+  width: 100vw;
+  height: 5vh;
+  padding: 2rem;
+}
+
+#store-name{
+  font-size: 2.8rem;
+  max-width: 500px;
+  background-color: none;
+}
+
+#categories{
+  float: right;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  max-width: 50%;
+  margin-top: 10px;
+}
+
+.cat{
+  text-align: center;
+  margin-left: 30px;
+  font-weight: bold;
+}
+ */
+
+
+ #main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures store name is on the left */
+  position: relative;
+  width: 100vw;
+  height: 5vh;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+#store-name {
+  font-size: 2.8rem;
+  max-width: 500px;
+  white-space: nowrap; /* Prevents breaking into multiple lines */
+}
+
+#categories-wrapper{
+  margin-right: 100px;
+  display: flex;
+  align-items: flex-end;
+}
+
+#categories {
+  /* margin-right: 50px; */
+  display: flex;
+  flex-direction: row-reverse; /* Makes the items align right & grow leftward */
+  align-items: flex-end;
+  justify-content: flex-end; /* Ensures right alignment */
+  height: 100px;
+  width: auto; /* Expands as needed */
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cat {
+  margin-right: 45px; /* Moves elements leftward instead of rightward */
+  font-size: 1.5rem;
+  font-weight: bold;
+  white-space: nowrap;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.cat:hover{
+  cursor: pointer;
+}
+
+
+#cart-btn-wrapper{
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+#cart-btn{
+  height: 50px;
+  width: 50px;
+  font-size: 2.5rem;
+}
+
+#cart-btn:hover{
+  cursor: pointer;
+}

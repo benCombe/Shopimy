@@ -9,6 +9,8 @@ export class Item {
   AvailFrom: Date;
   AvailTo: Date;
   CurrentRating: number;
+  CategoryIds: number[];
+  ImageUrl?: string;  // Added property
 
   constructor(data: {
     Name: string;
@@ -21,6 +23,8 @@ export class Item {
     AvailFrom: Date | string;
     AvailTo: Date | string;
     CurrentRating: number;
+    CategoryIds: number[];
+    ImageUrl?: string; // Optional
   }) {
     this.Name = data.Name;
     this.Id = data.Id;
@@ -32,5 +36,7 @@ export class Item {
     this.AvailFrom = new Date(data.AvailFrom);
     this.AvailTo = new Date(data.AvailTo);
     this.CurrentRating = data.CurrentRating;
+    this.CategoryIds = data.CategoryIds;
+    this.ImageUrl = data.ImageUrl;
   }
 }

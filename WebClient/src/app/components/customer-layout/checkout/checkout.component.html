@@ -1,0 +1,131 @@
+<div id="container">
+  <app-store-nav></app-store-nav>
+  <div id="main" class="theme3">
+    <div class="checkout-container theme2">
+      <!-- Step Indicator -->
+      <div class="steps">
+        <button [class.theme1]="currentStep === 1" [class.active]="currentStep === 1">1. Shipping</button>
+        <button [class.theme1]="currentStep === 2" [class.active]="currentStep === 2">2. Payment</button>
+        <button [class.theme1]="currentStep === 3" [class.active]="currentStep === 3">3. Review</button>
+      </div>
+
+      <!-- Step 1: Shipping Details -->
+      <div *ngIf="currentStep === 1">
+        <h2>Shipping Details</h2>
+        <form [formGroup]="shippingForm">
+          <div class="form-row">
+            <label class="fc">First Name:</label>
+            <input type="text" formControlName="firstName">
+          </div>
+
+          <div class="form-row">
+            <label class="fc">Last Name:</label>
+            <input type="text" formControlName="lastName">
+          </div>
+
+          <div class="form-row">
+            <label class="fc">Address:</label>
+            <input type="text" formControlName="address">
+          </div>
+
+          <div class="form-row">
+            <label class="fc">City:</label>
+            <input type="text" formControlName="city">
+          </div>
+
+          <div class="form-row">
+            <label class="fc">Province/State:</label>
+            <input type="text" formControlName="province">
+          </div>
+
+          <div class="form-row">
+            <label class="fc">Country:</label>
+            <input type="text" formControlName="country">
+          </div>
+
+          <div class="form-row">
+            <label class="fc">Zip/Postal Code:</label>
+            <input type="text" formControlName="postalCode">
+          </div>
+
+          <div class="form-row">
+            <label class="fc">Email:</label>
+            <input type="email" formControlName="email">
+          </div>
+
+          <div class="form-row">
+            <label class="fc">Phone:</label>
+            <input type="text" formControlName="phone">
+          </div>
+        </form>
+        <button (click)="nextStep()" [disabled]="!shippingForm.valid">Proceed To Payment</button>
+      </div>
+
+      <!-- Step 2: Payment Details -->
+      <div *ngIf="currentStep === 2">
+        <h2>Payment Details</h2>
+        <form [formGroup]="paymentForm">
+          <div class="form-row">
+            <label>Card Number:</label>
+            <input type="text" formControlName="cardNumber">
+          </div>
+
+          <div class="form-row">
+            <label>Expiration:</label>
+            <input type="text" formControlName="expiration">
+          </div>
+
+          <div class="form-row">
+            <label>CVV:</label>
+            <input type="text" formControlName="cvv">
+          </div>
+        </form>
+        <button (click)="previousStep()">Back</button>
+        <button (click)="nextStep()" [disabled]="!paymentForm.valid">Next</button>
+      </div>
+
+      <!-- Step 3: Review & Submit -->
+      <div *ngIf="currentStep === 3">
+        <h2>Review Your Order</h2>
+        <p><strong>Name:</strong> {{ shippingForm.value.firstName }} {{ shippingForm.value.lastName }}</p>
+        <p><strong>Address:</strong> {{ shippingForm.value.address }}, {{ shippingForm.value.city }}, {{ shippingForm.value.province }}, {{ shippingForm.value.country }} - {{ shippingForm.value.postalCode }}</p>
+        <p><strong>Email:</strong> {{ shippingForm.value.email }}</p>
+        <p><strong>Phone:</strong> {{ shippingForm.value.phone }}</p>
+        <p><strong>Payment Card:</strong> **** **** **** {{ paymentForm.value.cardNumber?.slice(-4) }}</p>
+
+        <button (click)="previousStep()">Back</button>
+        <button (click)="submitOrder()">Submit Order</button>
+      </div>
+    </div>
+
+    <div id="order-summary-container">
+      <div id="order-summary" class="theme2">
+        <h2>Order Summary</h2>
+        <div id="summary-item-container" class="center-col">
+          <div class="summary-item center-spaced fc">
+            <span>Deliver to me (2)</span>
+            <span>$258.50</span>
+          </div>
+          <div class="summary-item center-spaced fc">
+            <span>Shipping Estimate</span>
+            <span>FREE</span>
+          </div>
+          <div class="summary-item center-spaced fc">
+            <span>Taxes estimate</span>
+            <span>$33.60</span>
+          </div>
+          <div id="total" class="summary-item center-spaced fc">
+            <span>Total estimate</span>
+            <span>$292.10</span>
+          </div>
+        </div>
+        <div id="checkout-opt" class="center-col">
+          <div id="checkout-btn" class="center theme1 fc hover">Checkout</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+

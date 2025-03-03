@@ -1,1 +1,101 @@
-<p>store-page works!</p>
+<div id="container">
+  <app-store-nav></app-store-nav>
+  <div id="main" class="theme3">
+      <!-- <div id="hero">
+          <div id="heroBubble">
+            <p id="heroText">Explore our knitting products!</p>
+          </div>
+      </div>
+      <div id="bubble">
+        <div style="width: 33%; height: 100%;display:inline-block;">
+          <img src="sweater.jpg" style="width: 12vw; height: 100%;">
+        </div>
+        <div id="iconText">
+          <p>This would probably be a blurb about the business or something like that</p>
+        </div>
+      </div> -->
+      <div id="banner" class="theme2">
+        <div id="banner-text" class="center theme1 fc">
+          <span>Explore Our Knitting Products!</span>
+        </div>
+      </div>
+      <div id="logo-section" class="center">
+        <div id="logo-container" class="theme1 fc">
+          <div id="logo-wrapper">
+            <img alt="store-logo">
+          </div>
+          <div id="logo-text-wrapper" class="center">
+            <h2 id="logo-text">TEXT ABOUT THE STORE AND WHY IT IS AWHSUM</h2>
+          </div>
+        </div>
+      </div>
+      <div id="product-container">
+        <div *ngFor="let num of arrayRange(9); let i = index" class="product">
+          <img class="prdImg" src="sweater.jpg" width="209" height="300">
+          <h3 class="prodText">Joni sweater (digital pattern)</h3>
+          <p class="priceText">$19.99</p>
+          <div class="btn-wrapper center">
+            <button class="add-btn hover theme1">Add to Cart</button>
+          </div>
+        </div>
+          <!--  <div id="product">
+              <img id="prdImg"src="sweater.jpg" width="209" height="300">
+              <h3 id="prodText">Joni sweater (digital pattern)</h3>
+              <p id="priceText">$19.99</p>
+              <button id="btn">Add to bag</button>
+          </div>
+          <div id="product">
+              <img id="prdImg"src="sweater.jpg" width="209" height="300">
+              <h3 id="prodText">Joni sweater (digital pattern)</h3>
+              <p id="priceText">$19.99</p>
+              <button id="btn">Add to bag</button>
+          </div>
+          <div id="product">
+              <img id="prdImg"src="sweater.jpg" width="209" height="300">
+              <h3 id="prodText">Joni sweater (digital pattern)</h3>
+              <p id="priceText">$19.99</p>
+              <button id="btn">Add to bag</button>
+          </div>
+      </div>
+      <div id="container">
+          <div id="product">
+              <img id="prdImg"src="sweater.jpg" width="209" height="300">
+              <h3 id="prodText">Joni sweater (digital pattern)</h3>
+              <p id="priceText">$19.99</p>
+              <button id="btn">Add to bag</button>
+          </div>
+          <div id="product">
+              <img id="prdImg"src="sweater.jpg" width="209" height="300">
+              <h3 id="prodText">Joni sweater (digital pattern)</h3>
+              <p id="priceText">$19.99</p>
+              <button id="btn">Add to bag</button>
+          </div>
+          <div id="product">
+              <img id="prdImg"src="sweater.jpg" width="209" height="300">
+              <h3 id="prodText">Joni sweater (digital pattern)</h3>
+              <p id="priceText">$19.99</p>
+              <button id="btn">Add to bag</button>
+          </div>
+      </div>
+      <div id="container">
+          <div id="product">
+              <img id="prdImg"src="sweater.jpg" width="209" height="300">
+              <h3 id="prodText">Joni sweater (digital pattern)</h3>
+              <p id="priceText">$19.99</p>
+              <button id="btn">Add to bag</button>
+          </div>
+          <div id="product">
+              <img id="prdImg"src="sweater.jpg" width="209" height="300">
+              <h3 id="prodText">Joni sweater (digital pattern)</h3>
+              <p id="priceText">$19.99</p>
+              <button id="btn">Add to bag</button>
+          </div>
+          <div id="product">
+              <img id="prdImg"src="sweater.jpg" width="209" height="300">
+              <h3 id="prodText">Joni sweater (digital pattern)</h3>
+              <p id="priceText">$19.99</p>
+              <button id="btn">Add to bag</button>
+          </div> -->
+      </div>
+  </div>
+</div>
