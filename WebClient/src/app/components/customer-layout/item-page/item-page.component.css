@@ -1,4 +1,13 @@
-      #TopHalf{margin-top: 5vw}
+        #main{background-color: #D3CEBB;
+            position:fixed;
+            padding:0;
+            margin:0;
+            top:0;
+            left:0;
+            width: 100%;
+            height: 100%;}
+        
+        #TopHalf{margin-top: 5vw}
 
         #leftPics{width:15%;}
 
