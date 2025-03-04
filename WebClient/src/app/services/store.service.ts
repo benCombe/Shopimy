@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { Item } from '../models/item'; // Assume you have this model
 import { StoreDetails } from '../models/store-details';
 import { Category } from '../models/category';
@@ -26,7 +26,7 @@ export class StoreService {
   private categoryBaseUrl = '/api/categories';
 
 
-  activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails("0000","knittingnut", "KnittingNut",  //Default Store (for testing/etc.)
+  activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0,"knittingnut", "KnittingNut",  //Default Store (for testing/etc.)
                                                                                         "#0f5e16",
                                                                                         "#88AA99",
                                                                                         "#cafadb",
@@ -38,17 +38,32 @@ export class StoreService {
 
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
-
-  activeStoreCategorySubject: BehaviorSubject<Category[]> = new BehaviorSubject<Category[]>([]);
-  activeStoreCategory$: Observable<Category[]> = this.activeStoreCategorySubject.asObservable();
-
   constructor(private http: HttpClient) { }
 
-  getStoreDetails(url: string): Observable<Response>{
-    return this.http.get<Response>(`${this.apiUrl}/${url}`).pipe(
-      tap((resp) => {
-        this.activeStoreSubject.next(resp.details);
-        this.activeStoreCategorySubject.next(resp.categories);
+  getStoreDetails(url: string): Observable<StoreDetails>{
+    return this.http.get<StoreDetails>(`${this.apiUrl}/${url}`).pipe(
+      map((resp) => {
+        return new StoreDetails(
+          resp.id, // Ensure ID is a string
+          resp.url,
+          resp.name,
+          resp.theme_1,
+          resp.theme_2,
+          resp.theme_3,
+          resp.fontColor,
+          resp.fontFamily,
+          resp.bannerText,
+          resp.logoText,
+          resp.categories.map(cat =>
+            new Category(cat.categoryId, cat.storeId, cat.name, cat.parentCategory)
+          )
+        );
+
+      }),
+      tap((storeDetails) => {
+        this.activeStoreSubject.next(storeDetails);
+        console.log("Mapped StoreDetails:", storeDetails);
+        console.log(storeDetails);
       }),
       catchError((error) => {
         console.error('Error fetching store details:', error);

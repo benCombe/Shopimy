@@ -33,7 +33,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
       if (storeUrl) {
         this.storeService.getStoreDetails(storeUrl).subscribe({
           next: (data) => {
-            this.storeData = data.details;
+            this.storeData = data;
           },
           error: (err) => console.error('Failed to load store:', err)
         });

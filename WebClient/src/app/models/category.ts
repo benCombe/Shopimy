@@ -1,20 +1,23 @@
 export class Category {
 
-  CategoryId: number;
-  StoreId: number;
-  Name: string;
-  ParentCategory: number | null;
+  categoryId: number;
+  storeId: number;
+  name: string;
+  parentCategory: number | null;
+
+  subCategories: Category[];
 
   constructor(
-    CategoryId: number,
-    StoreId: number,
-    Name: string,
-    ParentCategory: number | null
+    categoryId: number,
+    storeId: number,
+    name: string,
+    parentCategory: number | null
   ){
-    this.CategoryId = CategoryId;
-    this.StoreId = StoreId;
-    this.Name = Name;
-    this.ParentCategory = ParentCategory;
+    this.categoryId = categoryId;
+    this.storeId = storeId;
+    this.name = name;
+    this.parentCategory = parentCategory;
+    this.subCategories = [];
   }
 
 }
