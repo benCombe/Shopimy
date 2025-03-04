@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Item } from '../../models/item';
@@ -12,6 +12,7 @@ import { StoreService } from '../../services/store.service'; // or your item ser
   imports: [CommonModule]
 })
 export class ItemDetailComponent implements OnInit {
+
   item: Item | null = null;
   itemId!: string;
 
@@ -23,7 +24,7 @@ export class ItemDetailComponent implements OnInit {
   ngOnInit(): void {
     // Extract the ID from the route parameters
     this.itemId = this.route.snapshot.paramMap.get('id')!;
-    
+
     // Fetch the item from your service
     // If your service returns an observable, subscribe to it
     this.storeService.getItemById(this.itemId).subscribe((data: Item) => {
@@ -45,5 +46,5 @@ export class ItemDetailComponent implements OnInit {
       return this.item.ImageUrl;
     }
     return 'assets/images/default.png';
-  }  
+  }
 }

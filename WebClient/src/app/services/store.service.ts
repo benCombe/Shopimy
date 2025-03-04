@@ -1,13 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
 import { Item } from '../models/item'; // Assume you have this model
 import { StoreDetails } from '../models/store-details';
+import { Category } from '../models/category';
+import { environment } from '../../environments/environment';
+
+
+interface Response{
+  details: StoreDetails;
+  categories: Category[];
+}
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
+  private apiUrl = `${environment.apiUrl}/store`;
+
   // Base URL for the items endpoint; update if your API uses a different route.
   private itemBaseUrl = '/api/items';
   // Example base URL for the categories endpoint.
@@ -21,15 +33,28 @@ export class StoreService {
                                                                                         "Cambria, Cochin",
                                                                                         "#f6f6f6",
                                                                                         "Explore Our Knitting Products!",
-                                                                                        "TEXT ABOUT THE STORE AND WHY IT IS AWHSUM"));
+                                                                                        "TEXT ABOUT THE STORE AND WHY IT IS AWHSUM",
+                                                                                        []));
 
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
+
+  activeStoreCategorySubject: BehaviorSubject<Category[]> = new BehaviorSubject<Category[]>([]);
+  activeStoreCategory$: Observable<Category[]> = this.activeStoreCategorySubject.asObservable();
+
   constructor(private http: HttpClient) { }
 
-  getStoreDetails(url: string){
-    //get store details from database (name, themes, etc)'
-    //set active store
+  getStoreDetails(url: string): Observable<Response>{
+    return this.http.get<Response>(`${this.apiUrl}/${url}`).pipe(
+      tap((resp) => {
+        this.activeStoreSubject.next(resp.details);
+        this.activeStoreCategorySubject.next(resp.categories);
+      }),
+      catchError((error) => {
+        console.error('Error fetching store details:', error);
+        return throwError(() => new Error('Failed to fetch store details.'));
+      })
+    );
   }
 
 

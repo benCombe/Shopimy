@@ -1,8 +1,11 @@
 import { NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { ThemeService } from '../../../services/theme.service';
 import { StoreService } from '../../../services/store.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { StoreDetails } from '../../../models/store-details';
+import { Category } from '../../../models/category';
 
 @Component({
   selector: 'app-store-page',
@@ -11,10 +14,32 @@ import { StoreService } from '../../../services/store.service';
   styleUrl: './store-page.component.css'
 })
 
-export class StorePageComponent implements AfterViewInit {
+export class StorePageComponent implements AfterViewInit, OnInit{
+
+  storeData: StoreDetails | null = null;
+
+  constructor(
+    private route:ActivatedRoute,
+    private router: Router,
+    private themeService: ThemeService,
+    private storeService: StoreService
+  ){}
 
 
-  constructor(private themeService: ThemeService, private storeService: StoreService){}
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const storeUrl = params.get('storeUrl'); // Use 'storeUrl' as defined in routes
+      console.log("Fetching for "+storeUrl);
+      if (storeUrl) {
+        this.storeService.getStoreDetails(storeUrl).subscribe({
+          next: (data) => {
+            this.storeData = data.details;
+          },
+          error: (err) => console.error('Failed to load store:', err)
+        });
+      }
+    });
+  }
 
 
   ngAfterViewInit(): void {
