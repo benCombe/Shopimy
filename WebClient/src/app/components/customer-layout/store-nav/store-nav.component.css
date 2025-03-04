@@ -36,7 +36,8 @@
   width: 100vw;
   height: 5vh;
   padding: 2rem;
-  overflow: hidden;
+/*   overflow: hidden; */
+  z-index: 1000;
 }
 
 #store-name {
@@ -60,11 +61,16 @@
   height: 100px;
   width: auto; /* Expands as needed */
   max-width: 100%;
-  overflow: hidden;
+  z-index: 1000;
+}
+
+.cat-wrapper {
+  position: relative; /* Ensures dropdown is positioned relative to the parent category */
+  display: inline-block;
 }
 
 .cat {
-  margin-right: 45px; /* Moves elements leftward instead of rightward */
+  margin-right: 100px; /* Moves elements leftward instead of rightward */
   font-size: 1.5rem;
   font-weight: bold;
   white-space: nowrap;
@@ -75,6 +81,37 @@
 .cat:hover{
   cursor: pointer;
 }
+
+.dropdown {
+  display: none; /* Initially hidden */
+  position: absolute;
+  top: 110%;
+  left: -20px;
+  background-color: grey; /* FIX THIS */
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  min-width: 125px;
+  z-index: 1000;
+}
+
+.sub-cat {
+  display: block;
+  padding: 10px;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.sub-cat:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+/* Show dropdown when hovering over parent category */
+.cat-wrapper:hover .dropdown {
+  display: block;
+}
+
 
 
 #cart-btn-wrapper{
