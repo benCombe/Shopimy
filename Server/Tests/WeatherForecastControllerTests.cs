@@ -9,4 +9,4 @@ public class WeatherForecastControllerTests
         var response = await client.GetAsync("/weatherforecast");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
-}
+} //updating to test git
