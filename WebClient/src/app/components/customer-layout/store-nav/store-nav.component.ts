@@ -14,7 +14,7 @@ import { StoreService } from '../../../services/store.service';
 export class StoreNavComponent implements AfterViewInit, OnInit{
 
 
-  storeDetails: StoreDetails = new StoreDetails("0000", "default", "DEFAULT", "#000000", "#565656", "#121212", "Cambria, Cochin", "#f6f6f6", "BLANK", "BLANK"); //Use  Store/Theme services here
+  storeDetails: StoreDetails = new StoreDetails("0000", "default", "DEFAULT", "#000000", "#565656", "#121212", "Cambria, Cochin", "#f6f6f6", "BLANK", "BLANK", []); //Use  Store/Theme services here
   tempCategories: string[] = ["Clothing", "Materials", "Other"].reverse();
 
 

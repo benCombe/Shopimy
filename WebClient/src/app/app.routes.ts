@@ -10,6 +10,8 @@ import { ItemListComponent } from './components/item-list/item-list.component';
 import { CategoryListComponent } from './components/category-list/category-list.component';
 import { ItemDetailComponent } from './components/item-detail/item-detail.component'; // Ensure this path is correct
 import { StorePageComponent } from './components/customer-layout/store-page/store-page.component';
+import { CategoryPageComponent } from './components/customer-layout/category-page/category-page.component';
+import { ItemPageComponent } from './components/customer-layout/item-page/item-page.component';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
@@ -18,13 +20,22 @@ export const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent},
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: StoreOwnerDashboardComponent },
-  { path: 'cart', component: ShoppingCartComponent},
-  { path: 'checkout', component: CheckoutComponent},
   { path: 'items', component: ItemListComponent },
   { path: 'items/:id', component: ItemDetailComponent },
   { path: 'categories', component: CategoryListComponent},
-  { path: 'store', component: StorePageComponent},
-  { path: '**', redirectTo: '/home' }
+
+  {
+    path: ':storeUrl',
+    component: StorePageComponent,
+    children: [
+      { path: '', component: CategoryPageComponent }, // Default category page (store homepage)
+      { path: 'cart', component: ShoppingCartComponent },
+      { path: 'checkout', component: CheckoutComponent },
+      { path: ':category', component: CategoryPageComponent },
+      { path: ':category/:itemId', component: ItemPageComponent }
+    ]
+  },
+  { path: '**', redirectTo: '/' } // Handle unknown routes
 
 ];
 

@@ -1,3 +1,4 @@
+import { Category } from "./category";
 
 export class StoreDetails {
   Id: string;
@@ -10,7 +11,7 @@ export class StoreDetails {
   FontColor: string;
   BannerText: string;
   LogoText: string;
-
+  Categories: Category[];
   LogoUrl?: string;
   Banner: undefined;
 
@@ -25,6 +26,7 @@ export class StoreDetails {
     FontColor: string,
     BannerText: string,
     LogoText: string,
+    Categories: Category[]
   ){
     this.Id = Id;
     this.URL = URL;
@@ -36,6 +38,7 @@ export class StoreDetails {
     this.FontColor = FontColor;
     this.BannerText = BannerText;
     this.LogoText = LogoText;
+    this.Categories = Categories;
   }
 
 }

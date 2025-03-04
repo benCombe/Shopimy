@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
 })
 export class ItemCardComponent {
   @Input() item!: Item;
-  
+
   addToBasket(item: Item) {
     console.log('Adding to basket:', item);
     // Your add-to-basket logic here
