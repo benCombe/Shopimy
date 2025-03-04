@@ -8,7 +8,11 @@ import { StoreDetails } from '../models/store-details';
 export class ThemeService {
   private renderer: Renderer2;
 
+<<<<<<< HEAD
   storeDetails: StoreDetails = new StoreDetails("0000", "knittingnut", "KnittingNut", "#0f5e16", "#88AA99", "#cafadb", "Cambria, Cochin", "#f6f6f6", "Explore Our Knitting Products!", "TEXT ABOUT THE STORE AND WHY IT IS AWHSUM", []); //Get via API
+=======
+  storeDetails: StoreDetails = new StoreDetails(0, "knittingnut", "KnittingNut", "#393727", "#D0933D", "#d5d5d5", "Cambria, Cochin", "#f6f6f6", "Explore Our Knitting Products!", "TEXT ABOUT THE STORE AND WHY IT IS AWHSUM", []); //Get via API
+>>>>>>> staging
 
   constructor(rendererFactory: RendererFactory2, private storeService: StoreService) {
     this.renderer = rendererFactory.createRenderer(null, null);
@@ -22,28 +26,28 @@ export class ThemeService {
    * @param theme - The complete theme object.
    * @param containerSelector - A CSS selector for the container to update.
    */
-  applyThemeToContainer(theme: StoreDetails, containerSelector: string): void {
+  /* applyThemeToContainer(theme: StoreDetails, containerSelector: string): void {
     const container = document.querySelector(containerSelector);
     if (container) {
-      this.renderer.setStyle(container, '--main-color', theme.Theme_1);
-      this.renderer.setStyle(container, '--second-color', theme.Theme_2);
-      this.renderer.setStyle(container, '--third-color', theme.Theme_3);
-      this.renderer.setStyle(container, '--alt-color', theme.FontColor);
-      this.renderer.setStyle(container, '--main-font-fam', theme.FontFamily);
+      this.renderer.setStyle(container, '--main-color', theme.theme_1);
+      this.renderer.setStyle(container, '--second-color', theme.theme_2);
+      this.renderer.setStyle(container, '--third-color', theme.theme_3);
+      this.renderer.setStyle(container, '--alt-color', theme.fontColor);
+      this.renderer.setStyle(container, '--main-font-fam', theme.fontFamily);
     }
-  }
+  } */
 
   setThemeOne(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
     elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.Theme_1);
+      this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.theme_1);
     });
   }
 
   setThemeTwo(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
     elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.Theme_2);
+      this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.theme_2);
     });
   }
 
@@ -51,7 +55,7 @@ export class ThemeService {
   setThemeThree(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
     elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.Theme_3);
+      this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.theme_3);
     });
   }
 
@@ -59,14 +63,14 @@ export class ThemeService {
   setFontColor(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
     elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'color', this.storeDetails.FontColor);
+      this.renderer.setStyle(element as HTMLElement, 'color', this.storeDetails.fontColor);
     });
   }
 
   setFontFamily(element: string) {
     const elements = document.querySelectorAll(`${element}`);
     elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'font-family', this.storeDetails.FontFamily);
+      this.renderer.setStyle(element as HTMLElement, 'font-family', this.storeDetails.fontFamily);
     });
   }
 
