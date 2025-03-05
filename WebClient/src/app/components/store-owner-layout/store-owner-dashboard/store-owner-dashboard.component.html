@@ -6,7 +6,6 @@
       <app-overview></app-overview>
     </div>
     <div *ngIf="currentPage === 'Profile'" id="profile" class="page">
-      <div>{{user?.FirstName + " " + user?.LastName}}</div>
       <app-profile [user]="user"></app-profile>
     </div>
     <div *ngIf="currentPage === 'Settings'" id="settings" class="page">

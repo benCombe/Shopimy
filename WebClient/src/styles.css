@@ -18,6 +18,14 @@ html, body {
   width: 100%;
   overflow-x: hidden; /* Prevents horizontal scrolling */
   overflow-y: auto;
+  color: var(--main-color);
+  background-color: var(--alt-color);
+  font-family: var(--main-font-fam)
+}
+
+.btn{
+  background-color: var(--main-color);
+  border-color: var(--main-color);
 }
 
 .center{

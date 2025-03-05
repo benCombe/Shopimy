@@ -1,7 +1,5 @@
-<!-- File: item-list.component.html -->
 <div class="item-list">
-  <app-item-card
-    *ngFor="let item of items"
-    [item]="item">
-  </app-item-card>
+  <div *ngFor="let item of items" class="item-wrapper">
+    <app-item-card [itemId]="item.Id"></app-item-card>
+  </div>
 </div>

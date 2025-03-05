@@ -8,14 +8,14 @@ import { TopNavComponent } from '../top-nav/top-nav.component';
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
-  standalone: true,  // Declare as standalone
-  imports: [CommonModule, ItemCardComponent, RouterModule, TopNavComponent]  // Import ItemCardComponent here
+  standalone: true,
+  imports: [CommonModule, RouterModule, ItemCardComponent, TopNavComponent]
 })
 export class ItemListComponent implements OnInit {
   items: Item[] = [];
 
   ngOnInit(): void {
-    // Example dummy item:
+    // Replace this with an API call via ItemService when ready.
     this.items = [
       new Item({
         Name: 'Joni Sweater (digital pattern)',
@@ -28,7 +28,8 @@ export class ItemListComponent implements OnInit {
         AvailFrom: '2025-02-01',
         AvailTo: '2025-12-31',
         CurrentRating: 4.5,
-        CategoryIds: [101, 102]
+        CategoryIds: [101, 102],
+        ImageUrl: 'assets/images/default.png'
       })
     ];
   }

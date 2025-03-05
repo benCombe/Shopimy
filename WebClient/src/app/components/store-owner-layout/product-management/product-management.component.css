@@ -72,12 +72,18 @@
     height: 20px;
     vertical-align: top;
   }
+
   
   #Product-list th{
+  }
+
+  #analytic-list th{
+
     font-size: 1.2rem;
     color: black;
     border-bottom: 2px solid black;
   }
+
   
   #Product-list tr{
     height: 20px;
@@ -85,6 +91,16 @@
   }
   
   #Product-list td{
+    
+  }
+
+  #analytic-list tr{
+    height: 20px;
+    border-bottom: 1px dashed black;
+  }
+
+  #analytic-list td{
+    
     text-align: center;
     font-size: 1rem;
     color: black;
@@ -108,9 +124,6 @@
     grid-row-start: 1;
     grid-row-end: 1;
 }
-
-
-
 
 
 

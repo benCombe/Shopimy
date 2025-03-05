@@ -1,9 +1,9 @@
 <div id="container">
   <app-store-nav></app-store-nav>
-  <div id="main" class="theme3">
+  <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3">
     <h2>Your Basket</h2>
     <div id="basket">
-      <div id="cart-items-container">
+      <div id="cart-items-container" class="theme2" [style.background-color]="storeDetails?.theme_2">
         <!-- DO THIS DYNAMICALLY -->
 
         <div class="cart-item">

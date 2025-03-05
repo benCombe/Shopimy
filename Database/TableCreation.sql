@@ -25,6 +25,7 @@ CREATE TABLE Stores (
     store_id INT IDENTITY(10000001,1) PRIMARY KEY,
     owner INT NOT NULL,
     name NVARCHAR(100) UNIQUE NOT NULL,
+    store_url varchar(100) UNIQUE NOT NULL,
     FOREIGN KEY (owner) REFERENCES Users(id) ON DELETE CASCADE
 );
 
@@ -34,7 +35,9 @@ CREATE TABLE StoreThemes (
     theme_colour2 NVARCHAR(7) NOT NULL,
     theme_colour3 NVARCHAR(7) NOT NULL,
     font_colour NVARCHAR(7) NOT NULL,
-    font_family NVARCHAR(50) NOT NULL,
+    font_family VARCHAR(200) NOT NULL,
+    banner_text varchar(50),
+    logo_text varchar(50),
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE
 );
 
