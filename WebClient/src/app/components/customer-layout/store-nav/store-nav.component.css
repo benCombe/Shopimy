@@ -50,6 +50,7 @@
   margin-right: 100px;
   display: flex;
   align-items: flex-end;
+  padding-bottom: 20px;
 }
 
 #categories {
@@ -129,4 +130,22 @@
 
 #cart-btn:hover{
   cursor: pointer;
+}
+
+
+@media only screen and (max-width: 1200px) {
+
+  .cat {
+    margin-right: 50px; /* Moves elements leftward instead of rightward */
+    font-size: 1rem;
+    
+  }
+
+  #categories{
+    margin-bottom: 10px;
+  }
+
+  .dropdown{
+    left: -25px;
+  }
 }
