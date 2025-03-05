@@ -26,15 +26,7 @@ export class StoreService {
   private categoryBaseUrl = '/api/categories';
 
 
-  activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0,"knittingnut", "KnittingNut",  //Default Store (for testing/etc.)
-                                                                                        "#0f5e16",
-                                                                                        "#88AA99",
-                                                                                        "#cafadb",
-                                                                                        "Cambria, Cochin",
-                                                                                        "#f6f6f6",
-                                                                                        "Explore Our Knitting Products!",
-                                                                                        "TEXT ABOUT THE STORE AND WHY IT IS AWHSUM",
-                                                                                        []));
+  activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []));
 
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
