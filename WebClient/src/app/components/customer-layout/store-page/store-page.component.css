@@ -123,3 +123,25 @@
           width: 100%;
           height: auto;
         }
+
+
+@media only screen and (max-width: 1200px) {
+  #banner-text{
+    font-size: 1.5rem;
+  }
+
+  #logo-container{
+    width: 80%;
+  }
+
+  #logo-text{
+    font-size: 1.2rem;
+  }
+
+
+
+  #product-container{
+    width: 90%;
+    column-gap: 50px;
+  }
+}
