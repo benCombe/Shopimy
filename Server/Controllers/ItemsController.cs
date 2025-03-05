@@ -19,6 +19,7 @@ public class ItemsController : ControllerBase
     [HttpPut("{id}/stock")]
     public async Task<IActionResult> UpdateStock(string id, [FromBody] UpdateStockDTO dto)
     {
+
         if (dto.QuantityInStock < 0)
         {
             return BadRequest("Stock level cannot be negative.");
@@ -30,6 +31,9 @@ public class ItemsController : ControllerBase
             return NotFound();
         }
 
+        // Update the stock level
+        item.QuantityInStock = dto.QuantityInStock;
+        await _itemRepository.UpdateItemAsync(item);
         try
         {
             item.QuantityInStock = dto.QuantityInStock;
