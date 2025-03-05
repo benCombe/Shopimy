@@ -28,7 +28,6 @@ export const appRoutes: Routes = [
     path: ':storeUrl',
     component: StorePageComponent,
     children: [
-      { path: '', component: CategoryPageComponent }, // Default category page (store homepage)
       { path: 'cart', component: ShoppingCartComponent },
       { path: 'checkout', component: CheckoutComponent },
       { path: ':category', component: CategoryPageComponent },

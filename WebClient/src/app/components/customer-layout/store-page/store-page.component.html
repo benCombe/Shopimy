@@ -2,12 +2,12 @@
   <app-store-nav></app-store-nav>
   <div id="main" [style.background-color]="storeData?.theme_3">
       <div id="banner" class="theme2">
-        <div id="banner-text" class="center theme1 fc" >
+        <div id="banner-text" class="center theme1 fc" [style.background-color]="storeData?.theme_1">
           <span [style.color]="storeData?.fontColor">{{storeData?.bannerText}}</span>
         </div>
       </div>
       <div id="logo-section" class="center">
-        <div id="logo-container" class="theme1 fc">
+        <div id="logo-container" class="theme1 fc" [style.background-color]="storeData?.theme_1">
           <div id="logo-wrapper">
             <img alt="store-logo">
           </div>

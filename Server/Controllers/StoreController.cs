@@ -34,46 +34,6 @@ namespace Server.Controllers
             _configuration = configuration;
         }
 
-
-        /* [HttpGet("{url}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<StoreResponse>> GetStoreDetails(string url)
-        {
-            // 🔹 Get store details from Stores or StoreWithTheme view
-            var store = await _context.StoreWithTheme
-                .Where(s => s.URL == url)
-                .Select(s => new 
-                {
-                    s.Id,
-                    s.URL,
-                    s.Name,
-                    s.Theme_1,
-                    s.Theme_2,
-                    s.Theme_3,
-                    s.FontFamily,
-                    s.FontColor,
-                    s.BannerText,
-                    s.LogoText
-                })
-                .FirstOrDefaultAsync();
-
-            if (store == null)
-            {
-                return NotFound("Store not found.");
-            }
-
-            // 🔹 Fetch categories linked to this store
-            var categories = await _context.Categories
-                .Where(c => c.StoreId == store.Id)
-                .ToListAsync();
-            store.Categories = categories;
-
-            // ✅ Return both store details and categories
-            return Ok(new Response(
-                store,
-                categories
-            ));
-        } */
         [HttpGet("{url}")]
         [AllowAnonymous]
         public async Task<ActionResult<StoreDetails>> GetStoreDetails(string url)

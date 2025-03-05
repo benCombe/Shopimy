@@ -1,4 +1,4 @@
-<div id="main" class="theme1">
+<div id="main" class="theme1" [style.background-color]="storeDetails.theme_1">
   <div id="store-name" class="fc" [style.color]="storeDetails.fontColor">{{storeDetails.name}}</div>
   <div id="categories-wrapper">
 
@@ -21,7 +21,7 @@
 
 
     <div id="cart-btn-wrapper">
-      <div id="cart-btn" class="center fc" [style.color]="storeDetails.fontColor"><i class="fa-solid fa-cart-shopping"></i></div>
+      <div id="cart-btn" class="center fc" [style.color]="storeDetails.fontColor"  (click)="addToUrl('cart')"><i class="fa-solid fa-cart-shopping"></i></div>
     </div>
   </div>
 </div>

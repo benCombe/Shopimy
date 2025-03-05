@@ -8,7 +8,7 @@ import { StoreDetails } from '../models/store-details';
 export class ThemeService {
   private renderer: Renderer2;
 
-  storeDetails: StoreDetails = new StoreDetails(0, "knittingnut", "KnittingNut", "#393727", "#D0933D", "#d5d5d5", "Cambria, Cochin", "#f6f6f6", "Explore Our Knitting Products!", "TEXT ABOUT THE STORE AND WHY IT IS AWHSUM", []); //Get via API
+  storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []); //Get via API
 
   constructor(rendererFactory: RendererFactory2, private storeService: StoreService) {
     this.renderer = rendererFactory.createRenderer(null, null);
