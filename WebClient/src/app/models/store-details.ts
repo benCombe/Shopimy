@@ -1,41 +1,44 @@
+import { Category } from "./category";
 
 export class StoreDetails {
-  Id: string;
-  URL: string;
-  Name: string;
-  Theme_1: string;
-  Theme_2: string;
-  Theme_3: string;
-  FontFamily: string;
-  FontColor: string;
-  BannerText: string;
-  LogoText: string;
-
+  id: number;
+  url: string;
+  name: string;
+  theme_1: string;
+  theme_2: string;
+  theme_3: string;
+  fontColor: string;
+  fontFamily: string;
+  bannerText: string;
+  logoText: string;
+  categories: Category[];
   LogoUrl?: string;
   Banner: undefined;
 
   constructor(
-    Id: string,
-    URL: string,
-    Name: string,
-    Theme_1: string,
-    Theme_2: string,
-    Theme_3: string,
-    FontFamily: string,
-    FontColor: string,
-    BannerText: string,
-    LogoText: string,
+    id: number,
+    url: string,
+    name: string,
+    theme_1: string,
+    theme_2: string,
+    theme_3: string,
+    fontColor: string,
+    fontFamily: string,
+    bannerText: string,
+    logoText: string,
+    categories: Category[]
   ){
-    this.Id = Id;
-    this.URL = URL;
-    this.Name = Name;
-    this.Theme_1 = Theme_1;
-    this.Theme_2 = Theme_2;
-    this.Theme_3 = Theme_3;
-    this.FontFamily = FontFamily;
-    this.FontColor = FontColor;
-    this.BannerText = BannerText;
-    this.LogoText = LogoText;
+    this.id = id;
+    this.url = url;
+    this.name = name;
+    this.theme_1 = theme_1;
+    this.theme_2 = theme_2;
+    this.theme_3 = theme_3;
+    this.fontColor = fontColor;
+    this.fontFamily = fontFamily;
+    this.bannerText = bannerText;
+    this.logoText = logoText;
+    this.categories = categories;
   }
 
 }

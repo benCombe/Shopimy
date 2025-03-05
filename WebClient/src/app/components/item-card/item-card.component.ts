@@ -1,26 +1,37 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Item } from '../../models/item';
 import { RouterModule } from '@angular/router';
-
+import { Item } from '../../models/item';
+import { ItemService } from '../../services/item.service';
 
 @Component({
   selector: 'app-item-card',
   templateUrl: './item-card.component.html',
   styleUrls: ['./item-card.component.scss'],
-  standalone: true,  // Declare as standalone
+  standalone: true,
   imports: [CommonModule, RouterModule]
 })
-export class ItemCardComponent {
-  @Input() item!: Item;
-  
-  addToBasket(item: Item) {
-    console.log('Adding to basket:', item);
-    // Your add-to-basket logic here
+export class ItemCardComponent implements OnInit {
+  @Input() itemId!: string; // Ticket requires itemId as input
+  item: Item | null = null;
+
+  constructor(private itemService: ItemService) {}
+
+  ngOnInit(): void {
+    if (this.itemId) {
+      this.itemService.getItemById(this.itemId).subscribe((data: Item) => {
+        this.item = data;
+      });
+    }
   }
 
-  bookmarkItem(item: Item) {
+  addToBasket(item: Item): void {
+    console.log('Adding to basket:', item);
+    // Implement your basket logic here
+  }
+
+  bookmarkItem(item: Item): void {
     console.log('Bookmarking item:', item);
-    // Your bookmark logic here
+    // Implement your bookmark logic here
   }
 }

@@ -22,7 +22,6 @@ export class TopNavComponent {
     {label: 'Cart', link: '/cart'},
     {label: 'Checkout', link: '/checkout'},
     {label: 'Store', link: '/store'}
-
   ];
 
   ngOnInit(): void {

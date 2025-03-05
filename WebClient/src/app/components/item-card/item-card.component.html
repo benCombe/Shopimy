@@ -1,6 +1,6 @@
-<div class="item-card">
+<div class="item-card" *ngIf="item">
   <!-- Image Section -->
-  <div class="item-image" *ngIf="item?.ImageUrl; else defaultImage">
+  <div class="item-image" *ngIf="item.ImageUrl; else defaultImage">
     <img [src]="item.ImageUrl" [alt]="item.Name" />
   </div>
   <ng-template #defaultImage>
@@ -11,34 +11,25 @@
   
   <!-- Details Section -->
   <div class="item-details">
-    <h3 class="item-name">{{ item?.Name }}</h3>
+    <h3 class="item-name">{{ item.Name }}</h3>
     <div class="item-price">
-      <ng-container *ngIf="item?.OnSale; else notOnSale">
-        <span class="sale-price">\${{ item?.SalePrice }}</span>
-        <span class="original-price strikethrough">\${{ item?.OriginalPrice }}</span>
+      <ng-container *ngIf="item.OnSale; else notOnSale">
+        <span class="sale-price">\${{ item.SalePrice }}</span>
+        <span class="original-price strikethrough">\${{ item.OriginalPrice }}</span>
       </ng-container>
       <ng-template #notOnSale>
-        \${{ item?.OriginalPrice }}
+        \${{ item.OriginalPrice }}
       </ng-template>
     </div>
-
-    <p class="item-description">
-      {{ item?.Description }}
-    </p>
-
-    <!-- Optional Info -->
+    <p class="item-description">{{ item.Description }}</p>
     <p class="item-info">
-      <strong>In Stock:</strong> {{ item?.QuantityInStock }}<br>
-      <strong>Available:</strong> {{ item?.AvailFrom | date:'shortDate' }} - {{ item?.AvailTo | date:'shortDate' }}<br>
-      <strong>Rating:</strong> {{ item?.CurrentRating }} / 5
+      <strong>In Stock:</strong> {{ item.QuantityInStock }}<br>
+      <strong>Available:</strong> {{ item.AvailFrom | date:'shortDate' }} - {{ item.AvailTo | date:'shortDate' }}<br>
+      <strong>Rating:</strong> {{ item.CurrentRating }} / 5
     </p>
-
-    <!-- Action Buttons -->
     <div class="item-actions">
       <button class="btn add-to-basket" (click)="addToBasket(item)">Add to Bag</button>
     </div>
   </div>
-  <a [routerLink]="['/items', item.Id]" class="details-link">
-    View Details
-  </a>
+  <a [routerLink]="['/items', item.Id]" class="details-link">View Details</a>
 </div>

@@ -4,10 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Category {
-  categoryId: number;
-  storeId: number;
-  name: string;
-  parentCategory?: number;
+  CategoryId: number;
+  StoreId: number;
+  Name: string;
+  ParentCategory?: number;
 }
 
 @Injectable({
