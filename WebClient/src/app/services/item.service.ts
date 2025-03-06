@@ -25,7 +25,7 @@ export class ItemService {
 
   // Retrieves a single item by its ID.
   // Replace the mock implementation with a real API call when available.
-  getItemById(id: string): Observable<Item> {
+  getItemById(id: number): Observable<Item> {
     // API call:
     return this.http.get<Item>(`${this.itemBaseUrl}/${id}`);
 
@@ -49,7 +49,7 @@ export class ItemService {
   }
 
   // Updates the stock level for a given item.
-  updateStock(itemId: string, newStock: number): Observable<Item> {
+  updateStock(itemId: number, newStock: number): Observable<Item> {
     return this.http.put<Item>(`${this.itemBaseUrl}/${itemId}/stock`, { quantityInStock: newStock });
   }
 }

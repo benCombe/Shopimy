@@ -1,5 +1,5 @@
 <div id="container">
-  <app-store-nav></app-store-nav>
+  <!-- <app-store-nav></app-store-nav> -->
   <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3">
     <h2>Your Basket</h2>
     <div id="basket">
@@ -52,36 +52,30 @@
           </div>
           <div id="remove-item" class="center"><i class="fa-solid fa-x"></i></div>
         </div>
-
-
-
-
       </div>
-
-
       <div id="order-summary-container">
-        <div id="order-summary" class="theme2">
+        <div id="order-summary" class="theme2" [style.background-color]="storeDetails?.theme_2">
           <h2>Order Summary</h2>
           <div id="summary-item-container" class="center-col">
-            <div class="summary-item center-spaced fc">
+            <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
               <span>Deliver to me (2)</span>
               <span>$258.50</span>
             </div>
-            <div class="summary-item center-spaced fc">
+            <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
               <span>Shipping Estimate</span>
               <span>FREE</span>
             </div>
-            <div class="summary-item center-spaced fc">
+            <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
               <span>Taxes estimate</span>
               <span>$33.60</span>
             </div>
-            <div id="total" class="summary-item center-spaced fc">
+            <div id="total" class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
               <span>Total estimate</span>
               <span>$292.10</span>
             </div>
           </div>
           <div id="checkout-opt" class="center-col">
-            <div id="checkout-btn" class="center theme1 fc hover">Checkout</div>
+            <div id="checkout-btn" class="center theme1 fc hover" [style.background-color]="storeDetails?.theme_1" [style.color]="storeDetails?.fontColor" (click)="addToUrl('checkout')">Checkout</div>
           </div>
         </div>
         <div id="promo-code" class="center">

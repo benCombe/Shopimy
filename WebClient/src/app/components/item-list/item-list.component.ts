@@ -19,7 +19,7 @@ export class ItemListComponent implements OnInit {
     this.items = [
       new Item({
         Name: 'Joni Sweater (digital pattern)',
-        Id: 'sweater001',
+        Id: 123,
         OriginalPrice: 12.50,
         SalePrice: 8.50,
         OnSale: true,
