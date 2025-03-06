@@ -1,3 +1,8 @@
+using System.Net;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Xunit;
+
 public class WeatherForecastControllerTests
 {
     [Fact]
@@ -9,4 +14,4 @@ public class WeatherForecastControllerTests
         var response = await client.GetAsync("/weatherforecast");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
-} //updating to test git
+}
