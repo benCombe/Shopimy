@@ -15,7 +15,7 @@ import { ItemService } from '../../services/item.service';
 export class ItemDetailComponent implements OnInit {
 
   item: Item | null = null;
-  itemId!: string;
+  itemId!: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,7 +25,7 @@ export class ItemDetailComponent implements OnInit {
 
   ngOnInit(): void {
     // Extract the ID from the route parameters
-    this.itemId = this.route.snapshot.paramMap.get('id')!;
+    this.itemId = Number(this.route.snapshot.paramMap.get('id')!);
 
     // Fetch the item from your service
     // If your service returns an observable, subscribe to it
@@ -43,7 +43,7 @@ export class ItemDetailComponent implements OnInit {
     console.log('Bookmarking item:', item);
     // Integrate with your bookmark/favorite logic
   }
-  
+
   get displayImageUrl(): string {
     if (this.item && this.item.ImageUrl && this.item.ImageUrl !== 'mock-image-url') {
       return this.item.ImageUrl;

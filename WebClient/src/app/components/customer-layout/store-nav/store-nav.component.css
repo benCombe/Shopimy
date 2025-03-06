@@ -44,6 +44,7 @@
   font-size: 2.8rem;
   max-width: 500px;
   white-space: nowrap; /* Prevents breaking into multiple lines */
+  cursor: pointer;
 }
 
 #categories-wrapper{
@@ -138,7 +139,7 @@
   .cat {
     margin-right: 50px; /* Moves elements leftward instead of rightward */
     font-size: 1rem;
-    
+
   }
 
   #categories{

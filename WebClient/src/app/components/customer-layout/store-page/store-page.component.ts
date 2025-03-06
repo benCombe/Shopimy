@@ -7,10 +7,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StoreDetails } from '../../../models/store-details';
 import { Category } from '../../../models/category';
 import { LoadingService } from '../../../services/loading.service';
+import { ShoppingCartComponent } from "../shopping-cart/shopping-cart.component";
+import { CheckoutComponent } from "../checkout/checkout.component";
+import { StoreNavService } from '../../../services/store-nav.service';
+import { CategoryPageComponent } from '../category-page/category-page.component';
 
 @Component({
   selector: 'app-store-page',
-  imports: [NgFor, NgIf, StoreNavComponent],
+  imports: [NgFor, NgIf, StoreNavComponent, ShoppingCartComponent, CheckoutComponent, CategoryPageComponent],
   templateUrl: './store-page.component.html',
   styleUrl: './store-page.component.css'
 })
@@ -18,13 +22,16 @@ import { LoadingService } from '../../../services/loading.service';
 export class StorePageComponent implements AfterViewInit, OnInit{
 
   storeData: StoreDetails | null = null;
+  currentUrl: string = "";
+  currentView: string = "";
 
   constructor(
     private route:ActivatedRoute,
     private router: Router,
     private themeService: ThemeService,
     private storeService: StoreService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private storeNavService: StoreNavService
   ){}
 
 
@@ -37,14 +44,24 @@ export class StorePageComponent implements AfterViewInit, OnInit{
         this.storeService.getStoreDetails(storeUrl).subscribe({
           next: (data) => {
             this.storeData = data;
+            this.storeNavService.initialize();
             console.log("STORE DATA: " + data);
           },
           error: (err) => console.error('Failed to load store:', err)
         });
       }
     });
+
+    this.storeNavService.currentUrl$.subscribe(u =>{
+      this.currentUrl = u;
+      this.currentView = this.extractViewFromUrl(u);
+      console.log("CURRENT VIEW: "+this.currentView)
+    })
+
     this.loadingService.setIsLoading(false);
   }
+
+
 
 
   ngAfterViewInit(): void {
@@ -62,5 +79,18 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   }
 
 
+  changeView(v: string): void{
+    this.storeNavService.changeView(v);
+  }
+
+  extractViewFromUrl(url: string): string {
+    const segments = url.split('/'); // Split URL by "/"
+
+    if (segments.length > 1) {
+      return segments[1]; // Get the second segment (everything after store-url)
+    }
+
+    return 'store-page'; // Default to store-page if no view is specified
+  }
 
 }
