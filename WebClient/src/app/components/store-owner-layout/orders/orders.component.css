@@ -48,11 +48,11 @@
 }
 
 
-#Product-info{
+#Order-info{
   align-self: center;
 }
 
-#Product-list-wrapper{
+#Order-list-wrapper{
     align-self: center;
     min-height: 420px;
     max-height: 450px;
@@ -61,69 +61,110 @@
     border-radius: 12px;
     background-color: var(--third-color);
 }
-#Product-list{
+#Order-list{
     border-collapse: collapse;
     width: 100%;
 }
 
-#Product-list th, #ph-list td {
+#Order-list th, #ph-list td {
     padding: 5px 10px;
     text-align: center;
     height: 20px;
     vertical-align: top;
   }
-
   
-  #Product-list th{
-  }
-
-  #analytic-list th{
-
+  #Order-list th{
     font-size: 1.2rem;
     color: black;
     border-bottom: 2px solid black;
   }
-
   
-  #Product-list tr{
+  #Order-list tr{
     height: 20px;
     border-bottom: 1px dashed black;
   }
   
-  #Product-list td{
-    
-  }
-
-  #analytic-list tr{
-    height: 20px;
-    border-bottom: 1px dashed black;
-  }
-
-  #analytic-list td{
-    
+  #Order-list td{
     text-align: center;
     font-size: 1rem;
     color: black;
   }
 
-.Product-section{
+.Order-section{
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 25px;
     row-gap: 25px;
 }
 
-.Product-img{
-    width: 25vw;
-    height: auto;
-}
-
-#Product-graph{
+#Order-graph{
     grid-column-start: 2;
     grid-column-end: 2;
     grid-row-start: 1;
     grid-row-end: 1;
 }
+
+
+#Total-info{
+  align-self: center;
+}
+
+#Total-list-wrapper{
+    align-self: center;
+    min-height: 420px;
+    max-height: 450px;
+    width: 85vh;
+    padding: 25px;
+    border-radius: 12px;
+    background-color: var(--third-color);
+}
+#Total-list{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#Total-list th, #ph-list td {
+    padding: 5px 10px;
+    text-align: center;
+    height: 20px;
+    vertical-align: top;
+    color: white;
+    font-size: 1.5rem;
+  }
+  
+  #Total-list th{
+    border-bottom: 2px solid black;
+
+  }
+  
+  #Total-list tr{
+    height: 20px;
+    border-bottom: 1px dashed black;
+  }
+  
+  #Total-list td{
+    text-align: center;
+    font-size: 1.5rem;
+
+  }
+
+.Total-section{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 25px;
+    row-gap: 25px;
+}
+
+
+
+#Total-graph{
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 1;
+}
+
+
 
 
 
