@@ -20,8 +20,8 @@ export class TopNavComponent {
     { label: 'Items', link: '/items' },
     { label: 'Categories', link: '/categories' },
     {label: 'Cart', link: '/cart'},
-    {label: 'Checkout', link: '/checkout'}
-
+    {label: 'Checkout', link: '/checkout'},
+    {label: 'Store', link: '/store'}
   ];
 
   ngOnInit(): void {

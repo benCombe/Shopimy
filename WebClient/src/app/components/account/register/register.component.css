@@ -242,8 +242,24 @@ input[type="password"]{
   animation: fadein 0.7s ease-in-out;
 }
 
+/* @media only screen and (max-width:1200px){
+  #main img{
+    display: none;
+  }
 
-@media only screen and (max-width:715px){
+  #register-form-wrapper{
+    width: calc(90% - 100px);
+    margin-left: 0vw;
+    margin-right: 0vw;
+  }
+} */
+
+
+@media only screen and (max-width:1200px){
+
+  #main{
+    height: 150vh;
+  }
   #main img{
     display: none;
   }

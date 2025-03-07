@@ -1,110 +1,35 @@
-<html>
- <head>
-    <link rel="stylesheet" href="style.css">
- </head>
-
-    <body style="background-color: var(--secondaryColor);">
-        <div id="hero">
-            <div id="heroBubble">
-                <center>
-                    <p id="heroText">Explore our knitting products!</p>
-                </center>
-                
-            </div>
+<div id="container">
+  <app-store-nav  (ViewChanged)="changeView($event)"></app-store-nav>
+  <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="currentView === 'store-page'">
+      <div id="banner" class="theme2">
+        <div id="banner-text" class="center theme1 fc" [style.background-color]="storeData?.theme_1">
+          <span [style.color]="storeData?.fontColor">{{storeData?.bannerText}}</span>
         </div>
-            <center>
-            <div id="bubble">
-                <div style="width: 33%; height: 100%;display:inline-block;">
-                    <center>
-                        <img src="sweater.jpg" style="width: 12vw; height: 100%;"></img>
-                    </center>
-                </div>
-                <div id="iconText">
-                    <center>
-                        <p>This would probably be a blurb about the business or something like that</p>
-                    </center>
-                   
-                </div>
-            </div>
-        </center>
-        <div id="container">
-            <div id="product"><!--item div for holding img+text+button-->
-                <center>
-                <img id="prdImg"src="sweater.jpg" width="209" height="300">
-                <h3 id="prodText">Joni sweater (digital pattern)</h3>
-                <p id="priceText">$19.99</p>
-                <button id="btn">Add to bag</button>
-                </center>
-            </div>
-            <div id="product">
-                <center>
-                <img id="prdImg"src="sweater.jpg" width="209" height="300">
-                <h3 id="prodText">Joni sweater (digital pattern)</h3>
-                <p id="priceText">$19.99</p>
-                <button id="btn">Add to bag</button>
-                </center>
-            </div>
-            <div id="product">
-                <center>
-                <img id="prdImg"src="sweater.jpg" width="209" height="300">
-                <h3 id="prodText">Joni sweater (digital pattern)</h3>
-                <p id="priceText">$19.99</p>
-                <button id="btn">Add to bag</button>
-                </center>
-            </div>
+      </div>
+      <div id="logo-section" class="center">
+        <div id="logo-container" class="theme1 fc" [style.background-color]="storeData?.theme_1">
+          <div id="logo-wrapper">
+            <img alt="store-logo">
+          </div>
+          <div id="logo-text-wrapper" class="center">
+            <h2 id="logo-text" [style.color]="storeData?.fontColor">{{storeData?.logoText}}</h2>
+          </div>
         </div>
-        <div id="container">
-            <div id="product"><!--item div for holding img+text+button-->
-                <center>
-                <img id="prdImg"src="sweater.jpg" width="209" height="300">
-                <h3 id="prodText">Joni sweater (digital pattern)</h3>
-                <p id="priceText">$19.99</p>
-                <button id="btn">Add to bag</button>
-                </center>
-            </div>
-            <div id="product">
-                <center>
-                <img id="prdImg"src="sweater.jpg" width="209" height="300">
-                <h3 id="prodText">Joni sweater (digital pattern)</h3>
-                <p id="priceText">$19.99</p>
-                <button id="btn">Add to bag</button>
-                </center>
-            </div>
-            <div id="product">
-                <center>
-                <img id="prdImg"src="sweater.jpg" width="209" height="300">
-                <h3 id="prodText">Joni sweater (digital pattern)</h3>
-                <p id="priceText">$19.99</p>
-                <button id="btn">Add to bag</button>
-                </center>
-            </div>
+      </div>
+      <div id="product-container">
+        <div *ngFor="let num of arrayRange(9); let i = index" class="product">
+          <img class="prdImg" src="sweater.jpg" width="209" height="300">
+          <h3 class="prodText">Joni sweater (digital pattern)</h3>
+          <p class="priceText">$19.99</p>
+          <div class="btn-wrapper center">
+            <button class="add-btn hover theme1">Add to Cart</button>
+          </div>
         </div>
-        <div id="container">
-            <div id="product"><!--item div for holding img+text+button-->
-                <center>
-                <img id="prdImg"src="sweater.jpg" width="209" height="300">
-                <h3 id="prodText">Joni sweater (digital pattern)</h3>
-                <p id="priceText">$19.99</p>
-                <button id="btn">Add to bag</button>
-                </center>
-            </div>
-            <div id="product">
-                <center>
-                <img id="prdImg"src="sweater.jpg" width="209" height="300">
-                <h3 id="prodText">Joni sweater (digital pattern)</h3>
-                <p id="priceText">$19.99</p>
-                <button id="btn">Add to bag</button>
-                </center>
-            </div>
-            <div id="product">
-                <center>
-                <img id="prdImg"src="sweater.jpg" width="209" height="300">
-                <h3 id="prodText">Joni sweater (digital pattern)</h3>
-                <p id="priceText">$19.99</p>
-                <button id="btn">Add to bag</button>
-                </center>
-            </div>
-        </div>
-    </body>
-    
-</html>
+      </div>
+  </div>
+  <app-shopping-cart *ngIf="currentView === 'cart'" [storeDetails]="storeData"></app-shopping-cart>
+  <app-checkout *ngIf="currentView === 'checkout'" [storeDetails]="storeData"></app-checkout>
+  <ng-container *ngFor="let c of storeData?.categories">
+    <app-category-page *ngIf="currentView === c.name" [category]="c"></app-category-page>
+  </ng-container>
+</div>
