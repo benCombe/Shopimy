@@ -1,14 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CategoryService, Category } from '../../services/category.service';
 import { StoreService } from '../../services/store.service';
 
+
 @Component({
+  imports: [
+    ReactiveFormsModule
+  ],
   selector: 'app-item-form',
   templateUrl: './item-form.component.html'
 })
 export class ItemFormComponent implements OnInit {
-  itemForm: FormGroup;
+  productForm: FormGroup;
   categories: Category[] = [];
 
   constructor(
@@ -16,7 +21,7 @@ export class ItemFormComponent implements OnInit {
     private categoryService: CategoryService,
     private storeService: StoreService
   ) {
-    this.itemForm = this.fb.group({
+    this.productForm = this.fb.group({
       name: ['', Validators.required],
       originalPrice: [0, Validators.required],
       salePrice: [null],
@@ -36,11 +41,11 @@ export class ItemFormComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.itemForm.invalid) {
+    if (this.productForm.invalid) {
       return;
     }
 
-    const itemData = this.itemForm.value;
+    const itemData = this.productForm.value;
     this.storeService.createItem(itemData).subscribe(() => {
       // Redirect or show success notification
     });
