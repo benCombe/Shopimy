@@ -4,15 +4,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Category {
-  categoryId: number;
-  storeId: number;
-  name: string;
-  parentCategory?: number;
+  CategoryId: number;
+  StoreId: number;
+  Name: string;
+  ParentCategory?: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class CategoryService {
   private baseUrl = '/api/categories'; // adjust the URL if needed
 
@@ -36,5 +37,27 @@ export class CategoryService {
 
   deleteCategory(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+
+  getItemsInCategory(catId: number, storeId: number): number[]{
+    //this will fetch all items listed in a store/category
+    return [];
+  }
+
+  getRandomItems(catId: number, storeId: number, limit: number): number[]{
+    //this will fetch a limited randomized list of items listed in a store/category
+
+    /*
+       Example backend controller query:
+
+       SELECT TOP {limit} * FROM Items
+       WHERE store_id = {storeId}
+       AND category_id = {catId}
+       ORDER BY NEWID();
+
+    */
+
+    return [];
   }
 }

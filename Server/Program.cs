@@ -22,11 +22,13 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 //Database Context
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString, sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
 
 builder.Services.AddControllers(); // Add controller services
 //builder.Services.AddOpenApi(); // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
 
 
 // Register Swagger (Swashbuckle)
@@ -81,6 +83,7 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 
 

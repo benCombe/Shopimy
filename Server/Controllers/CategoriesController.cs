@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shopimy.Server.Models;
 
@@ -32,6 +33,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetCategoryById(int id)
     {
         int storeId = GetCurrentStoreId();

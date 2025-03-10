@@ -1,4 +1,4 @@
-<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
   <div>
     <label>Name</label>
     <input formControlName="name">
@@ -7,14 +7,14 @@
     <label>Original Price</label>
     <input type="number" formControlName="originalPrice">
   </div>
-  <!-- Other product fields... -->
+  <!-- Other item fields... -->
   <div>
     <label>Select Categories</label>
     <select formControlName="categoryIds" multiple>
-      <option *ngFor="let category of categories" [value]="category.categoryId">
-        {{ category.name }}
+      <option *ngFor="let category of categories" [value]="category.CategoryId">
+        {{ category.Name }}
       </option>
     </select>
   </div>
-  <button type="submit" [disabled]="productForm.invalid">Save Product</button>
+  <button type="submit" [disabled]="itemForm.invalid">Save Item</button>
 </form>

@@ -1,5 +1,14 @@
+/* 
+    This file is for direct Object linking to the database for easier queries with less code
+    
+    
+    >> Do not touch unless you know what you are doing!! << Message Ben C for any questions
+ */
+
+
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
+using Shopimy.Server.Models;
 
 namespace Server.Data
 {
@@ -8,13 +17,15 @@ namespace Server.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<TestItem> TestTable { get; set; }
-        public DbSet<User> Users { get; set; }  // ✅ Add this line
-        
-        public DbSet<ActiveUser> ActiveUsers { get; set; }  // ✅ Add this too
-        public DbSet<Shopimy.Server.Models.Category> Categories { get; internal set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<ActiveUser> ActiveUsers { get; set; }
+        public DbSet<Store> Stores { get; set; }
+        public DbSet<StoreTheme> StoreThemes {get; set;}
+        public DbSet<Listing> Listing {get; set;}
+        public DbSet<Category> Categories { get; internal set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
 
-        // Ensure table names match conventions
+        // Ensure table names match conventions  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -59,9 +70,12 @@ namespace Server.Data
             });
 
 
-
-            modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
+            modelBuilder.Entity<Store>().ToTable("Stores");
+            modelBuilder.Entity<StoreTheme>().ToTable("StoreThemes");
+            modelBuilder.Entity<Category>().ToTable("Categories");
+            modelBuilder.Entity<Listing>().ToTable("Listing");
             modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
+            modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
             modelBuilder.Entity<TestItem>().ToTable("TestTable");  
         }
     }

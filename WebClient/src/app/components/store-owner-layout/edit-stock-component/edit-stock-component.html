@@ -1,0 +1,11 @@
+<div class="edit-stock">
+    <h3>Edit Stock Level for Item: {{ currentItem?.Name }}</h3>
+    <form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label for="quantity">Stock Level:</label>
+        <input id="quantity" type="number" formControlName="quantity">
+      </div>
+      <button type="submit" [disabled]="stockForm.invalid">Update Stock</button>
+    </form>
+  </div>
+  

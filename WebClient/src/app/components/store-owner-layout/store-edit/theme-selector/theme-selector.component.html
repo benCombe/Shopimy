@@ -1,0 +1,28 @@
+<div class="theme-selector">
+    <h3>Customize Your Shop Theme</h3>
+    <form (ngSubmit)="saveTheme()">
+      <div>
+        <label for="mainColor">Main Color:</label>
+        <input type="color" id="mainColor" [(ngModel)]="theme.mainColor" name="mainColor">
+      </div>
+      <div>
+        <label for="secondColor">Second Color:</label>
+        <input type="color" id="secondColor" [(ngModel)]="theme.secondColor" name="secondColor">
+      </div>
+      <div>
+        <label for="thirdColor">Third Color:</label>
+        <input type="color" id="thirdColor" [(ngModel)]="theme.thirdColor" name="thirdColor">
+      </div>
+      <div>
+        <label for="altColor">Alt Color:</label>
+        <input type="color" id="altColor" [(ngModel)]="theme.altColor" name="altColor">
+      </div>
+      <div>
+        <label for="mainFontFam">Primary Font:</label>
+        <select id="mainFontFam" [(ngModel)]="theme.mainFontFam" name="mainFontFam">
+          <option *ngFor="let font of availableFonts" [value]="font">{{ font }}</option>
+        </select>
+      </div>
+      <button type="submit">Apply Theme</button>
+    </form>
+  </div>  

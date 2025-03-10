@@ -6,11 +6,11 @@
       <app-overview></app-overview>
     </div>
     <div *ngIf="currentPage === 'Profile'" id="profile" class="page">
-      <div>{{user?.FirstName + " " + user?.LastName}}</div>
       <app-profile [user]="user"></app-profile>
     </div>
     <div *ngIf="currentPage === 'Settings'" id="settings" class="page">
       Settings
+      <app-settings></app-settings>
     </div>
     <div *ngIf="currentPage === 'Products'" id="products" class="page">
       Products
@@ -18,9 +18,11 @@
     </div>
     <div *ngIf="currentPage === 'Orders'" id="orders" class="page">
       Orders
+      <app-orders></app-orders>
     </div>
     <div *ngIf="currentPage === 'Themes & Logos'" id="themes" class="page">
       Themes & Logos
+      <app-themes></app-themes>
     </div>
     <div *ngIf="currentPage === 'Promotions'" id="promos" class="page">
       Promotions
@@ -28,6 +30,7 @@
     </div>
     <div *ngIf="currentPage === 'Traffic'" id="traffic" class="page">
       Traffic
+      <app-analytics></app-analytics>
     </div>
     <div *ngIf="currentPage === 'Sales'" id="sales" class="page">
       Sales

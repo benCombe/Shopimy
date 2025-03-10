@@ -8,10 +8,29 @@ import { OverviewComponent } from "../overview/overview.component";
 import { ProfileComponent } from "../profile/profile.component";
 import { ProductManagementComponent } from "../product-management/product-management.component";
 import { PromotionsComponent } from "../promotions/promotions.component";
+import { OrdersComponent } from '../orders/orders.component';
+import { SettingsComponent } from '../settings/settings.component';
+import { AnalyticsComponent } from '../analytics/analytics.component';
+import { ThemesComponent } from '../themes/themes.component';
+
 
 @Component({
   selector: 'app-store-owner-dashboard',
-  imports: [TopNavComponent, SideNavComponent, NgIf, NgFor, NgClass, OverviewComponent, ProfileComponent, ProductManagementComponent, PromotionsComponent],
+  imports: [
+    TopNavComponent,
+    SideNavComponent,
+    NgIf, 
+    NgFor, 
+    NgClass, 
+    OverviewComponent, 
+    ProfileComponent, 
+    ProductManagementComponent, 
+    PromotionsComponent, 
+    OrdersComponent,
+    SettingsComponent,
+    AnalyticsComponent,
+    ThemesComponent
+  ],
   templateUrl: './store-owner-dashboard.component.html',
   styleUrl: './store-owner-dashboard.component.css'
 })

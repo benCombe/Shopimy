@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategoryService, Category } from '../../services/category.service';
 import { StoreService } from '../../services/store.service';
+import { ItemService } from '../../services/item.service';
+import { StoreDetails } from '../../models/store-details';
 
 
 @Component({
@@ -15,11 +17,13 @@ import { StoreService } from '../../services/store.service';
 export class ItemFormComponent implements OnInit {
   productForm: FormGroup;
   categories: Category[] = [];
+  activeStore!: StoreDetails;
 
   constructor(
     private fb: FormBuilder,
     private categoryService: CategoryService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private itemService: ItemService
   ) {
     this.productForm = this.fb.group({
       name: ['', Validators.required],
@@ -34,20 +38,34 @@ export class ItemFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Load available categories to select from
+    // Load available categories for selection.
     this.categoryService.getCategories().subscribe(cats => {
       this.categories = cats;
     });
+    // Subscribe to the active store observable so we know which store is currently active.
+    this.storeService.activeStore$.subscribe(store => {
+      this.activeStore = store;
+    });
   }
 
-  onSubmit() {
-    if (this.productForm.invalid) {
+
+  onSubmit(): void {
+    if (this.itemForm.invalid) {
       return;
     }
-
-    const itemData = this.productForm.value;
-    this.storeService.createItem(itemData).subscribe(() => {
-      // Redirect or show success notification
+    // Get the item data from the form.
+    const itemData = this.itemForm.value;
+    // Append the active store ID (assumes StoreDetails has an 'id' property) to associate the item with the store.
+    itemData.storeId = this.activeStore.id;
+    // Create the item using the dedicated ItemService.
+    this.itemService.createItem(itemData).subscribe({
+      next: () => {
+        // Success: redirect or show a success message.
+        console.log('Item created successfully!');
+      },
+      error: (err) => {
+        console.error('Error creating item:', err);
+      }
     });
   }
 }
