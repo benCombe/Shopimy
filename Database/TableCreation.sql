@@ -71,3 +71,29 @@ CREATE TABLE ShoppingCarts (
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
 
+CREATE table Listing(
+    list_id int not null Identity(1,1) Primary key,
+    store_id int not null,
+    name NVARCHAR(100)  NOT NULL,
+    description NVARCHAR(200) not null,
+    category Int not null,
+    availFrom datetime null, 
+    availTo datetime null,
+    currentRating int default 0,
+    quatity int default 0,
+    FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
+    FOREIGN KEY (category) REFERENCES Categories(category_id) ON DELETE no action
+    );
+
+CREATE table Items(
+    item_id int not null Identity(1,1) Primary key,
+    list_id int not null,
+    price decimal(10,2) not null,
+    sale_price decimal(10,2) not null,
+    type nvarchar(100) null,
+    size nvarchar(10) null,
+    colour nvarchar(10) null,
+    quantity int not null,
+    FOREIGN KEY (list_id) REFERENCES Listing(list_id) ON DELETE CASCADE
+);
+
