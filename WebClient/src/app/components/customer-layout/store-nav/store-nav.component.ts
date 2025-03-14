@@ -19,7 +19,7 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
 
   @Output() ViewChanged = new EventEmitter<string>();
 
-  storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []); //Use  Store/Theme services here
+  storeDetails: StoreDetails | null = null; //new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []); //Use  Store/Theme services here
   categories: Category[] = [] //["Clothing", "Materials", "Other"].reverse();
 
   hoverStates: { [key: number]: boolean } = {};
@@ -42,6 +42,7 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     this.storeService.activeStore$.subscribe(s =>{
       this.storeDetails = s;
       this.categories = this.mapCategories(s.categories);
+      console.log("Store Details:", this.storeDetails);
     })
   }
 
