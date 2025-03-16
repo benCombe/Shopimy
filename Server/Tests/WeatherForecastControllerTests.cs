@@ -2,16 +2,41 @@ using System.Net;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
-public class WeatherForecastControllerTests
+public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
-    [Fact]
-    public async Task GET_retrieves_weather_forecast()
+    private readonly HttpClient _client;
+    private WeatherForecastControllerTests(WebApplicationFactory<Program> factory)
     {
-        await using var application = new WebApplicationFactory<Api.Startup>();
-        using var client = application.CreateClient();
- 
-        var response = await client.GetAsync("/weatherforecast");
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        _client = factory.CreateClient();
     }
+
+    [Fact]
+    public async Task GetPageToLoad()
+    {
+        var response = await _client.GetAsync("/weatherforecast");
+
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
+        /*
+        await using var application = new WebApplicationFactory<Program>();
+        //using var client = application.CreateClient();
+ 
+        var response = await _client.GetAsync("/weatherforecast");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        */
+    }
+
+    /*
+    // Act
+    var response = await _client.GetAsync("/api/example");
+
+    // Assert
+    response.EnsureSuccessStatusCode(); // Ensure status code 200-299
+    var content = await response.Content.ReadAsStringAsync();
+    Assert.Equal("Hello, World!", content);
+    */
 }
