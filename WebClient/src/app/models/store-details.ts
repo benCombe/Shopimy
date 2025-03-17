@@ -11,9 +11,9 @@ export class StoreDetails {
   fontFamily: string;
   bannerText: string;
   logoText: string;
+  bannerURL: string;
+  logoURL: string;
   categories: Category[];
-  LogoUrl?: string;
-  Banner: undefined;
 
   constructor(
     id: number,
@@ -26,6 +26,8 @@ export class StoreDetails {
     fontFamily: string,
     bannerText: string,
     logoText: string,
+    bannerURL: string,
+    logoURL: string,
     categories: Category[]
   ){
     this.id = id;
@@ -38,6 +40,8 @@ export class StoreDetails {
     this.fontFamily = fontFamily;
     this.bannerText = bannerText;
     this.logoText = logoText;
+    this.bannerURL = bannerURL;
+    this.logoURL = logoURL;
     this.categories = categories;
   }
 

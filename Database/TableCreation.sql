@@ -41,14 +41,18 @@ CREATE TABLE StoreThemes (
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE
 );
 
-CREATE TABLE StoreFiles (
-    file_id INT IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE StoreBanners (
     store_id INT NOT NULL,
-    banner VARBINARY(MAX) NULL,
-    logo VARBINARY(MAX) NULL,
+    banner_url VARCHAR(200) NOT NULL,
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
-    CONSTRAINT UQ_StoreFiles UNIQUE (store_id, file_id)
 );
+
+CREATE TABLE StoreLogos (
+    store_id INT NOT NULL,
+    logo_url VARCHAR(200) NOT NULL,
+    FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
+);
+
 
 CREATE TABLE Categories (
     category_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -70,6 +74,28 @@ CREATE TABLE ShoppingCarts (
 	FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION,
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
+
+
+CREATE VIEW ItemsView AS
+    SELECT
+    l.list_id,
+    i.item_id,
+    l.store_id,
+    l.category,
+    l.name,
+    i.price,
+    i.sale_price,
+    i.quantity,
+    l.description,
+    i.type,
+    i.size,
+    i.colour,
+    l.availFrom,
+    l.availTo,
+    img.blob
+FROM Items AS i
+JOIN Listing AS l ON l.list_id = i.list_id
+JOIN ItemImages AS img ON img.blob = i.item_id;
 
 CREATE table Listing(
     list_id int not null Identity(1,1) Primary key,

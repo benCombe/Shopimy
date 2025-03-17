@@ -1,7 +1,7 @@
 <div id="container">
   <app-store-nav  (ViewChanged)="changeView($event)"></app-store-nav>
   <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="currentView === 'store-page'">
-      <div id="banner" class="theme2">
+      <div id="banner" class="theme2" [style.background-image]="'url(' + storeData?.bannerURL + ')'">
         <div id="banner-text" class="center theme1 fc" [style.background-color]="storeData?.theme_1">
           <span [style.color]="storeData?.fontColor">{{storeData?.bannerText}}</span>
         </div>
@@ -9,7 +9,7 @@
       <div id="logo-section" class="center">
         <div id="logo-container" class="theme1 fc" [style.background-color]="storeData?.theme_1">
           <div id="logo-wrapper">
-            <img alt="store-logo">
+            <img id="logo" [src]="storeData?.logoURL" alt="store-logo">
           </div>
           <div id="logo-text-wrapper" class="center">
             <h2 id="logo-text" [style.color]="storeData?.fontColor">{{storeData?.logoText}}</h2>
@@ -18,7 +18,7 @@
       </div>
       <div id="product-container">
         <div *ngFor="let num of arrayRange(9); let i = index" class="product">
-          <img class="prdImg" src="sweater.jpg" width="209" height="300">
+          <img class="prdImg" src="https://shopimyimages.blob.core.windows.net/images/sweater-sample.jpg" width="209" height="300">
           <h3 class="prodText">Joni sweater (digital pattern)</h3>
           <p class="priceText">$19.99</p>
           <div class="btn-wrapper center">
