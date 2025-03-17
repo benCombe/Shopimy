@@ -1,7 +1,7 @@
 import { StoreService } from './store.service';
 import { Injectable } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
-import { BehaviorSubject, filter, map } from 'rxjs';
+import { BehaviorSubject, filter, map, Subject } from 'rxjs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -14,6 +14,9 @@ export class StoreNavService {
 
   private currentUrlSubject = new BehaviorSubject<string>('');
   currentUrl$ = this.currentUrlSubject.asObservable();
+
+  private viewChangedSource = new Subject<string>();
+  viewChanged$ = this.viewChangedSource.asObservable();
 
   constructor(
     private storeService: StoreService,
@@ -53,11 +56,16 @@ export class StoreNavService {
     });
   }
 
+  triggerViewChange(view: string): void {
+    this.viewChangedSource.next(view);
+  }
+
 
   // Method to change the view based on the URL
   changeView(view: string): void {
     const baseUrl = this.router.url.split('/')[1]; // Get store URL segment
     const newUrl = `${baseUrl}/${view}`;
+    this.triggerViewChange(view); //for StorePage subcomponents
     this.router.navigateByUrl(newUrl);
   }
 
