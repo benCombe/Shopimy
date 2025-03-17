@@ -4,6 +4,7 @@ using Shopimy.Server.Models; // Update to match your project structure
 using System;
 using System.Threading.Tasks;
 
+/* not working
 [ApiController]
 [Route("api/[controller]")]
 public class ItemsController : ControllerBase
@@ -48,3 +49,4 @@ public class ItemsController : ControllerBase
         return Ok(item);
     }
 }
+*/
