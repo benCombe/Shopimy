@@ -14,7 +14,7 @@ public class ItemsControllerTests
     [Fact]
     public async Task GetPageToLoad()
     {
-        var response = await _client.GetAsync("/items");
+        var response = await _client.GetAsync("/item");
 
         response.EnsureSuccessStatusCode();
 
