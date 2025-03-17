@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using Stripe;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -51,6 +53,39 @@ public class PaymentController : ControllerBase
         var service = new SessionService();
         Session session = service.Create(options);
         return Ok(new { sessionUrl = session.Url });
+    }
+}
+
+[ApiController]
+[Route("api/[controller]")]
+public class WebhookController : ControllerBase
+{
+    [HttpPost]
+    public async Task<IActionResult> Index()
+    {
+        var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+        // You can find your webhook secret in your Stripe dashboard
+        var webhookSecret = "your_webhook_secret"; //not sure yet
+        Event stripeEvent;
+
+        try
+        {
+            stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], webhookSecret);
+        }
+        catch (Exception ex)
+        {
+            // Invalid signature
+            return BadRequest();
+        }
+
+        // Handle the event (e.g., checkout.session.completed)
+        if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+        {
+            var session = stripeEvent.Data.Object as Session;
+            // Fulfill the purchase, update order status in your database, etc.
+        }
+
+        return Ok();
     }
 }
 
