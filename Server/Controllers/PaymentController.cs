@@ -1,7 +1,7 @@
-// In PaymentController.cs
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using Stripe;
+using System.Collections.Generic;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -10,7 +10,7 @@ public class PaymentController : ControllerBase
     public PaymentController()
     {
         // Initialize Stripe configuration
-        StripeConfiguration.ApiKey = "your_stripe_secret_key";
+        StripeConfiguration.ApiKey = "sk_test_51R3l1P2fQMpcECcW3YEiegl49lbNeD2ZQA9CU3f5261hnND6qHNrUe9rqfQ4v3GlgFaSiZIFROSLHxxQSwoaQopf00RzkpCJBL";
     }
 
     [HttpPost("create-checkout-session")]
@@ -27,7 +27,7 @@ public class PaymentController : ControllerBase
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        Currency = "usd",
+                        Currency = "cad",
                         UnitAmount = (long)(request.Amount * 100), // amount in cents
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
@@ -37,8 +37,15 @@ public class PaymentController : ControllerBase
                     Quantity = 1,
                 },
             },
-            SuccessUrl = "https://yourdomain.com/success?session_id={CHECKOUT_SESSION_ID}",
-            CancelUrl = "https://yourdomain.com/cancel",
+            // Attach additional data as metadata so you can reference them in webhooks or later in the dashboard.
+            Metadata = new Dictionary<string, string>
+            {
+                { "storeId", request.StoreId.ToString() },
+                { "categoryId", request.CategoryId.ToString() }
+                // You can add other fields here, e.g. { "customerEmail", request.CustomerEmail }
+            },
+            SuccessUrl = "https://shopimy.com/success?session_id={CHECKOUT_SESSION_ID}",
+            CancelUrl = "https://shopimy.com/cancel",
         };
 
         var service = new SessionService();
@@ -51,6 +58,8 @@ public class CheckoutSessionRequest
 {
     public decimal Amount { get; set; }
     public string ProductName { get; set; }
-    // Optionally include store id, category id, etc.
+    public int StoreId { get; set; }
+    public int CategoryId { get; set; }
+    // Optionally include additional fields e.g., customer email or description
+    // public string CustomerEmail { get; set; }
 }
-// The PaymentController class defines a route for creating a checkout session using the Stripe API. The CreateCheckoutSession method takes a CheckoutSessionRequest object as input, which contains the amount and product name for the session. The method creates a new session with the specified options and returns the session URL to the client.

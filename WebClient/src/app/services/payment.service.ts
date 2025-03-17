@@ -6,11 +6,11 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PaymentService {
-  private apiUrl = 'https://yourapi.com/api/payment';
+  private apiUrl = 'https://shopimy.com/api/payment';
 
   constructor(private http: HttpClient) {}
 
-  createCheckoutSession(amount: number, productName: string): Observable<{ sessionUrl: string }> {
-    return this.http.post<{ sessionUrl: string }>(`${this.apiUrl}/create-checkout-session`, { amount, productName });
-  }
+  createCheckoutSession(amount: number, productName: string, storeId?: string): Observable<{ sessionUrl: string }> {
+    return this.http.post<{ sessionUrl: string }>(`${this.apiUrl}/create-checkout-session`, { amount, productName, storeId });
+  }  
 }

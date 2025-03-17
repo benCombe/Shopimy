@@ -12,6 +12,8 @@ import { ItemDetailComponent } from './components/item-detail/item-detail.compon
 import { StorePageComponent } from './components/customer-layout/store-page/store-page.component';
 import { CategoryPageComponent } from './components/customer-layout/category-page/category-page.component';
 import { ItemPageComponent } from './components/customer-layout/item-page/item-page.component';
+import { SuccessComponent } from './components/SuccessComponent';
+import { CancelComponent } from './components/CancelComponent';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
@@ -23,7 +25,9 @@ export const appRoutes: Routes = [
   { path: 'items', component: ItemListComponent },
   { path: 'items/:id', component: ItemDetailComponent },
   { path: 'categories', component: CategoryListComponent},
-
+  { path: 'success', component: SuccessComponent },
+  { path: 'cancel', component: CancelComponent },
+  
   {
     path: ':storeUrl',
     component: StorePageComponent,

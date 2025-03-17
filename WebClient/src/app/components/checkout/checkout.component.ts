@@ -1,18 +1,29 @@
-// In your payment/checkout component (e.g., checkout.component.ts)
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { StoreService } from '../../services/store.service';
 import { PaymentService } from '../../services/payment.service';
+import { StoreDetails } from '../../models/store-details';
 
 @Component({
   selector: 'app-checkout',
-  template: `<button (click)="checkout()">Pay Now</button>`
+  template: `<button (click)="checkout()">Pay Now</button>`,
+  standalone: true
 })
-export class CheckoutComponent {
-  constructor(private paymentService: PaymentService) {}
+export class CheckoutComponent implements OnInit {
+  activeStore!: StoreDetails;
+
+  constructor(private storeService: StoreService, private paymentService: PaymentService) {}
+
+  ngOnInit(): void {
+    this.storeService.activeStore$.subscribe(store => {
+      this.activeStore = store;
+    });
+  }
 
   checkout(): void {
-    // Example amount and product name; adjust accordingly
-    this.paymentService.createCheckoutSession(49.99, 'Sample Product').subscribe(response => {
-      window.location.href = response.sessionUrl;
-    });
+    // Pass the active store id along with order details
+    this.paymentService.createCheckoutSession(49.99, 'Sample Product', this.activeStore.id.toString())
+      .subscribe(response => {
+        window.location.href = response.sessionUrl;
+      });
   }
 }
