@@ -6,7 +6,7 @@
     <div id="categories" class="fc" [style.color]="storeDetails?.fontColor">
       <!-- <span *ngFor="let c of categories" class="cat">{{c.name}}</span> -->
       <div *ngFor="let c of categories" class="cat-wrapper">
-        <span class="cat" (click)="addToUrl(c.name)">{{ c.name }}</span>
+        <span class="cat" (click)="addToUrl(c.name)">{{ c.name }}</span> <!--[routerLink]="['/', storeUrl, c.name]"  -->
         <div class="dropdown theme2">
           <span *ngFor="let sub of c.subCategories" class="sub-cat theme2"
           [style.background-color]="storeDetails?.theme_3"
@@ -14,7 +14,8 @@
           (mouseenter)="setHover(sub.categoryId, true)"
           (mouseleave)="setHover(sub.categoryId, false)"
           [style.color]="storeDetails?.fontColor"
-          (click)="addToUrl(sub.name)">{{ sub.name }}</span>
+          (click)="addToUrl(sub.name)">
+          {{ sub.name }}</span> <!--  [routerLink]="['/', storeUrl, sub.name]"-->
         </div>
       </div>
     </div>
