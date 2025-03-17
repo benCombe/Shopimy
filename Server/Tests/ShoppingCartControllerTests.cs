@@ -2,10 +2,10 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-public class StoreControllerTests
+public class ShoppingCartControllerTests
 {
     private readonly HttpClient _client;
-    private StoreControllerTests(WebApplicationFactory<Program> factory)
+    private ShoppingCartControllerTests(WebApplicationFactory<Program> factory)
     {
         _client = factory.CreateClient();
     }
@@ -13,10 +13,9 @@ public class StoreControllerTests
     [Fact]
     public async Task GetPageToLoad()
     {
-        var response = await _client.GetAsync("/store");
+        var response = await _client.GetAsync("/shoppingcart");
 
         response.EnsureSuccessStatusCode();
-        //var content = await response.Content.ReadAsStringAsync();
-        //Console.WriteLine(content);
+
     }
 }
