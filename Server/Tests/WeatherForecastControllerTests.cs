@@ -29,12 +29,13 @@ public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactor
  
         var response = await _client.GetAsync("/weatherforecast");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        */
+        
     }
 
-} */ //updating to test git
+} //updating to test git
 
 
 //Commented out due to causing errors
 
+*/
 
