@@ -1,7 +1,8 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Category {
   CategoryId: number;
@@ -15,7 +16,7 @@ export interface Category {
 })
 
 export class CategoryService {
-  private baseUrl = '/api/categories'; // adjust the URL if needed
+  private baseUrl = `${environment.apiUrl}/categories`; // adjust the URL if needed
 
   constructor(private http: HttpClient) { }
 
@@ -40,9 +41,15 @@ export class CategoryService {
   }
 
 
-  getItemsInCategory(catId: number, storeId: number): number[]{
-    //this will fetch all items listed in a store/category
-    return [];
+  getItemsInCategory(catId: number, storeId: number): Observable<number[]> {
+    const url = `${this.baseUrl}/${catId}/${storeId}`;  // Ensure the correct endpoint format
+    console.log("Getting Item Ids from: ", catId, storeId);
+
+    return this.http.get<number[]>(url).pipe(
+      tap(response => {
+        console.log('Response from API:', response); // Log the response
+      })
+    );
   }
 
   getRandomItems(catId: number, storeId: number, limit: number): number[]{

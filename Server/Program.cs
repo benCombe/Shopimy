@@ -25,10 +25,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString, sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
 
 builder.Services.AddControllers(); // Add controller services
+builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor
 //builder.Services.AddOpenApi(); // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 
 // Register Swagger (Swashbuckle)
@@ -76,14 +77,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // 🔐 Add Authorization Policies (Global Requirement)
-builder.Services.AddAuthorization(options =>
+/* builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
-});
+}); */
 
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
 
 
 

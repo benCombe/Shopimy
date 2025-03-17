@@ -1,8 +1,8 @@
 <div id="main">
-  <ng-container *ngIf="itemIds.length > 0; else noitems">
+  <ng-container *ngIf="itemIds.length > 0; else noitems" style="border: 1px solid red;">
     <h1>{{category?.name}}</h1>
     <div id="item-container">
-      <app-item-card *ngFor="let item of itemIds" [itemId]="item"></app-item-card>
+      <app-item-card *ngFor="let item of itemIds" [itemId]="item" class="item-card"></app-item-card>
     </div>
   </ng-container>
 
