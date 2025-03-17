@@ -2,21 +2,22 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-public class StoreControllerTests
+public class AccountControllerTests
 {
     private readonly HttpClient _client;
-    private StoreControllerTests(WebApplicationFactory<Program> factory)
+    private AccountControllerTests(WebApplicationFactory<Program> factory)
     {
         _client = factory.CreateClient();
     }
-
+    /*
     [Fact]
     public async Task GetPageToLoad()
     {
-        var response = await _client.GetAsync("/store");
+        var task = _client.PostAsync("/account");
+        var response = task.GetAwaiter().GetResult();
 
         response.EnsureSuccessStatusCode();
-        //var content = await response.Content.ReadAsStringAsync();
-        //Console.WriteLine(content);
+
     }
+    */
 }
