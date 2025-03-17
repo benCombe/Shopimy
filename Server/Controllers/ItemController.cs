@@ -34,38 +34,29 @@ namespace Server.Controllers
             _configuration = configuration;
         }
 
-        // POST: api/account/login
-        [HttpPost("listing")]
+        
+        [HttpPost("BasicItem")]
         [AllowAnonymous]
-        public async Task<ActionResult<object>> Listing([FromBody] ListingDetails login)
+        public async Task<IActionResult> BasicItem(int id)
         {
-            // Find user by email
-            var user = await _context.Listing.FirstOrDefaultAsync(u => u.ListId == login.Id);
-            if (user == null)
-            {
-                return Unauthorized("Invalid email or password.");
-            }
-
-            // Return user data and token
-            return Ok(new
-            {
-                Listing = new
-                {
-                    user.ListId,
-                    user.Description,
-                    user.StoreId,
-                    user.Name,
-                    user.CategoryId,
-                }
-            });
-        }
-
-        [HttpPost("listing")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Test()
-        {
-            var t =_context.Listing.FromSqlRaw(@"SELECT * FROM Listing").ToListAsync();
-            return Ok(t);
+            var item =await _context.BasicItem.FromSqlRaw(@"SELECT TOP 1
+                                                        l.list_id,
+                                                        i.item_id,
+                                                        l.store_id,
+                                                        l.category,
+                                                        l.name,
+                                                        i.price,
+                                                        i.sale_price,
+                                                        i.quantity,
+                                                        l.availFrom,
+                                                        l.availTo,
+                                                        img.blob
+                                                        FROM Items AS i
+                                                        JOIN Listing AS l ON l.list_id = i.list_id
+                                                        JOIN ItemImages AS img ON img.item_id= i.item_id
+                                                        where l.list_id ={0}
+                                                        order by i.price;",id).ToListAsync();
+            return Ok(item);
         }
     }
 
