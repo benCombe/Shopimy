@@ -78,6 +78,10 @@ export class StoreService {
   }
   */
 
+  getCategoryByName(name: string): Category | null {
+    return this.activeStoreSubject.value.categories.find(cat => cat.name === name) ?? null;
+  }
+
   // Retrieves categories from the API.
   getCategories(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiUrl}/categories`);

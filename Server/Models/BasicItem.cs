@@ -19,11 +19,11 @@ namespace Server.Models
         [Column("quantity")]
         public int quantity {get; set;}
          [Column("availFrom")]
-        public string? AvailFrom {get; set;}
+        public string? AvailFrom {get; set;} //CHANGE TO DATE
          [Column("availTo")]
-        public string? AvailTo {get; set;}
+        public string? AvailTo {get; set;} //CHANGE TO DATE
          [Column("blob")]
-        public string Blob {get; set;}
+        public string? Blob {get; set;} //url
         [Column("category")]
         public int CategoryId {get; set;}
     }

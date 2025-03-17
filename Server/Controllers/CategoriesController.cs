@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Server.Data;
 using Shopimy.Server.Models;
 
 [ApiController]
@@ -8,11 +10,13 @@ public class CategoriesController : ControllerBase
 {
     private readonly ICategoryService _categoryService;
     private readonly IHttpContextAccessor _httpContextAccessor; // if need to retrieve the current store context
+    private readonly IConfiguration configuration;
 
-    public CategoriesController(ICategoryService categoryService, IHttpContextAccessor httpContextAccessor)
+    public CategoriesController(ICategoryService categoryService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
     {
         _categoryService = categoryService;
         _httpContextAccessor = httpContextAccessor;
+        this.configuration = configuration;
     }
 
     [HttpGet]
@@ -24,15 +28,15 @@ public class CategoriesController : ControllerBase
         return Ok(categories);
     }
 
-    [HttpPost]
+/*     [HttpPost]
     public async Task<IActionResult> CreateCategory([FromBody] Category dto)
     {
         int storeId = GetCurrentStoreId();
         var createdCategory = await _categoryService.CreateCategoryAsync(storeId, dto);
         return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.CategoryId }, createdCategory);
-    }
+    } */
 
-    [HttpGet("{id}")]
+ /*    [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetCategoryById(int id)
     {
@@ -40,7 +44,40 @@ public class CategoriesController : ControllerBase
         var category = await _categoryService.GetCategoryByIdAsync(storeId, id);
         if (category == null) return NotFound();
         return Ok(category);
+    } */
+
+    [HttpGet("{catid}/{storeid}")]
+    [AllowAnonymous]
+    public async Task<int[]> GetItemIdsByCategory(int catid, int storeid){
+        Console.WriteLine("catid: " + catid + " storeid: " + storeid);
+        string connectionString = configuration.GetConnectionString("DefaultConnection");
+        string query = @"SELECT l.list_id
+                        FROM Listing l
+                        JOIN Categories c ON l.category = c.category_id
+                        WHERE (c.category_id = @catid OR c.parent_category = @catid)
+                        AND l.store_id = @storeid;
+                        ";
+        List<int> listIds = new List<int>();
+
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@catid", catid);
+                command.Parameters.AddWithValue("@storeid", storeid);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                         listIds.Add(reader.GetInt32(0));
+                    }
+                }
+            }
+        }
+        return listIds.ToArray();
     }
+
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category dto)
@@ -61,6 +98,8 @@ public class CategoriesController : ControllerBase
         await _categoryService.DeleteCategoryAsync(storeId, id);
         return Ok(category);
     }
+
+
 
 
 

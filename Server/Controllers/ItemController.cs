@@ -35,11 +35,11 @@ namespace Server.Controllers
         }
 
         
-        [HttpPost("BasicItem")]
+        [HttpGet("BasicItem/{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> BasicItem(int id)
+        public async Task<IActionResult> GetBasicItem(int id)
         {
-            var item =await _context.BasicItem.FromSqlRaw(@"SELECT TOP 1
+            var item = await _context.BasicItem.FromSqlRaw(@"SELECT TOP 1
                                                         l.list_id,
                                                         i.item_id,
                                                         l.store_id,
@@ -52,10 +52,13 @@ namespace Server.Controllers
                                                         l.availTo,
                                                         img.blob
                                                         FROM Items AS i
-                                                        JOIN Listing AS l ON l.list_id = i.list_id
-                                                        JOIN ItemImages AS img ON img.item_id= i.item_id
-                                                        where l.list_id ={0}
-                                                        order by i.price;",id).ToListAsync();
+                                                        LEFT JOIN Listing AS l ON l.list_id = i.list_id
+                                                        LEFT JOIN ItemImages AS img ON img.item_id= i.item_id
+                                                        where l.list_id = {0}
+                                                        order by i.price;",id)
+                                                        .ToListAsync();
+
+            if (item == null || item.Count == 0) return NotFound();
             return Ok(item);
         }
     }
