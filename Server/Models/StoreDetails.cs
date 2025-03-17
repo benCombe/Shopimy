@@ -29,6 +29,8 @@ namespace Server.Models
         public string FontFamily {get; set;}
         public string BannerText {get; set;}
         public string LogoText {get; set;}
+        public string BannerURL {get; set;}
+        public string LogoURL {get; set;}
        /*  public Category[] Categories { get; set; } */
         public List<Category> Categories { get; set; } //= new(); 
 
@@ -45,6 +47,8 @@ namespace Server.Models
             string FontFamily,
             string BannerText,
             string LogoText,
+            string BannerURL,
+            string LogoURL,
             List<Category> Categories
         ){
             this.Id = Id;
@@ -57,6 +61,8 @@ namespace Server.Models
             this.FontFamily = FontFamily;
             this.BannerText = BannerText;
             this.LogoText = LogoText;
+            this.BannerURL = BannerURL;
+            this.LogoURL = LogoURL;
             this.Categories = Categories;
         }
     }
