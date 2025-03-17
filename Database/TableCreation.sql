@@ -123,3 +123,12 @@ CREATE table Items(
     FOREIGN KEY (list_id) REFERENCES Listing(list_id) ON DELETE CASCADE
 );
 
+create table ItemImages(
+	store_id INT NOT NULL,
+	user_id INT NOT NULL,
+	item_id INT NOT NULL,
+	item_index int NOT NULL default 0,
+	blob varchar(200) NOT NULL,
+	FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE NO ACTION,
+	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
+);
