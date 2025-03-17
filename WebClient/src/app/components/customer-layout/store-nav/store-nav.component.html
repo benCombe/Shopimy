@@ -1,19 +1,19 @@
-<div id="main" class="theme1" [style.background-color]="storeDetails.theme_1">
-  <div id="store-name" class="fc" [style.color]="storeDetails.fontColor">{{storeDetails.name}}</div>
+<div id="main" class="theme1" [style.background-color]="storeDetails?.theme_1">
+  <div id="store-name" class="fc" [style.color]="storeDetails?.fontColor" (click)="storeHome()">{{storeDetails?.name}}</div>
   <div id="categories-wrapper">
 
 
-    <div id="categories" class="fc" [style.color]="storeDetails.fontColor">
+    <div id="categories" class="fc" [style.color]="storeDetails?.fontColor">
       <!-- <span *ngFor="let c of categories" class="cat">{{c.name}}</span> -->
       <div *ngFor="let c of categories" class="cat-wrapper">
         <span class="cat" (click)="addToUrl(c.name)">{{ c.name }}</span>
         <div class="dropdown theme2">
           <span *ngFor="let sub of c.subCategories" class="sub-cat theme2"
-          [style.background-color]="storeDetails.theme_3"
-          [ngStyle]="{'background-color': hoverStates[sub.categoryId] ? '#F1F1F1': storeDetails.theme_1, 'color': hoverStates[sub.categoryId] ? storeDetails.theme_1: storeDetails.fontColor}"
+          [style.background-color]="storeDetails?.theme_3"
+          [ngStyle]="{'background-color': hoverStates[sub.categoryId] ? '#F1F1F1': storeDetails?.theme_1, 'color': hoverStates[sub.categoryId] ? storeDetails?.theme_1: storeDetails?.fontColor}"
           (mouseenter)="setHover(sub.categoryId, true)"
           (mouseleave)="setHover(sub.categoryId, false)"
-          [style.color]="storeDetails.fontColor"
+          [style.color]="storeDetails?.fontColor"
           (click)="addToUrl(sub.name)">{{ sub.name }}</span>
         </div>
       </div>
@@ -21,7 +21,7 @@
 
 
     <div id="cart-btn-wrapper">
-      <div id="cart-btn" class="center fc" [style.color]="storeDetails.fontColor"  (click)="addToUrl('cart')"><i class="fa-solid fa-cart-shopping"></i></div>
+      <div id="cart-btn" class="center fc" [style.color]="storeDetails?.fontColor"  (click)="addToUrl('cart')"><i class="fa-solid fa-cart-shopping"></i></div>
     </div>
   </div>
 </div>

@@ -1,0 +1,147 @@
+        #main{
+           background-color: #D3CEBB;
+           position:fixed;
+           padding:0;
+           margin:0;
+           top:0;
+           left:0;
+           width: 100%;
+           height: 100%;}
+        
+        #TopHalf{
+           margin-top: 5vw}
+
+        #leftPics{
+           width:15%;}
+
+        #picsHolder{
+           width: 11.5%;
+           display: inline-block;}
+
+        #smlPic{
+           margin-left: 1vw; 
+           padding-bottom: 1vw;
+           width: 9.5vw; 
+           height:9.5vw;}
+
+        #bigPic{
+           width: 90%;
+           height:95%;}
+
+        #bigPicHolder{
+           width: 42%;
+           min-width: 700px;
+           display: inline-block;
+           vertical-align: top;
+           height:39vw;}
+
+        #textSection{
+          width: 40%;
+          height:40vw;
+          display: inline-block;
+          vertical-align: top;
+          margin-left: 2vw;}
+
+        #headerText{
+          font-size:calc(12px + 2.9vw);
+          text-align: left;
+          margin-top:0.3vw;
+          margin-bottom:1vw; }
+
+        #priceText{
+          font-size: calc(12px + 2.9vw);
+          margin-top:0;}
+
+        #descText{
+          font-size:max(15px,1.3vw);
+          width:37vw;  
+          overflow-y: auto; 
+          height: 8vw; 
+          margin-bottom:0px;
+          scrollbar-color: #2C2A1F #D3CEBB  }
+
+        #options{
+          font-size: max(15px,1.3vw); 
+          width: 37vw;
+          max-height: max(15px,1.3vw);
+          margin-top:0px;
+          margin-bottom:2vw;
+          margin-top: 1.5vw}
+
+        #options2{
+          font-size: max(15px,1.3vw);
+          width: 37vw; 
+          overflow-y: auto;
+          height:  max(90px,7.5vw); 
+          scrollbar-color: #2C2A1F #D3CEBB}
+
+        #btnHolder{
+          display: inline-block;
+          vertical-align: top;
+          margin-top:2vw}
+
+        #btn{
+          font-size: 2.5vw;
+          vertical-align: top;
+          
+          background-color:#2C2A1F; 
+          border: none;color: #D3CEBB;
+          border-radius: 60px;
+          padding-left:7vw;
+          padding-right:7vw;
+          padding-top:1.2vw;
+          padding-bottom:1.2vw; 
+          margin-right: 1vw}
+        
+        #heartBtn{
+          font-size: 2.5vw;
+          vertical-align: top;
+          
+          background-color:#2C2A1F; 
+          border: none;color: #D3CEBB;
+          border-radius: 60px;
+          padding-left:2vw;
+          padding-right:2vw;
+          padding-top:0.65vw;
+          padding-bottom:0.65vw; 
+          margin-right: 1vw
+        }
+
+        #pageDivider{
+          width: 97.5%;
+          height: 0.3vw;
+          border-radius: 50px;
+          background: #2C2A1F;
+          margin-bottom: 1vw;
+          margin-top: 0.13vw;
+          margin-left:1vw;}
+
+
+        #reviewLeft{
+          width:40%;
+          display: inline-block;}
+
+        #reviewRight{
+          width:60%;
+          display: inline-block;
+          vertical-align: top;}
+
+        #reviewLeftHeader{
+          font-size: 2.9vw; 
+          text-align: left;
+          margin-top:0.3vw;
+          margin-bottom:1vw;
+          margin-left: 1vw;}
+
+        #reviewItemHeader{
+          font-size: 1.5vw;
+          text-align: left;}
+
+        #reviewDivider{width: 45%;}
+
+        #heart{
+          display: inline-block;
+          width: 4vw; 
+          height:4vw;
+        }
+    

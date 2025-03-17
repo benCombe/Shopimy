@@ -1,4 +1,4 @@
-        #main{
+        #store-page{
           height: 300vh;
 
           display: flex;
@@ -55,6 +55,12 @@
           width: 30%;
           height: 90%;
           margin-left: 15px;
+        }
+
+        #logo{
+          width: auto;
+          height: 100%;
+          border-radius: 50%; /* REMOVE (Optional) */
         }
 
         #logo-text-wrapper{

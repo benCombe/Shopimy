@@ -21,9 +21,11 @@ namespace Server.Data
         public DbSet<ActiveUser> ActiveUsers { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<StoreTheme> StoreThemes {get; set;}
-        public DbSet<Listing> Listing {get; set;}
+        public DbSet<BasicItem> BasicItem {get; set;}
         public DbSet<Category> Categories { get; internal set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<StoreBanner> StoreBanners { get; set; }
+        public DbSet<StoreLogo> StoreLogos { get; set; }
 
         // Ensure table names match conventions  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -72,8 +74,10 @@ namespace Server.Data
 
             modelBuilder.Entity<Store>().ToTable("Stores");
             modelBuilder.Entity<StoreTheme>().ToTable("StoreThemes");
+            modelBuilder.Entity<StoreBanner>().ToTable("StoreBanners");
+            modelBuilder.Entity<StoreLogo>().ToTable("StoreLogos");
             modelBuilder.Entity<Category>().ToTable("Categories");
-            modelBuilder.Entity<Listing>().ToTable("Listing");
+            modelBuilder.Entity<BasicItem>().ToTable("Listing");
             modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
             modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
             modelBuilder.Entity<TestItem>().ToTable("TestTable");  

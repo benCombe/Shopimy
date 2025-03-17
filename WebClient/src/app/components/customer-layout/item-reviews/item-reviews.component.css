@@ -1,0 +1,91 @@
+#reviews{
+        width: 100%;
+        height: 100%;
+        background-color: #D3CEBB;
+        position:fixed;
+        padding:0;
+        margin:0;
+        top:0;
+        left:0;
+        
+    }
+
+    #reviewLeft{
+        width: 40%;
+        height: 50%;
+        display: inline-block;
+        
+    }
+    #reviewRight{
+        width: 55%;
+        height: 50%;
+        display: inline-block;
+        vertical-align: top;
+    }
+    #reviewLeftHeader{
+        font-size: 2.9vw; 
+        text-align: left;
+        margin-top:0.3vw;
+        margin-bottom:1vw;
+        margin-left: 1vw;
+    }
+    #reviewCount{
+        font-size: 2.3vw;
+        text-align: left;
+        margin-left: 1vw;
+        margin-top: 0px;
+    }
+
+    #reviewText{
+        font-size: 2.3vw;
+        text-align: left;
+        margin-right: 1vw;
+        margin-bottom: 0.7vw;
+    }
+
+    #date{
+        font-size: 2.3vw;
+        text-align: right;
+        margin-bottom: 0px;
+        margin-top: 0px;
+    }
+    #dateDiv{
+        width: 38%;
+        display: inline-block;
+        vertical-align: top;
+    }
+    #reviewDivider{
+        width: 100%;
+        height: 0.3vw;
+        border-radius: 50px;
+        background: #2C2A1F;
+        margin-top: 0.1vw;
+        
+    }
+    #stars{
+        width: 60%;
+        height: 3vw;
+        vertical-align: bottom;
+        display: inline-block;
+        margin-bottom: 0.1vw;
+    }
+    #star{
+        margin-left: 0vw; 
+        margin-right: 1vw; 
+        width: 3vw; 
+        height:3vw;
+    }
+    #bigStarDiv{
+        width: 100%;
+        height: 4vw;
+        vertical-align: bottom;
+        display: inline-block;
+        margin-left: 1vw;
+        margin-bottom: 1vw;
+    }
+    #bigStar{
+        margin-left: 0vw; 
+        margin-right: 0.01vw; 
+        width: 4vw; 
+        height:4vw;
+    }

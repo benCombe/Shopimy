@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+/* using Microsoft.AspNetCore.Mvc;
 using Shopimy.Server.Models; // Update to match your project structure
 //using Shopimy.Server.Repositories; // Update accordingly
 using System;
@@ -49,4 +49,9 @@ public class ItemsController : ControllerBase
         return Ok(item);
     }
 }
-*/
+
+ */
+
+
+ //Commented out due to causing errors
+

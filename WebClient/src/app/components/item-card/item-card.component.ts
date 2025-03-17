@@ -7,12 +7,12 @@ import { ItemService } from '../../services/item.service';
 @Component({
   selector: 'app-item-card',
   templateUrl: './item-card.component.html',
-  styleUrls: ['./item-card.component.scss'],
+  styleUrls: ['./item-card.component.css'],
   standalone: true,
   imports: [CommonModule, RouterModule]
 })
 export class ItemCardComponent implements OnInit {
-  @Input() itemId!: string; // Ticket requires itemId as input
+  @Input() itemId!: number; // Ticket requires itemId as input
   item: Item | null = null;
 
   constructor(private itemService: ItemService) {}
