@@ -1,9 +1,10 @@
 /* using Microsoft.AspNetCore.Mvc;
 using Shopimy.Server.Models; // Update to match your project structure
-using Shopimy.Server.Repositories; // Update accordingly
+//using Shopimy.Server.Repositories; // Update accordingly
 using System;
 using System.Threading.Tasks;
 
+/* not working
 [ApiController]
 [Route("api/[controller]")]
 public class ItemsController : ControllerBase
@@ -48,7 +49,9 @@ public class ItemsController : ControllerBase
         return Ok(item);
     }
 }
+
  */
 
 
  //Commented out due to causing errors
+
