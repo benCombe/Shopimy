@@ -1,13 +1,9 @@
-
-/* public class WeatherForecastControllerTests
-
 using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 
 public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactory<Program>>
-
 {
     private readonly HttpClient _client;
     private WeatherForecastControllerTests(WebApplicationFactory<Program> factory)
@@ -32,9 +28,4 @@ public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactor
         */
     }
 
-} */ //updating to test git
-
-
-//Commented out due to causing errors
-
-
+}
