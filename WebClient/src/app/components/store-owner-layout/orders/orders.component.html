@@ -1,96 +1,73 @@
-
 <div id="main">
-
     <div class="section">
         <div id="Total-info">
-            <h3> Total Order(s)</h3>
-            <table  id ="Total-list">
-                <thead>
-                    <tr>
-                        <th>Total Sales</th>
-                        <th>Orders</th>
-                        <th>Customers</th>
-                        <th>Fulfilled Orders</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>$1500</td>
-                        <td>16</td>
-                        <td>5</td>
-                        <td>1</td>
-                    </tr>
-                </tbody>
+            <h3>Total Order(s)</h3>
+            <mat-table [dataSource]="totalOrdersDataSource">
+                <ng-container matColumnDef="totalSales">
+                    <mat-header-cell *matHeaderCellDef>Total Sales</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.totalSales}}</mat-cell>
+                </ng-container>
 
-            </table>
+                <ng-container matColumnDef="orders">
+                    <mat-header-cell *matHeaderCellDef>Orders</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.orders}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customers">
+                    <mat-header-cell *matHeaderCellDef>Customers</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.customers}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="fulfilledOrders">
+                    <mat-header-cell *matHeaderCellDef>Fulfilled Orders</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.fulfilledOrders}}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="totalOrdersColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: totalOrdersColumns;"></mat-row>
+            </mat-table>
         </div>
     </div>
 
     <div class="section">
-        
-
         <div id="Order-info">
             <h3>Order Details</h3>
-            <div id = "Order-list-wrapper">
-                <table id ="Order-list">
-                    <thead>
-                        <tr>
-                            <th>Order:</th>
-                            <th>Customer:</th>
-                            <th>Total:</th>
-                            <th>Item(s):</th>
-                            <th>Payment:</th>
-                            <th>Fulfilled:</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>    
+            <div id="Order-list-wrapper">
+                <mat-table [dataSource]="orderDetailsDataSource">
+                    <ng-container matColumnDef="order">
+                        <mat-header-cell *matHeaderCellDef>Order:</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.order}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="customer">
+                        <mat-header-cell *matHeaderCellDef>Customer:</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.customer}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="total">
+                        <mat-header-cell *matHeaderCellDef>Total:</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.total}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="items">
+                        <mat-header-cell *matHeaderCellDef>Item(s):</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.items}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="payment">
+                        <mat-header-cell *matHeaderCellDef>Payment:</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.payment}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fulfilled">
+                        <mat-header-cell *matHeaderCellDef>Fulfilled:</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.fulfilled}}</mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="orderDetailsColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: orderDetailsColumns;"></mat-row>
+                </mat-table>
+            </div>
         </div>
-
-
     </div>
-    
 </div>
-
