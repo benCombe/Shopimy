@@ -14,7 +14,7 @@
     </div>
     <div *ngIf="currentPage === 'Products'" id="products" class="page">
       Products
-      <app-product-management></app-product-management>
+      <app-product-management [productData] = "productData" [categoryData] = "categoryData"></app-product-management>
     </div>
     <div *ngIf="currentPage === 'Orders'" id="orders" class="page">
       Orders
@@ -34,6 +34,8 @@
     </div>
     <div *ngIf="currentPage === 'Sales'" id="sales" class="page">
       Sales
+      <app-sales></app-sales>
     </div>
+
   </div>
 </div>
