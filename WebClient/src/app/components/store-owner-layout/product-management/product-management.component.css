@@ -48,6 +48,7 @@
 }
 
 
+
 #Product-info{
   align-self: center;
 }
@@ -56,11 +57,12 @@
     align-self: center;
     min-height: 420px;
     max-height: 450px;
-    width: 85vh;
+    width: auto;
     padding: 25px;
     border-radius: 12px;
     background-color: var(--third-color);
 }
+
 #Product-list{
     border-collapse: collapse;
     width: 100%;
@@ -122,4 +124,42 @@
 }
 
 
+.product-table {
+  align-self: center;
+  min-height: 420px;
+  max-height: 450px;
+  width: auto;
+  padding: 25px;
+  border-radius: 12px;
+  background-color: var(--third-color);
+  font-family: var(--main-font-fam);
+  font-size: 2.5rem;
+  
+}
+.mat-table{
+  width: auto;
+  .mat-header-cell{
+    color: red;
+  }
+}
 
+.mat-column-Id{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
+.mat-column-Name{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
+.mat-column-OriginalPrice{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
+.mat-column-QuantityInStock{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
+.mat-column-CategoryIds{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
