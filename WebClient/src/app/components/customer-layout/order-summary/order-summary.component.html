@@ -1,0 +1,34 @@
+
+  <div id="order-summary" class="theme2" [style.background-color]="storeDetails?.theme_2">
+    <h2>Order Summary</h2>
+    <div id="summary-item-container" class="center-col">
+      <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+        <span>Subtotal</span>
+        <span>${{subtotal}}</span>
+      </div>
+      <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+        <span>Shipping Estimate</span>
+        <ng-container *ngIf="subtotal > 30; else shippingcost">
+          <span>FREE</span>
+        </ng-container>
+        <ng-template #shippingcost>
+         <span>${{shippingCost}}</span>
+        </ng-template>
+      </div>
+      <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+        <span>Taxes estimate</span>
+        <span>${{ taxEstimate }}</span>
+      </div>
+      <div id="total" class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+        <span>Total estimate</span>
+        <span>${{ totalEstimate }}</span>
+      </div>
+    </div>
+
+    <div id="checkout-opt" class="center-col">
+      <div id="checkout-btn" class="center theme1 fc hover"
+      [style.background-color]="storeDetails?.theme_1"
+      [style.color]="storeDetails?.fontColor"
+      (click)="nextStep()">{{submitMessage}}</div>
+    </div>
+  </div>

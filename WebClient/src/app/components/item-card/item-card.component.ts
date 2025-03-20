@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Item } from '../../models/item';
 import { ItemService } from '../../services/item.service';
 import { BasicItem } from '../../models/basic-item';
+import { ShoppingService } from '../../services/shopping.service';
 
 @Component({
   selector: 'app-item-card',
@@ -16,7 +17,11 @@ export class ItemCardComponent implements OnInit {
   @Input() itemId: number | null = null; // Ticket requires itemId as input
   item: BasicItem | null = null;
 
-  constructor(private itemService: ItemService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private itemService: ItemService,
+    private cdr: ChangeDetectorRef,
+    private shoppingService: ShoppingService
+  ) {}
 
   ngOnInit(): void {
     this.fetchItem();
@@ -55,6 +60,7 @@ export class ItemCardComponent implements OnInit {
 
   addToBasket(item: BasicItem): void {
     console.log('Adding to basket:', item);
+    this.shoppingService.addToCart(item);
     // Implement your basket logic here
   }
 

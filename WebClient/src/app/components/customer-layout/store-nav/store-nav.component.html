@@ -22,6 +22,7 @@
 
 
     <div id="cart-btn-wrapper">
+      <div id="num-item-indicator" class="center" *ngIf="numCartItems > 0">{{numCartItems}}</div>
       <div id="cart-btn" class="center fc" [style.color]="storeDetails?.fontColor"  (click)="addToUrl('cart')"><i class="fa-solid fa-cart-shopping"></i></div>
     </div>
   </div>

@@ -4,10 +4,11 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular
 import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { ThemeService } from '../../../services/theme.service';
 import { StoreDetails } from '../../../models/store-details';
+import { OrderSummaryComponent } from "../order-summary/order-summary.component";
 
 @Component({
   selector: 'app-checkout',
-  imports: [NgIf, CommonModule, ReactiveFormsModule, StoreNavComponent],
+  imports: [NgIf, CommonModule, ReactiveFormsModule, StoreNavComponent, OrderSummaryComponent],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
 })
