@@ -144,4 +144,81 @@
           width: 4vw; 
           height:4vw;
         }
+    @media only screen and (max-width: 600px) {
+  #bigPic{
+    width: 100%;
+    height:100%;}
+
+  #bigPicHolder{
+    width: 80%;
+    display: inline-block;
+    vertical-align: top;
+    height:39vw;}
+
+  #textSection{
+    width: 100%;
+    height:40vw;
+    margin-left: 1vw;
+    display: inline-block;
+    vertical-align: top;}
+
+    #headerText{
+      font-size: calc(20px + 2.5vw);
+      text-align: left;
+      margin-top:0.3vw;
+      margin-bottom:1vw; }
+
+    #priceText{
+      font-size: calc(20px + 2.5vw);
+      margin-top:0;
+      margin-bottom: 0.5vw;}
+
+    #descText{
+      font-size:calc(10px + 1.3vw);
+      width:100%;  
+      overflow-y: auto;
+      height: calc(87px + 1.3vw); 
+      margin-bottom:0px;
+      scrollbar-color: #2C2A1F #D3CEBB  
+      }
+
+    #options{
+      font-size: calc(10px + 1.3vw); 
+      width: 100%;
+      max-height: 1.3vw;
+      margin-top:calc(23px + 2vw);
+      margin-bottom:calc(17px + 2vw);
+      margin-top: 1.5vw}
+
+    #options2{
+      font-size:calc(10px + 1.3vw);
+      width:100%;  
+      overflow-y: auto;
+      height: calc(87px + 1.3vw); 
+      margin-bottom:0px;
+      scrollbar-color: #2C2A1F #D3CEBB  }
+
+    #btnHolder{
+      display: inline-block;
+      vertical-align: top;
+      margin-top:2vw}
+
+    #btn{
+      font-size: calc(20px + 2.5vw);
+      background-color:#2C2A1F; 
+      border: none;color: #D3CEBB;
+      border-radius: 20px;
+      padding-left:10vw;
+      padding-right:10vw;
+      padding-top: 3vw;
+      padding-bottom:3vw; 
+      margin-right: 1vw}
     
+    #pageDivider{
+      width: 97.5%;
+      height: 0.3vw;
+      border-radius: 50px;
+      background: #2C2A1F;
+      margin-bottom: 50px;
+      margin-left:1vw;}
+}
