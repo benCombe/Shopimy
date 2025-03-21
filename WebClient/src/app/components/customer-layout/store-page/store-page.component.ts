@@ -56,6 +56,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
       this.currentUrl = u;
       this.currentView = this.extractViewFromUrl(u);
       console.log("CURRENT VIEW: "+this.currentView)
+
     })
 
     this.loadingService.setIsLoading(false);
