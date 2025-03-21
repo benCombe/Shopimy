@@ -4,7 +4,7 @@ using Stripe;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-
+/* not working
 [ApiController]
 [Route("api/[controller]")]
 public class PaymentController : ControllerBase
@@ -98,3 +98,4 @@ public class CheckoutSessionRequest
     // Optionally include additional fields e.g., customer email or description
     // public string CustomerEmail { get; set; }
 }
+*/

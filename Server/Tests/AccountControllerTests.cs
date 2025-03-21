@@ -9,15 +9,15 @@ public class AccountControllerTests
     {
         _client = factory.CreateClient();
     }
-    /*
+    
     [Fact]
     public async Task GetPageToLoad()
     {
-        var task = _client.PostAsync("/account");
+        var task = _client.PostAsync("/account", new StringContent(string.Empty));
         var response = task.GetAwaiter().GetResult();
 
         response.EnsureSuccessStatusCode();
 
     }
-    */
+    
 }
