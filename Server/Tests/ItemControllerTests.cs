@@ -2,7 +2,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-/*not working at the moment
+
 [Collection("Integration Tests")]
 public class ItemsControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -21,4 +21,3 @@ public class ItemsControllerTests : IClassFixture<WebApplicationFactory<Program>
 
     }
 }
-*/
