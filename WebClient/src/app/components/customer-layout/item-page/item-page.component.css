@@ -1,4 +1,4 @@
-        #main{
+          #main{
            background-color: #D3CEBB;
            position:fixed;
            padding:0;
@@ -8,8 +8,10 @@
            width: 100%;
            height: 100%;}
         
-        #TopHalf{
-           margin-top: 5vw}
+          #TopHalf{
+           margin-top: 5vw;
+           
+          }
 
         #leftPics{
            width:15%;}
@@ -21,16 +23,15 @@
         #smlPic{
            margin-left: 1vw; 
            padding-bottom: 1vw;
-           width: 9.5vw; 
-           height:9.5vw;}
+           width: 8.5vw; 
+           height:8.5vw;}
 
         #bigPic{
-           width: 90%;
-           height:95%;}
+           width: 80%;
+           height:90%;}
 
         #bigPicHolder{
-           width: 42%;
-           min-width: 700px;
+           width: 45%;
            display: inline-block;
            vertical-align: top;
            height:39vw;}
@@ -39,21 +40,20 @@
           width: 40%;
           height:40vw;
           display: inline-block;
-          vertical-align: top;
-          margin-left: 2vw;}
+          vertical-align: top;}
 
         #headerText{
-          font-size:calc(12px + 2.9vw);
+          font-size: 2.5vw;
           text-align: left;
           margin-top:0.3vw;
           margin-bottom:1vw; }
 
         #priceText{
-          font-size: calc(12px + 2.9vw);
+          font-size: 2.5vw;
           margin-top:0;}
 
         #descText{
-          font-size:max(15px,1.3vw);
+          font-size:1.3vw;
           width:37vw;  
           overflow-y: auto; 
           height: 8vw; 
@@ -61,18 +61,18 @@
           scrollbar-color: #2C2A1F #D3CEBB  }
 
         #options{
-          font-size: max(15px,1.3vw); 
+          font-size: 1.3vw; 
           width: 37vw;
-          max-height: max(15px,1.3vw);
+          max-height: 1.3vw;
           margin-top:0px;
           margin-bottom:2vw;
           margin-top: 1.5vw}
 
         #options2{
-          font-size: max(15px,1.3vw);
+          font-size: 1.3vw;
           width: 37vw; 
           overflow-y: auto;
-          height:  max(90px,7.5vw); 
+          height: 7.5vw; 
           scrollbar-color: #2C2A1F #D3CEBB}
 
         #btnHolder{
@@ -82,38 +82,21 @@
 
         #btn{
           font-size: 2.5vw;
-          vertical-align: top;
-          
           background-color:#2C2A1F; 
           border: none;color: #D3CEBB;
-          border-radius: 60px;
-          padding-left:7vw;
-          padding-right:7vw;
-          padding-top:1.2vw;
-          padding-bottom:1.2vw; 
+          border-radius: 40px;
+          padding-left:3vw;
+          padding-right:3vw;
+          padding-top:0.6vw;
+          padding-bottom:0.6vw; 
           margin-right: 1vw}
         
-        #heartBtn{
-          font-size: 2.5vw;
-          vertical-align: top;
-          
-          background-color:#2C2A1F; 
-          border: none;color: #D3CEBB;
-          border-radius: 60px;
-          padding-left:2vw;
-          padding-right:2vw;
-          padding-top:0.65vw;
-          padding-bottom:0.65vw; 
-          margin-right: 1vw
-        }
-
         #pageDivider{
           width: 97.5%;
           height: 0.3vw;
           border-radius: 50px;
           background: #2C2A1F;
-          margin-bottom: 1vw;
-          margin-top: 0.13vw;
+          margin-bottom: 50px;
           margin-left:1vw;}
 
 
@@ -127,24 +110,21 @@
           vertical-align: top;}
 
         #reviewLeftHeader{
-          font-size: 2.9vw; 
+          font-size: 2.5vw; 
           text-align: left;
           margin-top:0.3vw;
           margin-bottom:1vw;
           margin-left: 1vw;}
 
+        
         #reviewItemHeader{
           font-size: 1.5vw;
           text-align: left;}
 
         #reviewDivider{width: 45%;}
 
-        #heart{
-          display: inline-block;
-          width: 4vw; 
-          height:4vw;
-        }
-    @media only screen and (max-width: 600px) {
+
+@media only screen and (max-width: 700px) {
   #bigPic{
     width: 100%;
     height:100%;}
@@ -157,7 +137,7 @@
 
   #textSection{
     width: 100%;
-    height:40vw;
+    height:calc(270px + 30vw);
     margin-left: 1vw;
     display: inline-block;
     vertical-align: top;}
@@ -175,7 +155,7 @@
 
     #descText{
       font-size:calc(10px + 1.3vw);
-      width:100%;  
+      width:98%;  
       overflow-y: auto;
       height: calc(87px + 1.3vw); 
       margin-bottom:0px;
@@ -184,7 +164,7 @@
 
     #options{
       font-size: calc(10px + 1.3vw); 
-      width: 100%;
+      width: 98;
       max-height: 1.3vw;
       margin-top:calc(23px + 2vw);
       margin-bottom:calc(17px + 2vw);
@@ -192,7 +172,7 @@
 
     #options2{
       font-size:calc(10px + 1.3vw);
-      width:100%;  
+      width:98%;  
       overflow-y: auto;
       height: calc(87px + 1.3vw); 
       margin-bottom:0px;
@@ -216,7 +196,7 @@
     
     #pageDivider{
       width: 97.5%;
-      height: 0.3vw;
+      height: calc(2px + 0.3vw);
       border-radius: 50px;
       background: #2C2A1F;
       margin-bottom: 50px;
