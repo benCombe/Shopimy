@@ -6,7 +6,7 @@ using Xunit;
 public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
-    private WeatherForecastControllerTests(WebApplicationFactory<Program> factory)
+    internal WeatherForecastControllerTests(WebApplicationFactory<Program> factory)
     {
         _client = factory.CreateClient();
     }
