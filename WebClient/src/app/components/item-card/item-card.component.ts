@@ -35,10 +35,10 @@ export class ItemCardComponent implements OnInit {
 
   private fetchItem(): void{
     if (this.itemId) {
-      console.log("Fetching item with ID:", this.itemId);
+     // console.log("Fetching item with ID:", this.itemId);
       this.itemService.getItemById(this.itemId).subscribe(
         (data: any) => {
-          console.log("Raw Data:", data);
+         // console.log("Raw Data:", data);
 
           // Extract the first item if API response is wrapped in an object or array
           if (Array.isArray(data)) {
@@ -49,7 +49,7 @@ export class ItemCardComponent implements OnInit {
             this.item = data; // Fallback to default behavior
           }
 
-          console.log("Updated Item:", this.item);
+        //  console.log("Updated Item:", this.item);
           this.cdr.detectChanges(); // Force UI update
         },
         error => console.error('Failed to load item ' + this.itemId + ': ', error)
@@ -59,13 +59,13 @@ export class ItemCardComponent implements OnInit {
 
 
   addToBasket(item: BasicItem): void {
-    console.log('Adding to basket:', item);
+   // console.log('Adding to basket:', item);
     this.shoppingService.addToCart(item);
     // Implement your basket logic here
   }
 
   bookmarkItem(item: Item): void {
-    console.log('Bookmarking item:', item);
+   // console.log('Bookmarking item:', item);
     // Implement your bookmark logic here
   }
 }

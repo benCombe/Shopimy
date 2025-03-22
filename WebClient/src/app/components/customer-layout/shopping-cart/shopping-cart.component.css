@@ -23,7 +23,7 @@
 #cart-items-container{
   width: calc(70% - 4rem);
   padding: 10px;
-  max-height: 50vh;
+  max-height: 60vh;
   overflow-y: scroll;
 }
 
@@ -33,7 +33,8 @@
   align-items: center;
   padding: 20px;
   border-top: 2px solid black;
-  height: 275px;
+  height: 150px;
+
 }
 
 .strikethrough{
@@ -49,7 +50,8 @@
 }
 
 .item-img-container{
-  width: 16%;
+  width: 12%;
+
   max-width: 500px;
 }
 

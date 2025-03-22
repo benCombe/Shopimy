@@ -1,3 +1,7 @@
+
+//DO NOT MODIFY THIS PAGE!!!
+
+
 import { StoreService } from './store.service';
 import { Injectable } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
@@ -33,25 +37,27 @@ export class StoreNavService {
   }
 
 
-  // Initialize method to set the initial state
   initialize(): void {
-    const storeUrl = this.router.url.split('/')[1]; // Get the store URL segment
-    this.currentUrlSubject.next(storeUrl); // Set initial URL to store-url
+    // Set the initial URL when the service is initialized
+    const initialUrl = this.router.url.replace(/^\//, ''); // Remove leading slash
+    this.currentUrlSubject.next(initialUrl);
+    console.log("STORENAV: Initial URL: " + initialUrl);
 
-    // Listen for router navigation changes and update currentUrl
+    // Listen for router navigation changes (including back/forward)
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
         map((event: any) => event.urlAfterRedirects.replace(/^\//, '')) // Remove leading slash
       )
       .subscribe(newUrl => {
-        console.log("STORENAV: " + newUrl);
+        console.log("STORENAV: Navigation change detected: " + newUrl);
         this.currentUrlSubject.next(newUrl);
       });
 
-    // Handle browser back/forward navigation
+    // Handle browser back/forward navigation manually
     window.addEventListener('popstate', () => {
-      const newUrl = this.router.url.split('/')[1]; // Get the store URL segment
+      const newUrl = this.router.url.replace(/^\//, ''); // Get the new URL after popstate
+      console.log("STORENAV: Popstate event detected: " + newUrl);
       this.currentUrlSubject.next(newUrl);
     });
   }
