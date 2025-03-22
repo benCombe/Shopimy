@@ -7,6 +7,7 @@ import { NgFor, NgIf, NgStyle } from '@angular/common';
 import { StoreService } from '../../../services/store.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { StoreNavService } from '../../../services/store-nav.service';
+import { ShoppingService } from '../../../services/shopping.service';
 
 @Component({
   selector: 'app-store-nav',
@@ -26,6 +27,8 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
 
   storeUrl = "";
 
+  numCartItems: number = 0;
+
   setHover(categoryId: number, isHovered: boolean): void {
     this.hoverStates = { ...this.hoverStates, [categoryId]: isHovered };
   }
@@ -36,7 +39,8 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     private storeService: StoreService,
     private router: Router,
     private route: ActivatedRoute,
-    private storeNavService: StoreNavService
+    private storeNavService: StoreNavService,
+    private shoppingService: ShoppingService
   ) {}
 
 
@@ -49,6 +53,10 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     this.route.params.subscribe(params => {
       this.storeUrl = params['storeUrl'];
       //this.storeService.getStoreDetails(storeUrl);
+    });
+
+    this.shoppingService.Cart$.subscribe(c =>{
+      this.numCartItems = c.length;
     });
   }
 

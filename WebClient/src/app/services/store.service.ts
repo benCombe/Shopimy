@@ -61,22 +61,6 @@ export class StoreService {
     );
   }
 
-  /*
-  // Alternative implementation (commented out):
-  getStoreDetails(url: string): Observable<Response> {
-    return this.http.get<Response>(`${this.apiUrl}/${url}`).pipe(
-      tap((resp) => {
-        this.activeStoreSubject.next(resp.details);
-        // If you have an activeStoreCategorySubject, update it here:
-        // this.activeStoreCategorySubject.next(resp.categories);
-      }),
-      catchError((error) => {
-        console.error('Error fetching store details:', error);
-        return throwError(() => new Error('Failed to fetch store details.'));
-      })
-    );
-  }
-  */
 
   getCategoryByName(name: string): Category | null {
     return this.activeStoreSubject.value.categories.find(cat => cat.name === name) ?? null;
@@ -85,5 +69,11 @@ export class StoreService {
   // Retrieves categories from the API.
   getCategories(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiUrl}/categories`);
+  }
+
+  getRandomItemIdsByStore(storeId: number): Observable<number[]> {
+    return this.http.post<number[]>('http://localhost:5000/api/Categories/GetItemIdsByStore', storeId, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
