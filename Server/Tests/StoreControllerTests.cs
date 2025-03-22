@@ -1,4 +1,3 @@
-using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
@@ -16,7 +15,7 @@ public class StoreControllerTests
         var response = await _client.GetAsync("/store");
 
         response.EnsureSuccessStatusCode();
-        //var content = await response.Content.ReadAsStringAsync();
-        //Console.WriteLine(content);
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
     }
 }
