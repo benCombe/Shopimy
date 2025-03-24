@@ -1,24 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
-using Stripe.Checkout;
 using Stripe;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+using Stripe.Checkout;
 
 [ApiController]
 [Route("api/[controller]")]
 public class PaymentController : ControllerBase
 {
-    public PaymentController()
+    private readonly IConfiguration _configuration;
+
+    public PaymentController(IConfiguration configuration)
     {
-        // Initialize Stripe configuration
-        StripeConfiguration.ApiKey = "sk_test_51R3l1P2fQMpcECcW3YEiegl49lbNeD2ZQA9CU3f5261hnND6qHNrUe9rqfQ4v3GlgFaSiZIFROSLHxxQSwoaQopf00RzkpCJBL";
+        _configuration = configuration;
+        // Load the secret key from configuration (Appsettings.secrets.json)
+        StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
     }
 
+    // POST api/payment/create-checkout-session
     [HttpPost("create-checkout-session")]
     public ActionResult CreateCheckoutSession([FromBody] CheckoutSessionRequest request)
     {
-        // Create options for the session
         var options = new SessionCreateOptions
         {
             PaymentMethodTypes = new List<string> { "card" },
@@ -39,12 +39,10 @@ public class PaymentController : ControllerBase
                     Quantity = 1,
                 },
             },
-            // Attach additional data as metadata so you can reference them in webhooks or later in the dashboard.
             Metadata = new Dictionary<string, string>
             {
                 { "storeId", request.StoreId.ToString() },
                 { "categoryId", request.CategoryId.ToString() }
-                // You can add other fields here, e.g. { "customerEmail", request.CustomerEmail }
             },
             SuccessUrl = "https://shopimy.com/success?session_id={CHECKOUT_SESSION_ID}",
             CancelUrl = "https://shopimy.com/cancel",
@@ -52,20 +50,17 @@ public class PaymentController : ControllerBase
 
         var service = new SessionService();
         Session session = service.Create(options);
+
         return Ok(new { sessionUrl = session.Url });
     }
-}
 
-[ApiController]
-[Route("api/[controller]")]
-public class WebhookController : ControllerBase
-{
-    [HttpPost]
-    public async Task<IActionResult> Index()
+    // POST api/payment/webhook
+    [HttpPost("webhook")]
+    public async Task<IActionResult> Webhook()
     {
         var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-        // You can find your webhook secret in your Stripe dashboard
-        var webhookSecret = "your_webhook_secret"; //not sure yet
+        // Retrieve the webhook secret from configuration
+        var webhookSecret = _configuration["Stripe:WebhookSecret"];
         Event stripeEvent;
 
         try
@@ -74,15 +69,17 @@ public class WebhookController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Invalid signature
+            // Invalid signature – return a 400 error
             return BadRequest();
         }
 
-        // Handle the event (e.g., checkout.session.completed)
-        if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+        // Handle the event (for example, checkout.session.completed)
+        if (stripeEvent.Type == "checkout.session.completed")
         {
             var session = stripeEvent.Data.Object as Session;
             // Fulfill the purchase, update order status in your database, etc.
+            // For example:
+            // OrderService.FulfillOrder(session.Id, session.Metadata["storeId"]);
         }
 
         return Ok();
@@ -92,9 +89,8 @@ public class WebhookController : ControllerBase
 public class CheckoutSessionRequest
 {
     public decimal Amount { get; set; }
-    public string ProductName { get; set; }
+    public required string ProductName { get; set; }
     public int StoreId { get; set; }
     public int CategoryId { get; set; }
-    // Optionally include additional fields e.g., customer email or description
-    // public string CustomerEmail { get; set; }
+    // Optionally include additional fields such as CustomerEmail, etc.
 }
