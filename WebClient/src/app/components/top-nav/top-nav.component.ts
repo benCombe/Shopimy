@@ -1,18 +1,22 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-top-nav',
   imports: [NgIf, NgFor, NgClass, RouterLink],
   templateUrl: './top-nav.component.html',
-  styleUrl: './top-nav.component.css'
+  styleUrl: './top-nav.component.css',
+  standalone: true
 })
-export class TopNavComponent {
+export class TopNavComponent implements OnInit {
 
   isDropdownOpen: boolean = false;
   isMobileMenuOpen: boolean = false;
   isMobile: boolean = false;
+  isLoggedIn: boolean = false;
+  isUserMenuOpen: boolean = false;
 
   options = [
     { label: 'Register', link: '/register' },
@@ -24,8 +28,15 @@ export class TopNavComponent {
     {label: 'Store', link: '/store'}
   ];
 
+  constructor(private userService: UserService) {}
+
   ngOnInit(): void {
-     this.onLoad();
+    this.onLoad();
+    this.userService.loggedIn$.subscribe(
+      loggedIn => {
+        this.isLoggedIn = loggedIn;
+      }
+    );
   }
 
   toggleDropdown() {
@@ -33,10 +44,17 @@ export class TopNavComponent {
     console.log(this.isDropdownOpen ? "Open" : "Close");
   }
 
+  toggleUserMenu() {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+  }
+
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 
+  logout() {
+    this.userService.logout();
+  }
 
   @HostListener('window:resize', [])
   onResize() {
@@ -51,7 +69,6 @@ export class TopNavComponent {
     this.isMobile = window.innerWidth <= 768;
   }
 
-
   closeDropdown() {
     this.isDropdownOpen = false;
   }
@@ -65,6 +82,8 @@ export class TopNavComponent {
     if (!(event.target as HTMLElement).closest('#hamburger')) {
       this.isMobileMenuOpen = false;
     }
+    if (!(event.target as HTMLElement).closest('#user-menu')) {
+      this.isUserMenuOpen = false;
+    }
   }
-
 }
