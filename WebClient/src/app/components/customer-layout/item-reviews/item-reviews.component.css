@@ -89,3 +89,52 @@
         width: 4vw; 
         height:4vw;
     }
+
+  @media only screen and (max-width: 700px) {
+     #reviewLeftHeader{
+        font-size: calc(10px + 1.3vw); 
+        text-align: left;
+        margin-top:0.3vw;
+        margin-bottom:1vw;
+        margin-left: 1vw;
+    }
+    #reviewText{
+      font-size: calc(10px + 1vw);
+      text-align: left;
+      margin-right: 1vw;
+      margin-bottom: 0.7vw;
+    }
+    #date{
+      font-size: calc(10px + 1vw);
+      text-align: right;
+      margin-bottom: 0px;
+      margin-top: 0px;
+    }
+    #reviewDivider{
+      width: 100%;
+      height: calc(1px + 0.3vw);
+      border-radius: 50px;
+      background: #2C2A1F;
+      margin-top: 0.1vw;   
+    }
+    #star{
+      margin-left: 0vw; 
+      margin-right: 1vw; 
+      width: calc(6px + 2vw); 
+      height:calc(6px + 2vw);
+    }
+    #stars{
+      width: 60%;
+      height: 3vw;
+      vertical-align: bottom;
+      display: inline-block;
+      margin-bottom: 0.1vw;
+    }
+    #reviewCount{
+      font-size: calc(10px + 1.3vw);
+      text-align: left;
+      margin-left: 1vw;
+      margin-top: 0px;
+    }
+  }
+
