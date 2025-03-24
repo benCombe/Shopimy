@@ -11,7 +11,7 @@
 
   <!-- Details Section -->
   <div class="item-details">
-    <h3 class="item-name">{{ item.name ? item.name : "MISSING"}}</h3>
+    <h3 class="item-name">{{ item.name ? item.name : "MISSING NAME"}}</h3>
     <div class="item-price">
       <ng-container *ngIf="item.salePrice < item.price; else notOnSale">
         <span class="sale-price">${{ item.salePrice }}</span>
