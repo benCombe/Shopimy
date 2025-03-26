@@ -3,6 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { RouterLink, Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
+import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-side-nav',
@@ -21,7 +22,7 @@ export class SideNavComponent {
     {name: 'Analytics', subNav: ['Traffic', 'Sales'], open: false}
   ]
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(private userService: UserService, private router: Router, private loadingService: LoadingService) {}
 
   toggleDropdown(item: any) {
     // Toggle the dropdown menu
@@ -38,7 +39,9 @@ export class SideNavComponent {
   }
 
   logout(): void{
+    this.loadingService.setIsLoading(true);
     this.userService.logout();
     this.router.navigate(['/home']);
+    this.loadingService.setIsLoading(false);
   }
 }

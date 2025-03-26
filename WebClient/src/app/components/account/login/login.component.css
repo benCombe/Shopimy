@@ -138,10 +138,80 @@
   cursor: pointer;
 }
 
-@media only screen and (max-width:715px){
+
+@media only screen and (max-width:1200px){
   #login{
-    height:50vh;
-    width: 78vw;
-    margin-top: -20%;
+    height:72vh;
+    width: 60vw;
+    margin-top: -5%;
   }
+
+    
+  .form-entry{
+    margin-top: 0px;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+  }
+
+  #login-form label{
+    font-size: 1.1rem;
+  }
+
+  #login-form input{
+    width: 250px;
+    height: 25px;
+    font-size: 1rem;
+  }
+
+  #login-btn{
+    width: 30%;
+  }
+
+  .sm-login{
+    width: 30%;
+    height: 40px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+  }
+  
+  .sm-login span{
+    margin-right: 10px;
+    text-align: center;
+    width: 80%;
+  }
+
+  .sm-login img{
+    height: auto;
+    width: 10%;
+  }
+
+  #no-account{
+    margin-top: 100px;
+    font-size: 1rem;
+  }
+}
+
+
+@media only screen and (max-width:715px){
+  #main{
+    height: 125vh;
+  }
+
+  #login{
+    height:80vh;
+    width: 78vw;
+    margin-top:  -20%;
+  }
+
+  #login-btn{
+    width: 50%;
+  }
+
+  .sm-login{
+    width: 50%;
+  }
+
+
+  
+  
 }

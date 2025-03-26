@@ -1,4 +1,5 @@
-#main{
+/* #main{
+  position: relative;
   width: 100vw;
   height: 5vh;
   padding: 2rem;
@@ -6,8 +7,159 @@
 
 #store-name{
   font-size: 2.8rem;
-  max-width: 200px;
+  max-width: 500px;
   background-color: none;
 }
 
+#categories{
+  float: right;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  max-width: 50%;
+  margin-top: 10px;
+}
 
+.cat{
+  text-align: center;
+  margin-left: 30px;
+  font-weight: bold;
+}
+ */
+
+
+ #main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures store name is on the left */
+  position: relative;
+  width: 100vw;
+  height: 5vh;
+  padding: 2rem;
+/*   overflow: hidden; */
+  z-index: 1000;
+}
+
+#store-name {
+  font-size: 2.8rem;
+  max-width: 500px;
+  white-space: nowrap; /* Prevents breaking into multiple lines */
+  cursor: pointer;
+}
+
+#categories-wrapper{
+  margin-right: 100px;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 20px;
+}
+
+#categories {
+  /* margin-right: 50px; */
+  display: flex;
+  flex-direction: row-reverse; /* Makes the items align right & grow leftward */
+  align-items: flex-end;
+  justify-content: flex-end; /* Ensures right alignment */
+  height: 100px;
+  width: auto; /* Expands as needed */
+  max-width: 100%;
+  z-index: 1000;
+}
+
+.cat-wrapper {
+  position: relative; /* Ensures dropdown is positioned relative to the parent category */
+  display: inline-block;
+}
+
+.cat {
+  margin-right: 100px; /* Moves elements leftward instead of rightward */
+  font-size: 1.5rem;
+  font-weight: bold;
+  white-space: nowrap;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.cat:hover{
+  cursor: pointer;
+}
+
+.dropdown {
+  display: none; /* Initially hidden */
+  position: absolute;
+  top: 110%;
+  left: -20px;
+  background-color: grey; /* FIX THIS */
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  min-width: 125px;
+  z-index: 1000;
+}
+
+.sub-cat {
+  display: block;
+  padding: 10px;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.sub-cat:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+/* Show dropdown when hovering over parent category */
+.cat-wrapper:hover .dropdown {
+  display: block;
+}
+
+
+
+#cart-btn-wrapper{
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+#num-item-indicator{
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  background-color: black;
+  color: white;
+  border-radius: 50%;
+}
+
+#cart-btn{
+  height: 50px;
+  width: 50px;
+  font-size: 2.5rem;
+}
+
+#cart-btn:hover{
+  cursor: pointer;
+}
+
+
+@media only screen and (max-width: 1200px) {
+
+  .cat {
+    margin-right: 50px; /* Moves elements leftward instead of rightward */
+    font-size: 1rem;
+
+  }
+
+  #categories{
+    margin-bottom: 10px;
+  }
+
+  .dropdown{
+    left: -25px;
+  }
+}

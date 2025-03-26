@@ -1,17 +1,22 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { ThemeService } from '../../../services/theme.service';
+import { StoreDetails } from '../../../models/store-details';
+import { OrderSummaryComponent } from "../order-summary/order-summary.component";
 
 @Component({
   selector: 'app-checkout',
-  imports: [NgIf, CommonModule, ReactiveFormsModule, StoreNavComponent],
+  imports: [NgIf, CommonModule, ReactiveFormsModule, StoreNavComponent, OrderSummaryComponent],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
 })
 
 export class CheckoutComponent implements AfterViewInit{
+
+  @Input() storeDetails: StoreDetails | null = null;
+
   currentStep = 1; // Track the current panel
 
   shippingForm: FormGroup;
@@ -38,11 +43,11 @@ export class CheckoutComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    this.themeService.setThemeOne("theme1");
+    /* this.themeService.setThemeOne("theme1");
     this.themeService.setThemeTwo("theme2");
     this.themeService.setThemeThree("theme3");
     this.themeService.setFontColor("fc");
-    this.themeService.setButtonHoverColor("hover");
+    this.themeService.setButtonHoverColor("hover"); */
   }
 
   nextStep() {

@@ -1,31 +1,79 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Item } from '../models/item'; // Assume you have this model
+import { StoreDetails } from '../models/store-details';
+import { Category } from '../models/category';
+import { environment } from '../../environments/environment';
+
+interface Response {
+  details: StoreDetails;
+  categories: Category[];
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
-  // Base URL for the items endpoint; update if your API uses a different route.
+  private apiUrl = `${environment.apiUrl}/store`;
+
+  // Base URLs for items and categories endpoints.
   private itemBaseUrl = '/api/items';
-  // Example base URL for the categories endpoint.
   private categoryBaseUrl = '/api/categories';
+
+
+
+  activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "", []));
+  activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
-  // Creates a new item
-  createItem(item: Item): Observable<Item> {
-    return this.http.post<Item>(this.itemBaseUrl, item);
+  // Active getStoreDetails method: maps the response to a new StoreDetails instance.
+  getStoreDetails(url: string): Observable<StoreDetails> {
+    return this.http.get<StoreDetails>(`${this.apiUrl}/${url}`).pipe(
+      map((resp) => {
+        return new StoreDetails(
+          resp.id, // Ensure ID is a string or number as expected
+          resp.url,
+          resp.name,
+          resp.theme_1,
+          resp.theme_2,
+          resp.theme_3,
+          resp.fontColor,
+          resp.fontFamily,
+          resp.bannerText,
+          resp.logoText,
+          resp.bannerURL,
+          resp.logoURL,
+          resp.categories.map(cat =>
+            new Category(cat.categoryId, cat.storeId, cat.name, cat.parentCategory)
+          )
+        );
+      }),
+      tap((storeDetails) => {
+        this.activeStoreSubject.next(storeDetails);
+        console.log("Mapped StoreDetails:", storeDetails);
+      }),
+      catchError((error) => {
+        console.error('Error fetching store details:', error);
+        return throwError(() => new Error('Failed to fetch store details.'));
+      })
+    );
   }
 
-  // Retrieves all items
-  getItems(): Observable<Item[]> {
-    return this.http.get<Item[]>(this.itemBaseUrl);
+
+  getCategoryByName(name: string): Category | null {
+    return this.activeStoreSubject.value.categories.find(cat => cat.name === name) ?? null;
   }
 
-  // Example method for fetching categories for a store
+  // Retrieves categories from the API.
   getCategories(): Observable<any[]> {
-    return this.http.get<any[]>(this.categoryBaseUrl);
+    return this.http.get<any[]>(`${environment.apiUrl}/categories`);
+  }
+
+  getRandomItemIdsByStore(storeId: number): Observable<number[]> {
+    return this.http.post<number[]>('http://localhost:5000/api/Categories/GetItemIdsByStore', storeId, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }

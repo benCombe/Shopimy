@@ -14,7 +14,23 @@ export class UserService {
 
   private apiUrl = `${environment.apiUrl}/account`;
 
-  private defaultUser: User = new User(0, "Guest", "User", "example@gmail.com", "555-555-5555", "123 Nowhere Lane, Someplace, NS", "Canada", null, true);
+  private defaultUser: User = new User(
+    0, 
+    "Guest", 
+    "User", 
+    "example@gmail.com", 
+    "555-555-5555", 
+    "123 Nowhere Lane, Someplace, NS", 
+    "Canada", 
+    null, 
+    true,
+    "Someplace",
+    "NS",
+    "A1A 1A1",
+    null,
+    null,
+    null
+  );
 
   private activeUserSubject = new BehaviorSubject<User>(this.defaultUser);
   public activeUser$ : Observable<User> = this.activeUserSubject.asObservable();
@@ -53,7 +69,12 @@ export class UserService {
             response.user.address,
             response.user.country,
             null, //No Stored Password
-            response.user.verified
+            response.user.verified,
+            response.user.city,
+            response.user.province,
+            response.user.postalCode,
+            response.user.countryCode,
+            response.user.phoneCode
           );
           this.activeUserSubject.next(rUser);
           this.loggedInSubject.next(true);
@@ -70,6 +91,11 @@ export class UserService {
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any>(`${this.apiUrl}/profile`, { headers });
+  }
+
+  // Update user profile
+  updateUserProfile(user: User): Observable<boolean> {
+    return this.http.put<boolean>(`${this.apiUrl}/profile`, user);
   }
 
   // Logout User
@@ -116,6 +142,11 @@ export class UserService {
   getActiveUser(): User{
     return this.activeUserSubject.getValue();
   }
+
+  //TODO Implement
+  //getUserPurchaseHistory
+  //getUserPaymentMethods
+  //getUserWishlists
 }
 
 

@@ -1,0 +1,10 @@
+/* item-list.component.scss */
+.item-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Exactly 3 columns */
+    gap: 2rem; /* Spacing between columns and rows */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  

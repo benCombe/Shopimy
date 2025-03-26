@@ -5,6 +5,7 @@ import { NgIf, NgFor, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RegistrationDetails } from '../../../models/registration-details';
 import { RouterLink, Router } from '@angular/router';
+import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-register',
@@ -55,7 +56,7 @@ export class RegisterComponent {
     { value: 'CA', label: 'Canada' }
   ];
 
-  constructor(private userService: UserService, private router: Router){}
+  constructor(private userService: UserService, private router: Router, private loadingService: LoadingService){}
 
   ngOnInit() {
     //this.selectedCountry = this.countries[0].value;
@@ -143,6 +144,7 @@ export class RegisterComponent {
 
   register(): void{
     if(this.isFormValid()){
+      this.loadingService.setIsLoading(true);
       const user = new RegistrationDetails(this.firstname, this.lastname,
                                            this.email, this.phone,
                                            this.concatAddr(), this.selectedCountry.toUpperCase(),
@@ -152,6 +154,7 @@ export class RegisterComponent {
         next: () => {
           console.log('Registration Successful, Logging in...'),
           this.router.navigate(['/dashboard']);
+          this.loadingService.setIsLoading(false);
         },
         error: err => console.error("Registartion Failed", err)
       });

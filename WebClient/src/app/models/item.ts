@@ -1,6 +1,6 @@
 export class Item {
   Name: string;
-  Id: string;
+  Id: number;
   OriginalPrice: number;
   SalePrice?: number;
   OnSale: boolean;
@@ -10,10 +10,11 @@ export class Item {
   AvailTo: Date;
   CurrentRating: number;
   CategoryIds: number[];
+  ImageUrl?: string;  // Added property
 
   constructor(data: {
     Name: string;
-    Id: string;
+    Id: number;
     OriginalPrice: number;
     SalePrice?: number;
     OnSale: boolean;
@@ -23,6 +24,7 @@ export class Item {
     AvailTo: Date | string;
     CurrentRating: number;
     CategoryIds: number[];
+    ImageUrl?: string; // Optional
   }) {
     this.Name = data.Name;
     this.Id = data.Id;
@@ -35,5 +37,6 @@ export class Item {
     this.AvailTo = new Date(data.AvailTo);
     this.CurrentRating = data.CurrentRating;
     this.CategoryIds = data.CategoryIds;
+    this.ImageUrl = data.ImageUrl;
   }
 }

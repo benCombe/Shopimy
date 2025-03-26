@@ -3,8 +3,6 @@
 
   <div id="nav-wrapper" class="center" [ngClass]="{ 'mobile-menu': isMobileMenuOpen }">
 
-
-
     <!-- Navigation Items -->
     <div id="dropdown" class="dropdown" *ngIf="!isMobile">
       <div class="dropdown-header" (click)="toggleDropdown()">
@@ -17,8 +15,18 @@
       </ul>
     </div>
 
-    <div id="login-btn" routerLink="/login">Log In</div>
-
+    <div *ngIf="!isLoggedIn" id="login-btn" routerLink="/login">Log In</div>
+    
+    <!-- User Menu for logged in users -->
+    <div *ngIf="isLoggedIn" id="user-menu" class="dropdown">
+      <div class="dropdown-header" (click)="toggleUserMenu()">
+        My Account <i class="fa-solid fa-angle-down"></i>
+      </div>
+      <ul class="dropdown-options" [ngClass]="{ 'show': isUserMenuOpen }">
+        <li class="opt" routerLink="/profile">Profile</li>
+        <li class="opt" (click)="logout()">Logout</li>
+      </ul>
+    </div>
 
     <!-- Hamburger Menu Button -->
     <div id="hamburger" (click)="toggleMobileMenu()" *ngIf="isMobile">
@@ -29,6 +37,9 @@
     <div *ngIf="isMobileMenuOpen && isMobile" id="mobile-menu">
       <ul>
         <li *ngFor="let option of options" class="opt">{{ option.label }}</li>
+        <li *ngIf="isLoggedIn" class="opt" routerLink="/profile">Profile</li>
+        <li *ngIf="isLoggedIn" class="opt" (click)="logout()">Logout</li>
+        <li *ngIf="!isLoggedIn" class="opt" routerLink="/login">Log In</li>
       </ul>
     </div>
 

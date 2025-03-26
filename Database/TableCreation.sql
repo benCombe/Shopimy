@@ -25,6 +25,7 @@ CREATE TABLE Stores (
     store_id INT IDENTITY(10000001,1) PRIMARY KEY,
     owner INT NOT NULL,
     name NVARCHAR(100) UNIQUE NOT NULL,
+    store_url varchar(100) UNIQUE NOT NULL,
     FOREIGN KEY (owner) REFERENCES Users(id) ON DELETE CASCADE
 );
 
@@ -34,18 +35,24 @@ CREATE TABLE StoreThemes (
     theme_colour2 NVARCHAR(7) NOT NULL,
     theme_colour3 NVARCHAR(7) NOT NULL,
     font_colour NVARCHAR(7) NOT NULL,
-    font_family NVARCHAR(50) NOT NULL,
+    font_family VARCHAR(200) NOT NULL,
+    banner_text varchar(50),
+    logo_text varchar(50),
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE
 );
 
-CREATE TABLE StoreFiles (
-    file_id INT IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE StoreBanners (
     store_id INT NOT NULL,
-    banner VARBINARY(MAX) NULL,
-    logo VARBINARY(MAX) NULL,
+    banner_url VARCHAR(200) NOT NULL,
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
-    CONSTRAINT UQ_StoreFiles UNIQUE (store_id, file_id)
 );
+
+CREATE TABLE StoreLogos (
+    store_id INT NOT NULL,
+    logo_url VARCHAR(200) NOT NULL,
+    FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
+);
+
 
 CREATE TABLE Categories (
     category_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -68,3 +75,60 @@ CREATE TABLE ShoppingCarts (
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
 
+
+CREATE VIEW ItemsView AS
+    SELECT
+    l.list_id,
+    i.item_id,
+    l.store_id,
+    l.category,
+    l.name,
+    i.price,
+    i.sale_price,
+    i.quantity,
+    l.description,
+    i.type,
+    i.size,
+    i.colour,
+    l.availFrom,
+    l.availTo,
+    img.blob
+FROM Items AS i
+JOIN Listing AS l ON l.list_id = i.list_id
+JOIN ItemImages AS img ON img.blob = i.item_id;
+
+CREATE table Listing(
+    list_id int not null Identity(1,1) Primary key,
+    store_id int not null,
+    name NVARCHAR(100)  NOT NULL,
+    description NVARCHAR(200) not null,
+    category Int not null,
+    availFrom datetime null, 
+    availTo datetime null,
+    currentRating int default 0,
+    quatity int default 0,
+    FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
+    FOREIGN KEY (category) REFERENCES Categories(category_id) ON DELETE no action
+    );
+
+CREATE table Items(
+    item_id int not null Identity(1,1) Primary key,
+    list_id int not null,
+    price decimal(10,2) not null,
+    sale_price decimal(10,2) not null,
+    type nvarchar(100) null,
+    size nvarchar(10) null,
+    colour nvarchar(10) null,
+    quantity int not null,
+    FOREIGN KEY (list_id) REFERENCES Listing(list_id) ON DELETE CASCADE
+);
+
+create table ItemImages(
+	store_id INT NOT NULL,
+	user_id INT NOT NULL,
+	item_id INT NOT NULL,
+	item_index int NOT NULL default 0,
+	blob varchar(200) NOT NULL,
+	FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE NO ACTION,
+	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
+);

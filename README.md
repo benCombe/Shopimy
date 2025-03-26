@@ -1,4 +1,24 @@
 # Shopimy
+
+Shop Builder for Social Media Sellers
+
+Setting up developer environment:
+- make sure you are using .NET 9.0.101, Node 22.13.0, and Angular 19.0.7. If your versions are different, please upgrade before starting work on this project.
+- after cloning the repository for the first time, run the terminal command 'npm install' inside the "WebClient" folder to install all modules specified in the package.json file
+- BEFORE EDITING ANY CODE: Be sure to create a new branch off 'staging' called dev-[your-name]
+- You can make pull requests, but for now wait for me to approve them.
+- If you have any questions let me know.
+
+RUNNING
+
+FrontEnd
+cd webclient
+npm start
+
+Backend
+cd server
+dotnet run
+
 Shopimy is a web-based platform designed to help social media sellers build their online stores. With this goal in mind, Shopimy allows for small businesses and new business owners to sell individual items, or create an entire store with dedicated categories and personalization features. An easy to use analytics board, specialized links and an integrated payment system, ensures that owners looking to use Shopimy only have to click to find everything they need. 
 
 The application was designed with a user-focused approach, prioritizing ease of use and simplicity. It enables small businesses to expand their reach into global markets by providing intuitive tools and seamless social media integration. Users can both customize the design and the functionality of their online stores to algin with their brand identity and business needs. Ensuring a personalized experience for store owners and customers aiming to foster community in a competitive marketplace.
@@ -42,3 +62,4 @@ The main objective of this project is to allow small business owners and social 
 
 ## License
 [Apache License](https://choosealicense.com/licenses/apache-2.0/)
+
