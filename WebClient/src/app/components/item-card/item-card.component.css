@@ -35,14 +35,20 @@
   }
 
   .item-name {
+    width: 100%;
+    height: 75px;
+    text-align: center;
     margin: 0 0 0.5rem;
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     font-weight: 600;
   }
 
   .item-price {
+    width: 100%;
+    text-align: center;
     margin-bottom: 1rem;
     font-weight: 600;
+    font-size: 1.5rem;
   }
   .sale-price {
     color: #d00; /* Red text for sale price */
@@ -68,6 +74,7 @@
 
     .item-actions {
       margin-top: auto;
+      width: 100%;
     }/* Pushes the buttons to the bottom if there's extra space */
 
     .add-to-basket {

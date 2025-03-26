@@ -38,14 +38,14 @@ export class CategoryPageComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log("Category Page Initialized!!! (" + this.category?.name + ")");
+    //console.log("Category Page Initialized!!! (" + this.category?.name + ")");
     if (!this.category || !this.storeDetails) {
-      console.log("Don;t have store details or category");
+      //console.log("Don;t have store details or category");
     }
     else{
       this.catService.getItemsInCategory(this.category.categoryId, this.storeDetails.id).subscribe(data => {
         this.itemIds = data;
-        console.log(this.itemIds);
+        //console.log(this.itemIds);
       });
     }
 

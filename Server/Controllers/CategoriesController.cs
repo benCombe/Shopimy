@@ -36,7 +36,7 @@ public class CategoriesController : ControllerBase
         return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.CategoryId }, createdCategory);
     } */
 
- /*    [HttpGet("{id}")]
+    /* [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetCategoryById(int id)
     {
@@ -44,7 +44,39 @@ public class CategoriesController : ControllerBase
         var category = await _categoryService.GetCategoryByIdAsync(storeId, id);
         if (category == null) return NotFound();
         return Ok(category);
-    } */
+    }
+ */
+
+    //for main store page, returns array of random ids
+    [HttpPost("GetItemIdsByStore")]
+    [AllowAnonymous]
+    public async Task<int[]> GetItemIdsByStore([FromBody] int storeid)
+    {
+        Console.WriteLine("Store ID: " + storeid);
+        string connectionString = configuration.GetConnectionString("DefaultConnection");
+        string query = @"SELECT list_id
+                        FROM Listing
+                        WHERE store_id = @storeid;
+                        ";
+        List<int> listIds = new List<int>();
+
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@storeid", storeid);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                         listIds.Add(reader.GetInt32(0));
+                    }
+                }
+            }
+        }
+        return listIds.OrderBy(_ => Guid.NewGuid()).ToArray(); //random order
+    }
 
     [HttpGet("{catid}/{storeid}")]
     [AllowAnonymous]

@@ -4,17 +4,21 @@
     <h2>Your Basket</h2>
     <div id="basket">
       <div id="cart-items-container" class="theme2" [style.background-color]="storeDetails?.theme_2">
-        <!-- DO THIS DYNAMICALLY -->
 
-        <div class="cart-item">
+        <div *ngFor="let item of cartItems" class="cart-item">
           <div class="item-img-container">
-            <img [src]="tempImages[0]" class="item-img">
+            <img [src]="item.blob" class="item-img">
           </div>
           <div class="item-info-container center-spaced">
-
             <div class="item-info">
-              <span class="item-lbl">Joni Sweater (digital pattern)</span>
-              <span class="item-price">$8.50</span>
+              <span class="item-lbl">{{item.name}}</span>
+              <ng-container *ngIf="item.salePrice < item.price; else notOnSale">
+                <span class="sale-price">${{ item.salePrice }}</span>
+                <span class="original-price strikethrough">${{ item.price }}</span>
+              </ng-container>
+              <ng-template #notOnSale>
+                ${{ item.price }}
+              </ng-template>
               <br>
               <span class="item-details"></span>
             </div>
@@ -26,63 +30,18 @@
               <div class="more center">+</div>
             </div>
           </div>
-          <div id="remove-item" class="center"><i class="fa-solid fa-x"></i></div>
-        </div>
-
-        <div class="cart-item">
-          <div class="item-img-container">
-            <img [src]="tempImages[1]" class="item-img">
-          </div>
-          <div class="item-info-container center-spaced">
-
-            <div class="item-info">
-              <span class="item-lbl">Flo Sweater</span>
-              <span class="item-price">$250.00</span>
-              <br>
-              <span class="item-details">Wool Cream</span>
-              <span class="item-details">XL</span>
-            </div>
-          </div>
-          <div class="quantity-container">
-            <div class="quantity center">
-              <div class="less center">-</div>
-              <div class="amount center">1</div>
-              <div class="more center">+</div>
-            </div>
-          </div>
-          <div id="remove-item" class="center"><i class="fa-solid fa-x"></i></div>
+          <div id="remove-item" class="center" (click)="removeFromCart(item)"><i class="fa-solid fa-x"></i></div>
         </div>
       </div>
+
       <div id="order-summary-container">
-        <div id="order-summary" class="theme2" [style.background-color]="storeDetails?.theme_2">
-          <h2>Order Summary</h2>
-          <div id="summary-item-container" class="center-col">
-            <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
-              <span>Deliver to me (2)</span>
-              <span>$258.50</span>
-            </div>
-            <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
-              <span>Shipping Estimate</span>
-              <span>FREE</span>
-            </div>
-            <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
-              <span>Taxes estimate</span>
-              <span>$33.60</span>
-            </div>
-            <div id="total" class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
-              <span>Total estimate</span>
-              <span>$292.10</span>
-            </div>
-          </div>
-          <div id="checkout-opt" class="center-col">
-            <div id="checkout-btn" class="center theme1 fc hover" [style.background-color]="storeDetails?.theme_1" [style.color]="storeDetails?.fontColor" (click)="addToUrl('checkout')">Checkout</div>
-          </div>
-        </div>
+        <app-order-summary [storeDetails]="storeDetails"></app-order-summary>
         <div id="promo-code" class="center">
           <label for="promo">Apply Promo Code:</label>
           <input type="text" name="promo" id="promo">
         </div>
       </div>
+
     </div>
 
   </div>
