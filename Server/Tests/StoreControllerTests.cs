@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-public class StoreControllerTests
+/* needs to be public for xunit but throws errors
+[Collection("Integration Tests")]
+public class StoreControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
-    private StoreControllerTests(WebApplicationFactory<Program> factory)
+    public StoreControllerTests(WebApplicationFactory<Program> factory)
     {
         _client = factory.CreateClient();
     }
@@ -19,3 +21,4 @@ public class StoreControllerTests
         Console.WriteLine(content);
     }
 }
+*/

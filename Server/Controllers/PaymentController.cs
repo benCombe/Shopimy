@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using Stripe.Checkout;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+/* not working
 
 [ApiController]
 [Route("api/[controller]")]
@@ -94,3 +98,8 @@ public class CheckoutSessionRequest
     public int CategoryId { get; set; }
     // Optionally include additional fields such as CustomerEmail, etc.
 }
+
+    // Optionally include additional fields e.g., customer email or description
+    // public string CustomerEmail { get; set; }
+}
+*/
