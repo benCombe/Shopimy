@@ -29,8 +29,9 @@ let ITEM_DATA: Item[] = [
     {Id: '4', Name: 'Item 4', OriginalPrice: 500, SalePrice: 360, OnSale: true, Description: 'This is item 4', QuantityInStock: 40, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 2, CategoryIds: [4], ImageUrl: 'assets/images/default.png'},
   
 ];
-let CAT_DATA: Category[] = [];
 
+let CAT_DATA: Category[] = [];
+let ORD_DATA: Item[] = [];
 
 
 @Component({
@@ -65,8 +66,11 @@ export class StoreOwnerDashboardComponent {
   storeDetails: StoreDetails | null | undefined;
   item: Item | null | undefined;
   
-  productData: Item[] = ITEM_DATA;
-  categoryData: Category[] = CAT_DATA;
+  productData: Item[] = ITEM_DATA;      //data for product tables
+  categoryData: Category[] = CAT_DATA;  //data for category tables
+  orderData: Item[] = ORD_DATA;         //data for order tables
+  analyticDataSource1 = [];             //data for analytics tables
+  analyticDataSource2 = [];
   currentPage: string = "Overview"; //default page
 
 

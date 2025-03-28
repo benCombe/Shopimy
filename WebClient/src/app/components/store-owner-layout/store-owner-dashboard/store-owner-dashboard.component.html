@@ -3,7 +3,7 @@
   <div id="main">
     <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
       Overview
-      <app-overview></app-overview>
+      <app-overview [productData] = "productData"></app-overview>
     </div>
     <div *ngIf="currentPage === 'Profile'" id="profile" class="page">
       <app-profile [user]="user"></app-profile>
@@ -18,7 +18,7 @@
     </div>
     <div *ngIf="currentPage === 'Orders'" id="orders" class="page">
       Orders
-      <app-orders></app-orders>
+      <app-orders [orderData] = "orderData"></app-orders>
     </div>
     <div *ngIf="currentPage === 'Themes & Logos'" id="themes" class="page">
       Themes & Logos
@@ -30,7 +30,7 @@
     </div>
     <div *ngIf="currentPage === 'Traffic'" id="traffic" class="page">
       Traffic
-      <app-analytics></app-analytics>
+      <app-analytics [analyticDataSource1] = "analyticDataSource1" [analyticDataSource2] = "analyticDataSource2"></app-analytics>
     </div>
     <div *ngIf="currentPage === 'Sales'" id="sales" class="page">
       Sales

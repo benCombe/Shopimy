@@ -1,1 +1,261 @@
-<p>themes works!</p>
+<div class="main">
+    <div class="section">
+        <div class="color-select">
+            <h3>Color Select</h3>
+            <input type="color" id="color-picker-primary" [(ngModel)]="primaryColor" 
+                   (change)="onColorChange($event, 'primary')">
+            <label for="color-picker-primary" style="font-size:30px">  Primary Color</label>
+            <br>
+
+            <input type="color" id="color-picker-secondary" [(ngModel)]="secondaryColor" 
+                   (change)="onColorChange($event, 'secondary')">
+            <label for="color-picker-secondary" style="font-size:30px">  Secondary Color</label>
+            <br>
+
+            <input type="color" id="color-picker-font" [(ngModel)]="fontColor" 
+                   (change)="onColorChange($event, 'font')">
+            <label for="color-picker-font" style="font-size:30px">  Font Color</label>
+        </div>
+
+        <div class="layout-select">
+            <h3>Layout Select</h3>
+            <input type="radio" id="layout-1" name="layout" value="layout-1" buffer="10px">
+            <label for="layout-1" style="font-size:30px">
+                <img class="analytics-img" src="resources/images/Layout-1.png" alt="layout 1" width="100" height="100">
+            </label>
+            <input type="radio" id="layout-2" name="layout" value="layout-2" buffer="10px">
+            <label for="layout-2" style="font-size:30px">
+                <img class="analytics-img" src="resources/images/Layout-2.png" alt="layout 2" width="100" height="100">
+            </label>
+            <input type="radio" id="layout-3" name="layout" value="layout-3" buffer="10px">
+            <label for="layout-3" style="font-size:30px">
+                <img class="analytics-img" src="resources/images/Layout-3.png" alt="layout 3" width="100" height="100">
+            </label>
+        </div>
+
+        <div class="font-select">
+            <h3>Font Select</h3>
+            <div class="font-controls">
+                <select id="fontSelector" style="font-size:20px; padding: 8px; width: 250px;" (change)="onFontChange($event)">
+                    <option value="Arial" style="font-family: Arial;">Arial</option>
+                    <option value="Calibri" style="font-family: Calibri;">Calibri</option>
+                    <option value="Verdana" style="font-family: Verdana;">Verdana</option>
+                    <option value="Helvetica" style="font-family: Helvetica;">Helvetica</option>
+                    <option value="Georgia" style="font-family: Georgia;">Georgia</option>
+                    <option value="Tahoma" style="font-family: Tahoma;">Tahoma</option>
+                    <option value="Times New Roman" style="font-family: 'Times New Roman';">Times New Roman</option>
+                    <option value="Comic Sans MS" style="font-family: 'Comic Sans MS';">Comic Sans MS</option>
+                    <option value="Trebuchet MS" style="font-family: 'Trebuchet MS';">Trebuchet MS</option>
+                    <option value="Impact" style="font-family: Impact;">Impact</option>
+                </select>
+
+                <div class="font-size-selector">
+                    <label for="fontSize" style="font-size:18px; margin-right: 10px;">Font Size:</label>
+                    <select id="fontSize" style="padding: 8px; width: 100px;" (change)="onFontSizeChange($event)">
+                        <option value="12px">Small</option>
+                        <option value="16px" selected>Medium</option>
+                        <option value="20px">Large</option>
+                        <option value="24px">X-Large</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="font-preview" [style.font-family]="selectedFont" [style.font-size]="selectedFontSize">
+                <p>Sample text in <strong>{{selectedFont}}</strong> font</p>
+                <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+                <p>abcdefghijklmnopqrstuvwxyz</p>
+                <p>1234567890</p>
+            </div>
+        </div>
+
+        <div class="Upload Banner">
+            <h3>Upload Banner</h3>
+            <div class="banner-upload-container">
+                <div class="banner-preview">
+                    <div class="banner-text-overlay" *ngIf="bannerText" [ngClass]="'text-align-' + bannerTextAlignment">
+                        <div [style.font-family]="selectedFont" 
+                             [style.font-size]="bannerFontSize" 
+                             [style.color]="bannerTextColor"
+                             [style.text-align]="bannerTextAlignment">
+                            {{bannerText}}
+                        </div>
+                    </div>
+                    <img [src]="bannerPreviewUrl" alt="Banner Preview" style="width:100%; max-height:150px; object-fit:cover;">
+                </div>
+                <div class="upload-controls">
+                    <input type="file" id="bannerUpload" accept="image/png, image/jpeg, image/svg+xml" 
+                           style="display: none;" (change)="onBannerSelected($event)">
+                    <label for="bannerUpload" class="upload-button" 
+                           style="font-size:20px; cursor:pointer; padding:8px 15px; background-color:#4CAF50; color:white; border-radius:4px;">
+                        Choose Banner Image
+                    </label>
+                    <p style="font-size:14px; margin-top:10px;">
+                        Recommended: 1200x300 pixels, PNG or JPEG, max 2MB for best results
+                    </p>
+                </div>
+                
+                <div class="banner-text-controls">
+                    <h3>Banner Text</h3>
+                    <input type="text" [(ngModel)]="bannerText" placeholder="Enter banner text" style="width:80%; padding:8px; margin-bottom:10px;">
+                    
+                    <div class="text-formatting">
+                        <div class="form-group">
+                            <label for="bannerFontSize">Text Size:</label>
+                            <select id="bannerFontSize" [(ngModel)]="bannerFontSize" style="padding:6px;">
+                                <option value="16px">Small</option>
+                                <option value="24px">Medium</option>
+                                <option value="32px">Large</option>
+                                <option value="40px">X-Large</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bannerTextColor">Text Color:</label>
+                            <input type="color" id="bannerTextColor" [(ngModel)]="bannerTextColor">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bannerTextAlignment">Alignment:</label>
+                            <select id="bannerTextAlignment" [(ngModel)]="bannerTextAlignment" 
+                                    (change)="onBannerAlignmentChange($event)" style="padding:6px;">
+                                <option value="left">Left</option>
+                                <option value="center">Center</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="Upload Logo">
+            <h3>Upload Logo</h3>
+            <div class="logo-upload-container">
+                <div class="logo-preview">
+                    <div class="logo-text-overlay" *ngIf="logoText">
+                        <div [style.font-family]="selectedFont" 
+                             [style.font-size]="logoFontSize" 
+                             [style.color]="logoTextColor"
+                             [style.text-align]="logoTextAlignment">
+                            {{logoText}}
+                        </div>
+                    </div>
+                    <img [src]="logoPreviewUrl" alt="Logo Preview" width="150">
+                </div>
+                <div class="upload-controls">
+                    <input type="file" id="logoUpload" accept="image/png, image/jpeg, image/svg+xml" 
+                           style="display: none;" (change)="onLogoSelected($event)">
+                    <label for="logoUpload" class="upload-button" 
+                           style="font-size:20px; cursor:pointer; padding:8px 15px; background-color:#4CAF50; color:white; border-radius:4px;">
+                        Choose Logo File
+                    </label>
+                    <p style="font-size:14px; margin-top:10px;">
+                        Recommended: PNG or JPEG, max 2MB, square format for best results
+                    </p>
+                </div>
+                
+                <div class="logo-text-controls">
+                    <h3>Logo Text</h3>
+                    <input type="text" [(ngModel)]="logoText" placeholder="Enter logo text" style="width:100%; padding:8px; margin-bottom:10px;">
+                    
+                    <div class="text-formatting">
+                        <div class="form-group">
+                            <label for="logoFontSize">Text Size:</label>
+                            <select id="logoFontSize" [(ngModel)]="logoFontSize" style="padding:6px;">
+                                <option value="10px">Small</option>
+                                <option value="14px">Medium</option>
+                                <option value="18px">Large</option>
+                                <option value="22px">X-Large</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="logoTextColor">Text Color:</label>
+                            <input type="color" id="logoTextColor" [(ngModel)]="logoTextColor">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="logoTextAlignment">Alignment:</label>
+                            <select id="logoTextAlignment" [(ngModel)]="logoTextAlignment" style="padding:6px;">
+                                <option value="left">Left</option>
+                                <option value="center">Center</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layout-preview">
+            <h3>Store Preview</h3>
+            <div class="store-preview-container" [style.background-color]="secondaryColor">
+                <div class="preview-header" [style.background-color]="primaryColor">
+                    <div class="preview-logo">
+                        <div class="preview-logo-image">
+                            <img [src]="logoPreviewUrl" alt="Logo" width="60">
+                            <div class="preview-logo-text" *ngIf="logoText" 
+                                [style.font-family]="selectedFont"
+                                [style.color]="logoTextColor"
+                                [style.font-size]="logoFontSize"
+                                [style.text-align]="logoTextAlignment">
+                                {{logoText}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-nav">
+                        <span [style.font-family]="selectedFont" [style.color]="fontColor">Home</span>
+                        <span [style.font-family]="selectedFont" [style.color]="fontColor">Products</span>
+                        <span [style.font-family]="selectedFont" [style.color]="fontColor">About</span>
+                        <span [style.font-family]="selectedFont" [style.color]="fontColor">Contact</span>
+                    </div>
+                </div>
+                
+                <div class="preview-banner">
+                    <img [src]="bannerPreviewUrl" alt="Banner" style="width:100%; height:100px; object-fit:cover;">
+                    <div class="preview-banner-overlay" *ngIf="bannerText" [ngClass]="'text-align-' + bannerTextAlignment">
+                        <div [style.font-family]="selectedFont" 
+                             [style.font-size]="bannerFontSize" 
+                             [style.color]="bannerTextColor"
+                             [style.text-align]="bannerTextAlignment">
+                            {{bannerText}}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preview-content">
+                    <h4 [style.font-family]="selectedFont" [style.color]="fontColor">Welcome to your store</h4>
+                    <p [style.font-family]="selectedFont" [style.color]="fontColor">
+                        This is a preview of how your store will look with the selected theme settings.
+                    </p>
+                    
+                    <div class="preview-products">
+                        <div class="preview-product" [style.background-color]="primaryColor">
+                            <div class="product-image"></div>
+                            <h5 [style.font-family]="selectedFont" [style.color]="fontColor">Product 1</h5>
+                            <p [style.font-family]="selectedFont" [style.color]="fontColor">$19.99</p>
+                        </div>
+                        <div class="preview-product" [style.background-color]="primaryColor">
+                            <div class="product-image"></div>
+                            <h5 [style.font-family]="selectedFont" [style.color]="fontColor">Product 2</h5>
+                            <p [style.font-family]="selectedFont" [style.color]="fontColor">$24.99</p>
+                        </div>
+                        <div class="preview-product" [style.background-color]="primaryColor">
+                            <div class="product-image"></div>
+                            <h5 [style.font-family]="selectedFont" [style.color]="fontColor">Product 3</h5>
+                            <p [style.font-family]="selectedFont" [style.color]="fontColor">$15.99</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="preview-notice">This is a simplified preview. Actual store appearance may vary based on layout and content.</p>
+        </div>
+
+        <div class="save-section">
+            <button (click)="updateStoreDetails()" class="save-button">
+                Save Theme Settings
+            </button>
+        </div>
+    </div>
+</div>
+
