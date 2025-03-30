@@ -1,0 +1,52 @@
+
+#order-summary{
+  width: 400px;
+  height: 400px;
+  padding: 1rem;
+  border: 2px solid black;
+  box-shadow: 2px 2px rgba(0, 0, 0, 0.433);
+}
+
+#order-summary h2{
+  margin-left: 15px;
+}
+
+#summary-item-container{
+  max-height: 200px;
+}
+
+.summary-item{
+  width: calc(100% - 2rem);
+  font-size: 18pt;
+  padding: 5px;
+}
+
+.summary-item span:first-child{
+  width: 80%;
+}
+
+.summary-item span:nth-child(2){
+  width: 20%;
+}
+
+#total{
+  border-top: 2px solid black;
+  padding-top: 10px;
+}
+
+#checkout-opt{
+  width: 100%;
+  height: 100px;
+}
+
+#checkout-btn{
+  width: 65%;
+  height: 45px;
+  font-weight: bold;
+  font-size: 1.5rem;
+  box-shadow: 1px 1px black;
+}
+
+#checkout-btn:hover{
+  cursor: pointer;
+}
