@@ -12,8 +12,8 @@ namespace Server.Models
         [Column("owner")]
         public int StoreOwnerId {get; set;}
         [Column("name")]
-        public string Name {get; set;}  //max-length 50
+        public string Name {get; set;} = string.Empty;
         [Column("store_url")]
-        public string StoreUrl {get; set;} //max-length 50
+        public string StoreUrl {get; set;} = string.Empty;
     }
 }
