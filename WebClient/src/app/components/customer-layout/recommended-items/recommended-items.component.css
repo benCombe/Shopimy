@@ -4,15 +4,17 @@
     background-color: #D3CEBB;
    }
    #item-card{
-    width: 33%;
+    width: 30%;
     background-color: #ffffff;
     display: inline-block;
     margin-top: 2vw;
+    text-align: left;
    }
    #item-pic{
-    width: 15vw;
+    width: 12vw;
     height: 15vw;
     display: inline-block;
+    margin-right: 1vw;
    }
    #textSide{
     display: inline-block;
@@ -24,8 +26,19 @@
    #itemDesc{
     font-size: 1vw;
     width: 15vw;
+    height: 5vw;
    }
    #price{
     font-size: 1vw;
     width: 15vw;
+   }
+   #arrowDiv{
+    width: 3%;
+    height: 15vw;
+    display: inline-block;
+    vertical-align:middle;
+   }
+   #arrow{
+    width: 2vw;
+    height: 2vw;
    }
