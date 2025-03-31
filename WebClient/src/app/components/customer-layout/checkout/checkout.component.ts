@@ -1,7 +1,5 @@
-import { CommonModule, NgIf } from '@angular/common';
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { ThemeService } from '../../../services/theme.service';
 import { StoreDetails } from '../../../models/store-details';
 import { OrderSummaryComponent } from "../order-summary/order-summary.component";
@@ -10,7 +8,7 @@ import { PaymentService } from '../../../services/payment.service';
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [NgIf, CommonModule, ReactiveFormsModule, StoreNavComponent, OrderSummaryComponent],
+  imports: [ReactiveFormsModule, OrderSummaryComponent],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
 })
