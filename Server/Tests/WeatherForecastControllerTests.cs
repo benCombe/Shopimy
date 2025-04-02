@@ -19,13 +19,14 @@ public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactor
         response.EnsureSuccessStatusCode();
         //var content = await response.Content.ReadAsStringAsync();
         //Console.WriteLine(content);
-        /*
+        
         await using var application = new WebApplicationFactory<Program>();
         //using var client = application.CreateClient();
  
         var response = await _client.GetAsync("/weatherforecast");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        */
+        
     }
 
 }
+*/
