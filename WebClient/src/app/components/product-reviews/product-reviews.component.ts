@@ -3,11 +3,18 @@ import { ReviewService } from '../../services/review.service';
 import { Review } from '../../models/review.model';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-product-reviews',
   templateUrl: './product-reviews.component.html',
-  styleUrls: ['./product-reviews.component.css']
+  styleUrls: ['./product-reviews.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    DatePipe,
+    DecimalPipe
+  ]
 })
 export class ProductReviewsComponent implements OnInit, OnChanges {
   @Input() productId!: number; // Receive productId from parent component
