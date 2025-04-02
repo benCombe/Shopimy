@@ -11,7 +11,8 @@ import { ShoppingService } from '../../../services/shopping.service';
 
 @Component({
   selector: 'app-store-nav',
-  imports: [NgFor, NgIf, NgStyle, RouterLink],
+  standalone: true,
+  imports: [NgFor, NgIf, NgStyle],
   templateUrl: './store-nav.component.html',
   styleUrl: './store-nav.component.css'
 })
