@@ -10,18 +10,18 @@ namespace Server.Models
         [Column("store_id")]
         public int StoreId {get; set;}
         [Column("theme_colour1")]
-        public string Theme_1 {get; set;}  //max-length 7
+        public string Theme_1 {get; set;} = string.Empty;
         [Column("theme_colour2")]
-        public string Theme_2 {get; set;}  //max-length 7
+        public string Theme_2 {get; set;} = string.Empty;
         [Column("theme_colour3")]
-        public string Theme_3 {get; set;}  //max-length 7
+        public string Theme_3 {get; set;} = string.Empty;
         [Column("font_colour")]
-        public string FontColor {get; set;}  //max-length 7
+        public string FontColor {get; set;} = string.Empty;
         [Column("font_family")]
-        public string FontFamily {get; set;}  //max-length 100
+        public string FontFamily {get; set;} = string.Empty;
         [Column("banner_text")]
-        public string BannerText {get; set;} //max-length 50
+        public string BannerText {get; set;} = string.Empty;
         [Column("logo_text")]
-        public string LogoText {get; set;} //max-length 50
+        public string LogoText {get; set;} = string.Empty;
     }
 }

@@ -192,19 +192,32 @@ namespace Server.Controllers
 
         private string GenerateJwtToken(User user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            // Provide default value if config is null
+            var jwtKey = _configuration["Jwt:Key"] ?? string.Empty; 
+            if (string.IsNullOrEmpty(jwtKey))
+            {
+                // Log or handle error: JWT Key is essential
+                Console.Error.WriteLine("FATAL: JWT Key is not configured in app settings.");
+                throw new InvalidOperationException("JWT key is not configured."); 
+            }
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                // Provide default value if user.Email is null
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email ?? string.Empty), 
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                // user.Id should generally be valid, ToString() handles int
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
+            
+            // Provide default values if issuer config is null
+            var issuer = _configuration["Jwt:Issuer"] ?? string.Empty;
 
             var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Issuer"],
+                issuer,      // Use variable
+                issuer,      // Use variable
                 claims,
                 expires: DateTime.UtcNow.AddDays(3), // Expires after 3 days
                 signingCredentials: credentials
@@ -215,7 +228,8 @@ namespace Server.Controllers
 
         public class TokenRequest
         {
-            public string Token { get; set; }
+            // Initialize property
+            public string Token { get; set; } = default!;
         }
     }
 }

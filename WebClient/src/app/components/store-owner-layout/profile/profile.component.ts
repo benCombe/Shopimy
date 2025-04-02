@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { User } from '../../../models/user';
-import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
-  imports: [NgFor, NgIf],
+  standalone: true,
+  imports: [],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })

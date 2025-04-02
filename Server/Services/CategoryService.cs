@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 public interface ICategoryService
 {
     Task<IEnumerable<Category>> GetCategoriesForStoreAsync(int storeId);
-    Task<Category> GetCategoryByIdAsync(int storeId, int categoryId);
+    Task<Category?> GetCategoryByIdAsync(int storeId, int categoryId);
     Task<Category> CreateCategoryAsync(int storeId, Category model);
-    Task<Category> UpdateCategoryAsync(int storeId, int categoryId, Category model);
+    Task<Category?> UpdateCategoryAsync(int storeId, int categoryId, Category model);
     Task DeleteCategoryAsync(int storeId, int categoryId);
 }
 
@@ -30,7 +30,7 @@ public class CategoryService : ICategoryService
         return categories;
     }
 
-    public async Task<Category> GetCategoryByIdAsync(int storeId, int categoryId)
+    public async Task<Category?> GetCategoryByIdAsync(int storeId, int categoryId)
     {
         var category = await _repository.GetCategoryByStoreAndIdAsync(storeId, categoryId);
         return category;
@@ -51,13 +51,13 @@ public class CategoryService : ICategoryService
         return category;
     }
 
-    public async Task<Category> UpdateCategoryAsync(int storeId, int categoryId, Category model)
+    public async Task<Category?> UpdateCategoryAsync(int storeId, int categoryId, Category model)
     {
         // Fetch the existing category.
         var category = await _repository.GetCategoryByStoreAndIdAsync(storeId, categoryId);
         if (category == null)
         {
-            throw new Exception("Category not found.");
+            return null;
         }
 
         // Update the fields.

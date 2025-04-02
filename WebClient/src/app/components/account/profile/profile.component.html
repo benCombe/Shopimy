@@ -139,77 +139,60 @@
       <button class="add-button" (click)="toggleAddPayment()">{{ showAddPayment ? 'Cancel' : 'Add New Payment Method' }}</button>
     </div>
 
-    <!-- Add new payment method form -->
-    <form *ngIf="showAddPayment" [formGroup]="paymentForm" (ngSubmit)="savePaymentMethod()" class="payment-form">
+    <!-- Add new payment method form - Updated for Stripe Elements -->
+    <form *ngIf="showAddPayment" (ngSubmit)="savePaymentMethod()" class="payment-form" #paymentMethodForm="ngForm"> 
+      <!-- Removed old form group binding -->
+
+      <!-- Stripe Card Element will be mounted here -->
       <div class="form-group">
-        <label for="cardNumber">Card Number</label>
-        <input type="text" id="cardNumber" formControlName="cardNumber" placeholder="XXXX XXXX XXXX XXXX">
-        <div class="error" *ngIf="paymentForm.get('cardNumber')?.invalid && paymentForm.get('cardNumber')?.touched">
-          Valid 16-digit card number is required
+        <label for="card-element">Card Details</label>
+        <div id="card-element" #cardElement></div>
+        <!-- Used to display form errors -->
+        <div id="card-errors" class="error" role="alert" *ngIf="cardError">
+          {{ cardError }}
         </div>
       </div>
-      
-      <div class="form-group">
-        <label for="cardHolderName">Cardholder Name</label>
-        <input type="text" id="cardHolderName" formControlName="cardHolderName">
-        <div class="error" *ngIf="paymentForm.get('cardHolderName')?.invalid && paymentForm.get('cardHolderName')?.touched">
-          Cardholder name is required
-        </div>
-      </div>
-      
-      <div class="form-row">
-        <div class="form-group">
-          <label for="expiryMonth">Expiry Month</label>
-          <input type="text" id="expiryMonth" formControlName="expiryMonth" placeholder="MM">
-          <div class="error" *ngIf="paymentForm.get('expiryMonth')?.invalid && paymentForm.get('expiryMonth')?.touched">
-            Valid month (01-12) required
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="expiryYear">Expiry Year</label>
-          <input type="text" id="expiryYear" formControlName="expiryYear" placeholder="YYYY">
-          <div class="error" *ngIf="paymentForm.get('expiryYear')?.invalid && paymentForm.get('expiryYear')?.touched">
-            Valid 4-digit year required
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="cvv">CVV</label>
-          <input type="text" id="cvv" formControlName="cvv" placeholder="XXX">
-          <div class="error" *ngIf="paymentForm.get('cvv')?.invalid && paymentForm.get('cvv')?.touched">
-            Valid CVV required (3-4 digits)
-          </div>
-        </div>
-      </div>
+
+      <!-- Removed old input fields (cardNumber, cardHolderName, expiryMonth, expiryYear, cvv) -->
       
       <div class="form-group checkbox">
-        <input type="checkbox" id="paymentDefault" formControlName="isDefault">
+        <!-- Bind checkbox to component property -->
+        <input type="checkbox" id="paymentDefault" name="paymentDefault" [(ngModel)]="newPaymentIsDefault">
         <label for="paymentDefault">Set as default payment method</label>
       </div>
       
       <div class="security-notice">
-        <p>Your payment information is encrypted and stored securely.</p>
+        <!-- Updated security notice -->
+        <p>Your payment information is securely handled by Stripe.</p>
       </div>
       
-      <button type="submit" [disabled]="paymentForm.invalid">Save Payment Method</button>
+      <!-- Update button: remove type=submit, update disabled state -->
+      <button type="button" (click)="savePaymentMethod()" [disabled]="isSavingPaymentMethod || !stripe || !cardElement">
+        {{ isSavingPaymentMethod ? 'Saving...' : 'Save Payment Method' }}
+      </button>
     </form>
 
     <!-- List of payment methods -->
+    <!-- Display logic assumes backend returns objects like: 
+         { id: 'pm_...', cardType: 'visa', lastFourDigits: '4242', expiryMonth: '08', expiryYear: '2025', isDefault: true } 
+    -->
     <div *ngIf="paymentMethods.length === 0 && !showAddPayment" class="empty-state">
       No payment methods saved. Add your first payment method.
     </div>
 
     <div *ngIf="paymentMethods.length > 0" class="payment-list">
+      <!-- Use the properties returned by the GetPaymentMethods endpoint -->
       <div *ngFor="let method of paymentMethods" class="payment-card">
         <div class="default-badge" *ngIf="method.isDefault">Default</div>
         <div class="payment-details">
-          <p class="card-type">{{ method.cardType }}</p>
-          <p>•••• •••• •••• {{ method.lastFourDigits }}</p>
+          <p class="card-type">{{ method.cardType | titlecase }}</p> <!-- Use titlecase pipe for formatting -->
+          <p>**** **** **** {{ method.lastFourDigits }}</p>
           <p>Expires: {{ method.expiryMonth }}/{{ method.expiryYear }}</p>
-          <p>{{ method.cardHolderName }}</p>
+          <!-- Cardholder name is not typically returned by Stripe listing methods for security -->
+          <!-- <p>{{ method.cardHolderName }}</p> -->
         </div>
         <div class="payment-actions">
+          <!-- Use the string 'method.id' (e.g., 'pm_...') for actions -->
           <button *ngIf="!method.isDefault" (click)="setDefaultPaymentMethod(method.id)">Set as Default</button>
           <button class="delete" (click)="deletePaymentMethod(method.id)">Delete</button>
         </div>

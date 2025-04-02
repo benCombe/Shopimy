@@ -1,17 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import { DeliveryService } from '../../../services/delivery.service';
 import { PaymentService } from '../../../services/payment.service';
 import { User } from '../../../models/user';
 import { DeliveryDetails } from '../../../models/delivery-details';
-import { PaymentDetails } from '../../../models/payment-details';
+import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -22,11 +22,17 @@ export class ProfileComponent implements OnInit {
   
   profileForm!: FormGroup;
   deliveryForm!: FormGroup;
-  paymentForm!: FormGroup;
   
   activeTab: string = 'profile';
   showAddDelivery: boolean = false;
   showAddPayment: boolean = false;
+  
+  stripe: Stripe | null = null;
+  cardElement: StripeCardElement | null = null;
+  @ViewChild('cardElement') cardElementRef!: ElementRef;
+  cardError: string | null = null;
+  isSavingPaymentMethod = false;
+  newPaymentIsDefault = false;
   
   constructor(
     private userService: UserService,
@@ -38,6 +44,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForms();
     this.loadUserData();
+    this.loadStripe();
   }
 
   initializeForms(): void {
@@ -57,14 +64,22 @@ export class ProfileComponent implements OnInit {
       phone: ['', Validators.required],
       isDefault: [false]
     });
+  }
 
-    this.paymentForm = this.fb.group({
-      cardNumber: ['', [Validators.required, Validators.pattern('^[0-9]{16}$')]],
-      cardHolderName: ['', Validators.required],
-      expiryMonth: ['', [Validators.required, Validators.pattern('^(0[1-9]|1[0-2])$')]],
-      expiryYear: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
-      cvv: ['', [Validators.required, Validators.pattern('^[0-9]{3,4}$')]],
-      isDefault: [false]
+  loadStripe(): void {
+    this.paymentService.getStripePublicKey().subscribe(data => {
+      if (data.publicKey) {
+        loadStripe(data.publicKey).then(stripeInstance => {
+          this.stripe = stripeInstance;
+          if (this.showAddPayment) {
+            this.mountCardElement();
+          }
+        });
+      } else {
+        console.error('Stripe public key not received.');
+      }
+    }, error => {
+      console.error('Error fetching Stripe public key:', error);
     });
   }
 
@@ -78,7 +93,6 @@ export class ProfileComponent implements OnInit {
         phone: user.Phone
       });
 
-      // Load delivery addresses
       if (user.Id > 0) {
         this.loadDeliveryAddresses(user.Id);
         this.loadPaymentMethods(user.Id);
@@ -108,11 +122,8 @@ export class ProfileComponent implements OnInit {
         Phone: this.profileForm.value.phone
       };
       
-      // Update user profile through user service
-      // This method would need to be added to the user service
       this.userService.updateUserProfile(updatedUser).subscribe(success => {
         if (success) {
-          // Display success message
           console.log('Profile updated successfully');
         }
       });
@@ -143,24 +154,58 @@ export class ProfileComponent implements OnInit {
   }
 
   savePaymentMethod(): void {
-    if (this.paymentForm.valid && this.user.Id > 0) {
-      const newPayment = new PaymentDetails(
-        this.user.Id,
-        this.paymentForm.value.cardNumber,
-        this.paymentForm.value.cardHolderName,
-        this.paymentForm.value.expiryMonth,
-        this.paymentForm.value.expiryYear,
-        this.paymentForm.value.cvv
-      );
-      
-      this.paymentService.savePaymentInformation(newPayment).subscribe(success => {
-        if (success) {
-          this.loadPaymentMethods(this.user.Id);
-          this.showAddPayment = false;
-          this.paymentForm.reset();
-        }
-      });
+    if (!this.stripe || !this.cardElement || this.isSavingPaymentMethod) {
+      console.warn('Stripe not loaded, card element not ready, or save already in progress.');
+      return;
     }
+
+    this.isSavingPaymentMethod = true;
+    this.cardError = null;
+
+    this.paymentService.createSetupIntent().subscribe({
+      next: (intent) => {
+        if (!intent || !intent.clientSecret) {
+          this.cardError = 'Could not initialize payment setup. Please try again.';
+          this.isSavingPaymentMethod = false;
+          return;
+        }
+
+        this.stripe!.confirmCardSetup(intent.clientSecret, {
+          payment_method: {
+            card: this.cardElement!,
+          }
+        }).then(result => {
+          if (result.error) {
+            this.cardError = result.error.message || 'An unknown error occurred.';
+            this.isSavingPaymentMethod = false;
+          } else if (result.setupIntent?.status === 'succeeded') {
+            const paymentMethodId = result.setupIntent.payment_method as string;
+            this.paymentService.savePaymentMethod(paymentMethodId, this.newPaymentIsDefault)
+              .subscribe({
+                next: () => {
+                  console.log('Payment method saved successfully');
+                  this.loadPaymentMethods(this.user.Id);
+                  this.toggleAddPayment();
+                  this.isSavingPaymentMethod = false;
+                },
+                error: (err) => {
+                  console.error('Error saving payment method to backend:', err);
+                  this.cardError = 'Could not save payment method. Please try again.';
+                  this.isSavingPaymentMethod = false;
+                }
+              });
+          } else {
+             this.cardError = 'Payment setup failed. Status: ' + result.setupIntent?.status;
+             this.isSavingPaymentMethod = false;
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error creating SetupIntent:', err);
+        this.cardError = 'Could not initialize payment setup. Please try again.';
+        this.isSavingPaymentMethod = false;
+      }
+    });
   }
 
   deleteAddress(addressId: number): void {
@@ -173,7 +218,7 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  deletePaymentMethod(paymentId: number): void {
+  deletePaymentMethod(paymentId: any): void {
     if (confirm('Are you sure you want to delete this payment method?')) {
       this.paymentService.deletePaymentMethod(paymentId).subscribe(success => {
         if (success) {
@@ -191,8 +236,8 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  setDefaultPaymentMethod(paymentId: number): void {
-    this.paymentService.setDefaultPaymentMethod(this.user.Id, paymentId).subscribe(success => {
+  setDefaultPaymentMethod(paymentMethodId: string): void {
+    this.paymentService.setDefaultPaymentMethod(this.user.Id, paymentMethodId).subscribe(success => {
       if (success) {
         this.loadPaymentMethods(this.user.Id);
       }
@@ -213,7 +258,33 @@ export class ProfileComponent implements OnInit {
   toggleAddPayment(): void {
     this.showAddPayment = !this.showAddPayment;
     if (this.showAddPayment) {
-      this.paymentForm.reset();
+      this.cardError = null;
+      this.newPaymentIsDefault = false;
+      this.mountCardElement();
+    } else {
+      this.unmountCardElement();
+    }
+  }
+
+  mountCardElement(): void {
+    if (this.stripe && this.cardElementRef && !this.cardElement) {
+      const elements = this.stripe.elements();
+      this.cardElement = elements.create('card', { /* style */ });
+      this.cardElement.mount(this.cardElementRef.nativeElement);
+
+      this.cardElement.on('change', (event) => {
+        this.cardError = event.error ? event.error.message : null;
+      });
+    } else if (this.stripe && this.cardElementRef && this.cardElement) {
+       this.cardElement.focus();
+    }
+  }
+
+  unmountCardElement(): void {
+    if (this.cardElement) {
+      this.cardElement.unmount();
+      this.cardElement.destroy();
+      this.cardElement = null;
     }
   }
 } 

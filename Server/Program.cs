@@ -70,11 +70,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
-            )
+            // Fetch key and validate before using
+            IssuerSigningKey = GetIssuerSigningKey(builder.Configuration)
         };
     });
+
+// Helper function to get and validate the key
+static SymmetricSecurityKey GetIssuerSigningKey(IConfiguration configuration)
+{
+    var jwtKey = configuration["Jwt:Key"];
+    if (string.IsNullOrEmpty(jwtKey))
+    {
+        // Log or handle error: JWT Key is essential
+        Console.Error.WriteLine("FATAL: JWT Key is not configured in app settings for authentication setup.");
+        throw new InvalidOperationException("JWT key is not configured.");
+    }
+    return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+}
 
 // 🔐 Add Authorization Policies (Global Requirement)
 /* builder.Services.AddAuthorization(options =>

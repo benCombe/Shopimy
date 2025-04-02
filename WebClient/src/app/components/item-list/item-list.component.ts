@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Item } from '../../models/item';
 import { ItemCardComponent } from '../item-card/item-card.component';
-import { TopNavComponent } from '../top-nav/top-nav.component';
 
 @Component({
   selector: 'app-item-list',
-  templateUrl: './item-list.component.html',
   standalone: true,
-  imports: [CommonModule, RouterModule, ItemCardComponent, TopNavComponent]
+  imports: [CommonModule, RouterModule, ItemCardComponent],
+  templateUrl: './item-list.component.html',
+  styleUrls: ['./item-list.component.scss']
 })
 export class ItemListComponent implements OnInit {
   items: Item[] = [];

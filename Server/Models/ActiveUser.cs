@@ -16,6 +16,6 @@ namespace Server.Models
         
         [Required]
         [Column("token")]
-        public string Token { get; set; }
+        public string Token { get; set; } = default!;
     }
 }

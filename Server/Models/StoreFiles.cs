@@ -11,7 +11,7 @@ namespace Server.Models
         [Column("store_id")]
         public int StoreID {get; set;}
         [Column("banner_url")]
-        public string BannerURL {get; set;}
+        public string BannerURL {get; set;} = string.Empty;
     }
 
     public class StoreLogo{
@@ -20,6 +20,6 @@ namespace Server.Models
         [Column("store_id")]
         public int StoreID {get; set;}
         [Column("logo_url")]
-        public string LogoURL {get; set;}
+        public string LogoURL {get; set;} = string.Empty;
     }
 }
