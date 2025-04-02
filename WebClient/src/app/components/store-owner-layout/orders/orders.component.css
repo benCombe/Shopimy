@@ -164,7 +164,43 @@
     grid-row-end: 1;
 }
 
+.product-table {
+  align-self: center;
+  min-height: 420px;
+  max-height: 450px;
+  width: auto;
+  padding: 25px;
+  border-radius: 12px;
+  background-color: var(--third-color);
+  font-family: var(--main-font-fam);
+  font-size: 2.5rem;
+  
+}
+.mat-table{
+  background-color: var(--main-color);
+  width: auto;
+}
 
+.mat-column-Id{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
+.mat-column-Name{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
+.mat-column-OriginalPrice{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
+.mat-column-QuantityInStock{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
+.mat-column-CategoryIds{
+  font-size: 1.2rem;
+  font-family: var(--main-font-fam);
+}
 
 
 

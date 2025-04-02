@@ -1,27 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
+import { NgFor, NgIf } from '@angular/common';
+import { Item } from '../../../models/item';
+
+let ORD_DATA: Item[] = [];
+let ITEM_DATA: Item[] = [];
 
 @Component({
   selector: 'app-orders',
-  imports: [],
+  imports: [NgFor, NgIf, MatTableModule],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
+
 export class OrdersComponent implements OnInit {
-  totalOrdersColumns: string[] = ['totalSales', 'orders', 'customers', 'fulfilledOrders'];
-  orderDetailsColumns: string[] = ['order', 'customer', 'total', 'items', 'payment', 'fulfilled'];
-  
-  totalOrdersDataSource = new MatTableDataSource([
-    { totalSales: '$1500', orders: 16, customers: 5, fulfilledOrders: 1 }
-        // ... add other rows here
+  @Input() orderData = ORD_DATA; // Data for Order table
+  @Input() productData = ITEM_DATA; // Data for Item table
 
-  ]);
-
-  orderDetailsDataSource = new MatTableDataSource([
-    { order: '123456', customer: 'First Last', total: 50, items: 1, payment: 'Paid', fulfilled: 'Fulfilled' },
-    // ... add other rows here
-  ]);
+  orderColumns: string[] = ['totalSales', 'orders', 'customers', 'fulfilledOrders'];
+  itemColumns: string[] = ['order', 'customer', 'total', 'items', 'payment', 'fulfilled'];
 
   constructor() { }
 
