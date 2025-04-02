@@ -8,36 +8,107 @@
         
         <div id="analytic-info2">
             <h3>Recent Purchase</h3>
-            <div id = "analytic-list-wrapper">
-                <table id ="analytic-list">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Amounts</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Product 1</td>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <td>Product 2</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>Product 3</td>
-                            <td>2</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            
+            <table mat-table [dataSource]="analyticDataSource1" class="themed-table analytics-table">
+                <ng-container matColumnDef="order">
+                    <th mat-header-cell *matHeaderCellDef>Order</th>
+                    <td mat-cell *matCellDef="let element">{{element.order}}</td>
+                </ng-container>
 
+                <ng-container matColumnDef="customer">
+                    <th mat-header-cell *matHeaderCellDef>Customer</th>
+                    <td mat-cell *matCellDef="let element">{{element.customer}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef>Total</th>
+                    <td mat-cell *matCellDef="let element">{{element.total}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="items">
+                    <th mat-header-cell *matHeaderCellDef>Item(s)</th>
+                    <td mat-cell *matCellDef="let element">{{element.items}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="payment">
+                    <th mat-header-cell *matHeaderCellDef>Payment</th>
+                    <td mat-cell *matCellDef="let element">{{element.payment}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="fulfilled">
+                    <th mat-header-cell *matHeaderCellDef>Fulfilled</th>
+                    <td mat-cell *matCellDef="let element">{{element.fulfilled}}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
         </div>
     
         <div id="analytic-graph1">
             <h3>Visists to Store</h3>
-            <img class= "analytics-img" src="resources/images/tempGraph.jpg">
+            <div class="chart-container">
+                <div class="chart-title">Recent Store Visits</div>
+                <!-- Adjusted viewBox to make the chart even wider: from 30 10 140 75 to 30 10 180 75 -->
+                <svg class="svg-chart" viewBox="10 10 180 75" preserveAspectRatio="xMidYMid meet">
+                    <!-- Base axes -->
+                    <line [attr.x1]="chartMargins.left" 
+                          [attr.y1]="chartHeight - chartMargins.bottom" 
+                          [attr.x2]="chartWidth - chartMargins.right" 
+                          [attr.y2]="chartHeight - chartMargins.bottom" 
+                          class="axis-line" />
+                    <line [attr.x1]="chartMargins.left" 
+                          [attr.y1]="chartHeight - chartMargins.bottom" 
+                          [attr.x2]="chartMargins.left" 
+                          [attr.y2]="chartMargins.top" 
+                          class="axis-line" />
+                          
+                    <!-- Grid lines -->
+                    <g class="grid-lines">
+                        <line *ngFor="let tick of getYAxisTicks(); let i = index" 
+                              [attr.x1]="chartMargins.left" 
+                              [attr.y1]="getGridLineY(i, getYAxisTicks().length - 1)" 
+                              [attr.x2]="chartWidth - chartMargins.right" 
+                              [attr.y2]="getGridLineY(i, getYAxisTicks().length - 1)" 
+                              class="grid-line" />
+                    </g>
+                    
+                    <!-- Y-axis labels -->
+                    <g class="y-axis-labels">
+                        <text *ngFor="let tick of getYAxisTicks(); let i = index" 
+                             [attr.x]="chartMargins.left - 5" 
+                             [attr.y]="getGridLineY(i, getYAxisTicks().length - 1) + 1" 
+                             text-anchor="end" 
+                             class="axis-label">
+                            {{tick}}
+                        </text>
+                    </g>
+                    
+                    <!-- X-axis labels -->
+                    <g class="x-axis-labels">
+                        <text *ngFor="let point of visitData; let i = index" 
+                             [attr.x]="getXPosition(i)" 
+                             [attr.y]="chartHeight - chartMargins.bottom + 10" 
+                             text-anchor="middle" 
+                             class="axis-label">
+                            {{point.day}}
+                        </text>
+                    </g>
+                    
+                    <!-- Line chart -->
+                    <polyline [attr.points]="visitChartPoints" class="chart-line" />
+                    
+                    <!-- Data points - updated radius -->
+                    <g class="data-points">
+                        <circle *ngFor="let point of visitData; let i = index" 
+                                [attr.cx]="getXPosition(i)" 
+                                [attr.cy]="getYPosition(point.visitors)" 
+                                r="2.5" 
+                                class="data-point" />
+                    </g>
+                </svg>
+                
+            </div>
         </div>
     </div>
 
@@ -45,53 +116,105 @@
         
         <div id="analytic-info1">
             <h3>Popular Items</h3>
-            <div id = "analytic-list-wrapper">
-                <table id ="analytic-list">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Amounts</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Product 1</td>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <td>Product 2</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>Product 3</td>
-                            <td>2</td>
-                        </tr>
-                    </tbody>
-                </table>
+            
+            <table mat-table [dataSource]="analyticDataSource2" class="themed-table analytics-table">
+                <ng-container matColumnDef="order">
+                    <th mat-header-cell *matHeaderCellDef>Item ID</th>
+                    <td mat-cell *matCellDef="let element">{{element.order}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="customer">
+                    <th mat-header-cell *matHeaderCellDef>Product Name</th>
+                    <td mat-cell *matCellDef="let element">{{element.customer}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef>Price</th>
+                    <td mat-cell *matCellDef="let element">{{element.total}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="items">
+                    <th mat-header-cell *matHeaderCellDef>Units Sold</th>
+                    <td mat-cell *matCellDef="let element">{{element.items}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="payment">
+                    <th mat-header-cell *matHeaderCellDef>% of Sales</th>
+                    <td mat-cell *matCellDef="let element">{{element.payment}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="fulfilled">
+                    <th mat-header-cell *matHeaderCellDef>Category</th>
+                    <td mat-cell *matCellDef="let element">{{element.fulfilled}}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    
+        <div id="analytic-graph2">
+            <h3>Annual Sales</h3>
+            <div class="chart-container">
+                <div class="chart-title">Monthly Revenue - Current Year</div>
+                <svg class="svg-chart" viewBox="10 10 180 75" preserveAspectRatio="xMidYMid meet">
+                    <!-- Base axes -->
+                    <line [attr.x1]="chartMargins.left" 
+                          [attr.y1]="chartHeight - chartMargins.bottom" 
+                          [attr.x2]="chartWidth - chartMargins.right" 
+                          [attr.y2]="chartHeight - chartMargins.bottom" 
+                          class="axis-line" />
+                    <line [attr.x1]="chartMargins.left" 
+                          [attr.y1]="chartHeight - chartMargins.bottom" 
+                          [attr.x2]="chartMargins.left" 
+                          [attr.y2]="chartMargins.top" 
+                          class="axis-line" />
+                          
+                    <!-- Grid lines -->
+                    <g class="grid-lines">
+                        <line *ngFor="let tick of getAnnualSalesTicks(); let i = index" 
+                              [attr.x1]="chartMargins.left" 
+                              [attr.y1]="getGridLineY(i, getAnnualSalesTicks().length - 1)" 
+                              [attr.x2]="chartWidth - chartMargins.right" 
+                              [attr.y2]="getGridLineY(i, getAnnualSalesTicks().length - 1)" 
+                              class="grid-line" />
+                    </g>
+                    
+                    <!-- Y-axis labels -->
+                    <g class="y-axis-labels">
+                        <text *ngFor="let tick of getAnnualSalesTicks(); let i = index" 
+                             [attr.x]="chartMargins.left - 5" 
+                             [attr.y]="getGridLineY(i, getAnnualSalesTicks().length - 1) + 1" 
+                             text-anchor="end" 
+                             class="axis-label">
+                            {{formatCurrency(tick)}}
+                        </text>
+                    </g>
+                    
+                    <!-- X-axis labels -->
+                    <g class="x-axis-labels">
+                        <text *ngFor="let point of annualSalesData; let i = index" 
+                             [attr.x]="getBarX(i) + getBarWidth()/2" 
+                             [attr.y]="chartHeight - chartMargins.bottom + 10" 
+                             text-anchor="middle" 
+                             class="axis-label">
+                            {{point.label}}
+                        </text>
+                    </g>
+                    
+                    <!-- Bar chart -->
+                    <g class="chart-bars">
+                        <rect *ngFor="let point of annualSalesData; let i = index"
+                              [attr.x]="getBarX(i)"
+                              [attr.y]="getBarY(point.amount)"
+                              [attr.width]="getBarWidth()"
+                              [attr.height]="getBarHeight(point.amount)"
+                              class="chart-bar annual-bar" />
+                    </g>
+                </svg>
             </div>
-
-        </div>
-    
-        <div id="analytic-graph2">
-            <h3>Anual Sales</h3>
-            <img class= "analytics-img" src="resources/images/tempGraph.jpg">
         </div>
     </div>
 
-    <div class="section">
-        
-        <div id="analytic-graph1">
-            <h3>Daily Sales</h3>
-            <img class= "analytics-img" src="resources/images/tempGraph.jpg">
-        </div>
-    
-        <div id="analytic-graph2">
-            <h3>Monthly Sales</h3>
-            <img class= "analytics-img" src="resources/images/tempGraph.jpg">
-        </div>
-    </div>
-
-
-    
 </div>
 

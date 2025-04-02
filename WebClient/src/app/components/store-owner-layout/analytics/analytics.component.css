@@ -64,7 +64,8 @@
     grid-row-end: 1;
 }
 
-#analytic-list-wrapper{
+/* Styling for table directly */
+.analytics-table {
     align-self: center;
     min-height: 420px;
     max-height: 450px;
@@ -73,34 +74,63 @@
     border-radius: 12px;
     background-color: var(--third-color);
 }
-#analytic-list{
-    border-collapse: collapse;
+
+/* Common table styles */
+.mat-mdc-table {
     width: 100%;
+    background-color: transparent !important; /* Make table background transparent */
+    font-family: var(--main-font-fam);
 }
 
-#analytic-list th, #ph-list td {
-    padding: 5px 10px;
-    text-align: center;
-    height: 20px;
-    vertical-align: top;
-  }
-  
-  #analytic-list th{
-    font-size: 1.2rem;
-    color: black;
-    border-bottom: 2px solid black;
-  }
-  
-  #analytic-list tr{
-    height: 20px;
-    border-bottom: 1px dashed black;
-  }
-  
-  #analytic-list td{
-    text-align: center;
-    font-size: 1rem;
-    color: black;
-  }
+/* Header styling */
+.mat-mdc-header-row {
+    background-color: var(--third-color) !important;
+    border-radius: 8px 8px 0 0;
+}
+
+.mat-mdc-header-cell {
+    color: #333 !important; /* Darker text color for better contrast on third-color */
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    padding: 10px !important;
+}
+
+/* Row styling */
+.mat-mdc-row {
+    background-color: var(--third-color) !important;
+    border-bottom: 1px dashed var(--main-color) !important;
+    height: 48px !important;
+}
+
+.mat-mdc-row:nth-child(even) {
+    background-color: var(--third-color) !important; /* Slightly lighter shade of third-color */
+}
+
+.mat-mdc-row:hover {
+    background-color: white !important; /* Even lighter for hover effect */
+}
+
+/* Cell styling */
+.mat-mdc-cell {
+    color: #333 !important;
+    font-size: 1rem !important;
+    text-align: center !important;
+    padding: 10px !important;
+    font-weight: 500 !important; /* Make text slightly bolder for better readability */
+}
+
+/* Remove existing duplicate styles */
+#analytic-list-wrapper2 .mat-mdc-table,
+#analytic-list-wrapper2 th, 
+#analytic-list-wrapper2 td,
+#analytic-list th, 
+#ph-list td,
+#analytic-list th,
+#analytic-list tr,
+#analytic-list td {
+    /* These styles are now handled by the common styles above */
+}
 
 .analytics-section{
     display: grid;
@@ -126,6 +156,149 @@
     grid-column-end: 2;
     grid-row-start: 1;
     grid-row-end: 1;
+}
+
+.chart-container {
+    height: 420px; /* Increased from 350px */
+    width: 100%;
+    background-color: var(--third-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.chart-title {
+    font-size: 1.2rem; /* Slightly larger title */
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.svg-chart {
+    width: 100%;
+    height: 90%; /* Increased from 80% */
+    overflow: visible;
+    display: block;
+    margin: 0 auto;
+    max-width: none; /* Ensure chart can expand fully */
+}
+
+/* Axis lines */
+.axis-line {
+    stroke: #666;
+    stroke-width: 1;
+}
+
+/* Grid lines */
+.grid-line {
+    stroke: rgba(0, 0, 0, 0.1);
+    stroke-width: 0.5;
+}
+
+/* Chart line */
+.chart-line {
+    fill: none;
+    stroke: var(--main-color);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Data points */
+.data-point {
+    fill: var(--main-color);
+    stroke: white;
+    stroke-width: 1;
+    r: 2.5; /* Slightly larger data points */
+}
+
+/* Axis labels */
+.axis-label {
+    fill: #666;
+    font-size: 3.5px; /* Slightly larger font for better readability */
+    font-family: var(--main-font-fam);
+    dominant-baseline: middle; /* Improve vertical alignment */
+    letter-spacing: 0.2px; /* Improve readability with more spacing */
+}
+
+/* Legend */
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-color: var(--main-color);
+    margin-right: 5px;
+    border-radius: 2px;
+}
+
+/* Chart bar */
+.chart-bar {
+    fill: var(--main-color);
+    stroke: white;
+    stroke-width: 0.5;
+    transition: all 0.3s ease;
+}
+
+.chart-bar:hover {
+    fill: #2a75ff;
+    opacity: 0.9;
+}
+
+.annual-bar {
+    fill: #4b92db;
+}
+
+/* Monthly sales styling */
+.current-month {
+    stroke: var(--main-color);
+    stroke-width: 2;
+}
+
+.previous-month {
+    stroke: #888;
+    stroke-width: 1.5;
+    stroke-dasharray: 3,2;
+}
+
+/* Monthly sales styling - updated for single line */
+.current-month-only {
+    stroke: var(--main-color);
+    stroke-width: 3;  /* Made thicker for more emphasis */
+    stroke-linecap: round;
+}
+
+/* Legend inside chart */
+.chart-legend-svg {
+    font-size: 3px;
+}
+
+.legend-text {
+    fill: #666;
+    font-size: 2.5px;
+    font-family: var(--main-font-fam);
+}
+
+canvas {
+    max-width: 100%;
+    max-height: 100%;
 }
 
 
