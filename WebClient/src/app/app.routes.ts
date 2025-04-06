@@ -22,7 +22,7 @@ export const appRoutes: Routes = [
   { path: 'home', component: LandingPageComponent },
   { path: 'register', component: RegisterComponent},
   { path: 'login', component: LoginComponent },
-  { path: 'profile', component: ProfileComponent },
+  { path: 'profile', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: StoreOwnerDashboardComponent },
   { path: 'items', component: ItemListComponent },
   { path: 'items/:id', component: ItemDetailComponent },
