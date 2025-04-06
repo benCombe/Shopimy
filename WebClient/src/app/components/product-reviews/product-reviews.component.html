@@ -1,0 +1,42 @@
+<div *ngIf="productId">
+  <h3>Product Reviews</h3>
+
+  <!-- Average Rating -->
+  <div *ngIf="averageRating$ | async as avgRating; else loadingRating">
+    <p>Average Rating: {{ avgRating !== null ? (avgRating | number:'1.1-1') : 'N/A' }} / 5</p>
+    <!-- Basic Star Rating Display -->
+    <div class="star-rating">
+      <!-- Add star display logic here if desired (e.g., using ngFor with icons) -->
+      Rating: {{ avgRating !== null ? avgRating.toFixed(1) : 'No ratings yet' }}
+    </div>
+  </div>
+  <ng-template #loadingRating>
+    <p>Loading average rating...</p>
+  </ng-template>
+
+  <!-- Reviews List -->
+  <h4>Reviews</h4>
+  <div *ngIf="reviews$ | async as reviews; else loadingReviews">
+    <div *ngIf="reviews.length > 0; else noReviews">
+      <ul>
+        <li *ngFor="let review of reviews" class="review-item">
+          <p><strong>Rating:</strong> {{ review.rating }} / 5</p>
+          <p>{{ review.comment }}</p>
+          <small>By User {{ review.userId }} on {{ review.createdAt | date:'short' }}</small>
+        </li>
+      </ul>
+    </div>
+    <ng-template #noReviews>
+      <p>No reviews have been submitted for this product yet.</p>
+    </ng-template>
+  </div>
+  <ng-template #loadingReviews>
+    <p>Loading reviews...</p>
+  </ng-template>
+
+  <!-- Error Message -->
+  <div *ngIf="loadingError" class="error-message">
+    <p>Sorry, there was an error loading the reviews. Please try again later.</p>
+  </div>
+
+</div>

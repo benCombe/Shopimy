@@ -6,6 +6,8 @@ using Microsoft.OpenApi.Models;
 using Server.Data;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Server.Repositories;
+using Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +30,13 @@ builder.Services.AddControllers(); // Add controller services
 builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor
 //builder.Services.AddOpenApi(); // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
+// Register Repositories and Services
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 
 // Register Swagger (Swashbuckle)
 builder.Services.AddSwaggerGen(c =>
@@ -41,8 +47,6 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
-
-
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -56,7 +60,6 @@ builder.Services.AddCors(options =>
               .AllowCredentials(); // Add this if cookies or credentials are involved
     });
 });
-
 
 // 🔐 Add JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -83,10 +86,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
         .Build();
 }); */
-
-
-
-
 
 var app = builder.Build();
 
@@ -116,7 +115,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
 
 app.Run();
 
