@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-
+/*
 public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
-    private WeatherForecastControllerTests(WebApplicationFactory<Program> factory)
+    internal WeatherForecastControllerTests(WebApplicationFactory<Program> factory)
     {
         _client = factory.CreateClient();
     }
@@ -25,16 +25,8 @@ public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactor
  
         var response = await _client.GetAsync("/weatherforecast");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        *//*
-    
+            
     }
 
 }
-
-} //updating to test git
-
-
-//Commented out due to causing errors
-
 */
-

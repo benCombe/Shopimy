@@ -1,4 +1,3 @@
-
 import { ThemeService } from './../../../services/theme.service';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { Item } from '../../../models/item';
@@ -13,7 +12,7 @@ import { OrderSummaryComponent } from "../order-summary/order-summary.component"
 
 @Component({
   selector: 'app-shopping-cart',
-  imports: [StoreNavComponent, NgFor, NgIf, OrderSummaryComponent],
+  imports: [NgFor, NgIf, OrderSummaryComponent],
   templateUrl: './shopping-cart.component.html',
   styleUrl: './shopping-cart.component.css'
 })

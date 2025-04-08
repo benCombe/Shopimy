@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { RegisterComponent } from './components/account/register/register.component';
 import { LoginComponent } from './components/account/login/login.component';
+import { ProfileComponent } from './components/account/profile/profile.component';
 import { StoreOwnerDashboardComponent } from './components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component';
 import { ShoppingCartComponent } from './components/customer-layout/shopping-cart/shopping-cart.component';
 import { CheckoutComponent } from './components/customer-layout/checkout/checkout.component';
@@ -22,6 +23,7 @@ export const appRoutes: Routes = [
   { path: 'home', component: LandingPageComponent },
   { path: 'register', component: RegisterComponent},
   { path: 'login', component: LoginComponent },
+  { path: 'profile', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: StoreOwnerDashboardComponent },
   { path: '404', component: PageNotFoundComponent },
   { path: 'items', component: ItemListComponent },

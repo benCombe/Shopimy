@@ -2,10 +2,11 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-public class ShoppingCartControllerTests
+[Collection("Integration Tests")]
+public class ShoppingCartControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
-    private ShoppingCartControllerTests(WebApplicationFactory<Program> factory)
+    internal ShoppingCartControllerTests(WebApplicationFactory<Program> factory)
     {
         _client = factory.CreateClient();
     }
