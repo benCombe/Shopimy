@@ -24,25 +24,220 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.ActiveUser", b =>
                 {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTime>("LoginDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("login_date")
+                        .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("token");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("ActiveUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.BasicItem", b =>
+                {
+                    b.Property<int>("ListId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("list_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ListId"));
+
+                    b.Property<DateTime?>("AvailFrom")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("availFrom");
+
+                    b.Property<DateTime?>("AvailTo")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("availTo");
+
+                    b.Property<string>("Blob")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("blob");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int")
+                        .HasColumnName("category");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("price");
+
+                    b.Property<decimal>("SalePrice")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("sale_price");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int")
+                        .HasColumnName("store_id");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
+
+                    b.HasKey("ListId");
+
+                    b.ToTable("Listing", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.Review", b =>
+                {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("LoginDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
+                    b.Property<string>("Comment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActiveUsers", (string)null);
+                    b.ToTable("Reviews", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.Store", b =>
+                {
+                    b.Property<int>("StoreId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("store_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StoreId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("StoreOwnerId")
+                        .HasColumnType("int")
+                        .HasColumnName("owner");
+
+                    b.Property<string>("StoreUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("store_url");
+
+                    b.HasKey("StoreId");
+
+                    b.ToTable("Stores", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.StoreBanner", b =>
+                {
+                    b.Property<int>("StoreID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("store_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StoreID"));
+
+                    b.Property<string>("BannerURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("banner_url");
+
+                    b.HasKey("StoreID");
+
+                    b.ToTable("StoreBanners", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.StoreLogo", b =>
+                {
+                    b.Property<int>("StoreID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("store_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StoreID"));
+
+                    b.Property<string>("LogoURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("logo_url");
+
+                    b.HasKey("StoreID");
+
+                    b.ToTable("StoreLogos", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.StoreTheme", b =>
+                {
+                    b.Property<int>("StoreId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("store_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StoreId"));
+
+                    b.Property<string>("BannerText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("banner_text");
+
+                    b.Property<string>("FontColor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("font_colour");
+
+                    b.Property<string>("FontFamily")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("font_family");
+
+                    b.Property<string>("LogoText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("logo_text");
+
+                    b.Property<string>("Theme_1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("theme_colour1");
+
+                    b.Property<string>("Theme_2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("theme_colour2");
+
+                    b.Property<string>("Theme_3")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("theme_colour3");
+
+                    b.HasKey("StoreId");
+
+                    b.ToTable("StoreThemes", (string)null);
                 });
 
             modelBuilder.Entity("Server.Models.TestItem", b =>
@@ -69,73 +264,85 @@ namespace Server.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("address");
 
                     b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("country");
 
-                    b.Property<DateTime>("DOB")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime?>("DOB")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("dob");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("email");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("first_name");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("last_name");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("password");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("phone");
+
+                    b.Property<string>("StripeCustomerId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("stripe_customer_id");
 
                     b.Property<bool>("Subscribed")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("subscribed");
 
                     b.Property<bool>("Verified")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("verified");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Shopimy.Server.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("category_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
 
                     b.Property<int?>("ParentCategory")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("parent_category");
 
                     b.Property<int>("StoreId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("store_id");
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("ShoppingCart", b =>
@@ -161,6 +368,15 @@ namespace Server.Migrations
                     b.HasKey("CartId");
 
                     b.ToTable("ShoppingCarts", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.ActiveUser", b =>
+                {
+                    b.HasOne("Server.Models.User", null)
+                        .WithOne()
+                        .HasForeignKey("Server.Models.ActiveUser", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

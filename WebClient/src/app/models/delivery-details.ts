@@ -1,4 +1,5 @@
 export class DeliveryDetails {
+  id?: number;
   userId: number;
   address: string;
   city: string;
@@ -16,7 +17,8 @@ export class DeliveryDetails {
     country: string,
     postalCode: string,
     phone: string,
-    isDefault: boolean = false
+    isDefault: boolean = false,
+    id?: number
   ) {
     this.userId = userId;
     this.address = address;
@@ -26,5 +28,6 @@ export class DeliveryDetails {
     this.postalCode = postalCode;
     this.phone = phone;
     this.isDefault = isDefault;
+    this.id = id;
   }
 } 

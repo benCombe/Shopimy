@@ -5,13 +5,17 @@ import { Item } from '../../models/item';
 import { StoreService } from '../../services/store.service'; // or your item service
 import { ItemService } from '../../services/item.service';
 import { BasicItem } from '../../models/basic-item';
+import { ProductReviewsComponent } from '../product-reviews/product-reviews.component';
 
 @Component({
   selector: 'app-item-detail',
   templateUrl: './item-detail.component.html',
   styleUrl: './item-detail.component.css',
   standalone: true,
-  imports: [CommonModule]
+  imports: [
+    CommonModule,
+    ProductReviewsComponent
+  ]
 })
 export class ItemDetailComponent implements OnInit {
 
