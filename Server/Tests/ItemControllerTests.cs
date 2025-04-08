@@ -2,11 +2,12 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-/*not working at the moment
-public class ItemsControllerTests
+
+[Collection("Integration Tests")]
+public class ItemsControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
-    private ItemsControllerTests(WebApplicationFactory<Program> factory)
+    internal ItemsControllerTests(WebApplicationFactory<Program> factory)
     {
         _client = factory.CreateClient();
     }
@@ -20,4 +21,3 @@ public class ItemsControllerTests
 
     }
 }
-*/
