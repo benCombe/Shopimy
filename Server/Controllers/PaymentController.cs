@@ -4,6 +4,7 @@ using Stripe;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Stripe.V2;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -56,7 +57,8 @@ public class PaymentController : ControllerBase
     }
 }
 
-[ApiController]
+//UNCOMMENT WHEN FIXED
+/* [ApiController]
 [Route("api/[controller]")]
 public class WebhookController : ControllerBase
 {
@@ -66,7 +68,7 @@ public class WebhookController : ControllerBase
         var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
         // You can find your webhook secret in your Stripe dashboard
         var webhookSecret = "your_webhook_secret"; //not sure yet
-        Event stripeEvent;
+        Event stripeEvent; //UNCOMMENT WHEN FIXED
 
         try
         {
@@ -78,17 +80,18 @@ public class WebhookController : ControllerBase
             return BadRequest();
         }
 
+        
         // Handle the event (e.g., checkout.session.completed)
-        if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+        if (stripeEvent.Type == Event.CheckoutSessionCompleted)
         {
-            var session = stripeEvent.Data.Object as Session;
+            //var session = stripeEvent.Data.Object as Session;
             // Fulfill the purchase, update order status in your database, etc.
         }
 
         return Ok();
     }
 }
-
+ */
 public class CheckoutSessionRequest
 {
     public decimal Amount { get; set; }

@@ -8,6 +8,8 @@
         }
 
         #banner{
+          background-repeat: no-repeat;
+          background-size: cover;
           position: relative;
           width: 100%;
           height: 25vh;
@@ -67,6 +69,10 @@
           width: 70%;
         }
 
+        #logo-text{
+          text-align: center;
+        }
+
         #product-container{
           padding-bottom: 20px;
           padding-right: 5%;
@@ -122,4 +128,50 @@
     width: 90%;
     column-gap: 50px;
   }
+}
+
+
+@media only screen and (max-width: 900px) {
+
+  #banner{
+    width: 100%;
+    height: 15vh;
+    background-color: white;
+    z-index: 0;
+  }
+
+  #banner-text{
+    max-width: 30%;
+    height: 50%;
+  }
+
+  #product-container{
+    padding-bottom: 20px;
+    padding-right: 5%;
+    padding-left: 5%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+}
+
+@media only screen and (max-width: 650px) {
+  #banner-text{
+    font-size: 1.3rem;
+  }
+
+  #logo-text-wrapper{
+    width: 60%;
+    margin-left: 30px;
+  }
+
+
+  #logo-text{
+    font-size: 1rem;
+  }
+
+
 }

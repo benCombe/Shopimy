@@ -5,6 +5,7 @@ import { Item } from '../models/item'; // Assume you have this model
 import { StoreDetails } from '../models/store-details';
 import { Category } from '../models/category';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 interface Response {
   details: StoreDetails;
@@ -26,7 +27,7 @@ export class StoreService {
   activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "", []));
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router ) { }
 
   // Active getStoreDetails method: maps the response to a new StoreDetails instance.
   getStoreDetails(url: string): Observable<StoreDetails> {
@@ -55,6 +56,9 @@ export class StoreService {
         console.log("Mapped StoreDetails:", storeDetails);
       }),
       catchError((error) => {
+        if (error.status === 404) {
+          this.router.navigate(['/404']); // Navigate to the 404 page
+        }
         console.error('Error fetching store details:', error);
         return throwError(() => new Error('Failed to fetch store details.'));
       })

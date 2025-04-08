@@ -5,19 +5,19 @@
     <div id="basket">
       <div id="cart-items-container" class="theme2" [style.background-color]="storeDetails?.theme_2">
 
-        <div *ngFor="let item of cartItems" class="cart-item">
+        <div *ngFor="let i of cartItems" class="cart-item">
           <div class="item-img-container">
-            <img [src]="item.blob" class="item-img">
+            <img [src]="i.item.blob" class="item-img">
           </div>
           <div class="item-info-container center-spaced">
             <div class="item-info">
-              <span class="item-lbl">{{item.name}}</span>
-              <ng-container *ngIf="item.salePrice < item.price; else notOnSale">
-                <span class="sale-price">${{ item.salePrice }}</span>
-                <span class="original-price strikethrough">${{ item.price }}</span>
+              <span class="item-lbl">{{i.item.name}}</span>
+              <ng-container *ngIf="i.item.salePrice < i.item.price; else notOnSale">
+                <span class="sale-price">${{ i.item.salePrice }}</span>
+                <span class="original-price strikethrough">${{ i.item.price }}</span>
               </ng-container>
               <ng-template #notOnSale>
-                ${{ item.price }}
+                ${{ i.item.price }}
               </ng-template>
               <br>
               <span class="item-details"></span>
@@ -25,12 +25,12 @@
           </div>
           <div class="quantity-container">
             <div class="quantity center">
-              <div class="less center">-</div>
-              <div class="amount center">1</div>
-              <div class="more center">+</div>
+              <div class="less center" (click)="decreaseQuantity(i.item)">-</div>
+              <div class="amount center">{{i.quantity}}</div>
+              <div class="more center" (click)="increaseQuantity(i.item)">+</div>
             </div>
           </div>
-          <div id="remove-item" class="center" (click)="removeFromCart(item)"><i class="fa-solid fa-x"></i></div>
+          <div id="remove-item" class="center" (click)="removeFromCart(i.item)"><i class="fa-solid fa-x"></i></div>
         </div>
       </div>
 

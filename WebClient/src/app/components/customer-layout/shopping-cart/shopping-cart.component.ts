@@ -25,7 +25,7 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   @Input() storeDetails: StoreDetails | null = null;
 
   //storeDetails: StoreDetails | null = null;
-  cartItems: BasicItem[] = [];
+  cartItems: { item: BasicItem, quantity: number }[] = [];
   subtotal: number = 0.00;
   shippingCost: number = 0;
 
@@ -77,6 +77,14 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
 
   removeFromCart(item: BasicItem): void {
     this.shopService.removeFromCart(item);
+  }
+
+  increaseQuantity(item: BasicItem){
+
+  }
+
+  decreaseQuantity(item: BasicItem){
+    
   }
 
 }

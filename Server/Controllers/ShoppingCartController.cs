@@ -21,6 +21,44 @@ public class ShoppingCartController : ControllerBase
         _context = context;
     }
 
+
+    [HttpGet("cart")]
+    public async Task<IActionResult> GetShoppingCartItems([FromHeader] string authorization)
+    {
+        if (string.IsNullOrEmpty(authorization))
+        {
+            return Unauthorized("No token provided.");
+        }
+
+        // Extract token from "Bearer <token>"
+        string token = authorization.StartsWith("Bearer ") ? authorization.Substring(7) : authorization;
+
+        try
+        {
+            // Find the user_id associated with the token
+            var activeUser = await _context.ActiveUsers
+                .FirstOrDefaultAsync(a => a.Token == token);
+
+            if (activeUser == null)
+            {
+                return Unauthorized("Invalid or expired token.");
+            }
+
+            int userId = activeUser.UserId;
+
+            // Fetch shopping cart items for the user
+            var cartItems = await _context.ShoppingCarts
+                .Where(cart => cart.UserId == userId)
+                .ToListAsync();
+
+            return Ok(cartItems);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
     // POST: api/shoppingcart/add
     [HttpPost("add")]
     public async Task<IActionResult> AddOrUpdateItem([FromBody] ShoppingCartItem cartItem)

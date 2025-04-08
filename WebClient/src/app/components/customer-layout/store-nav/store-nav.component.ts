@@ -1,6 +1,6 @@
 import { CategoryPageComponent } from './../category-page/category-page.component';
 import { Category } from '../../../models/category';
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, Renderer2 } from '@angular/core';
 import { StoreDetails } from '../../../models/store-details';
 import { ThemeService } from '../../../services/theme.service';
 import { NgFor, NgIf, NgStyle } from '@angular/common';
@@ -27,6 +27,8 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
 
   storeUrl = "";
 
+  isMobile: boolean = false;
+  menuOpen: boolean = false;
   numCartItems: number = 0;
 
   setHover(categoryId: number, isHovered: boolean): void {
@@ -45,6 +47,7 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
 
 
   ngOnInit(): void {
+    this.checkScreenSize();
     this.storeService.activeStore$.subscribe(s =>{
       this.storeDetails = s;
       this.categories = this.mapCategories(s.categories);
@@ -137,5 +140,15 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
       .join(""); // Recombine to form the final color
 
     return `#${inverted}`;
+  }
+
+
+  @HostListener('window:resize', [])
+  checkScreenSize() {
+    this.isMobile = window.innerWidth < 900;
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
   }
 }
