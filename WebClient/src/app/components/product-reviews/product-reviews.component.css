@@ -1,0 +1,31 @@
+.review-item {
+  border: 1px solid #eee;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.review-item strong {
+  margin-right: 5px;
+}
+
+.review-item small {
+  color: #777;
+  display: block;
+  margin-top: 5px;
+}
+
+.star-rating {
+  /* Add styles for star display later if needed */
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: red;
+  border: 1px solid red;
+  padding: 10px;
+  margin-top: 15px;
+  border-radius: 4px;
+  background-color: #ffeeee;
+}

@@ -16,20 +16,18 @@ import { ThemesComponent } from '../themes/themes.component';
 
 @Component({
   selector: 'app-store-owner-dashboard',
+  standalone: true,
   imports: [
-    TopNavComponent,
     SideNavComponent,
-    NgIf, 
-    NgFor, 
-    NgClass, 
-    OverviewComponent, 
-    ProfileComponent, 
-    ProductManagementComponent, 
-    PromotionsComponent, 
-    OrdersComponent,
+    OverviewComponent,
+    ProfileComponent,
+    NgIf,
     SettingsComponent,
+    ProductManagementComponent,
+    OrdersComponent,
+    ThemesComponent,
+    PromotionsComponent,
     AnalyticsComponent,
-    ThemesComponent
   ],
   templateUrl: './store-owner-dashboard.component.html',
   styleUrl: './store-owner-dashboard.component.css'

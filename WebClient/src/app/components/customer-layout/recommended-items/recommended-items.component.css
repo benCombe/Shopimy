@@ -1,0 +1,76 @@
+  #main{
+    width: 100%;
+    height: 20vw;
+    background-color: #D3CEBB;
+   }
+   #item-card{
+    width: 30%;
+    background-color: #ffffff;
+    display: inline-block;
+    margin-top: 2vw;
+    text-align: left;
+   }
+   #item-pic{
+    width: 12vw;
+    height: 15vw;
+    display: inline-block;
+    margin-right: 1vw;
+   }
+   #textSide{
+    display: inline-block;
+    vertical-align: top;
+   }
+   #itemName{
+    font-size: 1.5vw;
+   }
+   #itemDesc{
+    font-size: 1vw;
+    width: 15vw;
+    height: 5vw;
+    overflow: hidden;
+   }
+   #price{
+    font-size: 1vw;
+    width: 15vw;
+   }
+   #arrowDiv{
+    width: 3%;
+    height: 15vw;
+    display: inline-block;
+    vertical-align:middle;
+   }
+   #arrow{
+    width: 2vw;
+    height: 2vw;
+   }
+   #star{
+        margin-left: 0vw; 
+        margin-right: 0.1vw; 
+        width: 2vw; 
+        height:2vw;
+    }
+
+    @media only screen and (max-width: 700px) {
+        #itemDesc{
+            font-size: 1vw;
+            width: 0vw;
+            height: 0vw;
+            overflow: hidden;
+        }
+        #itemName{
+            font-size: calc(10px + 1vw);
+        }
+        #item-pic{
+            width: 12vw;
+            height: 15vw;
+            display: inline-block;
+            margin-right: 0.2vw;
+        }
+        #price{
+            font-size: calc(10px + 1vw);
+            width: 15vw;
+            margin-top: 0.1vw;
+            margin-bottom: 0.1vw;
+        }
+
+    }

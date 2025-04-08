@@ -53,7 +53,15 @@ public class CategoriesController : ControllerBase
     public async Task<int[]> GetItemIdsByStore([FromBody] int storeid)
     {
         Console.WriteLine("Store ID: " + storeid);
-        string connectionString = configuration.GetConnectionString("DefaultConnection");
+        // Allow connection string to be potentially null
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
+        // Add null/empty check for connection string
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            // Log error or return appropriate response
+            Console.Error.WriteLine("Database connection string 'DefaultConnection' not configured.");
+            return Array.Empty<int>(); // Return empty array or throw exception
+        }
         string query = @"SELECT list_id
                         FROM Listing
                         WHERE store_id = @storeid;
@@ -82,7 +90,15 @@ public class CategoriesController : ControllerBase
     [AllowAnonymous]
     public async Task<int[]> GetItemIdsByCategory(int catid, int storeid){
         Console.WriteLine("catid: " + catid + " storeid: " + storeid);
-        string connectionString = configuration.GetConnectionString("DefaultConnection");
+        // Allow connection string to be potentially null
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
+        // Add null/empty check for connection string
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            // Log error or return appropriate response
+            Console.Error.WriteLine("Database connection string 'DefaultConnection' not configured.");
+            return Array.Empty<int>(); // Return empty array or throw exception
+        }
         string query = @"SELECT l.list_id
                         FROM Listing l
                         JOIN Categories c ON l.category = c.category_id
@@ -139,6 +155,10 @@ public class CategoriesController : ControllerBase
     {
         // This is where you'd retrieve the current store's ID, perhaps from the authenticated user's claims.
         // For now, you can simulate it or get it from the HttpContext.
-        return int.Parse(_httpContextAccessor.HttpContext.User.FindFirst("storeId")?.Value ?? "0");
+        // Use null-conditional operator ?. on HttpContext
+        var storeIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("storeId");
+        // Safely parse the value, defaulting to 0 if null or invalid
+        int.TryParse(storeIdClaim?.Value, out int storeId);
+        return storeId; // Returns 0 if parsing fails or claim is not found
     }
 }
