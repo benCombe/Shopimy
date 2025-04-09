@@ -2,24 +2,24 @@
     <!-- Main Info Section -->
     <div class="item-header">
       <div class="item-image">
-        <img [src]="displayImageUrl" [alt]="item?.Name" /> 
+        <img [src]="displayImageUrl" [alt]="item.name" />
       </div>
       <div class="item-info">
-        <h2 class="item-name">{{ item.Name }}</h2>
+        <h2 class="item-name">{{ item.name }}</h2>
         <p class="item-price">
-          <ng-container *ngIf="item.OnSale; else notOnSale">
-            <span class="sale-price">\${{ item.SalePrice }}</span>
-            <span class="original-price strikethrough">\${{ item.OriginalPrice }}</span>
+          <ng-container *ngIf="item.salePrice < item.price; else notOnSale">
+            <span class="sale-price">\${{ item.salePrice }}</span>
+            <span class="original-price strikethrough">\${{ item.price }}</span>
           </ng-container>
           <ng-template #notOnSale>
-            \${{ item.OriginalPrice }}
+            \${{ item.price }}
           </ng-template>
         </p>
-  
-        <p class="item-description">
+
+       <!--  <p class="item-description">
           {{ item.Description }}
         </p>
-  
+   -->
         <!-- Example: Sizes & Yarn Info if you store them -->
         <div class="item-sizes">
           <strong>Sizes:</strong> XS (S) M (L) XL (2XL)
@@ -27,7 +27,7 @@
         <div class="item-yarn">
           <strong>Yarn - Aran Weight:</strong> 539 (609) ...
         </div>
-  
+
         <div class="item-actions">
           <button class="btn add-to-basket" (click)="addToBasket(item)">Add To Basket</button>
           <button class="btn bookmark" (click)="bookmarkItem(item)">
@@ -37,33 +37,10 @@
         </div>
       </div>
     </div>
-  
+
     <!-- Ratings and Reviews Section -->
     <div class="item-reviews">
-      <h3>Ratings and Reviews</h3>
-      <p><strong>5 Reviews</strong></p>
-      
-      <div class="review">
-        <div class="review-header">
-          <span class="review-rating">★★★★☆</span>
-          <span class="review-date">Jan 17, 2025</span>
-        </div>
-        <div class="review-body">
-          Super easy to read and well structured
-        </div>
-      </div>
-  
-      <div class="review">
-        <div class="review-header">
-          <span class="review-rating">★★★★★</span>
-          <span class="review-date">Dec 21, 2024</span>
-        </div>
-        <div class="review-body">
-          Best pattern ever
-        </div>
-      </div>
-  
-      <!-- More reviews... -->
+      <!-- Replace static reviews with the dynamic component -->
+      <app-product-reviews [productId]="itemId"></app-product-reviews>
     </div>
   </div>
-  

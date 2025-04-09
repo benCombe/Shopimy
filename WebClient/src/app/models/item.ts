@@ -1,6 +1,6 @@
 export class Item {
   Name: string;
-  Id: string;
+  Id: number;
   OriginalPrice: number;
   SalePrice?: number;
   OnSale: boolean;
@@ -14,7 +14,7 @@ export class Item {
 
   constructor(data: {
     Name: string;
-    Id: string;
+    Id: number;
     OriginalPrice: number;
     SalePrice?: number;
     OnSale: boolean;

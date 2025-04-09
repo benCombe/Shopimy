@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
+/* using Microsoft.AspNetCore.Mvc;
 using Shopimy.Server.Models; // Update to match your project structure
-using Shopimy.Server.Repositories; // Update accordingly
+//using Shopimy.Server.Repositories; // Update accordingly
 using System;
 using System.Threading.Tasks;
 
+/* not working
 [ApiController]
 [Route("api/[controller]")]
 public class ItemsController : ControllerBase
@@ -19,6 +20,7 @@ public class ItemsController : ControllerBase
     [HttpPut("{id}/stock")]
     public async Task<IActionResult> UpdateStock(string id, [FromBody] UpdateStockDTO dto)
     {
+
         if (dto.QuantityInStock < 0)
         {
             return BadRequest("Stock level cannot be negative.");
@@ -30,6 +32,9 @@ public class ItemsController : ControllerBase
             return NotFound();
         }
 
+        // Update the stock level
+        item.QuantityInStock = dto.QuantityInStock;
+        await _itemRepository.UpdateItemAsync(item);
         try
         {
             item.QuantityInStock = dto.QuantityInStock;
@@ -44,3 +49,9 @@ public class ItemsController : ControllerBase
         return Ok(item);
     }
 }
+
+ */
+
+
+ //Commented out due to causing errors
+

@@ -23,7 +23,7 @@ export class StoreService {
 
 
 
-  activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []));
+  activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "", []));
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
   constructor(private http: HttpClient) { }
@@ -43,6 +43,8 @@ export class StoreService {
           resp.fontFamily,
           resp.bannerText,
           resp.logoText,
+          resp.bannerURL,
+          resp.logoURL,
           resp.categories.map(cat =>
             new Category(cat.categoryId, cat.storeId, cat.name, cat.parentCategory)
           )
@@ -59,25 +61,19 @@ export class StoreService {
     );
   }
 
-  /*
-  // Alternative implementation (commented out):
-  getStoreDetails(url: string): Observable<Response> {
-    return this.http.get<Response>(`${this.apiUrl}/${url}`).pipe(
-      tap((resp) => {
-        this.activeStoreSubject.next(resp.details);
-        // If you have an activeStoreCategorySubject, update it here:
-        // this.activeStoreCategorySubject.next(resp.categories);
-      }),
-      catchError((error) => {
-        console.error('Error fetching store details:', error);
-        return throwError(() => new Error('Failed to fetch store details.'));
-      })
-    );
+
+  getCategoryByName(name: string): Category | null {
+    return this.activeStoreSubject.value.categories.find(cat => cat.name === name) ?? null;
   }
-  */
 
   // Retrieves categories from the API.
   getCategories(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiUrl}/categories`);
+  }
+
+  getRandomItemIdsByStore(storeId: number): Observable<number[]> {
+    return this.http.post<number[]>('http://localhost:5000/api/Categories/GetItemIdsByStore', storeId, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }

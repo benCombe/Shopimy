@@ -1,1 +1,15 @@
-<p>category-page works!</p>
+<div id="main">
+  <ng-container *ngIf="itemIds.length > 0; else noitems" style="border: 1px solid red;">
+    <h1>{{category?.name}}</h1>
+    <div id="item-container">
+      <app-item-card *ngFor="let item of itemIds" [itemId]="item" class="item-card"></app-item-card>
+    </div>
+  </ng-container>
+
+    <ng-template #noitems>
+      <div id="no-items" class="center">
+        <p>There are currently no items listed in the category "{{category?.name}}"</p>
+      </div>
+    </ng-template>
+  </div>
+

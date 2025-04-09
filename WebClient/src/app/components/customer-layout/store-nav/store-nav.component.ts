@@ -1,13 +1,17 @@
+import { CategoryPageComponent } from './../category-page/category-page.component';
 import { Category } from '../../../models/category';
-import { AfterViewInit, Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, Renderer2 } from '@angular/core';
 import { StoreDetails } from '../../../models/store-details';
 import { ThemeService } from '../../../services/theme.service';
 import { NgFor, NgIf, NgStyle } from '@angular/common';
 import { StoreService } from '../../../services/store.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { StoreNavService } from '../../../services/store-nav.service';
+import { ShoppingService } from '../../../services/shopping.service';
 
 @Component({
   selector: 'app-store-nav',
+  standalone: true,
   imports: [NgFor, NgIf, NgStyle],
   templateUrl: './store-nav.component.html',
   styleUrl: './store-nav.component.css'
@@ -15,11 +19,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 export class StoreNavComponent implements AfterViewInit, OnInit{
 
+  @Output() ViewChanged = new EventEmitter<string>();
 
-  storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []); //Use  Store/Theme services here
+  storeDetails: StoreDetails | null = null; //new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []); //Use  Store/Theme services here
   categories: Category[] = [] //["Clothing", "Materials", "Other"].reverse();
 
   hoverStates: { [key: number]: boolean } = {};
+
+  storeUrl = "";
+
+  numCartItems: number = 0;
 
   setHover(categoryId: number, isHovered: boolean): void {
     this.hoverStates = { ...this.hoverStates, [categoryId]: isHovered };
@@ -30,7 +39,9 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     private themeService: ThemeService,
     private storeService: StoreService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private storeNavService: StoreNavService,
+    private shoppingService: ShoppingService
   ) {}
 
 
@@ -38,7 +49,16 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     this.storeService.activeStore$.subscribe(s =>{
       this.storeDetails = s;
       this.categories = this.mapCategories(s.categories);
-    })
+      console.log("Store Details:", this.storeDetails);
+    });
+    this.route.params.subscribe(params => {
+      this.storeUrl = params['storeUrl'];
+      //this.storeService.getStoreDetails(storeUrl);
+    });
+
+    this.shoppingService.Cart$.subscribe(c =>{
+      this.numCartItems = c.length;
+    });
   }
 
 
@@ -91,9 +111,18 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     this.router.navigate(newSegments); // Navigate to new path
   } */
 
-    addToUrl(segment: string): void {
-      this.router.navigate([segment], { relativeTo: this.route });
-    }
+  addToUrl(segment: string): void {
+      /* this.router.navigate([segment], { relativeTo: this.route });
+      this.ViewChanged.emit(segment);
+      console.log(segment); */
+      this.storeNavService.changeView(segment);
+  }
+
+  storeHome(): void{
+    this.storeNavService.toStoreHome();
+  }
+
+
 
 
   invertColor(origColor: string): string{
