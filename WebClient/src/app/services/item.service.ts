@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { Item } from '../models/item';
 import { environment } from '../../environments/environment';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
+import { CookieService } from './cookie.service';
+import { RegistrationDetails } from '../models/registration-details';
+import { BehaviorSubject, Observable, tap, of } from 'rxjs';
+import { LoginDetails } from '../models/login-details';
+import { Item } from '../models/item';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +13,25 @@ import { environment } from '../../environments/environment';
 export class ItemService {
   // Base URL for the items endpoint. Adjust if your API path is different.
   private itemBaseUrl = `${environment.apiUrl}/api/items`;
+
+
+  private defaultItem: Item = new Item({
+    Name: '',
+    Id: '',
+    OriginalPrice: 0,
+    SalePrice: 0,
+    OnSale: false,
+    Description: '',
+    QuantityInStock: 0,
+    AvailFrom: new Date(),
+    AvailTo: new Date(),
+    CurrentRating: 0,
+    CategoryIds: [],
+    ImageUrl: ''
+  });
+  private activeItemSubject = new BehaviorSubject<Item>(this.defaultItem);
+  public activeItem$ : Observable<Item> = this.activeItemSubject.asObservable();
+
 
   constructor(private http: HttpClient) {}
 

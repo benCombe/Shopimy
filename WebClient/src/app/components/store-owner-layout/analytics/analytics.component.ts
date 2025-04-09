@@ -30,21 +30,17 @@ interface SalesDataPoint {
 export class AnalyticsComponent implements OnInit {
   @Input() analyticDataSource1: AnalyticsData[] = []; // Data for Recent Purchase table
   @Input() analyticDataSource2: AnalyticsData[] = []; // Data for Popular Items table
+  @Input() visitData: ChartDataPoint[] = [];          // Store visits data
+  @Input() annualSalesData: SalesDataPoint[] = [];    // Annual sales data
+  @Input() currentMonthData: SalesDataPoint[] = [];   // Current month sales data
+  @Input() previousMonthData: SalesDataPoint[] = [];  // Previous month sales data
   
   displayedColumns: string[] = ['order', 'customer', 'total', 'items', 'payment', 'fulfilled'];
   
-  // Store visits data
-  visitData: ChartDataPoint[] = [];
+  // Chart data points (calculated from input data)
   visitChartPoints: string = '';
   maxVisitors: number = 0;
-
-  // Annual sales data
-  annualSalesData: SalesDataPoint[] = [];
   maxAnnualSales: number = 0;
-  
-  // Monthly sales data
-  currentMonthData: SalesDataPoint[] = [];
-  previousMonthData: SalesDataPoint[] = [];
   currentMonthPoints: string = '';
   previousMonthPoints: string = '';
   maxMonthlySales: number = 0;
@@ -57,48 +53,29 @@ export class AnalyticsComponent implements OnInit {
   chartHeight = 100;
   
   ngOnInit() {
-    // Sample data for Recent Purchase
-    if (this.analyticDataSource1.length === 0) {
-      this.analyticDataSource1 = [
-        {order: 'ORD001', customer: 'John Doe', total: '$120.99', items: '3', payment: 'Credit Card', fulfilled: 'Yes'},
-        {order: 'ORD002', customer: 'Jane Smith', total: '$85.50', items: '2', payment: 'PayPal', fulfilled: 'Yes'},
-        {order: 'ORD003', customer: 'Robert Johnson', total: '$210.75', items: '5', payment: 'Credit Card', fulfilled: 'No'},
-        {order: 'ORD004', customer: 'Emily Davis', total: '$45.99', items: '1', payment: 'Cash', fulfilled: 'Yes'},
-      ];
-    }
-    
-    // Sample data for Popular Items
-    if (this.analyticDataSource2.length === 0) {
-      this.analyticDataSource2 = [
-        {order: 'ITEM001', customer: 'T-Shirt', total: '$29.99', items: '150', payment: '15%', fulfilled: 'Clothing'},
-        {order: 'ITEM002', customer: 'Smartphone Case', total: '$15.99', items: '120', payment: '12%', fulfilled: 'Accessories'},
-        {order: 'ITEM003', customer: 'Water Bottle', total: '$12.50', items: '100', payment: '10%', fulfilled: 'Lifestyle'},
-        {order: 'ITEM004', customer: 'Notebook', total: '$8.99', items: '90', payment: '9%', fulfilled: 'Stationery'},
-      ];
-    }
-    
-    // Generate store visits data
-    this.generateStoreVisitsData();
-    
-    // Generate annual sales data
-    this.generateAnnualSalesData();
-    
-    // Generate monthly sales data
-    this.generateMonthlySalesData();
+    // Process the input data to generate chart points
+    this.processChartData();
   }
 
-  generateStoreVisitsData() {
-    // Sample data for the week
-    this.visitData = [
-      { day: 'Mon', visitors: 65 },
-      { day: 'Tue', visitors: 72 },
-      { day: 'Wed', visitors: 58 },
-      { day: 'Thu', visitors: 80 },
-      { day: 'Fri', visitors: 92 },
-      { day: 'Sat', visitors: 120 },
-      { day: 'Sun', visitors: 85 }
-    ];
+  // Process all chart data from inputs
+  processChartData() {
+    // Process store visits data
+    if (this.visitData.length > 0) {
+      this.generateStoreVisitsPoints();
+    }
     
+    // Process annual sales data
+    if (this.annualSalesData.length > 0) {
+      this.maxAnnualSales = Math.max(...this.annualSalesData.map(d => d.amount));
+    }
+    
+    // Process monthly sales data
+    if (this.currentMonthData.length > 0 && this.previousMonthData.length > 0) {
+      this.generateMonthlySalesPoints();
+    }
+  }
+
+  generateStoreVisitsPoints() {
     // Find maximum visitors for scaling
     this.maxVisitors = Math.max(...this.visitData.map(d => d.visitors));
     
@@ -110,6 +87,32 @@ export class AnalyticsComponent implements OnInit {
     this.visitChartPoints = this.visitData.map((data, index) => {
       const x = this.chartMargins.left + (index * (usableWidth / (this.visitData.length - 1)));
       const y = this.chartMargins.top + (usableHeight - (data.visitors / this.maxVisitors) * usableHeight);
+      return `${x},${y}`;
+    }).join(' ');
+  }
+  
+  // Generate monthly sales comparison points
+  generateMonthlySalesPoints() {
+    // Find maximum value for scaling
+    this.maxMonthlySales = Math.max(
+      ...this.currentMonthData.map(d => d.amount),
+      ...this.previousMonthData.map(d => d.amount)
+    );
+    
+    // Generate line chart points for current month
+    const usableWidth = this.chartWidth - this.chartMargins.left - this.chartMargins.right;
+    const usableHeight = this.chartHeight - this.chartMargins.top - this.chartMargins.bottom;
+    
+    this.currentMonthPoints = this.currentMonthData.map((data, index) => {
+      const x = this.chartMargins.left + (index * (usableWidth / (this.currentMonthData.length - 1)));
+      const y = this.chartMargins.top + (usableHeight - (data.amount / this.maxMonthlySales) * usableHeight);
+      return `${x},${y}`;
+    }).join(' ');
+    
+    // Generate line chart points for previous month
+    this.previousMonthPoints = this.previousMonthData.map((data, index) => {
+      const x = this.chartMargins.left + (index * (usableWidth / (this.previousMonthData.length - 1)));
+      const y = this.chartMargins.top + (usableHeight - (data.amount / this.maxMonthlySales) * usableHeight);
       return `${x},${y}`;
     }).join(' ');
   }
@@ -142,63 +145,6 @@ export class AnalyticsComponent implements OnInit {
     return this.chartMargins.top + (usableHeight - (index * usableHeight / totalTicks));
   }
 
-  // Generate annual sales data - bar chart
-  generateAnnualSalesData() {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
-    // Sample data - sales by month
-    this.annualSalesData = months.map(month => {
-      return { 
-        label: month, 
-        amount: Math.floor(Math.random() * 50000) + 30000 
-      };
-    });
-    
-    this.maxAnnualSales = Math.max(...this.annualSalesData.map(d => d.amount));
-  }
-  
-  // Generate monthly sales comparison data
-  generateMonthlySalesData() {
-    // Sample data for current month (first 30 days)
-    this.currentMonthData = Array.from({length: 30}, (_, i) => {
-      return {
-        label: (i + 1).toString(),
-        amount: Math.floor(Math.random() * 3000) + 1000
-      };
-    });
-    
-    // Sample data for previous month (for comparison)
-    this.previousMonthData = Array.from({length: 30}, (_, i) => {
-      return {
-        label: (i + 1).toString(),
-        amount: Math.floor(Math.random() * 2800) + 800
-      };
-    });
-    
-    // Find maximum value for scaling
-    this.maxMonthlySales = Math.max(
-      ...this.currentMonthData.map(d => d.amount),
-      ...this.previousMonthData.map(d => d.amount)
-    );
-    
-    // Generate line chart points for current month
-    const usableWidth = this.chartWidth - this.chartMargins.left - this.chartMargins.right;
-    const usableHeight = this.chartHeight - this.chartMargins.top - this.chartMargins.bottom;
-    
-    this.currentMonthPoints = this.currentMonthData.map((data, index) => {
-      const x = this.chartMargins.left + (index * (usableWidth / (this.currentMonthData.length - 1)));
-      const y = this.chartMargins.top + (usableHeight - (data.amount / this.maxMonthlySales) * usableHeight);
-      return `${x},${y}`;
-    }).join(' ');
-    
-    // Generate line chart points for previous month
-    this.previousMonthPoints = this.previousMonthData.map((data, index) => {
-      const x = this.chartMargins.left + (index * (usableWidth / (this.previousMonthData.length - 1)));
-      const y = this.chartMargins.top + (usableHeight - (data.amount / this.maxMonthlySales) * usableHeight);
-      return `${x},${y}`;
-    }).join(' ');
-  }
-  
   // Get bar width for annual sales chart
   getBarWidth(): number {
     const usableWidth = this.chartWidth - this.chartMargins.left - this.chartMargins.right;

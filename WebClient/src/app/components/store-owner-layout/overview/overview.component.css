@@ -17,6 +17,7 @@
     background-color: var(--main-color);
     
     display: grid;
+    grid-template-columns: 1fr 1fr; /* Ensure two equal columns */
     align-content: center;
     column-gap: 20px;
     row-gap: 20px;
@@ -59,12 +60,14 @@
 
 #analytic-list-wrapper{
     align-self: center;
-    min-height: 420px;
+    min-height: 450px;
     max-height: 450px;
-    width: 500px;
-    padding: 25px;
+    width: 90%; /* Reduced from 100% to 90% */
+    margin: 0 auto; /* Center in parent container */
+    padding: 15px;
     border-radius: 12px;
     background-color: var(--third-color);
+    overflow-x: auto;  /* Add horizontal scrolling if needed */
 }
 #analytic-list{
     border-collapse: collapse;
@@ -102,16 +105,11 @@
     row-gap: 25px;
 }
 
-.analytics-img{
-    width: 25vw;
-    height: auto;
-}
-
 #analytic-graph{
-    grid-column-start: 2;
-    grid-column-end: 2;
-    grid-row-start: 1;
-    grid-row-end: 1;
+    grid-column: 2;
+    grid-row: 1;
+    width: 90%; /* Reduced from 100% to 90% */
+    margin: 0 auto; /* Center in parent container */
 }
 
 
@@ -120,7 +118,6 @@
     max-width: 100%;
     max-height: auto;
     padding: 25px;
-    display: grid;
     align-content: center;
     column-gap: 25px;
     row-gap: 25px;
@@ -133,25 +130,224 @@
 }
 
 .QuickLinks button{
-    border: 2px black;
+    border: 2px solid #333;
+    border-radius: 8px;
     color: white;
-    background-color: var(--main-color);
+    background-color: #ff7700;  /* Changed to bright orange from var(--main-color) */
     font-family: var(--main-font-fam);
     padding: 16px;
     width: 95%;
     text-align: left;
-    text-decoration:    none;
-    display:list-item;
+    text-decoration: none;
+    display: list-item;
     font-size: 24px;
     margin: 4px 2px;
     transition-duration: 0.4s;
     cursor: pointer;
-}
-.QuickLinks button:hover{
-    background-color: white;
-    color: var(--main-color);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);  /* Enhanced shadow for more depth */
 }
 
+.QuickLinks button:hover{
+    background-color: #ff9933;  /* Lighter orange for hover state */
+    color: white;  /* Keep text white for better contrast */
+    border-color: #333;
+    transform: translateY(-2px);  /* Slight lift effect on hover */
+}
+
+
+.product-table {
+    align-self: center;
+    min-height: 450px;
+    max-height: 450px;
+    width: 90%; /* Reduced from 100% to 90% */
+    padding: 15px;
+    border-radius: 12px;
+    background-color: var(--third-color);
+    font-family: var(--main-font-fam);
+    font-size: 2rem; /* Slightly reduced for better fit */
+}
+  
+.mat-table{
+    width: 90%; /* Reduced from 100% to 90% */
+    margin: 0 auto; /* Center the table */
+}
+  
+  .mat-column-Id{
+    font-size: 1.2rem;
+    font-family: var(--main-font-fam);
+  }
+  .mat-column-Name{
+    font-size: 1.2rem;
+    font-family: var(--main-font-fam);
+  }
+  .mat-column-OriginalPrice{
+    font-size: 1.2rem;
+    font-family: var(--main-font-fam);
+  }
+  .mat-column-QuantityInStock{
+    font-size: 1.2rem;
+    font-family: var(--main-font-fam);
+  }
+  .mat-column-CategoryIds{
+    font-size: 1.2rem;
+    font-family: var(--main-font-fam);
+  }
+
+/* Graph styling */
+.graph-container {
+    display: flex;
+    height: 450px;
+    padding: 15px;
+    background-color: var(--third-color);
+    border-radius: 12px;
+    width: 90%; /* Reduced from 100% to 90% */
+    margin: 0 auto; /* Center in parent container */
+}
+
+.y-axis {
+    width: 50px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-right: 10px;
+    border-right: 1px solid #999;
+}
+
+.y-axis-label {
+    position: absolute;
+    transform: rotate(-90deg) translate(-50%, 0);
+    transform-origin: left center;
+    left: -5px;
+    top: 50%;
+    font-size: 14px;
+    font-weight: bold;
+    color: #444;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.y-max, .y-mid, .y-min {
+    position: relative;
+    text-align: right;
+    font-size: 12px;
+    color: #666;
+}
+
+.y-max {
+    top: 0;
+}
+
+.y-min {
+    bottom: 0;
+}
+
+.bar-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+    padding: 0 10px;
+}
+
+.bar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    margin: 0 5px;
+}
+
+.bar {
+    width: 40px;
+    background-color: var(--main-color);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: height 0.5s;
+    display: flex;
+    justify-content: center;
+}
+
+.bar-value {
+    position: absolute;
+    top: -20px;
+    font-size: 12px;
+    color: #333;
+}
+
+.bar-label {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Line graph styling */
+.line-graph-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.line-graph {
+    width: 100%;
+    height: calc(100% - 20px);
+    margin-bottom: 5px;
+}
+
+.line-path {
+    fill: none;
+    stroke: var(--main-color);
+    stroke-width: 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.data-point {
+    fill: var(--main-color);
+    stroke: white;
+    stroke-width: 2;
+    cursor: pointer;
+    transition: r 0.2s;
+}
+
+.data-point:hover {
+    r: 7;
+}
+
+.point-value {
+    fill: #333;
+    font-size: 12px;
+    text-anchor: middle;
+    font-weight: bold;
+}
+
+.x-axis {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    border-top: 1px solid #999;
+    padding-top: 5px;
+}
+
+.x-axis-label {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #444;
+    margin-top: 15px;
+}
+
+.x-label {
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    color: #444; /* Updated to match other axis labels */
+}
 
 
 

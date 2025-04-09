@@ -2,30 +2,26 @@
     <div class="section">
         <div id="Total-info">
             <h3>Total Order(s)</h3>
-            <table mat-table [dataSource]="orderData" class="product-table mat-elevation-z8" >
-                <ng-container matColumnDef="totalSales">
-                    <th mat-header-cell *matHeaderCellDef>Total Sales</th>
-                    <td mat-cell *matCellDef="let element">{{element.totalSales}}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="orders">
-                    <th mat-header-cell *matHeaderCellDef>Orders</th>
-                    <td mat-cell *matCellDef="let element">{{element.orders}}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="customers">
-                    <th mat-header-cell *matHeaderCellDef>Customers</th>
-                    <td mat-cell *matCellDef="let element">{{element.customers}}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="fulfilledOrders">
-                    <th mat-header-cell *matHeaderCellDef>Fulfilled Orders</th>
-                    <td mat-cell *matCellDef="let element">{{element.fulfilledOrders}}</td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="orderColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: orderColumns;"></tr>
-            </table>
+            <div class="summary-container">
+                <div class="summary-card" *ngFor="let summary of summaryData">
+                    <div class="summary-item">
+                        <span class="summary-label">Total Sales</span>
+                        <span class="summary-value">{{summary.totalSales}}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Orders</span>
+                        <span class="summary-value">{{summary.orders}}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Items</span>
+                        <span class="summary-value">{{summary.items}}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Fulfilled Orders</span>
+                        <span class="summary-value">{{summary.fulfilledOrders}}</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -33,7 +29,7 @@
         <div id="Order-info">
             <h3>Order Details</h3>
             <div id="Order-list-wrapper">
-                <table mat-table [dataSource]="productData" class="product-table mat-elevation-z8" >
+                <table mat-table [dataSource]="orderData" class="product-table mat-elevation-z8" >
                     
                     <ng-container matColumnDef="order">
                         <th mat-header-cell *matHeaderCellDef>Order:</th>

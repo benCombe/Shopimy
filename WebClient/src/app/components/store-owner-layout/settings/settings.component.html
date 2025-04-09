@@ -1,21 +1,52 @@
 <div id="main">
-
+  <div id="title">
+    <h2 class="title">Payment Settings</h2>
+  </div>
 
   <div class="section">
-    <fieldset>
-      <legend>Payment Info</legend>
-      <label for="creditCard"><h2>Credit Card</h2></label>
-      <input type="text" id="creditCard" name="creditCard" placeholder="Credit Card Number"><br><br>
-      <label for="Address"><h2>Address</h2></label>
-      <input type="text" id="Address" name="Address" placeholder="Address"><br><br>
-      <label for="Email"><h2>Email</h2></label>
-      <input type="text" id="Email" name="Email" placeholder="Email"><br><br>
-      <label for="Phone"><h2>Phone</h2></label>
-      <input type="text" id="Phone" name="Phone" placeholder="Phone"><br><br>
-      <label for="birthday"><h2>Birthday</h2></label>
-      <input type="date" id="birthday" name="birthday"><br><br>
-      <input type="submit" value="Submit" width="50px">
+    <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+      <fieldset>
+        <legend>Payment Info</legend>
+        
+        <div class="form-row">
+          <label for="creditCard">Credit Card</label>
+          <input type="text" id="creditCard" formControlName="creditCard" placeholder="Credit Card Number">
+        </div>
+        
+        <div class="form-row">
+          <label for="expDate">Expiration</label>
+          <input type="text" id="expDate" formControlName="expDate" placeholder="MM/YY">
+        </div>
+        
+        <div class="form-row cvv">
+          <label for="cvv">CVV</label>
+          <input type="text" id="cvv" formControlName="cvv" placeholder="XXX">
+        </div>
 
-    </fieldset>
+        <div class="form-row">
+          <label for="address">Address</label>
+          <input type="text" id="address" formControlName="address" placeholder="Address">
+        </div>
+        
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input type="email" id="email" formControlName="email" placeholder="Email">
+        </div>
+        
+        <div class="form-row">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" formControlName="phone" placeholder="Phone">
+        </div>
+        
+        <div class="form-row">
+          <label for="birthday">Birthday</label>
+          <input type="date" id="birthday" formControlName="birthday">
+        </div>
+        
+        <div class="button-row">
+          <button type="submit" class="submit-btn">Save Changes</button>
+        </div>
+      </fieldset>
+    </form>
   </div>
 </div>

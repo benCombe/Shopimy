@@ -1,62 +1,110 @@
 <div id="main">
 
-    <div class ="title">
+    <div class="title">
         <h2>Quick Analytics</h2>
-
     </div>
 
     <div class="section">
-        
         <div id="analytic-info">
             <h3>Recent Purchase</h3>
-            <div id = "analytic-list-wrapper">
-                <table id ="analytic-list">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Amounts</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Product 1</td>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <td>Product 2</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>Product 3</td>
-                            <td>2</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <div id="analytic-list-wrapper">
+                <table mat-table [dataSource]="productData" class="mat-elevation-z8 product-table">
 
+                    <!--- Note that these columns can be defined in any order.
+                          The actual rendered columns are set as a property on the row definition" -->
+                  
+                    <!-- Id Column -->
+                    <ng-container matColumnDef="Id">
+                      <th mat-header-cell *matHeaderCellDef> Item ID </th>
+                      <td mat-cell *matCellDef="let element"> {{element.Id}} </td>
+                    </ng-container>
+                  
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="Name">
+                      <th mat-header-cell *matHeaderCellDef> Item Name </th>
+                      <td mat-cell *matCellDef="let element"> {{element.Name}} </td>
+                    </ng-container>
+                    
+                    <!-- Price Column -->
+                    <ng-container matColumnDef="OriginalPrice">
+                        <th mat-header-cell *matHeaderCellDef> Item Price </th>
+                        <td mat-cell *matCellDef="let element"> {{element.OriginalPrice}} </td>
+                    </ng-container>
+    
+                    <!-- Stock Column -->
+                    <ng-container matColumnDef="QuantityInStock">
+                      <th mat-header-cell *matHeaderCellDef> Item Stock </th>
+                      <td mat-cell *matCellDef="let element"> {{element.QuantityInStock}} </td>
+                    </ng-container>
+                  
+                    <!-- Catagory Column -->
+                    <ng-container matColumnDef="CategoryIds">
+                      <th mat-header-cell *matHeaderCellDef> Item Catagory </th>
+                      <td mat-cell *matCellDef="let element"> {{element.CategoryIds}} </td>
+                    </ng-container>
+                  
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  </table> 
+            </div>
+        </div>
+    
+        <div id="analytic-graph">
+            <h3>Visits to Store</h3>
+            <div class="graph-container">
+                <div class="y-axis">
+                    <div class="y-axis-label">Number of Visitors</div>
+                    <div class="y-max">{{maxVisitorCount}}</div>
+                    <div class="y-mid">{{maxVisitorCount / 2}}</div>
+                    <div class="y-min">0</div>
+                </div>
+                <div class="line-graph-container">
+                    <svg class="line-graph" viewBox="0 0 700 300" preserveAspectRatio="none">
+                        <!-- Line path -->
+                        <path class="line-path" [attr.d]="getLinePath()"></path>
+                        
+                        <!-- Points -->
+                        <g *ngFor="let point of getPoints(); let i = index">
+                            <circle 
+                                [attr.cx]="point.x" 
+                                [attr.cy]="point.y" 
+                                r="5" 
+                                class="data-point">
+                            </circle>
+                            <text 
+                                [attr.x]="point.x" 
+                                [attr.y]="point.y - 15" 
+                                class="point-value">
+                                {{visitorData[i].count}}
+                            </text>
+                        </g>
+                    </svg>
+                    
+                    <!-- X-axis labels -->
+                    <div class="x-axis">
+                        <div class="x-label" *ngFor="let item of visitorData">{{item.day}}</div>
+                    </div>
+                    <div class="x-axis-label">Day of Week</div>
+                </div>
+            </div>
+        </div>
     </div>
     
-    <div id="analytic-graph">
-        <h3>Visists to Store</h3>
-        <img class= "analytics-img" src="resources/images/tempGraph.jpg">
+    <div class="QuickLinks">
+        <h2>Quick Links</h2>
+        <button (click)="navigateToThemes()">
+            Edit Store
+        </button>
+        <button (click)="navigateToProducts()">
+            Add Product
+        </button>
+        <button (click)="navigateToPromotions()">
+            Add Promotion
+        </button>
+        <button (click)="navigateToSettings()">
+            Payment Settings
+        </button>
     </div>
-    </div>
-    
-<div class="QuickLinks">
-    <h2>Quick Links</h2>
-    <button>
-        Edit Store
-    </button>
-    <button>
-        Add Product
-    </button>
-    <button>
-        Add Promotion
-    </button>
-    <button>
-        Store Settings
-    </button>
-</div>
 
 </div>
 

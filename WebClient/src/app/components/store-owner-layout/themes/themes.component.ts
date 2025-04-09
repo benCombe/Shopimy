@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StoreDetails } from '../../../models/store-details';
@@ -10,7 +10,11 @@ import { StoreDetails } from '../../../models/store-details';
   styleUrl: './themes.component.css',
   standalone: true
 })
+
 export class ThemesComponent implements OnInit {
+
+
+
   logoPreviewUrl: string = 'resources/images/placeholder-logo.png';
   bannerPreviewUrl: string = 'resources/images/placeholder-banner.png';
   selectedFont: string = 'Calibri';
@@ -37,7 +41,9 @@ export class ThemesComponent implements OnInit {
   selectedLayout: string = 'layout-1';
   
   // Store details reference
-  storeDetails: StoreDetails = new StoreDetails(1, '', 'My Store', '#cccccc', '#808080', '#ffffff', '#000000', 'Calibri', '', '', []);
+  @Input() storeDetails = new StoreDetails(1, '', 'My Store', '#cccccc', '#808080', '#ffffff', '#000000', 'Calibri', '', '', []);
+
+  @Output() storeDetailsUpdated = new EventEmitter<StoreDetails>();
 
   ngOnInit(): void {
     // Load form values from store details
@@ -71,6 +77,13 @@ export class ThemesComponent implements OnInit {
     
     console.log('Store details updated:', this.storeDetails);
     // Here you would typically save the store details to a service
+    //this.storeDetailsUpdated.emit(this.storeDetails);
+  }
+
+  addStoreDetails(): void {
+    // Emit the new store details value to the parent component
+    console.log('New store details emitted:', this.storeDetails);
+    this.storeDetailsUpdated.emit(this.storeDetails);
   }
 
   onColorChange(event: Event, colorType: 'primary' | 'secondary' | 'font'): void {

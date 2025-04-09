@@ -3,14 +3,14 @@
   <div id="main">
     <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
       Overview
-      <app-overview [productData] = "productData"></app-overview>
+      <app-overview [productData]="productData" [visitorData]="visitorData" (navigateToPage)="onPageChange($event)"></app-overview>
     </div>
     <div *ngIf="currentPage === 'Profile'" id="profile" class="page">
       <app-profile [user]="user"></app-profile>
     </div>
     <div *ngIf="currentPage === 'Settings'" id="settings" class="page">
-      Settings
-      <app-settings></app-settings>
+      Payment Settings
+      <app-settings (paymentInfoSaved)="handlePaymentInfoSaved($event)"></app-settings>
     </div>
     <div *ngIf="currentPage === 'Products'" id="products" class="page">
       Products
@@ -18,23 +18,42 @@
     </div>
     <div *ngIf="currentPage === 'Orders'" id="orders" class="page">
       Orders
-      <app-orders [orderData] = "orderData"></app-orders>
+      <app-orders [orderData]="orderData"></app-orders>
     </div>
     <div *ngIf="currentPage === 'Themes & Logos'" id="themes" class="page">
       Themes & Logos
-      <app-themes></app-themes>
+      <app-themes [storeDetails] = "storeDetails" (storeDetailsUpdated)="updateStore($event)"></app-themes>
     </div>
     <div *ngIf="currentPage === 'Promotions'" id="promos" class="page">
       Promotions
-      <app-promotions></app-promotions>
+      <app-promotions 
+        (promoCodeCreated)="handlePromoCodeCreated($event)" 
+        (promoMessageSent)="handlePromoMessageSent($event)">
+      </app-promotions>
     </div>
     <div *ngIf="currentPage === 'Traffic'" id="traffic" class="page">
       Traffic
-      <app-analytics [analyticDataSource1] = "analyticDataSource1" [analyticDataSource2] = "analyticDataSource2"></app-analytics>
+      <app-analytics 
+        [analyticDataSource1]="analyticDataSource1" 
+        [analyticDataSource2]="analyticDataSource2"
+        [visitData]="visitData"
+        [annualSalesData]="annualSalesData"
+        [currentMonthData]="currentMonthData"
+        [previousMonthData]="previousMonthData">
+      </app-analytics>
     </div>
     <div *ngIf="currentPage === 'Sales'" id="sales" class="page">
       Sales
-      <app-sales></app-sales>
+      <app-sales
+        [totalSales]="totalSales"
+        [totalOrders]="totalOrders"
+        [averageOrderValue]="averageOrderValue"
+        [conversionRate]="conversionRate"
+        [monthlySalesData]="monthlySalesData"
+        [categorySalesData]="categorySalesData"
+        [salesTableData]="salesTableData"
+        [productsTableData]="productsTableData">
+      </app-sales>
     </div>
 
   </div>

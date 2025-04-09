@@ -1,82 +1,143 @@
-main{
+main {
+    width: 85%; /* Set main width to 85% of viewport */
     max-width: 100%;
-    max-height: auto;
     padding: 25px;
-    display: grid;
-    align-content: center;
-    column-gap: 25px;
-    row-gap: 25px;
+    display: flex;
+    flex-direction: column;
     font-family: var(--main-font-fam);
-  }
+    gap: 30px;
+}
 
-.section{
-    max-width: 95vw;
-    width: 90%;
-    padding: 25px;
-    margin: 20px;
+.section {
+    /* Remove max-width to allow scaling with screen size */
+    width: 100%;
+    padding: 30px;
+    margin: 0; /* Changed from margin: 0 auto; to align with left side */
     border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
     background-color: var(--main-color);
-    display: grid;
-    align-content: center;
-    column-gap: 20px;
-    row-gap: 20px;
-}
-.section h2{
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-    text-align: left;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.section h3{
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    text-align: left;
+.section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
 }
 
-.section form{
-    width: 90%;
-    padding: 8px 8px;
-    margin: 8px 0;
+.section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--font-color);
+    border-bottom: 2px solid var(--third-color);
+    padding-bottom: 10px;
+}
+
+.section h3 {
+    font-size: 1.3rem;
+    margin: 15px 0 10px;
+    color: #333;
+}
+
+.section form {
+    width: 100%;
+    padding: 15px;
     box-sizing: border-box;
-    border: 5px solid var(--third-color);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
 }
 
-.section form label{
-    font-size: 1.5rem;
-    margin-bottom: 5px;
-    text-align: left;
+.form-group {
+    margin-bottom: 20px;
 }
 
-.section form input{
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+    .input-group {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .input-group label {
+        flex: 0 0 30%;
+        margin-bottom: 0;
+    }
+    
+    .input-group input {
+        flex: 1;
+    }
+}
+
+.section form label {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    display: block;
+    color: #555;
+}
+
+.section form input {
     font-size: 1rem;
-    margin-bottom: 5px;
-    text-align: left;
+    padding: 10px 12px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border 0.2s;
+    color: #333;
+}
+
+.section form input:focus,
+.section form textarea:focus {
+    border-color: var(--third-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--third-color-rgb, 0, 123, 255), 0.25);
 }
 
 .section form textarea {
     width: 100%;
-    height: 150px;
-    padding: 12px 20px;
+    height: 120px;
+    padding: 12px;
     box-sizing: border-box;
-    border: 2px solid #ccc;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: #f8f8f8;
+    background-color: #ffffff;
     font-family: var(--main-font-fam);
-    font-size: 16px;
-    resize: none;
-  }
-
-#promotion-wrapper{
-    display: grid;
-    align-content: center;
-    column-gap: 20px;
-    row-gap: 20px;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border 0.2s;
 }
 
-#input-box{
+.btn-submit {
+    background-color: var(--third-color, #4a90e2);
+    color: #333;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: block;
+    margin-top: 20px;
     width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box; 
+}
+
+.btn-submit:hover {
+    background-color: var(--third-color-dark, #3a80d2);
+}
+
+/* Adjust media query for larger screens */
+@media (min-width: 992px) {
+    main {
+        width: 85%; /* Maintain consistent width scaling */
+    }
+    
+    .btn-submit {
+        width: auto;
+        margin-left: 0;
+    }
 }

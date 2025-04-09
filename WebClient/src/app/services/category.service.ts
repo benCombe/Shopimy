@@ -1,20 +1,18 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-export interface Category {
-  CategoryId: number;
-  StoreId: number;
-  Name: string;
-  ParentCategory?: number;
-}
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Category } from '../models/category';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
   private baseUrl = '/api/categories'; // adjust the URL if needed
+
+    private defaultCategory: Category = new Category(0, 0, "example",null ); //Default Category
+    private activeCategorySubject = new BehaviorSubject<Category>(this.defaultCategory);
+    public activeCategory$ : Observable<Category> = this.activeCategorySubject.asObservable();
 
   constructor(private http: HttpClient) { }
 

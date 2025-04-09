@@ -17,7 +17,7 @@
             <label for="color-picker-font" style="font-size:30px">  Font Color</label>
         </div>
 
-        <div class="layout-select">
+        <div class="layout-select" style="display: none;">
             <h3>Layout Select</h3>
             <input type="radio" id="layout-1" name="layout" value="layout-1" buffer="10px">
             <label for="layout-1" style="font-size:30px">
@@ -252,8 +252,8 @@
         </div>
 
         <div class="save-section">
-            <button (click)="updateStoreDetails()" class="save-button">
-                Save Theme Settings
+            <button (click)="addStoreDetails()" class="save-button">
+                Save Theme Settings 
             </button>
         </div>
     </div>

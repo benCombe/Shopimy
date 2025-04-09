@@ -1,6 +1,7 @@
 import { StoreService } from './store.service';
 import { Injectable, Renderer2, RendererFactory2, OnInit } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available throughout the app
@@ -9,6 +10,10 @@ export class ThemeService {
   private renderer: Renderer2;
 
   storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []); //Get via API
+
+  private activeThemeSubject = new BehaviorSubject<StoreDetails>(this.storeDetails);
+  public activeTheme$ : Observable<StoreDetails> = this.activeThemeSubject.asObservable();
+  
 
   constructor(rendererFactory: RendererFactory2, private storeService: StoreService) {
     this.renderer = rendererFactory.createRenderer(null, null);
@@ -69,6 +74,36 @@ export class ThemeService {
       this.renderer.setStyle(element as HTMLElement, 'font-family', this.storeDetails.fontFamily);
     });
   }
+
+  setBannerText(elemClass: string) {
+    const elements = document.querySelectorAll(`.${elemClass}`);
+    elements.forEach((element) => {
+      this.renderer.setProperty(element as HTMLElement, 'innerText', this.storeDetails.bannerText);
+    });
+  }
+
+  setLogoText(elemClass: string) {
+    const elements = document.querySelectorAll(`.${elemClass}`);
+    elements.forEach((element) => {
+      this.renderer.setProperty(element as HTMLElement, 'innerText', this.storeDetails.logoText);
+    });
+  }
+
+  setLogoUrl(elemClass: string) {
+    const elements = document.querySelectorAll(`.${elemClass}`);
+    elements.forEach((element) => {
+      this.renderer.setAttribute(element as HTMLElement, 'src', this.storeDetails.LogoUrl || '');
+    });
+  }
+
+  setBannerUrl(elemClass: string) {
+    const elements = document.querySelectorAll(`.${elemClass}`);
+    elements.forEach((element) => {
+      this.renderer.setAttribute(element as HTMLElement, 'src', this.storeDetails.Banner || '');
+    });
+  }
+
+  
 
   setButtonHoverColor(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);

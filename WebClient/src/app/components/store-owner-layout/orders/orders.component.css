@@ -50,13 +50,14 @@
 
 #Order-info{
   align-self: center;
+  width: 95%;
 }
 
 #Order-list-wrapper{
     align-self: center;
     min-height: 420px;
     max-height: 450px;
-    width: 85vh;
+    width: 100%;
     padding: 25px;
     border-radius: 12px;
     background-color: var(--third-color);
@@ -157,18 +158,13 @@
 
 
 
-#Total-graph{
-    grid-column-start: 2;
-    grid-column-end: 2;
-    grid-row-start: 1;
-    grid-row-end: 1;
-}
+
 
 .product-table {
   align-self: center;
   min-height: 420px;
   max-height: 450px;
-  width: auto;
+  width: 100%;
   padding: 25px;
   border-radius: 12px;
   background-color: var(--third-color);
@@ -178,7 +174,8 @@
 }
 .mat-table{
   background-color: var(--main-color);
-  width: auto;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .mat-column-Id{
@@ -200,6 +197,74 @@
 .mat-column-CategoryIds{
   font-size: 1.2rem;
   font-family: var(--main-font-fam);
+}
+
+.summary-table {
+  width: 100%;
+  background-color: var(--third-color);
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.summary-cell {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
+.mat-header-cell {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
+.summary-container {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  background-color: var(--third-color);
+  border-radius: 12px;
+}
+
+.summary-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  background-color: var(--third-color);
+  border-radius: 8px;
+  margin: 10px;
+  min-width: 150px;
+  color: #333;
+}
+
+.summary-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: var(#333);
+}
+
+.summary-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--accent-color, #333);
+}
+
+.mat-cell, .mat-header-cell {
+  padding: 12px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 
