@@ -1,15 +1,32 @@
-/* public class WeatherForecastControllerTests
+using System.Net;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Xunit;
+
+/*
+public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
-    [Fact]
-    public async Task GET_retrieves_weather_forecast()
+    private readonly HttpClient _client;
+    internal WeatherForecastControllerTests(WebApplicationFactory<Program> factory)
     {
-        await using var application = new WebApplicationFactory<Api.Startup>();
-        using var client = application.CreateClient();
- 
-        var response = await client.GetAsync("/weatherforecast");
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        _client = factory.CreateClient();
     }
-} */ //updating to test git
 
+    [Fact]
+    public async Task GetPageToLoad()
+    {
+        var response = await _client.GetAsync("/weatherforecast");
 
-//Commented out due to causing errors
+        response.EnsureSuccessStatusCode();
+        //var content = await response.Content.ReadAsStringAsync();
+        //Console.WriteLine(content);
+        /*
+        await using var application = new WebApplicationFactory<Program>();
+        //using var client = application.CreateClient();
+ 
+        var response = await _client.GetAsync("/weatherforecast");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+    }
+
+}
+*/
