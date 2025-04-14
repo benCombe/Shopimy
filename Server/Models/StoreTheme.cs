@@ -23,5 +23,8 @@ namespace Server.Models
         public string BannerText {get; set;} //max-length 50
         [Column("logo_text")]
         public string LogoText {get; set;} //max-length 50
+
+        public string LogoImagePath { get; set; }
+        public string BannerImagePath { get; set; }
     }
 }

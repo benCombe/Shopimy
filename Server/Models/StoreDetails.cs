@@ -5,19 +5,6 @@ using Shopimy.Server.Models;
 
 namespace Server.Models
 {
-    /* public class Store
-    {
-        [Key]
-        [Column("store_id")]
-        public string Id {get; set;}
-        [Column("store_url")]
-        public string URL {get;set;}        
-        [Column("name")]
-        public string Name {get; set;}
-        [Column()]
-    } */
-
-
     public class StoreDetails{
         public int Id {get; set;}
         public string URL {get;set;} 
@@ -29,8 +16,9 @@ namespace Server.Models
         public string FontFamily {get; set;}
         public string BannerText {get; set;}
         public string LogoText {get; set;}
-       /*  public Category[] Categories { get; set; } */
-        public List<Category> Categories { get; set; } //= new(); 
+        public string LogoUrl {get; set;} // Added for logo image path
+        public string BannerUrl {get; set;} // Added for banner image path
+        public List<Category> Categories { get; set; }
 
         public StoreDetails() { }
 
@@ -45,7 +33,9 @@ namespace Server.Models
             string FontFamily,
             string BannerText,
             string LogoText,
-            List<Category> Categories
+            List<Category> Categories,
+            string LogoUrl = null,
+            string BannerUrl = null
         ){
             this.Id = Id;
             this.URL = URL;
@@ -58,6 +48,8 @@ namespace Server.Models
             this.BannerText = BannerText;
             this.LogoText = LogoText;
             this.Categories = Categories;
+            this.LogoUrl = LogoUrl;
+            this.BannerUrl = BannerUrl;
         }
     }
 }
