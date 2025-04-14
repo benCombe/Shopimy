@@ -54,6 +54,26 @@ namespace Server.Controllers
                 return NotFound("Themes not found.");
             }
 
+            var banner = await _context.StoreBanners
+                .Where(s => s.StoreID == store.StoreId)
+                .FirstOrDefaultAsync();
+
+            if (banner == null)
+            {
+                return NotFound("Banner not found.");
+            }
+            
+            var logo = await _context.StoreLogos
+                .Where(s => s.StoreID == store.StoreId)
+                .FirstOrDefaultAsync();
+
+            if (logo == null)
+            {
+                return NotFound("Logo not found.");
+            }
+        
+
+            // 🔹 Fetch categories linked to this store
             var categories = await _context.Categories
                 .Where(c => c.StoreId == store.StoreId)
                 .ToListAsync();
@@ -69,6 +89,8 @@ namespace Server.Controllers
                 themes.FontFamily,
                 themes.BannerText,
                 themes.LogoText,
+                string.IsNullOrEmpty(banner?.BannerURL) ? "" : banner.BannerURL,
+                string.IsNullOrEmpty(logo?.LogoURL) ? "" : logo.LogoURL,
                 categories
             );
 

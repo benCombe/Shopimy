@@ -7,6 +7,7 @@ import { Category } from '../models/category';
 @Injectable({
   providedIn: 'root'
 })
+
 export class CategoryService {
   private baseUrl = '/api/categories'; // adjust the URL if needed
 
@@ -34,5 +35,33 @@ export class CategoryService {
 
   deleteCategory(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+
+  getItemsInCategory(catId: number, storeId: number): Observable<number[]> {
+    const url = `${this.baseUrl}/${catId}/${storeId}`;  // Ensure the correct endpoint format
+    console.log("Getting Item Ids from: ", catId, storeId);
+
+    return this.http.get<number[]>(url).pipe(
+      tap(response => {
+        console.log('Response from API:', response); // Log the response
+      })
+    );
+  }
+
+  getRandomItems(catId: number, storeId: number, limit: number): number[]{
+    //this will fetch a limited randomized list of items listed in a store/category
+
+    /*
+       Example backend controller query:
+
+       SELECT TOP {limit} * FROM Items
+       WHERE store_id = {storeId}
+       AND category_id = {catId}
+       ORDER BY NEWID();
+
+    */
+
+    return [];
   }
 }

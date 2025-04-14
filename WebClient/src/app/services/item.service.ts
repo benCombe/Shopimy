@@ -6,13 +6,14 @@ import { RegistrationDetails } from '../models/registration-details';
 import { BehaviorSubject, Observable, tap, of } from 'rxjs';
 import { LoginDetails } from '../models/login-details';
 import { Item } from '../models/item';
+import { BasicItem } from '../models/basic-item';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemService {
   // Base URL for the items endpoint. Adjust if your API path is different.
-  private itemBaseUrl = `${environment.apiUrl}/api/items`;
+  private itemBaseUrl = `${environment.apiUrl}/item`;
 
 
   private defaultItem: Item = new Item({
@@ -47,31 +48,19 @@ export class ItemService {
 
   // Retrieves a single item by its ID.
   // Replace the mock implementation with a real API call when available.
-  getItemById(id: string): Observable<Item> {
-    // API call:
-    return this.http.get<Item>(`${this.itemBaseUrl}/${id}`);
-
-    /*Mock implementation:
-    const mockItem: Item = {
-      Id: id,
-      Name: 'Mock Item',
-      SalePrice: 100,
-      OriginalPrice: 150,
-      OnSale: true,
-      Description: 'This is a mock item for testing.',
-      QuantityInStock: 10,
-      CategoryIds: [1],
-      ImageUrl: 'assets/images/default.png',
-      AvailFrom: new Date(),
-      AvailTo: new Date(),
-      CurrentRating: 5
-    };
-    return of(mockItem);
-    */
+  getItemById(id: number): Observable<BasicItem> {
+    const url = `${this.itemBaseUrl}/BasicItem/${id}`;  // Correct endpoint for fetching a single item
+    console.log('Fetching item from:', url);
+    return this.http.get<BasicItem>(url).pipe(
+      tap(response => {
+        console.log('Response from API:', response);  // Log the response for debugging
+      })
+    );
   }
 
+
   // Updates the stock level for a given item.
-  updateStock(itemId: string, newStock: number): Observable<Item> {
+  updateStock(itemId: number, newStock: number): Observable<Item> {
     return this.http.put<Item>(`${this.itemBaseUrl}/${itemId}/stock`, { quantityInStock: newStock });
   }
 }

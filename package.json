@@ -4,6 +4,6 @@
   "requires": true,
   "packages": {},
   "dependencies": {
-    "Shopimy": "file:"
+    "@stripe/stripe-js": "^6.1.0"
   }
 }
