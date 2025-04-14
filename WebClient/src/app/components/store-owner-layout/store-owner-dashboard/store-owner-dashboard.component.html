@@ -2,37 +2,31 @@
   <app-side-nav (pageChange)="onPageChange($event)"></app-side-nav>
   <div id="main">
     <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
-      Overview
+      
       <app-overview [productData]="productData" [visitorData]="visitorData" (navigateToPage)="onPageChange($event)"></app-overview>
     </div>
     <div *ngIf="currentPage === 'Profile'" id="profile" class="page">
       <app-profile [user]="user"></app-profile>
     </div>
     <div *ngIf="currentPage === 'Settings'" id="settings" class="page">
-      Payment Settings
       <app-settings (paymentInfoSaved)="handlePaymentInfoSaved($event)"></app-settings>
     </div>
     <div *ngIf="currentPage === 'Products'" id="products" class="page">
-      Products
       <app-product-management [productData] = "productData" [categoryData] = "categoryData"></app-product-management>
     </div>
     <div *ngIf="currentPage === 'Orders'" id="orders" class="page">
-      Orders
       <app-orders [orderData]="orderData"></app-orders>
     </div>
     <div *ngIf="currentPage === 'Themes & Logos'" id="themes" class="page">
-      Themes & Logos
       <app-themes [storeDetails] = "storeDetails" (storeDetailsUpdated)="updateStore($event)"></app-themes>
     </div>
     <div *ngIf="currentPage === 'Promotions'" id="promos" class="page">
-      Promotions
       <app-promotions 
         (promoCodeCreated)="handlePromoCodeCreated($event)" 
         (promoMessageSent)="handlePromoMessageSent($event)">
       </app-promotions>
     </div>
     <div *ngIf="currentPage === 'Traffic'" id="traffic" class="page">
-      Traffic
       <app-analytics 
         [analyticDataSource1]="analyticDataSource1" 
         [analyticDataSource2]="analyticDataSource2"
@@ -43,7 +37,6 @@
       </app-analytics>
     </div>
     <div *ngIf="currentPage === 'Sales'" id="sales" class="page">
-      Sales
       <app-sales
         [totalSales]="totalSales"
         [totalOrders]="totalOrders"

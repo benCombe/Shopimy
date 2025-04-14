@@ -8,6 +8,7 @@ main {
     gap: 30px;
 }
 
+
 .section {
     /* Remove max-width to allow scaling with screen size */
     width: 100%;
@@ -140,4 +141,20 @@ main {
         width: auto;
         margin-left: 0;
     }
+}
+
+#title{
+    max-width: 100%;
+    max-height: auto;
+    padding: 25px;
+    display: grid;
+    align-content: center;
+    column-gap: 25px;
+    row-gap: 25px;
+}
+.title h2{
+    font-size: 2.5rem;
+    color: var(--main-color);
+    margin-bottom: 15px;
+    text-align: left;
 }

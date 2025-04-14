@@ -255,3 +255,19 @@ th.mat-header-cell {
     overflow-x: auto;
   }
 }
+
+#title{
+  max-width: 100%;
+  max-height: auto;
+  padding: 25px;
+  display: grid;
+  align-content: center;
+  column-gap: 25px;
+  row-gap: 25px;
+}
+.title h2{
+  font-size: 2.5rem;
+  color: var(--main-color);
+  margin-bottom: 15px;
+  text-align: left;
+}

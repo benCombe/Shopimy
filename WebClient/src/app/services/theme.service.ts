@@ -2,41 +2,31 @@ import { StoreService } from './store.service';
 import { Injectable, Renderer2, RendererFactory2, OnInit } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { HttpClient, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available throughout the app
 })
 export class ThemeService {
   private renderer: Renderer2;
+  private apiUrl = environment.apiUrl;
 
   storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []); //Get via API
 
   private activeThemeSubject = new BehaviorSubject<StoreDetails>(this.storeDetails);
   public activeTheme$ : Observable<StoreDetails> = this.activeThemeSubject.asObservable();
   
-
-  constructor(rendererFactory: RendererFactory2, private storeService: StoreService) {
+  constructor(
+    rendererFactory: RendererFactory2, 
+    private storeService: StoreService,
+    private http: HttpClient
+  ) {
     this.renderer = rendererFactory.createRenderer(null, null);
     this.storeService.activeStore$.subscribe(s => {
       this.storeDetails = s;
-    })
+    });
   }
-
-  /**
-   * Applies the complete theme to a specific container element.
-   * @param theme - The complete theme object.
-   * @param containerSelector - A CSS selector for the container to update.
-   */
-  /* applyThemeToContainer(theme: StoreDetails, containerSelector: string): void {
-    const container = document.querySelector(containerSelector);
-    if (container) {
-      this.renderer.setStyle(container, '--main-color', theme.theme_1);
-      this.renderer.setStyle(container, '--second-color', theme.theme_2);
-      this.renderer.setStyle(container, '--third-color', theme.theme_3);
-      this.renderer.setStyle(container, '--alt-color', theme.fontColor);
-      this.renderer.setStyle(container, '--main-font-fam', theme.fontFamily);
-    }
-  } */
 
   setThemeOne(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
@@ -52,14 +42,12 @@ export class ThemeService {
     });
   }
 
-
   setThemeThree(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
     elements.forEach((element) => {
       this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.theme_3);
     });
   }
-
 
   setFontColor(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
@@ -99,11 +87,9 @@ export class ThemeService {
   setBannerUrl(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
     elements.forEach((element) => {
-      this.renderer.setAttribute(element as HTMLElement, 'src', this.storeDetails.Banner || '');
+      this.renderer.setAttribute(element as HTMLElement, 'src', this.storeDetails.BannerUrl || '');
     });
   }
-
-  
 
   setButtonHoverColor(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
@@ -125,9 +111,7 @@ export class ThemeService {
     });
   }
 
-
-
-  private lighten(color: string, percent: number): string{
+  private lighten(color: string, percent: number): string {
     let r: number, g: number, b: number;
 
     if (color.startsWith("#")) {
@@ -162,4 +146,58 @@ export class ThemeService {
     return `rgb(${r}, ${g}, ${b})`;
   }
 
+  /**
+   * Uploads an image file for a store to Azure Blob Storage
+   * @param file The file to upload
+   * @param storeId The ID of the store
+   * @param imageType Type of image ('logo' or 'banner')
+   * @returns Observable with the upload progress and response
+   */
+  uploadImage(file: File, storeId: number, imageType: 'logo' | 'banner'): Observable<HttpEvent<any>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const url = `${this.apiUrl}/Store/upload-image?storeId=${storeId}&imageType=${imageType}`;
+    
+    return this.http.post<any>(url, formData, {
+      reportProgress: true,
+      observe: 'events'
+    }).pipe(
+      tap(event => {
+        if (event.type === HttpEventType.Response) {
+          if (event instanceof HttpResponse && event.body && event.body.success) {
+            // Update the local store details with the new image path from Azure Blob Storage
+            if (imageType === 'logo') {
+              this.storeDetails.LogoUrl = event.body.filePath;
+              // Update logo elements if any are present
+              this.setLogoUrl('logo-image');
+            } else if (imageType === 'banner') {
+              this.storeDetails.BannerUrl = event.body.filePath;
+              // Update banner elements if any are present
+              this.setBannerUrl('banner-image');
+            }
+          }
+        }
+      })
+    );
+  }
+
+  /**
+   * Helper method to get the file extension from a file
+   * @param file The file to get the extension from
+   * @returns The file extension (e.g., '.jpg', '.png')
+   */
+  getFileExtension(file: File): string {
+    return file.name.split('.').pop()?.toLowerCase() || '';
+  }
+
+  /**
+   * Validates if a file is an acceptable image
+   * @param file The file to validate
+   * @returns Boolean indicating if the file is valid
+   */
+  isValidImageFile(file: File): boolean {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    return validTypes.includes(file.type) && file.size <= 5 * 1024 * 1024; // 5MB limit
+  }
 }

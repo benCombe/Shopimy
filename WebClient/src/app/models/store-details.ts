@@ -13,7 +13,7 @@ export class StoreDetails {
   logoText: string;
   categories: Category[];
   LogoUrl?: string;
-  Banner: undefined;
+  BannerUrl?: string; // Changed from Banner: undefined to BannerUrl?: string
 
   constructor(
     id: number,
@@ -26,7 +26,9 @@ export class StoreDetails {
     fontFamily: string,
     bannerText: string,
     logoText: string,
-    categories: Category[]
+    categories: Category[],
+    logoUrl?: string,
+    bannerUrl?: string
   ){
     this.id = id;
     this.url = url;
@@ -39,6 +41,7 @@ export class StoreDetails {
     this.bannerText = bannerText;
     this.logoText = logoText;
     this.categories = categories;
+    this.LogoUrl = logoUrl;
+    this.BannerUrl = bannerUrl;
   }
-
 }

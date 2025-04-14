@@ -100,11 +100,11 @@ let ITEM_DATA: Item[] = [
 ];
 
 let CAT_DATA: Category[] = [
-    { categoryId: 1,storeId: 1, name: 'Electronics', parentCategory: null, subCategories: [] },
-    { categoryId: 2,storeId: 1, name: 'Clothing', parentCategory: null, subCategories: [] },
-    { categoryId: 3,storeId: 1, name: 'Home Appliances', parentCategory: null, subCategories: [] },
-    { categoryId: 4,storeId: 1, name: 'Books', parentCategory: null, subCategories: [] },
-    { categoryId: 5,storeId: 1, name: 'Sports', parentCategory: null, subCategories: [] }
+    { categoryId: 1, storeId: 1, name: 'Electronics', parentCategory: null, subCategories: [] },
+    { categoryId: 2, storeId: 1, name: 'Clothing', parentCategory: null, subCategories: [] },
+    { categoryId: 3, storeId: 1, name: 'Home Appliances', parentCategory: null, subCategories: [] },
+    { categoryId: 4, storeId: 1, name: 'Books', parentCategory: null, subCategories: [] },
+    { categoryId: 5, storeId: 1, name: 'Sports', parentCategory: null, subCategories: [] }
 ];
 
 // Sample order details data - moved from orders component
@@ -403,7 +403,7 @@ export class StoreOwnerDashboardComponent {
     this.themeService.setBannerText(this.storeDetails.bannerText);
     this.themeService.setLogoText(this.storeDetails.logoText);
     this.themeService.setLogoUrl(this.storeDetails.LogoUrl || '');
-    this.themeService.setBannerUrl(this.storeDetails.Banner || '');
+    this.themeService.setBannerUrl(this.storeDetails.BannerUrl || '');
     
     console.log('Store details updated:', this.storeDetails);
   }

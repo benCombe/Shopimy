@@ -133,7 +133,7 @@
     border: 2px solid #333;
     border-radius: 8px;
     color: white;
-    background-color: #ff7700;  /* Changed to bright orange from var(--main-color) */
+    background-color: var(--main-color);  /* Changed to bright orange from var(--main-color) */
     font-family: var(--main-font-fam);
     padding: 16px;
     width: 95%;
@@ -148,7 +148,7 @@
 }
 
 .QuickLinks button:hover{
-    background-color: #ff9933;  /* Lighter orange for hover state */
+    background-color: #333;  /* Lighter orange for hover state */
     color: white;  /* Keep text white for better contrast */
     border-color: #333;
     transform: translateY(-2px);  /* Slight lift effect on hover */
