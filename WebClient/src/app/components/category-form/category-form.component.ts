@@ -2,7 +2,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CategoryService, Category } from 'src/app/services/category.service';
+import { CategoryService } from '../../services/category.service';
+
+import { Category } from '../../models/category';
 
 @Component({
   selector: 'app-category-form',
@@ -11,7 +13,7 @@ import { CategoryService, Category } from 'src/app/services/category.service';
 export class CategoryFormComponent implements OnInit {
   categoryForm: FormGroup;
   isEditMode = false;
-  categoryId: number;
+  categoryId!: number;
 
   constructor(
     private fb: FormBuilder,

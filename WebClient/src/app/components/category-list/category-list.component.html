@@ -3,9 +3,9 @@
   <a routerLink="/categories/new">Create New Category</a>
   <ul>
     <li *ngFor="let category of categories">
-      {{ category.Name }}
-      <a [routerLink]="['/categories', category.CategoryId, 'edit']">Edit</a>
-      <button (click)="deleteCategory(category.CategoryId)">Delete</button>
+      {{ category.name }}
+      <a [routerLink]="['/categories', category.categoryId, 'edit']">Edit</a>
+      <button (click)="deleteCategory(category.categoryId)">Delete</button>
     </li>
   </ul>
 </div>

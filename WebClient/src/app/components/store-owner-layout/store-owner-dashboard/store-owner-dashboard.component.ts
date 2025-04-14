@@ -14,7 +14,6 @@ import { AnalyticsComponent } from '../analytics/analytics.component';
 import { ThemesComponent } from '../themes/themes.component';
 import { SalesComponent } from '../sales/sales.component';
 
-import { DynamicTableComponent } from '../dynamic-table/dynamic-table.component';
 import { StoreDetails } from '../../../models/store-details';
 import { StoreService } from '../../../services/store.service';
 import { Item } from '../../../models/item';
@@ -175,8 +174,7 @@ let ORD_DATA: OrderDetail[] = [
     SettingsComponent,
     AnalyticsComponent,
     ThemesComponent,
-    SalesComponent,
-    DynamicTableComponent
+    SalesComponent
   ],
   templateUrl: './store-owner-dashboard.component.html',
   styleUrl: './store-owner-dashboard.component.css',
