@@ -1,3 +1,11 @@
+:root {
+  --dashboard-card-padding: 24px;
+  --dashboard-card-radius: 10px;
+  --dashboard-transition: 0.3s ease;
+  --dashboard-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --dashboard-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 #container {
   display: flex;
   width: 100%;
@@ -62,15 +70,16 @@
 /* Card styling */
 .dashboard-card {
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 24px;
+  border-radius: var(--dashboard-card-radius);
+  box-shadow: var(--dashboard-shadow);
+  padding: var(--dashboard-card-padding);
   margin-bottom: 24px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--dashboard-transition), box-shadow var(--dashboard-transition);
 }
 
-.dashboard-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.dashboard-card:hover,
+.dashboard-card:focus-within {
+  box-shadow: var(--dashboard-hover-shadow);
   transform: translateY(-2px);
 }
 
@@ -126,9 +135,12 @@
   visibility: visible;
 }
 
-.scroll-top-button:hover {
+.scroll-top-button:hover,
+.scroll-top-button:focus {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  outline: 2px solid var(--second-color);
+  outline-offset: 2px;
 }
 
 /* Fixed sidebar layout adjustments */
@@ -225,5 +237,41 @@
   
   .dashboard-card {
     padding: 16px;
+  }
+}
+
+/* Improve accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-card,
+  .scroll-top-button,
+  .page {
+    transition: none;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* Add print styles */
+@media print {
+  .scroll-top-button {
+    display: none;
+  }
+  
+  .dashboard-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+  
+  #main {
+    height: auto;
+    overflow: visible;
   }
 }

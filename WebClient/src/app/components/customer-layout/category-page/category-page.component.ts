@@ -13,6 +13,7 @@ import { BasicItem } from '../../../models/basic-item';
 
 @Component({
   selector: 'app-category-page',
+  standalone: true,
   imports: [ItemCardComponent, NgFor, NgIf],
   templateUrl: './category-page.component.html',
   styleUrl: './category-page.component.css'
