@@ -47,9 +47,25 @@ export class SideNavComponent implements OnInit {
 
   toggleMobileSidebar() {
     this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+    
+    // Prevent scrolling of body when mobile menu is open
+    if (this.isMobileSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
   }
 
   toggleDropdown(item: any) {
+    // Close any other open dropdown first
+    if (item.open === false) {
+      this.navItems.forEach(navItem => {
+        if (navItem !== item) {
+          navItem.open = false;
+        }
+      });
+    }
+    
     // Toggle the dropdown menu
     item.open = !item.open;
   }
@@ -61,6 +77,7 @@ export class SideNavComponent implements OnInit {
     // Close mobile sidebar when a navigation item is selected
     if (this.isMobile) {
       this.isMobileSidebarOpen = false;
+      document.body.style.overflow = '';
     }
     
     // Prevent click event from bubbling up to parent div

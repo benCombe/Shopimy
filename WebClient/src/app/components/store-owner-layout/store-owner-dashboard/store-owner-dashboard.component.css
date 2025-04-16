@@ -5,6 +5,7 @@
   overflow-x: hidden;
   background-color: var(--third-color);
   font-family: var(--main-font-fam);
+  position: relative;
 }
 
 #main {
@@ -13,10 +14,13 @@
   min-height: 100vh;
   background-color: var(--third-color);
   transition: padding-left 0.3s ease;
+  overflow-y: auto;
 }
 
 .page {
   padding: 30px;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 /* Page section styling */
@@ -72,10 +76,19 @@
   margin-top: 24px;
 }
 
+/* Fixed sidebar layout adjustments */
+@media (min-width: 769px) {
+  #main {
+    margin-left: 0;
+    width: calc(100% - 280px);
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .page {
     padding: 24px;
+    max-width: 100%;
   }
   
   .dashboard-grid {
@@ -95,6 +108,12 @@
 }
 
 @media (max-width: 768px) {
+  #main {
+    width: 100%;
+    margin-left: 0;
+    padding-top: 60px; /* Make room for the mobile menu button */
+  }
+
   .page {
     padding: 16px;
   }
@@ -114,6 +133,10 @@
 }
 
 @media (max-width: 480px) {
+  #main {
+    padding-top: 50px; /* Adjust for smaller menu button */
+  }
+  
   .page {
     padding: 12px;
   }
