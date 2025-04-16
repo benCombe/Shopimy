@@ -1,16 +1,15 @@
 <div class="editor-container">
   <div class="editor-header">
     <h2>Store Editor</h2>
-    <div class="actions">
-      <button class="save-btn" (click)="saveChanges()">Save Changes</button>
-    </div>
+    <p class="description">Select the components to display on your store page and preview the changes in real-time.</p>
   </div>
 
   <div class="editor-content">
-    <!-- Component Panel -->
+    <!-- Left Column: Component Controls -->
     <div class="component-panel">
       <h3>Store Components</h3>
-      <p class="panel-description">Select the components to display on your store page.</p>
+      <p class="panel-description">Toggle components to customize your store's layout.</p>
+      
       <div class="component-list">
         <div *ngFor="let component of availableComponents" class="component-item">
           <div class="component-info">
@@ -22,9 +21,13 @@
           </div>
         </div>
       </div>
+
+      <div class="actions">
+        <button class="save-btn" (click)="saveChanges()">Save Changes</button>
+      </div>
     </div>
 
-    <!-- Preview Panel -->
+    <!-- Right Column: Preview -->
     <div class="preview-panel">
       <h3>Live Preview</h3>
       <p class="panel-description">See your changes reflected live below.</p>
@@ -32,7 +35,8 @@
         <app-store-preview 
           [selectedComponents]="getSelectedComponentIds()" 
           [storeData]="store"
-          [theme]="getCurrentTheme()"></app-store-preview>
+          [theme]="getCurrentTheme()">
+        </app-store-preview>
       </div>
     </div>
   </div>
