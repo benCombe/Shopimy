@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-overview',
@@ -7,5 +7,10 @@ import { Component } from '@angular/core';
   styleUrl: './overview.component.css'
 })
 export class OverviewComponent {
+  @Output() pageNavigate = new EventEmitter<string>();
 
+  navigateTo(page: string): void {
+    // Emit the page name to be handled by the parent component
+    this.pageNavigate.emit(page);
+  }
 }

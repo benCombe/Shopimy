@@ -1,22 +1,124 @@
-#container{
+#container {
   display: flex;
-  top: 0;
-  width: 100vw;
-  height: auto;
-  overflow-y: auto;
-  color: white;
-  font-size: 48pt;
+  width: 100%;
+  min-height: 100vh;
   overflow-x: hidden;
+  background-color: var(--third-color);
+  font-family: var(--main-font-fam);
 }
 
-
-#main{
-  position:relative;
+#main {
   flex-grow: 1;
   width: 100%;
+  min-height: 100vh;
   background-color: var(--third-color);
+  transition: padding-left 0.3s ease;
 }
 
-.page{
-  padding: 15px;
+.page {
+  padding: 30px;
+}
+
+/* Page section styling */
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  color: var(--main-color);
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.page-description {
+  color: var(--main-color);
+  opacity: 0.8;
+  font-size: 1rem;
+}
+
+/* Card styling */
+.dashboard-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2 {
+  font-size: 1.3rem;
+  color: var(--main-color);
+  margin: 0;
+  font-weight: 600;
+}
+
+.card-content {
+  color: var(--main-color);
+}
+
+/* Grid layout for dashboard cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .page {
+    padding: 24px;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 991px) {
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .dashboard-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .page-header h1 {
+    font-size: 1.6rem;
+  }
+  
+  .card-header h2 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 12px;
+  }
+  
+  .dashboard-card {
+    padding: 16px;
+  }
 }
