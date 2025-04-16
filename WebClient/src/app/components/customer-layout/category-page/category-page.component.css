@@ -14,28 +14,116 @@
 }
 
 #item-container {
-  border: 1px solid red;
+  display: grid;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+/* Mobile-first: 1 column by default */
+#item-container {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+/* Small devices (landscape phones) */
+@media (min-width: 576px) {
+  #item-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 768px) {
+  #item-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Large devices (desktops) */
+@media (min-width: 992px) {
+  #item-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+#item {
+  background-color: var(--main-color);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
   display: flex;
-  flex-wrap: wrap;
- /* Automatically fill columns, with a minimum width of 250px */
-  gap: 20px; /* Gap between the items */
-  justify-items: flex-start; /* Center items in their grid cells */
-  padding: 10px;
-  margin-right: 5%;
+  flex-direction: column;
+  height: 100%;
 }
 
-.item-card {
-  flex: 1 1 5%;
-  box-sizing: border-box;
+#item:hover {
+  transform: translateY(-5px);
 }
 
+#item img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 4px;
+}
 
+#itemName {
+  font-size: var(--spacing-md);
+  margin: var(--spacing-sm) 0;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+#itemDesc {
+  font-size: var(--spacing-sm);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-sm);
+  flex-grow: 1;
+}
+
+#itemPrice {
+  font-size: var(--spacing-md);
+  color: var(--text-color);
+  font-weight: bold;
+  margin-top: auto;
+}
+
+#heading {
+  text-align: center;
+  margin: var(--spacing-lg) 0;
+  color: var(--text-color);
+}
+
+/* Responsive text sizes */
+#heading {
+  font-size: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  #heading {
+    font-size: 2rem;
+  }
+  
+  #itemName {
+    font-size: 1.125rem;
+  }
+  
+  #itemDesc {
+    font-size: 1rem;
+  }
+  
+  #itemPrice {
+    font-size: 1.125rem;
+  }
+}
 
 #no-items{
   height: 50%;
   width: 100%;
 }
-
 
 @media (max-width: 768px) {
   #item-container {
