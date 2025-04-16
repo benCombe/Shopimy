@@ -55,7 +55,6 @@
   padding: 5px;
   margin: 5px;
   border: 1px solid white;
-
 }
 
 .section label{
@@ -63,7 +62,6 @@
   font-size: 1.2rem;
   margin: 2px;
   border: 1px solid white;
-
 }
 
 .section input {
@@ -71,18 +69,7 @@
   margin: 2px;
   padding: 2px;
   border: 1px solid white;
-
 }
-
-.section input {
-  width: 50vh;
-  margin: 2px;
-  padding: 2px;
-  border: 1px solid white;
-
-}
-
-
 
 #title{
   max-width: 100%;
@@ -98,6 +85,50 @@
   color: var(--main-color);
   margin-bottom: 15px;
   text-align: left;
+}
+
+/* Save Button Section */
+.save-section {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.save-btn {
+  padding: 10px 25px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  background-color: var(--second-color);
+  color: white;
+  font-size: 1rem;
+}
+
+.save-btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+/* General Section Styling */
+.section {
+    margin-bottom: 25px;
+}
+
+/* Basic Input Styling (can be expanded) */
+input[type="text"], input[type="date"], input[type="email"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: calc(100% - 26px); /* Adjust width considering padding */
+    max-width: 400px;
+}
+
+label h2 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: 500;
 }
 
 

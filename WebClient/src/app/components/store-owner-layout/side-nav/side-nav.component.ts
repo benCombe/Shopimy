@@ -19,7 +19,7 @@ export class SideNavComponent {
 
   navItems = [
     {name: 'Account', subNav: ['Profile', 'Settings'], open: false},
-    {name: 'My Store', subNav: ['Products', 'Orders', 'Themes & Logos', 'Promotions'], open: false},
+    {name: 'My Store', subNav: ['Products', 'Orders', 'Themes & Logos', 'Store Editor', 'Promotions'], open: false},
     {name: 'Analytics', subNav: ['Traffic', 'Sales'], open: false}
   ]
 

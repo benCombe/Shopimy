@@ -12,6 +12,7 @@ import { OrdersComponent } from '../orders/orders.component';
 import { SettingsComponent } from '../settings/settings.component';
 import { AnalyticsComponent } from '../analytics/analytics.component';
 import { ThemesComponent } from '../themes/themes.component';
+import { StoreEditorComponent } from '../store-editor/store-editor.component';
 
 
 @Component({
@@ -28,6 +29,7 @@ import { ThemesComponent } from '../themes/themes.component';
     ThemesComponent,
     PromotionsComponent,
     AnalyticsComponent,
+    StoreEditorComponent,
   ],
   templateUrl: './store-owner-dashboard.component.html',
   styleUrl: './store-owner-dashboard.component.css'

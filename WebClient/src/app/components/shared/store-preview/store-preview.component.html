@@ -1,0 +1,6 @@
+<div class="store-preview-container">
+  <iframe #previewFrame [src]="previewUrl" title="Store Preview" (load)="onFrameLoad()" (error)="onFrameError()"></iframe>
+  <div *ngIf="showFallback" class="preview-fallback">
+    <p>Preview could not be loaded. Your theme changes will still be applied when saved.</p>
+  </div>
+</div> 

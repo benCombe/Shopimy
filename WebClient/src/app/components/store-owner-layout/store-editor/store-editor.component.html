@@ -1,0 +1,39 @@
+<div class="editor-container">
+  <div class="editor-header">
+    <h2>Store Editor</h2>
+    <div class="actions">
+      <button class="save-btn" (click)="saveChanges()">Save Changes</button>
+    </div>
+  </div>
+
+  <div class="editor-content">
+    <!-- Component Panel -->
+    <div class="component-panel">
+      <h3>Store Components</h3>
+      <p class="panel-description">Select the components to display on your store page.</p>
+      <div class="component-list">
+        <div *ngFor="let component of availableComponents" class="component-item">
+          <div class="component-info">
+            <span class="component-name">{{ component.name }}</span>
+            <label class="switch">
+              <input type="checkbox" [(ngModel)]="component.isSelected" (change)="updatePreview()">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview Panel -->
+    <div class="preview-panel">
+      <h3>Live Preview</h3>
+      <p class="panel-description">See your changes reflected live below.</p>
+      <div class="preview-frame-wrapper">
+        <app-store-preview 
+          [selectedComponents]="getSelectedComponentIds()" 
+          [storeData]="store"
+          [theme]="getCurrentTheme()"></app-store-preview>
+      </div>
+    </div>
+  </div>
+</div> 

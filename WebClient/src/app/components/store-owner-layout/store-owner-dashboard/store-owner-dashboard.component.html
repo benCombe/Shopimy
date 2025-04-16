@@ -24,6 +24,9 @@
       Themes & Logos
       <app-themes></app-themes>
     </div>
+    <div *ngIf="currentPage === 'Store Editor'" id="store-editor" class="page">
+      <app-store-editor></app-store-editor>
+    </div>
     <div *ngIf="currentPage === 'Promotions'" id="promos" class="page">
       Promotions
       <app-promotions></app-promotions>

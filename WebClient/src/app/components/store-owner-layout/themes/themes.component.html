@@ -1,1 +1,60 @@
-<p>themes works!</p>
+<div class="themes-container">
+  <div class="themes-header">
+    <h2>Store Theme</h2>
+    <p class="description">Customize your store's appearance by adjusting colors and fonts.</p>
+  </div>
+
+  <div class="theme-editor">
+    <form (ngSubmit)="saveTheme()" class="theme-form">
+      <div class="color-section">
+        <h3>Colors</h3>
+        <div class="color-inputs">
+          <div class="color-input">
+            <label for="mainColor">Main Color</label>
+            <input type="color" id="mainColor" [(ngModel)]="theme.mainColor" name="mainColor">
+            <span class="color-value">{{theme.mainColor}}</span>
+          </div>
+          
+          <div class="color-input">
+            <label for="secondColor">Accent Color</label>
+            <input type="color" id="secondColor" [(ngModel)]="theme.secondColor" name="secondColor">
+            <span class="color-value">{{theme.secondColor}}</span>
+          </div>
+          
+          <div class="color-input">
+            <label for="thirdColor">Background Color</label>
+            <input type="color" id="thirdColor" [(ngModel)]="theme.thirdColor" name="thirdColor">
+            <span class="color-value">{{theme.thirdColor}}</span>
+          </div>
+          
+          <div class="color-input">
+            <label for="altColor">Text Color</label>
+            <input type="color" id="altColor" [(ngModel)]="theme.altColor" name="altColor">
+            <span class="color-value">{{theme.altColor}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="font-section">
+        <h3>Typography</h3>
+        <div class="font-input">
+          <label for="mainFontFam">Primary Font</label>
+          <select id="mainFontFam" [(ngModel)]="theme.mainFontFam" name="mainFontFam" class="font-select">
+            <option *ngFor="let font of availableFonts" [value]="font" [style.fontFamily]="font">
+              {{font.split(',')[0].replace(/['"]+/g, '')}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <h3>Preview</h3>
+        <app-store-preview [theme]="theme"></app-store-preview>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="save-btn">Save Theme</button>
+      </div>
+    </form>
+  </div>
+</div>
