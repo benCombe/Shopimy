@@ -6,6 +6,8 @@
   background-color: var(--third-color);
   font-family: var(--main-font-fam);
   position: relative;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #main {
@@ -15,17 +17,33 @@
   background-color: var(--third-color);
   transition: padding-left 0.3s ease;
   overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  height: 100vh;
 }
 
 .page {
   padding: 30px;
   max-width: 1600px;
   margin: 0 auto;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Page section styling */
 .page-header {
   margin-bottom: 24px;
+  position: relative;
 }
 
 .page-header h1 {
@@ -48,6 +66,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   padding: 24px;
   margin-bottom: 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .card-header {
@@ -76,11 +100,53 @@
   margin-top: 24px;
 }
 
+/* Scroll to top button */
+.scroll-top-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--main-color);
+  color: var(--second-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 99;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-top-button.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-top-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
 /* Fixed sidebar layout adjustments */
-@media (min-width: 769px) {
+@media (min-width: 992px) {
   #main {
-    margin-left: 0;
+    margin-left: 280px;
     width: calc(100% - 280px);
+    height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 991px) {
+  #main {
+    margin-left: 240px; 
+    width: calc(100% - 240px);
+    height: 100vh;
+    overflow-y: auto;
   }
 }
 
@@ -108,10 +174,18 @@
 }
 
 @media (max-width: 768px) {
+  #container {
+    overflow-y: auto;
+    height: auto;
+  }
+  
   #main {
     width: 100%;
     margin-left: 0;
     padding-top: 60px; /* Make room for the mobile menu button */
+    padding-left: 0;
+    height: auto;
+    min-height: 100vh;
   }
 
   .page {
@@ -130,11 +204,19 @@
   .card-header h2 {
     font-size: 1.2rem;
   }
+  
+  .scroll-top-button {
+    bottom: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+  }
 }
 
 @media (max-width: 480px) {
   #main {
     padding-top: 50px; /* Adjust for smaller menu button */
+    height: auto;
   }
   
   .page {

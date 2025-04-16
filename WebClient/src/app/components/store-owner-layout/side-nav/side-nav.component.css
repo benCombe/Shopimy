@@ -10,7 +10,30 @@
   font-family: var(--main-font-fam);
   color: var(--third-color);
   overflow-y: auto;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(211, 206, 187, 0.3) var(--main-color);
+}
+
+/* Chrome, Edge, Safari scrollbar styling */
+#sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+  background: var(--main-color);
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(211, 206, 187, 0.3);
+  border-radius: 6px;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(211, 206, 187, 0.5);
 }
 
 /* Sidebar header with logo */
@@ -20,6 +43,10 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--main-color);
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 #shopimy-logo {
@@ -59,6 +86,7 @@
   display: flex;
   flex-direction: column;
   padding: 20px 0;
+  overflow-y: auto;
 }
 
 /* Navigation item styling */
@@ -171,6 +199,10 @@
   gap: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
+  background-color: var(--main-color);
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
 }
 
 .logout-button:hover {
@@ -204,7 +236,8 @@
   transition: transform 0.2s;
 }
 
-.mobile-sidebar-toggle:hover {
+.mobile-sidebar-toggle:hover, 
+.mobile-sidebar-toggle:focus {
   transform: scale(1.05);
 }
 
@@ -220,6 +253,7 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease;
+  backdrop-filter: blur(2px);
 }
 
 .sidebar-overlay.active {
@@ -227,37 +261,26 @@
   visibility: visible;
 }
 
-/* Fixed sidebar layout adjustments */
-@media (min-width: 769px) {
-  #sidebar {
-    position: sticky;
-    top: 0;
-    left: 0;
-    height: 100vh;
-  }
-}
-
 /* Responsive adjustments */
 @media (max-width: 991px) {
   #sidebar {
-    width: 260px;
+    position: fixed;
+    width: 240px;
   }
 }
 
 @media (max-width: 768px) {
   #sidebar {
     position: fixed;
-    left: -300px;
-    top: 0;
-    transition: left 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: none;
+    left: -280px;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
     width: 280px;
-    z-index: 1001;
-    height: 100vh;
+    box-shadow: none;
   }
-  
+
   #sidebar.mobile-visible {
-    left: 0;
+    transform: translateX(280px);
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
   }
   
@@ -280,7 +303,13 @@
 
 @media (max-width: 480px) {
   #sidebar {
-    width: 260px;
+    position: fixed;
+    width: 250px;
+    left: -250px;
+  }
+  
+  #sidebar.mobile-visible {
+    transform: translateX(250px);
   }
   
   #shopimy-logo {
@@ -293,5 +322,6 @@
     width: 40px;
     height: 40px;
     font-size: 1.2rem;
+    display: flex;
   }
 }

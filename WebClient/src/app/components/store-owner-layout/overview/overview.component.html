@@ -53,22 +53,31 @@
   <div class="quick-links-section">
     <div class="section-header">
       <h2>Quick Links</h2>
+      <p class="section-description">Quick access to common store management tasks</p>
     </div>
     <div class="quick-links-grid">
       <a class="quick-link-card" (click)="navigateTo('Store Editor')">
-        <i class="fa-solid fa-pencil"></i>
+        <div class="icon-container">
+          <i class="fa-solid fa-pencil"></i>
+        </div>
         <span>Edit Store</span>
       </a>
       <a class="quick-link-card" (click)="navigateTo('Products')">
-        <i class="fa-solid fa-box"></i>
+        <div class="icon-container">
+          <i class="fa-solid fa-box"></i>
+        </div>
         <span>Add Product</span>
       </a>
       <a class="quick-link-card" (click)="navigateTo('Promotions')">
-        <i class="fa-solid fa-tag"></i>
+        <div class="icon-container">
+          <i class="fa-solid fa-tag"></i>
+        </div>
         <span>Add Promotion</span>
       </a>
       <a class="quick-link-card" (click)="navigateTo('Settings')">
-        <i class="fa-solid fa-gear"></i>
+        <div class="icon-container">
+          <i class="fa-solid fa-gear"></i>
+        </div>
         <span>Store Settings</span>
       </a>
     </div>

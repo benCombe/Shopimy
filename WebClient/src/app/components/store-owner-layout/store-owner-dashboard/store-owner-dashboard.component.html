@@ -1,6 +1,6 @@
 <div id="container">
   <app-side-nav (pageChange)="onPageChange($event)"></app-side-nav>
-  <div id="main">
+  <div id="main" #main>
     <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
       <app-overview (pageNavigate)="onPageChange($event)"></app-overview>
     </div>
@@ -37,6 +37,15 @@
           <p>Sales analytics will be available soon.</p>
         </div>
       </div>
+    </div>
+    
+    <!-- Scroll to top button -->
+    <div 
+      class="scroll-top-button" 
+      [class.visible]="showScrollButton" 
+      (click)="scrollToTop()"
+    >
+      <i class="fa-solid fa-arrow-up"></i>
     </div>
   </div>
 </div>
