@@ -59,7 +59,10 @@
         <div class="preview-panel">
           <h3>Preview</h3>
           <div class="preview-frame-wrapper">
-            <app-store-preview [theme]="theme"></app-store-preview>
+            <app-store-preview 
+              [theme]="theme"
+              [storeData]="storeData">
+            </app-store-preview>
           </div>
         </div>
       </div>

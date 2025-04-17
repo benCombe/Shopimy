@@ -1,6 +1,102 @@
-<div class="store-preview-container">
-  <iframe #previewFrame [src]="previewUrl" title="Store Preview" (load)="onFrameLoad()" (error)="onFrameError()"></iframe>
-  <div *ngIf="showFallback" class="preview-fallback">
-    <p>Preview could not be loaded. Your theme changes will still be applied when saved.</p>
+<div class="store-preview-container" [ngStyle]="getThemeStyles()">
+  <div class="store-preview-content">
+    <!-- Store Page Preview that resembles the actual store page -->
+    <div class="store-preview" *ngIf="storeData">
+      <!-- Banner Section - Only if 'hero' is selected -->
+      <div class="banner-section" *ngIf="isComponentSelected('hero')" 
+           [style.background-color]="theme?.secondColor || storeData.theme_2">
+        <div class="banner-text" [style.background-color]="theme?.mainColor || storeData.theme_1">
+          <span [style.color]="theme?.altColor || storeData.fontColor">
+            {{ storeData.bannerText || 'Welcome to our store' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Logo Section - Only if 'header' is selected -->
+      <div class="logo-section" *ngIf="isComponentSelected('header')">
+        <div class="logo-container" [style.background-color]="theme?.mainColor || storeData.theme_1">
+          <div class="logo-wrapper">
+            <img class="logo" [src]="storeData.logoURL" alt="store-logo" 
+                 *ngIf="storeData.logoURL; else defaultLogo">
+            <ng-template #defaultLogo>
+              <div class="default-logo" [style.color]="theme?.altColor || storeData.fontColor">
+                {{ storeData.name?.charAt(0) || 'S' }}
+              </div>
+            </ng-template>
+          </div>
+          <div class="logo-text-wrapper">
+            <h2 class="logo-text" [style.color]="theme?.altColor || storeData.fontColor">
+              {{ storeData.logoText || storeData.name || 'Store Name' }}
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Grid - Only if 'featured' is selected -->
+      <div class="product-container" *ngIf="isComponentSelected('featured')"
+           [style.background-color]="theme?.thirdColor || storeData.theme_3">
+        <h3>Featured Products</h3>
+        <div class="product-grid">
+          <!-- Show sample product placeholders -->
+          <div class="product-card" *ngFor="let id of getSampleItemIds()">
+            <div class="product-image"></div>
+            <div class="product-details">
+              <h4 class="product-title">Product {{ id }}</h4>
+              <p class="product-price">${{ 19.99 + id * 5 }}</p>
+              <button class="add-to-cart-btn" 
+                      [style.background-color]="theme?.secondColor || storeData.theme_2">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories Section - Only if 'categories' is selected -->
+      <div class="categories-section" *ngIf="isComponentSelected('categories') && storeData.categories?.length">
+        <h3>Categories</h3>
+        <div class="categories-grid">
+          <div class="category-card" *ngFor="let category of storeData.categories.slice(0, 3)">
+            <div class="category-image"></div>
+            <h4 class="category-name">{{ category.name }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonials Section - Only if 'testimonials' is selected -->
+      <div class="testimonials-section" *ngIf="isComponentSelected('testimonials')"
+           [style.background-color]="theme?.thirdColor || storeData.theme_3">
+        <h3>Testimonials</h3>
+        <div class="testimonial">
+          <p class="testimonial-text">"This store is amazing! Great products and service."</p>
+          <p class="testimonial-author">- Happy Customer</p>
+        </div>
+      </div>
+
+      <!-- Newsletter Section - Only if 'newsletter' is selected -->
+      <div class="newsletter-section" *ngIf="isComponentSelected('newsletter')"
+           [style.background-color]="theme?.mainColor || storeData.theme_1">
+        <h3 [style.color]="theme?.altColor || storeData.fontColor">Subscribe to Our Newsletter</h3>
+        <div class="newsletter-form">
+          <input type="email" placeholder="Enter your email">
+          <button [style.background-color]="theme?.secondColor || storeData.theme_2">
+            Subscribe
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer Section - Only if 'footer' is selected -->
+      <div class="footer-section" *ngIf="isComponentSelected('footer')"
+           [style.background-color]="theme?.mainColor || storeData.theme_1">
+        <p [style.color]="theme?.altColor || storeData.fontColor">
+          &copy; {{ storeData.name || 'Store Name' }}. All rights reserved.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Show a message if no store data is available -->
+    <div *ngIf="!storeData" class="no-store-data">
+      <p>No store data available for preview.</p>
+    </div>
   </div>
 </div> 

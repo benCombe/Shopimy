@@ -1,121 +1,48 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, OnChanges, SimpleChanges, SecurityContext } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Component, Input } from '@angular/core';
 import { StoreTheme } from '../../../models/store-theme.model';
 import { StoreDetails } from '../../../models/store-details';
 import { CommonModule } from '@angular/common';
+import { ItemCardComponent } from '../../item-card/item-card.component';
 
 @Component({
   selector: 'app-store-preview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ItemCardComponent],
   templateUrl: './store-preview.component.html',
-  styles: [`
-    .store-preview-container {
-      width: 100%;
-      height: 100%;
-      min-height: 300px;
-      border: 1px solid var(--third-color, #e0e0e0);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      background-color: #f8f9fa;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    iframe {
-      width: 100%;
-      height: 100%;
-      min-height: 300px;
-      border: none;
-      display: block;
-    }
-    
-    .preview-fallback {
-      width: 100%;
-      height: 100%;
-      min-height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-style: italic;
-      color: #666;
-      background-color: #f5f5f5;
-      text-align: center;
-      padding: 20px;
-    }
-  `]
+  styleUrls: ['./store-preview.component.css']
 })
-export class StorePreviewComponent implements AfterViewInit, OnChanges {
+export class StorePreviewComponent {
   @Input() theme: StoreTheme | null = null;
   @Input() selectedComponents: string[] | null = null;
   @Input() storeData: StoreDetails | null = null;
 
-  @ViewChild('previewFrame') previewFrame!: ElementRef<HTMLIFrameElement>;
-  
-  previewUrl: SafeResourceUrl;
-  showFallback: boolean = false;
-  frameLoaded: boolean = false;
+  // Display a limited number of sample items
+  displayCount: number = 3;
 
-  constructor(private sanitizer: DomSanitizer) {
-    // Initial URL for the preview iframe
-    // We might pass the store URL later if needed via query params
-    this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl('assets/preview.html');
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // If any relevant input changes, update the preview
-    if (this.frameLoaded && this.previewFrame?.nativeElement?.contentWindow) {
-      this.sendUpdateToPreview();
+  isComponentSelected(componentId: string): boolean {
+    // If no components are selected, show all components
+    if (!this.selectedComponents || this.selectedComponents.length === 0) {
+      return true;
     }
+    // Check if the component ID exists in the selectedComponents array
+    return this.selectedComponents.includes(componentId);
   }
 
-  ngAfterViewInit(): void {
-    // Send initial state when the iframe is ready
-    this.previewFrame.nativeElement.onload = () => {
-      this.frameLoaded = true;
-      this.showFallback = false;
-      this.sendUpdateToPreview();
+  getThemeStyles(): { [key: string]: string } {
+    if (!this.theme) return {};
+
+    return {
+      '--preview-main-color': this.theme.mainColor || '#393727',
+      '--preview-second-color': this.theme.secondColor || '#D0933D',
+      '--preview-third-color': this.theme.thirdColor || '#D3CEBB',
+      '--preview-alt-color': this.theme.altColor || '#333333',
+      '--preview-font-family': this.theme.mainFontFam || 'sans-serif'
     };
-
-    // Set a timeout to show the fallback if the iframe doesn't load
-    setTimeout(() => {
-      if (!this.frameLoaded) {
-        this.showFallback = true;
-      }
-    }, 3000); // 3 seconds timeout
   }
 
-  onFrameLoad(): void {
-    this.frameLoaded = true;
-    this.showFallback = false;
-  }
-
-  onFrameError(): void {
-    this.frameLoaded = false;
-    this.showFallback = true;
-  }
-
-  private sendUpdateToPreview(): void {
-    if (this.previewFrame?.nativeElement?.contentWindow) {
-      const message = {
-        type: 'updatePreview',
-        theme: this.theme,
-        components: this.selectedComponents,
-        storeData: this.storeData
-      };
-      
-      try {
-        // Use '*' for targetOrigin in development, specify origin in production
-        this.previewFrame.nativeElement.contentWindow.postMessage(message, '*');
-        console.log("Sent update to preview iframe:", message);
-      } catch (error) {
-        console.error("Error sending message to preview iframe:", error);
-        this.showFallback = true;
-      }
-    } else {
-      console.log("Preview iframe not ready to receive messages yet.");
-      this.showFallback = true;
-    }
+  // Helper method to get sample item IDs
+  getSampleItemIds(): number[] {
+    // Return sample item IDs for preview purposes
+    return [1, 2, 3]; // Always use sample IDs for preview
   }
 } 

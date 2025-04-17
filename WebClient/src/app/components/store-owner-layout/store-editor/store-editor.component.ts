@@ -351,11 +351,13 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
 
   toggleComponent(component: any) {
     component.isSelected = !component.isSelected;
-    this.updatePreview(); // Update preview on change
+    // Angular's change detection will update the preview automatically
+    // when the selectedComponents change
   }
 
   updatePreview() {
-    console.log("Component selection changed, preview will update.");
+    // No need to do anything here. Angular's change detection will update
+    // the preview automatically when the inputs change.
   }
 
   getSelectedComponentIds(): string[] {

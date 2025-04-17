@@ -24,7 +24,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] ⚠️ **Implement Theme/Logo/Banner Saving:** Connect the frontend theme/logo/banner selectors to backend endpoints to persist customization changes. (`ThemesComponent`, `LogoSelectorComponent`, `StoreController` needs update endpoints)
 -   [ ] ⚠️ **Implement Store Component Visibility:** Allow sellers to toggle component visibility (e.g., featured products, testimonials) and persist this configuration. Reflect this visibility on the public store page. (`StoreEditorComponent`, `StorePageComponent`, needs backend storage)
 -   [X] 🔥 **Implement Order Management View:** Create UI for sellers to view incoming orders and their details. (`OrdersComponent`, `REQUIREMENTS.md FR4.2.4`, needs backend data source)
-- [X] 🔥 **Connect Management Components to Live Backend (Backend & Services):**
+-   [X] 🔥 **Connect Management Components to Live Backend (Backend & Services):**
     -   **Status:** Backend API endpoints (`ItemController`, `CategoriesController`, `OrdersController`) and database tables (`Orders`, `OrderItems`) created/updated. Frontend services (`ItemService`, `CategoryService`, `OrderService`) updated to use API calls, removing mock data.
     -   **Description:** Ensure `ProductManagementComponent`, `CategoryListComponent`, `CategoryFormComponent`, and `OrdersComponent` use real data from the backend API and database, replacing mock data.
     -   **Backend:** Verify/Implement CRUD endpoints in `ItemController`/`ItemsController`, `CategoriesController`. Create `OrdersController`. Ensure DB interaction via `AppDbContext`.
@@ -40,10 +40,20 @@ This document tracks pending tasks, potential improvements, and areas needing at
     -   **Description:** Ensure `ProductManagementComponent`, `CategoryListComponent`, `CategoryFormComponent`, and `OrdersComponent` correctly consume the updated `ItemService`, `CategoryService`, and `OrderService`. Verify data mapping, update component logic (e.g., image handling in `ProductManagementComponent`), and ensure proper handling of loading states and errors.
     -   **Files:** `ProductManagementComponent.ts`, `CategoryListComponent.ts`, `CategoryFormComponent.ts`, `OrdersComponent.ts`
     -   **Depends on:** Completed 'Connect Management Components to Live Backend (Backend & Services)' task.
+-   [x] 🔥 **Refactor Store Preview Component:** Modify `StorePreviewComponent` to dynamically render Angular components based on its `theme`, `selectedComponents`, and `storeData` inputs, instead of using a static iframe (`assets/preview.html`) and `postMessage`.
+    -   **Description:** The current preview uses a static HTML file and relies on `postMessage` to update content. This should be replaced with direct Angular rendering for a more integrated and accurate preview.
+    -   **Steps:**
+        1.  Remove the `iframe` element and related properties/logic (`previewUrl`, `frameLoaded`, `showFallback`, `ngAfterViewInit`, `onFrameLoad`, `onFrameError`) from `StorePreviewComponent.ts` and `.html`.
+        2.  Update the `StorePreviewComponent.html` template to include placeholders for actual store components (e.g., `<app-store-header>`, `<app-hero-banner>`, `<app-featured-products>`, etc. - *Note: These components might need creation/adaptation later*).
+        3.  Use `*ngIf` directives on these placeholder components to conditionally render them based on the `selectedComponents` input array.
+        4.  Pass the `theme` and `storeData` inputs down to these child components as needed for styling and content.
+        5.  Apply dynamic styles to the main preview container or pass theme data down, based on the `theme` input (e.g., using `[ngStyle]` or CSS variables).
+        6.  Remove the `sendUpdateToPreview` method and its calls from parent components (`StoreEditorComponent.ts`, `ThemesComponent.ts`) as Angular's change detection will now handle updates automatically when inputs change.
+    -   **Files:** `StorePreviewComponent.ts`, `StorePreviewComponent.html`, `StorePreviewComponent.css`, `StoreEditorComponent.ts`, `ThemesComponent.ts`
+    -   **Depends on:** Existence and functionality of individual store section components (Header, Hero, etc.). Task focuses on the preview structure, not creating those child components.
 
 ### Shopping Cart & Checkout
 -   [ ] 🔥 **Integrate Cart with Checkout:** Modify `CheckoutComponent` to use the actual cart subtotal from `ShoppingService` instead of a hardcoded amount when calling `PaymentService.createCheckoutSession`. Also, ensure a descriptive product name (using the store name) is passed. Add checks for empty cart/invalid subtotal. (See `CheckoutComponent.ts`, `ShoppingService.ts`, `PaymentService.ts`)
-
 -   [ ] ⚠️ **Implement Cart Quantity Updates:** Allow users to change item quantities directly in the cart UI. (`ShoppingCartComponent`, `ShoppingCartController`)
 -   [ ] ⚠️ **Persist Cart for Logged-in Users:** Ensure `ShoppingCartController` correctly saves/retrieves cart state to/from the database (`ShoppingCarts` table). Test persistence across sessions. (`ShoppingService`, `ShoppingCartController`)
 -   [ ] 🧊 **Implement Guest Checkout Flow:** Design and implement the process for users to purchase without creating an account. (`REQUIREMENTS.md`)
@@ -97,6 +107,10 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] ⚠️ **Implement Loading States:** Ensure appropriate loading indicators (`LoadingOneComponent` or similar) are used during data fetching or processing across the application.
 -   [ ] 🧊 **Refine UI based on Figma:** Conduct a review against the Figma designs and implement necessary adjustments for visual consistency and usability.
 -   [ ] 🧊 **Improve Mobile Responsiveness:** Test thoroughly on various mobile devices and refine styles where needed.
+-   [ ] ⚠️ **Standardize Dashboard Component Styles:**
+    -   **Description:** Review and refactor the CSS/SCSS for components within the `StoreOwnerDashboardComponent` layout (`Overview`, `Profile`, `Settings`, `ProductManagement`, `CategoryList`, `Orders`, `Themes`, `StoreEditor`, `Promotions`, `Analytics`, `SideNav`) to ensure they consistently use the global CSS variables and standard classes defined in `styles.css` and documented in `README-STYLES.md`. Address inconsistencies in colors, fonts, spacing, button styles, table layouts, etc.
+    -   **Files:** `store-owner-dashboard.component.css`, `overview.component.css`, `profile.component.css` (store owner), `settings.component.css`, `product-management.component.css`, `category-list.component.ts` (inline styles), `orders.component.css`, `themes.component.ts` (inline styles), `store-editor.component.ts` (inline styles), `promotions.component.css`, `analytics.component.css`, `side-nav.component.css`.
+    -   **Depends on:** Defined global styles in `styles.css` and `README-STYLES.md`.
 
 ## 🔒 Security Enhancements
 

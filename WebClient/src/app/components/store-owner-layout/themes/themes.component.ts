@@ -6,6 +6,7 @@ import { ThemeService } from '../../../services/theme.service';
 import { StoreTheme } from '../../../models/store-theme.model';
 import { FormsModule } from '@angular/forms';
 import { StorePreviewComponent } from '../../shared/store-preview/store-preview.component';
+import { StoreDetails } from '../../../models/store-details';
 
 @Component({
   selector: 'app-themes',
@@ -282,6 +283,9 @@ export class ThemesComponent implements OnInit {
     mainFontFam: '"Inria Serif", serif'
   };
 
+  // Add storeData property to store the active store details
+  storeData: StoreDetails | null = null;
+
   constructor(
     private themeService: ThemeService,
     private storeService: StoreService,
@@ -294,8 +298,12 @@ export class ThemesComponent implements OnInit {
   }
 
   loadCurrentTheme() {
-    // TODO: Implement loading current theme from StoreService
+    // Subscribe to the active store to get theme settings and store data
     this.storeService.activeStore$.subscribe(store => {
+      // Store the complete store data for the preview
+      this.storeData = store;
+      
+      // Extract theme properties
       this.theme = {
         mainColor: store.theme_1,
         secondColor: store.theme_2,
