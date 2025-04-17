@@ -28,13 +28,19 @@
   margin-bottom: 32px;
 }
 
-/* Cards */
+/* Cards - Using standard card styles */
 .dashboard-card {
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   padding: 24px;
   height: 100%;
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
 }
 
 .card-header {
@@ -55,29 +61,75 @@
   color: var(--main-color);
 }
 
-/* Data Table */
-.data-table {
+/* Data Table - Using standard table styles */
+.table-container {
   width: 100%;
-  border-collapse: collapse;
+  overflow-x: auto;
+  overflow-y: auto;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.03);
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+  max-height: calc(100vh - 200px);
+  padding: 0;
+  margin-bottom: 16px;
 }
 
-.data-table th, 
-.data-table td {
-  padding: 12px;
+.table-container::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-height);
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color);
+  border-radius: var(--scrollbar-border-radius);
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: var(--scrollbar-border-radius);
+}
+
+.standard-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 650px;
+}
+
+.standard-table th {
+  padding: 16px;
   text-align: left;
-}
-
-.data-table th {
-  font-weight: 600;
+  font-size: 1rem;
   color: var(--main-color);
-  border-bottom: 2px solid rgba(57, 55, 39, 0.1);
+  border-bottom: 2px solid var(--main-color);
+  position: sticky;
+  top: 0;
+  background-color: white;
+  font-weight: 600;
+  z-index: 1;
 }
 
-.data-table tr {
-  border-bottom: 1px solid rgba(57, 55, 39, 0.05);
+.standard-table td {
+  padding: 16px;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.4;
 }
 
-.data-table tr:last-child {
+.standard-table tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.standard-table tr:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.standard-table tr:last-child {
   border-bottom: none;
 }
 
@@ -93,7 +145,7 @@
 .analytics-img {
   max-width: 100%;
   height: auto;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 /* Quick Links Section */
@@ -147,23 +199,23 @@
 
 .quick-link-card {
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   padding: 28px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
   color: var(--main-color);
   text-decoration: none;
   border: 1px solid rgba(57, 55, 39, 0.05);
 }
 
 .quick-link-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: var(--main-color);
   color: var(--third-color);
   border-color: var(--main-color);
@@ -178,7 +230,7 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 16px;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
 }
 
 .quick-link-card:hover .icon-container {
@@ -188,7 +240,7 @@
 .quick-link-card i {
   font-size: 2rem;
   color: var(--second-color);
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
 }
 
 .quick-link-card:hover i {
@@ -259,7 +311,7 @@
   }
   
   .quick-links-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
   
   .dashboard-card {
@@ -271,7 +323,7 @@
   }
   
   .quick-links-section {
-    margin-top: 36px;
+    margin-top: 32px;
     padding-top: 24px;
   }
   
@@ -282,7 +334,6 @@
   .icon-container {
     width: 56px;
     height: 56px;
-    margin-bottom: 12px;
   }
   
   .quick-link-card i {
@@ -296,8 +347,7 @@
   }
   
   .quick-links-grid {
-    grid-template-columns: 1fr;
-    max-width: 280px;
+    gap: 16px;
   }
   
   .dashboard-card {
@@ -305,17 +355,16 @@
   }
   
   .quick-link-card {
-    padding: 20px;
+    padding: 16px;
   }
   
-  .data-table th, 
-  .data-table td {
-    padding: 10px 8px;
-    font-size: 0.9rem;
+  .standard-table th, 
+  .standard-table td {
+    padding: 12px;
   }
   
   .quick-links-section {
-    margin-top: 30px;
+    margin-top: 24px;
     padding-top: 20px;
   }
   

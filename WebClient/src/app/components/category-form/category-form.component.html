@@ -1,53 +1,57 @@
 <div class="container">
-  <div class="header">
+  <div class="section-header">
     <h2>{{ isEditMode ? 'Edit Category' : 'Create New Category' }}</h2>
   </div>
 
   <div *ngIf="error" class="error-message">{{ error }}</div>
 
-  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner" aria-hidden="true"></div>
+    <p>Loading...</p>
+  </div>
 
-  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
-    <div class="form-group">
-      <label for="name">Category Name</label>
-      <input 
-        id="name" 
-        type="text" 
-        formControlName="name" 
-        class="form-control"
-        [class.is-invalid]="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched"
-        placeholder="Enter category name">
-      <div class="validation-error" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
-        <span *ngIf="categoryForm.get('name')?.errors?.['required']">Category name is required.</span>
-        <span *ngIf="categoryForm.get('name')?.errors?.['maxlength']">Category name cannot exceed 100 characters.</span>
+  <div class="dashboard-card" *ngIf="!loading">
+    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Category Name</label>
+        <input 
+          id="name" 
+          type="text" 
+          formControlName="name" 
+          [class.error]="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched"
+          placeholder="Enter category name"
+          aria-required="true">
+        <div class="error-message" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+          <span *ngIf="categoryForm.get('name')?.errors?.['required']">Category name is required.</span>
+          <span *ngIf="categoryForm.get('name')?.errors?.['maxlength']">Category name cannot exceed 100 characters.</span>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="parentCategory">Parent Category (optional)</label>
-      <select 
-        id="parentCategory" 
-        formControlName="parentCategory" 
-        class="form-control">
-        <option [ngValue]="null">None (Top Level Category)</option>
-        <option *ngFor="let category of allCategories" 
-                [ngValue]="category.categoryId"
-                [disabled]="isEditMode && category.categoryId === categoryId">
-          {{ category.name }}
-        </option>
-      </select>
-      <div class="hint">Selecting a parent category creates a hierarchical structure</div>
-    </div>
+      <div class="form-group">
+        <label for="parentCategory">Parent Category (optional)</label>
+        <select 
+          id="parentCategory" 
+          formControlName="parentCategory">
+          <option [ngValue]="null">None (Top Level Category)</option>
+          <option *ngFor="let category of allCategories" 
+                  [ngValue]="category.categoryId"
+                  [disabled]="isEditMode && category.categoryId === categoryId">
+            {{ category.name }}
+          </option>
+        </select>
+        <small class="image-hint">Selecting a parent category creates a hierarchical structure</small>
+      </div>
 
-    <div class="form-actions">
-      <button type="button" (click)="navigateBack()" class="btn-secondary">Cancel</button>
-      <button 
-        type="submit" 
-        class="btn-primary" 
-        [disabled]="categoryForm.invalid || saving">
-        {{ isEditMode ? 'Update Category' : 'Create Category' }}
-      </button>
-    </div>
-  </form>
+      <div class="form-actions">
+        <button type="button" (click)="navigateBack()" class="standard-button secondary">Cancel</button>
+        <button 
+          type="submit" 
+          class="standard-button primary" 
+          [disabled]="categoryForm.invalid || saving">
+          {{ isEditMode ? 'Update Category' : 'Create Category' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
   

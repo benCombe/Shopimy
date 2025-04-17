@@ -3,7 +3,7 @@
         <div class="section-header">
             <h2>Product Management</h2>
             <p class="section-description">Manage your products and inventory</p>
-            <button class="add-button" (click)="showAddProductForm()">+ Add New Product</button>
+            <button class="standard-button" (click)="showAddProductForm()" aria-label="Add new product">+ Add New Product</button>
         </div>
 
         <!-- Product Form (Add/Edit) -->
@@ -19,7 +19,8 @@
                             type="text" 
                             formControlName="name" 
                             placeholder="Enter product name"
-                            [class.error]="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+                            [class.error]="productForm.get('name')?.invalid && productForm.get('name')?.touched"
+                            aria-required="true">
                         <div class="error-message" *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
                             Product name is required
                         </div>
@@ -30,7 +31,8 @@
                         <select 
                             id="categoryId" 
                             formControlName="categoryId"
-                            [class.error]="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched">
+                            [class.error]="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched"
+                            aria-required="true">
                             <option value="">Select a category</option>
                             <option *ngFor="let category of categories" [value]="category.categoryId">
                                 {{ category.name }}
@@ -63,7 +65,7 @@
                     <div class="image-upload-container">
                         <div class="image-preview-container" *ngIf="imagePreview; else noImage">
                             <img [src]="imagePreview" alt="Product preview" class="image-preview">
-                            <button type="button" class="remove-image-btn" (click)="removeSelectedImage()">✕</button>
+                            <button type="button" class="remove-image-btn" (click)="removeSelectedImage()" aria-label="Remove image">✕</button>
                         </div>
                         
                         <ng-template #noImage>
@@ -79,10 +81,11 @@
                                 id="product-image" 
                                 accept="image/*" 
                                 (change)="onFileSelected($event)" 
-                                style="display: none">
+                                style="display: none"
+                                aria-label="Upload product image">
                             <button 
                                 type="button" 
-                                class="upload-image-btn" 
+                                class="standard-button small" 
                                 (click)="openFileInput()">
                                 {{ imagePreview ? 'Change Image' : 'Upload Image' }}
                             </button>
@@ -98,7 +101,7 @@
                 <div class="variants-section">
                     <div class="section-header">
                         <h4>Product Variants</h4>
-                        <button type="button" class="add-variant-button" (click)="addVariant()">+ Add Variant</button>
+                        <button type="button" class="standard-button small" (click)="addVariant()" aria-label="Add variant">+ Add Variant</button>
                     </div>
 
                     <div formArrayName="variants">
@@ -106,7 +109,7 @@
                             <div [formGroupName]="i" class="variant-form">
                                 <div class="variant-header">
                                     <h5>Variant #{{ i + 1 }}</h5>
-                                    <button type="button" class="remove-variant" (click)="removeVariant(i)" *ngIf="variants.length > 1">✕</button>
+                                    <button type="button" class="remove-variant" (click)="removeVariant(i)" *ngIf="variants.length > 1" aria-label="Remove variant">✕</button>
                                 </div>
                                 
                                 <div class="form-row">
@@ -119,7 +122,8 @@
                                             placeholder="0.00"
                                             min="0"
                                             step="0.01"
-                                            [class.error]="variant.get('price')?.invalid && variant.get('price')?.touched">
+                                            [class.error]="variant.get('price')?.invalid && variant.get('price')?.touched"
+                                            aria-required="true">
                                         <div class="error-message" *ngIf="variant.get('price')?.invalid && variant.get('price')?.touched">
                                             Valid price is required
                                         </div>
@@ -146,7 +150,8 @@
                                             placeholder="0"
                                             min="0"
                                             step="1"
-                                            [class.error]="variant.get('quantity')?.invalid && variant.get('quantity')?.touched">
+                                            [class.error]="variant.get('quantity')?.invalid && variant.get('quantity')?.touched"
+                                            aria-required="true">
                                         <div class="error-message" *ngIf="variant.get('quantity')?.invalid && variant.get('quantity')?.touched">
                                             Valid quantity is required
                                         </div>
@@ -178,8 +183,8 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" class="cancel-button" (click)="cancelEdit()" [disabled]="isSaving">Cancel</button>
-                    <button type="submit" class="save-button" [disabled]="productForm.invalid || isSaving">
+                    <button type="button" class="standard-button secondary" (click)="cancelEdit()" [disabled]="isSaving">Cancel</button>
+                    <button type="submit" class="standard-button primary" [disabled]="productForm.invalid || isSaving">
                         <span *ngIf="!isSaving">Save Product</span>
                         <span *ngIf="isSaving" class="saving-indicator">
                             <div class="spinner-small"></div> Saving...
@@ -192,8 +197,8 @@
         <!-- Product List -->
         <div class="product-list-container" *ngIf="!isLoading">
             <h3>Your Products</h3>
-            <div id="Product-list-wrapper">
-                <table id="Product-list">
+            <div class="table-container">
+                <table class="standard-table">
                     <thead>
                         <tr>
                             <th>Image</th>
@@ -220,8 +225,8 @@
                             <td>{{ getPriceRange(product) }}</td>
                             <td>{{ getTotalStock(product) }}</td>
                             <td class="actions-cell">
-                                <button class="edit-button" (click)="editProduct(product)">Edit</button>
-                                <button class="delete-button" (click)="deleteProduct(product.listId!)">Delete</button>
+                                <button class="standard-button small" (click)="editProduct(product)" aria-label="Edit product">Edit</button>
+                                <button class="standard-button small" (click)="deleteProduct(product.listId!)" aria-label="Delete product">Delete</button>
                             </td>
                         </tr>
                     </tbody>
@@ -231,7 +236,7 @@
         
         <!-- Loading Indicator -->
         <div class="loading-container" *ngIf="isLoading">
-            <div class="loading-spinner"></div>
+            <div class="loading-spinner" aria-hidden="true"></div>
             <p>Loading products...</p>
         </div>
     </div>

@@ -1,11 +1,3 @@
-:root {
-  --dashboard-card-padding: 24px;
-  --dashboard-card-radius: 10px;
-  --dashboard-transition: 0.3s ease;
-  --dashboard-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --dashboard-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
 #container {
   display: flex;
   width: 100%;
@@ -28,6 +20,23 @@
   overflow-x: hidden;
   position: relative;
   height: 100vh;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+}
+
+#main::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-height);
+}
+
+#main::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color);
+  border-radius: var(--scrollbar-border-radius);
+}
+
+#main::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: var(--scrollbar-border-radius);
 }
 
 .page {
@@ -67,19 +76,19 @@
   font-size: 1rem;
 }
 
-/* Card styling */
+/* Use standard card styling */
 .dashboard-card {
   background-color: white;
-  border-radius: var(--dashboard-card-radius);
-  box-shadow: var(--dashboard-shadow);
-  padding: var(--dashboard-card-padding);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 24px;
   margin-bottom: 24px;
-  transition: transform var(--dashboard-transition), box-shadow var(--dashboard-transition);
+  transition: all 0.3s ease;
 }
 
 .dashboard-card:hover,
 .dashboard-card:focus-within {
-  box-shadow: var(--dashboard-hover-shadow);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
@@ -109,7 +118,7 @@
   margin-top: 24px;
 }
 
-/* Scroll to top button */
+/* Use standard button for scroll to top */
 .scroll-top-button {
   position: fixed;
   bottom: 20px;
@@ -118,7 +127,7 @@
   height: 40px;
   border-radius: 50%;
   background-color: var(--main-color);
-  color: var(--second-color);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -127,7 +136,8 @@
   visibility: hidden;
   transition: all 0.3s ease;
   z-index: 99;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: none;
 }
 
 .scroll-top-button.visible {
@@ -137,10 +147,9 @@
 
 .scroll-top-button:hover,
 .scroll-top-button:focus {
-  transform: translateY(-3px);
+  background-color: var(--second-color);
+  transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  outline: 2px solid var(--second-color);
-  outline-offset: 2px;
 }
 
 /* Fixed sidebar layout adjustments */
@@ -194,7 +203,7 @@
   #main {
     width: 100%;
     margin-left: 0;
-    padding-top: 60px; /* Make room for the mobile menu button */
+    padding-top: 60px;
     padding-left: 0;
     height: auto;
     min-height: 100vh;
@@ -227,7 +236,7 @@
 
 @media (max-width: 480px) {
   #main {
-    padding-top: 50px; /* Adjust for smaller menu button */
+    padding-top: 50px;
     height: auto;
   }
   
@@ -240,7 +249,7 @@
   }
 }
 
-/* Improve accessibility */
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   .dashboard-card,
   .scroll-top-button,
@@ -258,7 +267,7 @@
   }
 }
 
-/* Add print styles */
+/* Print styles */
 @media print {
   .scroll-top-button {
     display: none;
@@ -271,7 +280,8 @@
   }
   
   #main {
-    height: auto;
-    overflow: visible;
+    margin: 0;
+    padding: 0;
+    width: 100%;
   }
 }

@@ -1,19 +1,23 @@
 <div class="container">
-  <div class="header">
+  <div class="section-header">
     <h2>Category Management</h2>
-    <button class="btn-primary" (click)="createNewCategory()">Create New Category</button>
+    <button class="standard-button primary" (click)="createNewCategory()" aria-label="Create new category">Create New Category</button>
   </div>
 
   <div *ngIf="error" class="error-message">{{ error }}</div>
 
-  <div *ngIf="loading" class="loading">Loading categories...</div>
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner" aria-hidden="true"></div>
+    <p>Loading categories...</p>
+  </div>
 
   <div *ngIf="!loading && categories.length === 0" class="empty-state">
+    <i class="fa fa-folder-open" aria-hidden="true"></i>
     <p>No categories found. Create your first category to get started.</p>
   </div>
 
   <div *ngIf="!loading && categories.length > 0" class="table-container">
-    <table class="categories-table">
+    <table class="standard-table">
       <thead>
         <tr>
           <th>ID</th>
@@ -27,9 +31,9 @@
           <td>{{ category.categoryId }}</td>
           <td>{{ category.name }}</td>
           <td>{{ getCategoryParentName(category.parentCategory) }}</td>
-          <td class="actions">
-            <button class="btn-edit" (click)="editCategory(category.categoryId)">Edit</button>
-            <button class="btn-delete" (click)="deleteCategory(category.categoryId)">Delete</button>
+          <td class="actions-cell">
+            <button class="standard-button small" (click)="editCategory(category.categoryId)" aria-label="Edit category">Edit</button>
+            <button class="standard-button small" (click)="deleteCategory(category.categoryId)" aria-label="Delete category">Delete</button>
           </td>
         </tr>
       </tbody>
