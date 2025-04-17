@@ -1,11 +1,38 @@
-<div>
-  <h2>Categories</h2>
-  <a routerLink="/categories/new">Create New Category</a>
-  <ul>
-    <li *ngFor="let category of categories">
-      {{ category.Name }}
-      <a [routerLink]="['/categories', category.CategoryId, 'edit']">Edit</a>
-      <button (click)="deleteCategory(category.CategoryId)">Delete</button>
-    </li>
-  </ul>
+<div class="container">
+  <div class="header">
+    <h2>Category Management</h2>
+    <button class="btn-primary" (click)="createNewCategory()">Create New Category</button>
+  </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <div *ngIf="loading" class="loading">Loading categories...</div>
+
+  <div *ngIf="!loading && categories.length === 0" class="empty-state">
+    <p>No categories found. Create your first category to get started.</p>
+  </div>
+
+  <div *ngIf="!loading && categories.length > 0" class="table-container">
+    <table class="categories-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Parent Category</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let category of categories">
+          <td>{{ category.CategoryId }}</td>
+          <td>{{ category.Name }}</td>
+          <td>{{ getCategoryParentName(category.ParentCategory) }}</td>
+          <td class="actions">
+            <button class="btn-edit" (click)="editCategory(category.CategoryId)">Edit</button>
+            <button class="btn-delete" (click)="deleteCategory(category.CategoryId)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

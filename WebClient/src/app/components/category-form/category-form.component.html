@@ -1,17 +1,53 @@
-<div>
-    <h2>{{ isEditMode ? 'Edit Category' : 'Create Category' }}</h2>
-    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
-      <div>
-        <label>Name</label>
-        <input formControlName="name">
-      </div>
-      <div>
-        <label>Parent Category (optional)</label>
-        <input formControlName="parentCategory" placeholder="Enter parent category id">
-      </div>
-      <button type="submit" [disabled]="categoryForm.invalid">
-        {{ isEditMode ? 'Update' : 'Create' }}
-      </button>
-    </form>
+<div class="container">
+  <div class="header">
+    <h2>{{ isEditMode ? 'Edit Category' : 'Create New Category' }}</h2>
   </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+    <div class="form-group">
+      <label for="name">Category Name</label>
+      <input 
+        id="name" 
+        type="text" 
+        formControlName="name" 
+        class="form-control"
+        [class.is-invalid]="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched"
+        placeholder="Enter category name">
+      <div class="validation-error" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+        <span *ngIf="categoryForm.get('name')?.errors?.['required']">Category name is required.</span>
+        <span *ngIf="categoryForm.get('name')?.errors?.['maxlength']">Category name cannot exceed 100 characters.</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="parentCategory">Parent Category (optional)</label>
+      <select 
+        id="parentCategory" 
+        formControlName="parentCategory" 
+        class="form-control">
+        <option [ngValue]="null">None (Top Level Category)</option>
+        <option *ngFor="let category of allCategories" 
+                [ngValue]="category.CategoryId"
+                [disabled]="isEditMode && category.CategoryId === categoryId">
+          {{ category.Name }}
+        </option>
+      </select>
+      <div class="hint">Selecting a parent category creates a hierarchical structure</div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="navigateBack()" class="btn-secondary">Cancel</button>
+      <button 
+        type="submit" 
+        class="btn-primary" 
+        [disabled]="categoryForm.invalid || saving">
+        {{ isEditMode ? 'Update Category' : 'Create Category' }}
+      </button>
+    </div>
+  </form>
+</div>
   
