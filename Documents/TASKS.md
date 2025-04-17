@@ -24,6 +24,14 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] ⚠️ **Implement Theme/Logo/Banner Saving:** Connect the frontend theme/logo/banner selectors to backend endpoints to persist customization changes. (`ThemesComponent`, `LogoSelectorComponent`, `StoreController` needs update endpoints)
 -   [ ] ⚠️ **Implement Store Component Visibility:** Allow sellers to toggle component visibility (e.g., featured products, testimonials) and persist this configuration. Reflect this visibility on the public store page. (`StoreEditorComponent`, `StorePageComponent`, needs backend storage)
 -   [ ] 🔥 **Implement Order Management View:** Create UI for sellers to view incoming orders and their details. (`OrdersComponent`, `REQUIREMENTS.md FR4.2.4`, needs backend data source)
+- [ ] 🔥 **Connect Management Components to Live Backend:**
+    -   **Description:** Ensure `ProductManagementComponent`, `CategoryListComponent`, `CategoryFormComponent`, and `OrdersComponent` use real data from the backend API and database, replacing mock data.
+    -   **Backend:** Verify/Implement CRUD endpoints in `ItemController`/`ItemsController`, `CategoriesController`. Create `OrdersController`. Ensure DB interaction via `AppDbContext`.
+    -   **Database:** Check/Define `Orders` and `OrderItems` tables in `Database/TableCreation.sql`.
+    -   **Frontend Services:** Update `ItemService`, `CategoryService`, `OrderService` to use `HttpClient` for backend calls. Remove mock data from `OrderService`.
+    -   **Frontend Components:** Verify components correctly use updated services.
+    -   **Files:** `ProductManagementComponent.ts`, `CategoryListComponent.ts`, `CategoryFormComponent.ts`, `OrdersComponent.ts`, `ItemService.ts`, `CategoryService.ts`, `OrderService.ts`, `ItemController.cs`, `CategoriesController.cs`, `OrdersController.cs` (new), `AppDbContext.cs`, `TableCreation.sql`, `order.model.ts`.
+    -   **Depends on:** Backend API structure, Database Schema.
 
 ### Shopping Cart & Checkout
 -   [ ] 🔥 **Integrate Cart with Checkout:** Modify `CheckoutComponent` to use the actual cart subtotal from `ShoppingService` instead of a hardcoded amount when calling `PaymentService.createCheckoutSession`. Also, ensure a descriptive product name (using the store name) is passed. Add checks for empty cart/invalid subtotal. (See `CheckoutComponent.ts`, `ShoppingService.ts`, `PaymentService.ts`)
