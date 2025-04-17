@@ -16,6 +16,7 @@ import { CategoryPageComponent } from './components/customer-layout/category-pag
 import { ItemPageComponent } from './components/customer-layout/item-page/item-page.component';
 import { SuccessComponent } from './components/SuccessComponent';
 import { CancelComponent } from './components/CancelComponent';
+import { OrdersComponent } from './components/store-owner-layout/orders/orders.component';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
@@ -28,6 +29,7 @@ export const appRoutes: Routes = [
   { path: 'dashboard/categories', component: CategoryListComponent },
   { path: 'dashboard/categories/new', component: CategoryFormComponent },
   { path: 'dashboard/categories/edit/:id', component: CategoryFormComponent },
+  { path: 'dashboard/orders', component: OrdersComponent },
   { path: 'items', component: ItemListComponent },
   { path: 'items/:id', component: ItemDetailComponent },
   { path: 'categories', component: CategoryListComponent},
