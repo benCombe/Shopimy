@@ -19,12 +19,13 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] ⚠️ **Refine User Profile Update:** Ensure all relevant user fields can be updated securely via the profile page and backend. (`ProfileComponent` - Store Owner, `AccountController`)
 
 ### Store & Product Management (Seller)
--   [ ] 🔥 **Implement Product Management UI:** Create forms and logic for adding, editing, and deleting products (`Listing`, `Items`) and variants, including image uploads. (`ProductManagementComponent`, `ItemController`, `ItemsController`)
--   [ ] 🔥 **Implement Category Management UI:** Create forms and logic for adding, editing (including parent), and deleting categories. (`CategoryListComponent`, `CategoryFormComponent` - needs creation/integration, `CategoriesController`)
+-   [X] 🔥 **Implement Product Management UI:** Create forms and logic for adding, editing, and deleting products (`Listing`, `Items`) and variants, including image uploads. (`ProductManagementComponent`, `ItemController`, `ItemsController`)
+-   [X] 🔥 **Implement Category Management UI:** Create forms and logic for adding, editing (including parent), and deleting categories. (`CategoryListComponent`, `CategoryFormComponent` - needs creation/integration, `CategoriesController`)
 -   [ ] ⚠️ **Implement Theme/Logo/Banner Saving:** Connect the frontend theme/logo/banner selectors to backend endpoints to persist customization changes. (`ThemesComponent`, `LogoSelectorComponent`, `StoreController` needs update endpoints)
 -   [ ] ⚠️ **Implement Store Component Visibility:** Allow sellers to toggle component visibility (e.g., featured products, testimonials) and persist this configuration. Reflect this visibility on the public store page. (`StoreEditorComponent`, `StorePageComponent`, needs backend storage)
--   [ ] 🔥 **Implement Order Management View:** Create UI for sellers to view incoming orders and their details. (`OrdersComponent`, `REQUIREMENTS.md FR4.2.4`, needs backend data source)
-- [ ] 🔥 **Connect Management Components to Live Backend:**
+-   [X] 🔥 **Implement Order Management View:** Create UI for sellers to view incoming orders and their details. (`OrdersComponent`, `REQUIREMENTS.md FR4.2.4`, needs backend data source)
+- [X] 🔥 **Connect Management Components to Live Backend (Backend & Services):**
+    -   **Status:** Backend API endpoints (`ItemController`, `CategoriesController`, `OrdersController`) and database tables (`Orders`, `OrderItems`) created/updated. Frontend services (`ItemService`, `CategoryService`, `OrderService`) updated to use API calls, removing mock data.
     -   **Description:** Ensure `ProductManagementComponent`, `CategoryListComponent`, `CategoryFormComponent`, and `OrdersComponent` use real data from the backend API and database, replacing mock data.
     -   **Backend:** Verify/Implement CRUD endpoints in `ItemController`/`ItemsController`, `CategoriesController`. Create `OrdersController`. Ensure DB interaction via `AppDbContext`.
     -   **Database:** Check/Define `Orders` and `OrderItems` tables in `Database/TableCreation.sql`.
@@ -32,6 +33,13 @@ This document tracks pending tasks, potential improvements, and areas needing at
     -   **Frontend Components:** Verify components correctly use updated services.
     -   **Files:** `ProductManagementComponent.ts`, `CategoryListComponent.ts`, `CategoryFormComponent.ts`, `OrdersComponent.ts`, `ItemService.ts`, `CategoryService.ts`, `OrderService.ts`, `ItemController.cs`, `CategoriesController.cs`, `OrdersController.cs` (new), `AppDbContext.cs`, `TableCreation.sql`, `order.model.ts`.
     -   **Depends on:** Backend API structure, Database Schema.
+    -   **Remaining:** Verify/update frontend components (`ProductManagementComponent`, `CategoryListComponent`, `CategoryFormComponent`, `OrdersComponent`) to fully utilize the updated services and handle async/error states correctly.
+    -   **Files Involved:** `ProductManagementComponent.ts`, `CategoryListComponent.ts`, `CategoryFormComponent.ts`, `OrdersComponent.ts`, `ItemService.ts`, `CategoryService.ts`, `OrderService.ts`, `ItemController.cs`, `CategoriesController.cs`, `OrdersController.cs`, `TableCreation.sql`, `order.model.ts`, `item.service.ts` interfaces.
+    -   **Depends on:** Completed backend and service implementation.
+-   [ ] ⚠️ **Verify & Update Frontend Management Components:**
+    -   **Description:** Ensure `ProductManagementComponent`, `CategoryListComponent`, `CategoryFormComponent`, and `OrdersComponent` correctly consume the updated `ItemService`, `CategoryService`, and `OrderService`. Verify data mapping, update component logic (e.g., image handling in `ProductManagementComponent`), and ensure proper handling of loading states and errors.
+    -   **Files:** `ProductManagementComponent.ts`, `CategoryListComponent.ts`, `CategoryFormComponent.ts`, `OrdersComponent.ts`
+    -   **Depends on:** Completed 'Connect Management Components to Live Backend (Backend & Services)' task.
 
 ### Shopping Cart & Checkout
 -   [ ] 🔥 **Integrate Cart with Checkout:** Modify `CheckoutComponent` to use the actual cart subtotal from `ShoppingService` instead of a hardcoded amount when calling `PaymentService.createCheckoutSession`. Also, ensure a descriptive product name (using the store name) is passed. Add checks for empty cart/invalid subtotal. (See `CheckoutComponent.ts`, `ShoppingService.ts`, `PaymentService.ts`)
@@ -57,6 +65,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
 ## ⚠️ Technical Debt & Refactoring
 
 -   [ ] ⚠️ **Review `ItemsController.cs`:** Decide whether to reintegrate, replace, or remove the commented-out stock update logic. Ensure stock updates are handled correctly elsewhere if removed.
+-   [X] ⚠️ **Review `ItemsController.cs`:** Removed the old commented-out `ItemsController.cs` as it was replaced by the updated `ItemController.cs`.
 -   [ ] 🧊 **Refactor Large Components:** Review components for potential breakdown into smaller, reusable parts (check against `.cursorrules` file size limit).
 -   [ ] 🧊 **Consolidate API Calls:** Review frontend services for potential consolidation or optimization of HTTP requests.
 -   [ ] ⚠️ **Error Handling:** Systematically review error handling in both frontend and backend. Ensure consistent logging and user-friendly feedback.

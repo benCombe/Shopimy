@@ -47,8 +47,9 @@ The backend is built using .NET and exposes a RESTful API.
     *   `UserPaymentController`: Manages user-specific payment methods via Stripe.
     *   `ShoppingCartController`: Manages shopping cart persistence for logged-in users.
     *   `ReviewsController`: Handles product reviews.
+    *   `OrdersController`: Manages fetching and potentially updating order details for store owners.
 *   **Authentication & Authorization:** Uses JWT Bearer tokens (`Program.cs`, `AccountController.cs`). Tokens are generated upon login and validated for protected endpoints. User identity is extracted from claims.
-*   **Data Access:** Uses Entity Framework Core (`Data/AppDbContext.cs`) to interact with the SQL Server database. Repositories (`Repositories/`) abstract data access logic (e.g., `CategoryRepository`).
+*   **Data Access:** Uses Entity Framework Core (`Data/AppDbContext.cs`) to interact with the SQL Server database. Repositories (`Repositories/`) abstract data access logic (e.g., `CategoryRepository`). Some raw SQL is used for complex queries.
 *   **Service Layer:** Encapsulates business logic (`Services/`). Examples: `CategoryService`, `ReviewService`.
 *   **Payment Integration:** Uses the `Stripe.net` library (`Server.csproj`) to interact with the Stripe API for creating checkout sessions, handling webhooks, managing customers, and payment methods (`PaymentController.cs`, `UserPaymentController.cs`).
 *   **Configuration:** Managed via `appsettings.json`, `appsettings.Development.json`, and `appsettings.secrets.json`. Includes database connection strings and Stripe API keys/secrets.
@@ -69,7 +70,8 @@ The database stores all persistent application data.
     *   `ItemImages`: Stores image URLs associated with items.
     *   `ShoppingCarts`: Stores items added to carts by users.
     *   `Reviews`: Customer reviews and ratings for products.
-    *   *(Potential Future Tables: Orders, OrderItems, Payments)*
+    *   `Orders`: Stores main order details (user, store, date, total, status, address).
+    *   `OrderItems`: Links orders to specific items purchased (item ID, quantity, price paid).
 *   **Data Initialization:** Sample data is provided in `Database/SampleData.sql`.
 
 ## 6. External Services Integration
@@ -115,6 +117,13 @@ The database stores all persistent application data.
     9.  Stripe redirects user to `SuccessUrl` or `CancelUrl`.
     10. Stripe sends a `checkout.session.completed` webhook event to Backend `/api/payment/webhook`.
     11. `PaymentController` verifies the webhook signature and processes the event (e.g., updates order status in the database, potentially reduces stock).
+*   **Order Viewing (Store Owner):**
+    1.  Store owner navigates to the orders page in the dashboard (`OrdersComponent`).
+    2.  `OrderService` calls Backend `/api/orders` (with authentication token).
+    3.  `OrdersController` verifies the token and retrieves the store ID from claims.
+    4.  `OrdersController` fetches orders for that store from the `Orders` and `OrderItems` tables, joining with `Users` and `Listing`/`ItemImages` for details.
+    5.  Backend returns the list of `Order` objects.
+    6.  `OrdersComponent` displays the orders.
 
 ## 8. Deployment Overview (Conceptual)
 
