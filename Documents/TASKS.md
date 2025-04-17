@@ -53,7 +53,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
     -   **Depends on:** Existence and functionality of individual store section components (Header, Hero, etc.). Task focuses on the preview structure, not creating those child components.
 
 ### Shopping Cart & Checkout
--   [ ] 🔥 **Integrate Cart with Checkout:** Modify `CheckoutComponent` to use the actual cart subtotal from `ShoppingService` instead of a hardcoded amount when calling `PaymentService.createCheckoutSession`. Also, ensure a descriptive product name (using the store name) is passed. Add checks for empty cart/invalid subtotal. (See `CheckoutComponent.ts`, `ShoppingService.ts`, `PaymentService.ts`)
+-   [x] 🔥 **Integrate Cart with Checkout:** Modify `CheckoutComponent` to use the actual cart subtotal from `ShoppingService` instead of a hardcoded amount when calling `PaymentService.createCheckoutSession`. Also, ensure a descriptive product name (using the store name) is passed. Add checks for empty cart/invalid subtotal. (See `CheckoutComponent.ts`, `ShoppingService.ts`, `PaymentService.ts`)
 -   [ ] ⚠️ **Implement Cart Quantity Updates:** Allow users to change item quantities directly in the cart UI. (`ShoppingCartComponent`, `ShoppingCartController`)
 -   [ ] ⚠️ **Persist Cart for Logged-in Users:** Ensure `ShoppingCartController` correctly saves/retrieves cart state to/from the database (`ShoppingCarts` table). Test persistence across sessions. (`ShoppingService`, `ShoppingCartController`)
 -   [ ] 🧊 **Implement Guest Checkout Flow:** Design and implement the process for users to purchase without creating an account. (`REQUIREMENTS.md`)
@@ -109,7 +109,31 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] 🧊 **Improve Mobile Responsiveness:** Test thoroughly on various mobile devices and refine styles where needed.
 -   [ ] ⚠️ **Standardize Dashboard Component Styles:**
     -   **Description:** Review and refactor the CSS/SCSS for components within the `StoreOwnerDashboardComponent` layout (`Overview`, `Profile`, `Settings`, `ProductManagement`, `CategoryList`, `Orders`, `Themes`, `StoreEditor`, `Promotions`, `Analytics`, `SideNav`) to ensure they consistently use the global CSS variables and standard classes defined in `styles.css` and documented in `README-STYLES.md`. Address inconsistencies in colors, fonts, spacing, button styles, table layouts, etc.
-    -   **Files:** `store-owner-dashboard.component.css`, `overview.component.css`, `profile.component.css` (store owner), `settings.component.css`, `product-management.component.css`, `category-list.component.ts` (inline styles), `orders.component.css`, `themes.component.ts` (inline styles), `store-editor.component.ts` (inline styles), `promotions.component.css`, `analytics.component.css`, `side-nav.component.css`.
+    -   **Files:**
+        -   `WebClient/src/styles.css` (Reference)
+        -   `WebClient/src/README-STYLES.md` (Reference)
+        -   `WebClient/src/app/components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component.css`
+        -   `WebClient/src/app/components/store-owner-layout/overview/overview.component.css`
+        -   `WebClient/src/app/components/store-owner-layout/profile/profile.component.css`
+        -   `WebClient/src/app/components/store-owner-layout/settings/settings.component.css`
+        -   `WebClient/src/app/components/store-owner-layout/product-management/product-management.component.css`
+        -   `WebClient/src/app/components/category-list/category-list.component.ts` (Check inline styles/CSS)
+        -   `WebClient/src/app/components/store-owner-layout/orders/orders.component.css`
+        -   `WebClient/src/app/components/store-owner-layout/themes/themes.component.ts` (Check inline styles/CSS)
+        -   `WebClient/src/app/components/store-owner-layout/store-editor/store-editor.component.ts` (Check inline styles/CSS)
+        -   `WebClient/src/app/components/store-owner-layout/promotions/promotions.component.css`
+        -   `WebClient/src/app/components/store-owner-layout/analytics/analytics.component.css`
+        -   `WebClient/src/app/components/store-owner-layout/side-nav/side-nav.component.css`
+    -   **Instructions:**
+        1.  Review `styles.css` and `README-STYLES.md` to understand the standard variables (e.g., `var(--main-color)`) and classes (e.g., `.standard-button`, `.standard-table`).
+        2.  Go through each listed component's CSS file (or inline styles in `.ts` files).
+        3.  Identify hardcoded values (e.g., `#333`, `1rem`, `1px solid black`) or styles that deviate from the standard.
+        4.  Replace these with the corresponding CSS variables or standard classes.
+        5.  Ensure consistent use of spacing, padding, margins, potentially using variables if defined.
+        6.  Standardize button appearances using `.standard-button` and modifiers if applicable.
+        7.  Standardize table layouts using `.standard-table` and `.table-container`.
+        8.  Remove redundant or unused styles after refactoring.
+        9.  Verify visual consistency across the dashboard sections after changes.
     -   **Depends on:** Defined global styles in `styles.css` and `README-STYLES.md`.
 
 ## 🔒 Security Enhancements
