@@ -144,11 +144,13 @@ export class CategoryFormComponent implements OnInit {
         this.categoryId = +params['id'];
         
         this.categoryService.getCategoryById(this.categoryId).subscribe({
-          next: (category: Category) => {
-            this.categoryForm.patchValue({
-              name: category.Name,
-              parentCategory: category.ParentCategory
-            });
+          next: (category: Category | null) => {
+            if (category) {
+              this.categoryForm.patchValue({
+                name: category.name,
+                parentCategory: category.parentCategory
+              });
+            }
             this.loading = false;
             this.loadingService.setIsLoading(false);
           },

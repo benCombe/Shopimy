@@ -32,8 +32,8 @@
                             formControlName="categoryId"
                             [class.error]="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched">
                             <option value="">Select a category</option>
-                            <option *ngFor="let category of categories" [value]="category.CategoryId">
-                                {{ category.Name }}
+                            <option *ngFor="let category of categories" [value]="category.categoryId">
+                                {{ category.name }}
                             </option>
                         </select>
                         <div class="error-message" *ngIf="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched">

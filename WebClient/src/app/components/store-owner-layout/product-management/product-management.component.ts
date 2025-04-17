@@ -2,11 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { ItemService, ProductPayload } from '../../../services/item.service';
+import { ItemService, ProductCreatePayload, ProductUpdatePayload, ProductVariantPayload } from '../../../services/item.service';
 import { CategoryService, Category } from '../../../services/category.service';
 import { StoreService } from '../../../services/store.service';
 import { Item } from '../../../models/item';
 import { BasicItem } from '../../../models/basic-item';
+import { ProductListItem } from '../../../services/item.service';
 
 // Interface for the product variant (Items)
 interface ProductVariant {
@@ -180,9 +181,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     if (!this.storeId) return;
     
     this.categoryService.getCategories().subscribe({
-      next: (categories) => {
-        // Filter categories for the current store
-        this.categories = categories.filter(c => c.StoreId === this.storeId);
+      next: (categories: Category[]) => {
+        this.categories = categories.filter(c => c.storeId === this.storeId);
       },
       error: (error) => {
         console.error('Error loading categories:', error);
@@ -245,35 +245,37 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.isSaving = true;
     
     const formData = this.productForm.value;
-    const productData: ProductPayload = {
+    const baseProductData = {
       name: formData.name,
       description: formData.description,
       categoryId: formData.categoryId,
-      storeId: this.storeId,
       variants: formData.variants.map((v: any) => ({
-        id: v.id, // Will be null for new variants
+        itemId: v.id || 0, // 0 for new variants
         price: v.price,
-        salePrice: v.salePrice,
+        salePrice: v.salePrice || 0, // Default to 0 if undefined
         quantity: v.quantity,
-        type: v.type,
-        size: v.size,
-        color: v.color
+        type: v.type || '',
+        size: v.size || '',
+        colour: v.color || '',
+        images: []
       }))
     };
     
-    // If editing, include the product ID
+    // If editing, include the product ID and cast to update payload
     if (this.isEditMode && this.currentProductId) {
-      productData.listId = this.currentProductId;
+      const updatePayload: ProductUpdatePayload = {
+        ...baseProductData
+      };
       
       // Update the product
-      this.itemService.updateProduct(this.currentProductId, productData).subscribe({
+      this.itemService.updateProduct(this.currentProductId, updatePayload).subscribe({
         next: (result) => {
           // Handle successful update
           console.log('Product updated:', result);
           
           // If there's a new file selected, upload it
-          if (this.selectedFile) {
-            this.uploadProductImage(result.id || this.currentProductId);
+          if (this.selectedFile && this.currentProductId) {
+            this.uploadProductImage(this.currentProductId);
           } else {
             this.handleSaveComplete();
           }
@@ -286,14 +288,19 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       });
     } else {
       // Create a new product
-      this.itemService.createProduct(productData).subscribe({
+      const createPayload: ProductCreatePayload = {
+        ...baseProductData,
+        storeId: this.storeId!
+      };
+      
+      this.itemService.createProduct(createPayload).subscribe({
         next: (result) => {
           // Handle successful creation
           console.log('Product created:', result);
           
           // If there's a file selected, upload it
-          if (this.selectedFile && result.id) {
-            this.uploadProductImage(result.id);
+          if (this.selectedFile && result.listId) {
+            this.uploadProductImage(result.listId);
           } else {
             this.handleSaveComplete();
           }
@@ -389,23 +396,27 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   
   // Upload a product image
   private uploadProductImage(itemId: number): void {
-    if (!this.selectedFile || !this.storeId) {
-      this.handleSaveComplete();
-      return;
-    }
+    if (!this.selectedFile) return;
     
-    this.itemService.uploadProductImage(itemId, this.storeId, this.selectedFile).subscribe({
-      next: (response) => {
-        console.log('Image uploaded:', response);
-        this.handleSaveComplete();
-      },
-      error: (error) => {
-        console.error('Error uploading image:', error);
-        // Even if image upload fails, we still consider the product save complete
-        this.handleSaveComplete();
-        alert('Product saved, but image upload failed. You can try uploading the image again by editing the product.');
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        const base64String = e.target.result.toString();
+        this.itemService.uploadProductImage(base64String).subscribe({
+          next: (response) => {
+            console.log('Image uploaded:', response);
+            this.handleSaveComplete();
+          },
+          error: (error) => {
+            console.error('Error uploading image:', error);
+            // Even if image upload fails, we still consider the product save complete
+            this.handleSaveComplete();
+            alert('Product saved, but image upload failed. You can try uploading the image again by editing the product.');
+          }
+        });
       }
-    });
+    };
+    reader.readAsDataURL(this.selectedFile);
   }
   
   // Remove the currently selected image
@@ -425,7 +436,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   // Helper method to find category name
   getCategoryName(categoryId: number): string {
-    const category = this.categories.find(c => c.CategoryId === categoryId);
-    return category ? category.Name : 'Uncategorized';
+    const category = this.categories.find(c => c.categoryId === categoryId);
+    return category ? category.name : 'Uncategorized';
   }
 }

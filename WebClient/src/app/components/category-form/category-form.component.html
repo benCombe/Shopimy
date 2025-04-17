@@ -31,9 +31,9 @@
         class="form-control">
         <option [ngValue]="null">None (Top Level Category)</option>
         <option *ngFor="let category of allCategories" 
-                [ngValue]="category.CategoryId"
-                [disabled]="isEditMode && category.CategoryId === categoryId">
-          {{ category.Name }}
+                [ngValue]="category.categoryId"
+                [disabled]="isEditMode && category.categoryId === categoryId">
+          {{ category.name }}
         </option>
       </select>
       <div class="hint">Selecting a parent category creates a hierarchical structure</div>

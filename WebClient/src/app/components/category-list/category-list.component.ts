@@ -142,8 +142,8 @@ export class CategoryListComponent implements OnInit {
 
   getCategoryParentName(parentId: number | undefined): string {
     if (!parentId) return 'None';
-    const parent = this.categories.find(c => c.CategoryId === parentId);
-    return parent ? parent.Name : 'Unknown';
+    const parent = this.categories.find(c => c.categoryId === parentId);
+    return parent ? parent.name : 'Unknown';
   }
 
   createNewCategory() {

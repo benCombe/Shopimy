@@ -24,12 +24,12 @@
       </thead>
       <tbody>
         <tr *ngFor="let category of categories">
-          <td>{{ category.CategoryId }}</td>
-          <td>{{ category.Name }}</td>
-          <td>{{ getCategoryParentName(category.ParentCategory) }}</td>
+          <td>{{ category.categoryId }}</td>
+          <td>{{ category.name }}</td>
+          <td>{{ getCategoryParentName(category.parentCategory) }}</td>
           <td class="actions">
-            <button class="btn-edit" (click)="editCategory(category.CategoryId)">Edit</button>
-            <button class="btn-delete" (click)="deleteCategory(category.CategoryId)">Delete</button>
+            <button class="btn-edit" (click)="editCategory(category.categoryId)">Edit</button>
+            <button class="btn-delete" (click)="deleteCategory(category.categoryId)">Delete</button>
           </td>
         </tr>
       </tbody>
