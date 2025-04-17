@@ -14,7 +14,6 @@ import { AnalyticsComponent } from '../analytics/analytics.component';
 import { ThemesComponent } from '../themes/themes.component';
 import { StoreEditorComponent } from '../store-editor/store-editor.component';
 import { CategoryListComponent } from '../../category-list/category-list.component';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-store-owner-dashboard',
@@ -31,8 +30,7 @@ import { RouterOutlet } from '@angular/router';
     PromotionsComponent,
     AnalyticsComponent,
     StoreEditorComponent,
-    CategoryListComponent,
-    RouterOutlet
+    CategoryListComponent
   ],
   templateUrl: './store-owner-dashboard.component.html',
   styleUrl: './store-owner-dashboard.component.css'

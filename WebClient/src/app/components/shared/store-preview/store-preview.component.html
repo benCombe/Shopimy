@@ -20,7 +20,7 @@
                  *ngIf="storeData.logoURL; else defaultLogo">
             <ng-template #defaultLogo>
               <div class="default-logo" [style.color]="theme?.altColor || storeData.fontColor">
-                {{ storeData.name?.charAt(0) || 'S' }}
+                {{ storeData.name.charAt(0) || 'S' }}
               </div>
             </ng-template>
           </div>

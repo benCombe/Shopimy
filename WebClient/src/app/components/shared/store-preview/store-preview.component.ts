@@ -2,12 +2,11 @@ import { Component, Input } from '@angular/core';
 import { StoreTheme } from '../../../models/store-theme.model';
 import { StoreDetails } from '../../../models/store-details';
 import { CommonModule } from '@angular/common';
-import { ItemCardComponent } from '../../item-card/item-card.component';
 
 @Component({
   selector: 'app-store-preview',
   standalone: true,
-  imports: [CommonModule, ItemCardComponent],
+  imports: [CommonModule],
   templateUrl: './store-preview.component.html',
   styleUrls: ['./store-preview.component.css']
 })
