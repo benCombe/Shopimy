@@ -11,12 +11,12 @@ Setting up developer environment:
 
 RUNNING
 
-FrontEnd
-cd webclient
-npm start
+Frontend
+cd WebClient;
+ng serve
 
 Backend
-cd server
+cd server;
 dotnet run
 
 Shopimy is a web-based platform designed to help social media sellers build their online stores. With this goal in mind, Shopimy allows for small businesses and new business owners to sell individual items, or create an entire store with dedicated categories and personalization features. An easy to use analytics board, specialized links and an integrated payment system, ensures that owners looking to use Shopimy only have to click to find everything they need. 

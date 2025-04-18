@@ -91,3 +91,31 @@
         background-color: #bbb;
     }
 
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .quantity-controls button {
+      background-color: #ccc;
+      border: none;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .quantity-controls button:hover {
+      background-color: #bbb;
+    }
+
+    .quantity {
+      font-size: 1.1rem;
+      min-width: 2rem;
+      text-align: center;
+    }
+

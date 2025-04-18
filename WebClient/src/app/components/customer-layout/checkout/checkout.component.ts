@@ -1,3 +1,4 @@
+import { ShoppingCartComponent } from './../shopping-cart/shopping-cart.component';
 import { AfterViewInit, Component, Input, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import { ThemeService } from '../../../services/theme.service';
@@ -22,6 +23,15 @@ import { StoreDetails } from '../../../models/store-details';
 export class CheckoutComponent {
 
   shippingForm: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private paymentService: PaymentService,
+    private shopService: ShoppingService
+    private themeService: ThemeService,
+    private paymentService: PaymentService,
+    private shoppingService: ShoppingService
+  ) {
   storeUrl: string = '';
   storeId: number = 0;
   storeDetails: StoreDetails | null = null;
@@ -44,6 +54,12 @@ export class CheckoutComponent {
       country: ['', Validators.required],
       postalCode: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,15}$')]], // Allow 10-15 digit phone numbers
+    });
+  }
+
+  ngAfterViewInit(): void {
+
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,15}$')]],
     });
 
@@ -86,6 +102,16 @@ export class CheckoutComponent {
   }
 
   proceedToPayment() {
+    if (this.shippingForm.valid && this.storeDetails) {
+      // TODO: Replace placeholders with actual order details from your cart/order service
+      // Example: Inject a CartService and get items/total
+      // const cartTotal = this.cartService.getTotal(); // Get total amount
+      // const cartItemsDescription = this.cartService.getItemsDescription(); // Get a description (e.g., "Order #12345" or summary)
+
+      const amount = 50.00; // Example amount - REPLACE with cartTotal
+      const productName = `Order for ${this.storeDetails.name}`; // Example product name - REPLACE with cartItemsDescription or similar
+    if (!this.storeDetails || !this.storeDetails.name) {
+      console.error('Store details are missing or invalid.');
     if (!this.storeUrl || this.storeId === 0) {
       console.error('Store URL or ID is missing.');
       alert('Cannot proceed to payment: Store information is missing.');
@@ -119,4 +145,24 @@ export class CheckoutComponent {
       alert('Please fill in all required shipping information.');
     }
   }
+
+  placeOrder(){
+    const email = this.shippingForm.get('email')?.value;
+    const deliveryAddress = this.shippingForm.get("firstName")?.value
+                   + " " + this.shippingForm.get('lastName')?.value
+                   + ", " + this.shippingForm.get('address')?.value
+                   + ", " + this.shippingForm.get('city')?.value
+                   + ", " + this.shippingForm.get('province')?.value
+                   + ", " + this.shippingForm.get('country')?.value
+                   + ", " + this.shippingForm.get('postalCode')?.value;
+
+    this.shopService.placeOrder(email, deliveryAddress).subscribe({
+      next: (orderId) => {
+
+        console.log("Order placed successfully, Order ID:", orderId);
+
+      }
+    });
+  }
+
 }

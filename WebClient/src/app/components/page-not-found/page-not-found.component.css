@@ -1,0 +1,14 @@
+
+
+#main{
+  padding: 10%;
+}
+
+h1{
+  color: var(--second-color);
+  font-size: 5rem;
+}
+
+h3{
+  margin-left: 10px;
+}

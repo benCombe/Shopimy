@@ -9,6 +9,7 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
 using Shopimy.Server.Models;
+using Stripe.Climate;
 
 namespace Server.Data
 {
@@ -26,6 +27,8 @@ namespace Server.Data
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<StoreBanner> StoreBanners { get; set; }
         public DbSet<StoreLogo> StoreLogos { get; set; }
+        public DbSet<OrderLogEntry> OrderLog {get; set;}
+        public DbSet<OrderItem> OrderItems {get; set;}
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
@@ -86,6 +89,8 @@ namespace Server.Data
             modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
             modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
             modelBuilder.Entity<TestItem>().ToTable("TestTable");
+            modelBuilder.Entity<OrderLogEntry>().ToTable("OrderLog");
+            modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
             modelBuilder.Entity<Review>().ToTable("Reviews");
             modelBuilder.Entity<Order>().ToTable("Orders");
             modelBuilder.Entity<OrderItem>().ToTable("OrderItems");

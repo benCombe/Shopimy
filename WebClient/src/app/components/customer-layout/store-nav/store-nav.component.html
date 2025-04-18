@@ -25,5 +25,21 @@
       <div id="num-item-indicator" class="center" *ngIf="numCartItems > 0">{{numCartItems}}</div>
       <div id="cart-btn" class="center fc" [style.color]="storeDetails?.fontColor"  (click)="addToUrl('cart')"><i class="fa-solid fa-cart-shopping"></i></div>
     </div>
+          <!-- Hamburger Menu (Shown only on small screens) -->
+    <div *ngIf="isMobile" id="hamburger-menu">
+      <div id="menu-icon" (click)="toggleMenu()" [style.color]="storeDetails?.fontColor">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+      <div id="mobile-dropdown" *ngIf="menuOpen">
+        <div *ngFor="let c of categories" class="mobile-cat">
+          <span class="cat" (click)="addToUrl(c.name); toggleMenu()">{{ c.name }}</span>
+          <div *ngIf="c.subCategories.length" class="mobile-subcategories">
+            <span *ngFor="let sub of c.subCategories" class="sub-cat"
+            (click)="addToUrl(sub.name); toggleMenu()">
+            {{ sub.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
