@@ -1,39 +1,116 @@
-<div id="main">
-  <div id="shopimy-logo" routerLink="">Shopimy</div>
-  <div id="nav-block">
+<div id="sidebar" [class.mobile-visible]="isMobileSidebarOpen">
+  <div class="sidebar-header">
+    <div id="shopimy-logo" routerLink="">Shopimy</div>
+    <button *ngIf="isMobile" class="close-sidebar-btn" (click)="toggleMobileSidebar()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  
+  <div class="nav-container">
     <!-- Overview (No Dropdown) -->
     <div
-      class="nav center"
+      class="nav-item"
       [class.active]="activeNav === 'Overview'"
       (click)="setActive('Overview')"
     >
-      Overview
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Overview</span>
     </div>
 
-    <!-- Other Nav Items (With Dropdowns) -->
-    <ng-container *ngFor="let item of navItems">
-      <!-- Main Nav Item -->
+    <!-- Account Section -->
+    <div class="nav-section">
       <div
-        class="nav center"
-        (click)="toggleDropdown(item)"
+        class="nav-item dropdown-trigger"
+        [class.open]="navItems[0].open"
+        (click)="toggleDropdown(navItems[0])"
       >
-        {{ item.name }}
+        <div class="nav-item-content">
+          <i class="fa-solid fa-user"></i>
+          <span>Account</span>
+        </div>
+        <i class="fa-solid dropdown-icon" [class.fa-angle-down]="!navItems[0].open" [class.fa-angle-up]="navItems[0].open"></i>
       </div>
-
-      <!-- Sub-nav items (Placed separately, below parent nav) -->
-      <div class="sub-nav-container close" [class.open]="item.open" [class.close]="!item.open">
+      
+      <div class="subnav-container" [class.open]="navItems[0].open">
         <div
-          *ngFor="let sub of item.subNav"
-          class="sub-nav"
+          *ngFor="let sub of navItems[0].subNav"
+          class="subnav-item"
           [class.active]="activeNav === sub"
           (click)="setActive(sub, $event)"
         >
-          {{ sub }}
+          <span>{{ sub }}</span>
         </div>
       </div>
-    </ng-container>
+    </div>
 
+    <!-- My Store Section -->
+    <div class="nav-section">
+      <div
+        class="nav-item dropdown-trigger"
+        [class.open]="navItems[1].open"
+        (click)="toggleDropdown(navItems[1])"
+      >
+        <div class="nav-item-content">
+          <i class="fa-solid fa-store"></i>
+          <span>My Store</span>
+        </div>
+        <i class="fa-solid dropdown-icon" [class.fa-angle-down]="!navItems[1].open" [class.fa-angle-up]="navItems[1].open"></i>
+      </div>
+      
+      <div class="subnav-container" [class.open]="navItems[1].open">
+        <div
+          *ngFor="let sub of navItems[1].subNav"
+          class="subnav-item"
+          [class.active]="activeNav === sub"
+          (click)="setActive(sub, $event)"
+        >
+          <span>{{ sub }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Section -->
+    <div class="nav-section">
+      <div
+        class="nav-item dropdown-trigger"
+        [class.open]="navItems[2].open"
+        (click)="toggleDropdown(navItems[2])"
+      >
+        <div class="nav-item-content">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Analytics</span>
+        </div>
+        <i class="fa-solid dropdown-icon" [class.fa-angle-down]="!navItems[2].open" [class.fa-angle-up]="navItems[2].open"></i>
+      </div>
+      
+      <div class="subnav-container" [class.open]="navItems[2].open">
+        <div
+          *ngFor="let sub of navItems[2].subNav"
+          class="subnav-item"
+          [class.active]="activeNav === sub"
+          (click)="setActive(sub, $event)"
+        >
+          <span>{{ sub }}</span>
+        </div>
+      </div>
+    </div>
   </div>
-  <div id="logout-btn" (click)="logout()">Logout</div>
-
+  
+  <div class="logout-button" (click)="logout()">
+    <i class="fa-solid fa-sign-out-alt"></i>
+    <span>Logout</span>
+  </div>
 </div>
+
+<!-- Mobile toggle button - visible only on mobile -->
+<div *ngIf="isMobile" class="mobile-sidebar-toggle" (click)="toggleMobileSidebar()">
+  <i class="fa-solid fa-bars"></i>
+</div>
+
+<!-- Overlay for mobile when sidebar is open -->
+<div 
+  *ngIf="isMobile" 
+  class="sidebar-overlay" 
+  [class.active]="isMobileSidebarOpen" 
+  (click)="toggleMobileSidebar()"
+></div>

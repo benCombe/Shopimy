@@ -20,6 +20,7 @@ export class ProfileComponent implements OnInit {
 
   deliveryAddresses: DeliveryDetails[] = [];
   paymentMethods: any[] = [];
+  wishlists: any[] = [];
   deliveryForm!: FormGroup;
   showAddDelivery: boolean = false;
   showAddPayment: boolean = false;

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Server.Data;
+using System.Dynamic;
 using Shopimy.Server.Models;
 
 [ApiController]
@@ -28,15 +29,15 @@ public class CategoriesController : ControllerBase
         return Ok(categories);
     }
 
-/*     [HttpPost]
+    [HttpPost]
     public async Task<IActionResult> CreateCategory([FromBody] Category dto)
     {
         int storeId = GetCurrentStoreId();
         var createdCategory = await _categoryService.CreateCategoryAsync(storeId, dto);
         return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.CategoryId }, createdCategory);
-    } */
+    }
 
-    /* [HttpGet("{id}")]
+    [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetCategoryById(int id)
     {
@@ -45,7 +46,6 @@ public class CategoriesController : ControllerBase
         if (category == null) return NotFound();
         return Ok(category);
     }
- */
 
     //for main store page, returns array of random ids
     [HttpPost("GetItemIdsByStore")]

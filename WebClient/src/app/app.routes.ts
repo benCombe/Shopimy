@@ -9,12 +9,14 @@ import { ShoppingCartComponent } from './components/customer-layout/shopping-car
 import { CheckoutComponent } from './components/customer-layout/checkout/checkout.component';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { CategoryListComponent } from './components/category-list/category-list.component';
+import { CategoryFormComponent } from './components/category-form/category-form.component';
 import { ItemDetailComponent } from './components/item-detail/item-detail.component'; // Ensure this path is correct
 import { StorePageComponent } from './components/customer-layout/store-page/store-page.component';
 import { CategoryPageComponent } from './components/customer-layout/category-page/category-page.component';
 import { ItemPageComponent } from './components/customer-layout/item-page/item-page.component';
 import { SuccessComponent } from './components/SuccessComponent';
 import { CancelComponent } from './components/CancelComponent';
+import { OrdersComponent } from './components/store-owner-layout/orders/orders.component';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
@@ -24,9 +26,15 @@ export const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'profile', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: StoreOwnerDashboardComponent },
+  { path: 'dashboard/categories', component: CategoryListComponent },
+  { path: 'dashboard/categories/new', component: CategoryFormComponent },
+  { path: 'dashboard/categories/edit/:id', component: CategoryFormComponent },
+  { path: 'dashboard/orders', component: OrdersComponent },
   { path: 'items', component: ItemListComponent },
   { path: 'items/:id', component: ItemDetailComponent },
   { path: 'categories', component: CategoryListComponent},
+  { path: 'categories/new', component: CategoryFormComponent },
+  { path: 'categories/:id/edit', component: CategoryFormComponent },
   { path: 'success', component: SuccessComponent },
   { path: 'cancel', component: CancelComponent },
   

@@ -1,22 +1,287 @@
-#container{
+#container {
   display: flex;
-  top: 0;
-  width: 100vw;
-  height: auto;
-  overflow-y: auto;
-  color: white;
-  font-size: 48pt;
+  width: 100%;
+  min-height: 100vh;
   overflow-x: hidden;
+  background-color: var(--third-color);
+  font-family: var(--main-font-fam);
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
 }
 
-
-#main{
-  position:relative;
+#main {
   flex-grow: 1;
   width: 100%;
+  min-height: 100vh;
   background-color: var(--third-color);
+  transition: padding-left 0.3s ease;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  height: 100vh;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
 }
 
-.page{
-  padding: 15px;
+#main::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-height);
+}
+
+#main::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color);
+  border-radius: var(--scrollbar-border-radius);
+}
+
+#main::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: var(--scrollbar-border-radius);
+}
+
+.page {
+  padding: 30px;
+  max-width: 1600px;
+  margin: 0 auto;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Page section styling */
+.page-header {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  color: var(--main-color);
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.page-description {
+  color: var(--main-color);
+  opacity: 0.8;
+  font-size: 1rem;
+}
+
+/* Use standard card styling */
+.dashboard-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover,
+.dashboard-card:focus-within {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2 {
+  font-size: 1.3rem;
+  color: var(--main-color);
+  margin: 0;
+  font-weight: 600;
+}
+
+.card-content {
+  color: var(--main-color);
+}
+
+/* Grid layout for dashboard cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* Use standard button for scroll to top */
+.scroll-top-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--main-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 99;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+.scroll-top-button.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-top-button:hover,
+.scroll-top-button:focus {
+  background-color: var(--second-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Fixed sidebar layout adjustments */
+@media (min-width: 992px) {
+  #main {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+    height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 991px) {
+  #main {
+    margin-left: 240px; 
+    width: calc(100% - 240px);
+    height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .page {
+    padding: 24px;
+    max-width: 100%;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 991px) {
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .dashboard-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  #container {
+    overflow-y: auto;
+    height: auto;
+  }
+  
+  #main {
+    width: 100%;
+    margin-left: 0;
+    padding-top: 60px;
+    padding-left: 0;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .page {
+    padding: 16px;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .page-header h1 {
+    font-size: 1.6rem;
+  }
+  
+  .card-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .scroll-top-button {
+    bottom: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  #main {
+    padding-top: 50px;
+    height: auto;
+  }
+  
+  .page {
+    padding: 12px;
+  }
+  
+  .dashboard-card {
+    padding: 16px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-card,
+  .scroll-top-button,
+  .page {
+    transition: none;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* Print styles */
+@media print {
+  .scroll-top-button {
+    display: none;
+  }
+  
+  .dashboard-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+  
+  #main {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
 }

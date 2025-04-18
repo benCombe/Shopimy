@@ -52,6 +52,10 @@ export class TopNavComponent implements OnInit {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+  }
+
   logout() {
     this.userService.logout();
   }
@@ -76,14 +80,18 @@ export class TopNavComponent implements OnInit {
   // Close dropdown if the user clicks outside of it
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: Event) {
-    if (!(event.target as HTMLElement).closest('#dropdown')) {
+    const clickedElement = event.target as HTMLElement;
+
+    // Close Resources dropdown
+    if (!clickedElement.closest('#dropdown')) {
       this.isDropdownOpen = false;
     }
-    if (!(event.target as HTMLElement).closest('#hamburger')) {
-      this.isMobileMenuOpen = false;
-    }
-    if (!(event.target as HTMLElement).closest('#user-menu')) {
+
+    // Close User menu dropdown
+    if (!clickedElement.closest('#user-menu')) {
       this.isUserMenuOpen = false;
     }
+
+    // We don't need to handle mobile menu here since we have a dedicated overlay for it
   }
 }
