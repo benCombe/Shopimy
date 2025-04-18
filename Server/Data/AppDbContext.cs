@@ -27,6 +27,8 @@ namespace Server.Data
         public DbSet<StoreBanner> StoreBanners { get; set; }
         public DbSet<StoreLogo> StoreLogos { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         // Ensure table names match conventions  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -85,6 +87,8 @@ namespace Server.Data
             modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
             modelBuilder.Entity<TestItem>().ToTable("TestTable");
             modelBuilder.Entity<Review>().ToTable("Reviews");
+            modelBuilder.Entity<Order>().ToTable("Orders");
+            modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
         }
     }
 }

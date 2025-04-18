@@ -139,7 +139,8 @@ CREATE TABLE Orders (
     store_id INT NOT NULL,
     order_date DATETIME2 DEFAULT SYSUTCDATETIME(),
     total_amount DECIMAL(10,2) NOT NULL,
-    status NVARCHAR(20) NOT NULL DEFAULT 'Pending', -- 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'
+    status NVARCHAR(50) NOT NULL DEFAULT 'Pending', -- 'Pending', 'Paid', 'Failed', 'Processing', 'Shipped', 'Cancelled' (Increased size for status)
+    stripe_session_id NVARCHAR(255) NULL, -- Added Stripe Session ID
     shipping_address NVARCHAR(255) NULL,
     shipping_city NVARCHAR(100) NULL,
     shipping_state NVARCHAR(100) NULL,
@@ -154,9 +155,10 @@ CREATE TABLE Orders (
 CREATE TABLE OrderItems (
     order_item_id INT IDENTITY(1,1) PRIMARY KEY,
     order_id INT NOT NULL,
-    item_id INT NOT NULL,
+    item_id INT NOT NULL, -- Renamed from product_id if needed, matches OrderItem model
+    product_name NVARCHAR(255) NOT NULL, -- Added ProductName
     quantity INT NOT NULL,
-    price_paid DECIMAL(10,2) NOT NULL,
+    price_paid DECIMAL(10,2) NOT NULL, -- Renamed from unit_price if needed, matches OrderItem model
     FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
+    FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION -- Assuming item_id refers to Items table PK
 );

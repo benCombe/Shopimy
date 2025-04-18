@@ -61,8 +61,8 @@ This document tracks pending tasks, potential improvements, and areas needing at
 ### Payments (Stripe Integration)
 -   [x] 🔥 **Implement Order Creation Logic:** Create an order record in the database *before* creating the Stripe Checkout Session, including necessary details and a 'Pending' status. Pass the internal order ID in Stripe metadata. (`PaymentController`)
 -   [x] 🔥 **Implement Order Fulfillment Logic:** In the Stripe webhook handler (`checkout.session.completed`), use the session/metadata to find the internal order, update its status to 'Paid'/'Processing', decrease stock, and trigger confirmation emails/digital delivery. (`PaymentController`)
--   [ ] ⚠️ **Refine Payment Method Management:** Ensure the flow for adding, viewing, deleting, and setting default payment methods works seamlessly end-to-end. (`UserPaymentController`, `ProfileComponent` - Store Owner)
--   [ ] ⚠️ **Handle Payment Failures:** Implement robust handling for failed payments both in Stripe Checkout redirects and webhook events. Provide clear user feedback. (`PaymentController`, `CancelComponent`)
+-   [x] ⚠️ **Refine Payment Method Management:** Ensure the flow for adding, viewing, deleting, and setting default payment methods works seamlessly end-to-end. (`UserPaymentController`, `ProfileComponent` - Store Owner)
+-   [x] ⚠️ **Handle Payment Failures:** Implement robust handling for failed payments both in Stripe Checkout redirects and webhook events. Provide clear user feedback. (`PaymentController`, `CancelComponent`)
 -   [x] 🔥 **Update PaymentController to Accept Item List for Stripe Checkout:**
     -   **Description:** Modify `PaymentController.CreateCheckoutSession` and the `CheckoutSessionRequest` model to accept a list of items (`List<CheckoutItem>` with Id, Name, Price, Quantity) instead of a single amount/product name. The controller logic needs to iterate through the items and create corresponding `SessionLineItemOptions` for the Stripe Checkout Session, calculating the `UnitAmount` in cents.
     -   **Files:** `Server/Controllers/PaymentController.cs`
