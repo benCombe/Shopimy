@@ -22,27 +22,20 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] ⚠️ **Refine User Profile Update:** Ensure all relevant user fields can be updated securely via the profile page and backend. (`ProfileComponent` - Store Owner, `AccountController`)
 
 ### Store & Product Management (Seller)
--   [X] 🔥 **Implement Product Management UI:** Create forms and logic for adding, editing, and deleting products (`Listing`, `Items`) and variants, including image uploads. (`ProductManagementComponent`, `ItemController`, `ItemsController`)
+-   [X] 🔥 **Implement Full Product Management Lifecycle:** Refactored UI and backend logic for adding, editing (including variants and image URLs per variant), and deleting products. Implemented Draft/Publish functionality using `availFrom` date. (`ProductManagementComponent.ts`, `ItemService.ts`, `ItemController.cs`, `ImageController.cs`)
 -   [X] 🔥 **Implement Category Management UI:** Create forms and logic for adding, editing (including parent), and deleting categories. (`CategoryListComponent`, `CategoryFormComponent` - needs creation/integration, `CategoriesController`)
 -   [ ] ⚠️ **Implement Theme/Logo/Banner Saving:** Connect the frontend theme/logo/banner selectors to backend endpoints to persist customization changes. (`ThemesComponent`, `LogoSelectorComponent`, `StoreController` needs update endpoints)
 -   [ ] ⚠️ **Implement Store Component Visibility:** Allow sellers to toggle component visibility (e.g., featured products, testimonials) and persist this configuration. Reflect this visibility on the public store page. (`StoreEditorComponent`, `StorePageComponent`, needs backend storage)
 -   [X] 🔥 **Implement Order Management View:** Create UI for sellers to view incoming orders and their details. (`OrdersComponent`, `REQUIREMENTS.md FR4.2.4`, needs backend data source)
 -   [X] 🔥 **Connect Management Components to Live Backend (Backend & Services):**
-    -   **Status:** Backend API endpoints (`ItemController`, `CategoriesController`, `OrdersController`) and database tables (`Orders`, `OrderItems`) created/updated. Frontend services (`ItemService`, `CategoryService`, `OrderService`) updated to use API calls, removing mock data.
-    -   **Description:** Ensure `ProductManagementComponent`, `CategoryListComponent`, `CategoryFormComponent`, and `OrdersComponent` use real data from the backend API and database, replacing mock data.
-    -   **Backend:** Verify/Implement CRUD endpoints in `ItemController`/`ItemsController`, `CategoriesController`. Create `OrdersController`. Ensure DB interaction via `AppDbContext`.
-    -   **Database:** Check/Define `Orders` and `OrderItems` tables in `Database/TableCreation.sql`.
-    -   **Frontend Services:** Update `ItemService`, `CategoryService`, `OrderService` to use `HttpClient` for backend calls. Remove mock data from `OrderService`.
-    -   **Frontend Components:** Verify components correctly use updated services.
-    -   **Files:** `ProductManagementComponent.ts`, `CategoryListComponent.ts`, `CategoryFormComponent.ts`, `OrdersComponent.ts`, `ItemService.ts`, `CategoryService.ts`, `OrderService.ts`, `ItemController.cs`, `CategoriesController.cs`, `OrdersController.cs` (new), `AppDbContext.cs`, `TableCreation.sql`, `order.model.ts`.
-    -   **Depends on:** Backend API structure, Database Schema.
-    -   **Remaining:** Verify/update frontend components (`ProductManagementComponent`, `CategoryListComponent`, `CategoryFormComponent`, `OrdersComponent`) to fully utilize the updated services and handle async/error states correctly.
-    -   **Files Involved:** `ProductManagementComponent.ts`, `CategoryListComponent.ts`, `CategoryFormComponent.ts`, `OrdersComponent.ts`, `ItemService.ts`, `CategoryService.ts`, `OrderService.ts`, `ItemController.cs`, `CategoriesController.cs`, `OrdersController.cs`, `TableCreation.sql`, `order.model.ts`, `item.service.ts` interfaces.
-    -   **Depends on:** Completed backend and service implementation.
--   [ ] ⚠️ **Verify & Update Frontend Management Components:**
-    -   **Description:** Ensure `ProductManagementComponent`, `CategoryListComponent`, `CategoryFormComponent`, and `OrdersComponent` correctly consume the updated `ItemService`, `CategoryService`, and `OrderService`. Verify data mapping, update component logic (e.g., image handling in `ProductManagementComponent`), and ensure proper handling of loading states and errors.
-    -   **Files:** `ProductManagementComponent.ts`, `CategoryListComponent.ts`, `CategoryFormComponent.ts`, `OrdersComponent.ts`
-    -   **Depends on:** Completed 'Connect Management Components to Live Backend (Backend & Services)' task.
+    -   **Status:** Mostly complete. Backend APIs (`ItemController`, `CategoriesController`, `OrdersController`, `ImageController`), DB structure, and frontend services (`ItemService`, `CategoryService`, `OrderService`, `ImageService`) updated. `ProductManagementComponent` updated.
+    -   **Remaining:** Verify/update other management components (`CategoryListComponent`, `OrdersComponent`) if they were affected or need similar refactoring. Improve error handling/loading states across all components.
+-   [X] ⚠️ **Verify & Update Frontend Management Components:**
+    -   **Description:** `ProductManagementComponent` updated to handle variant-specific image uploads (via URLs), draft/publish using `availFrom`, and manage variant add/remove during edits. Logic for CRUD operations verified. `ItemService` interfaces updated.
+    -   **Files:** `ProductManagementComponent.ts`, `ProductManagementComponent.html`, `ItemService.ts`, `ImageController.cs`, `ItemController.cs`
+-   [ ] 🧊 **Refine Product Management CSS:** Update styles in `ProductManagementComponent.css` for new status badges and layout adjustments (e.g., variant image controls). (`ProductManagementComponent.css`)
+-   [ ] 🔥 **Test Product Management Lifecycle:** Conduct thorough manual and automated testing for adding (draft/publish), editing (variants, images, dates), and deleting products. (`ProductManagementComponent`, `ItemController`, `ImageController`)
+-   [ ] ⚠️ **Verify Customer Product View Filtering:** Ensure customer-facing views (store page, category pages) correctly filter out draft (`availFrom IS NULL`) and future-scheduled (`availFrom > GETDATE()`) products based on backend logic. (Requires checking relevant frontend components and potentially backend query adjustments).
 -   [x] 🔥 **Refactor Store Preview Component:** Modify `StorePreviewComponent` to dynamically render Angular components based on its `theme`, `selectedComponents`, and `storeData` inputs, instead of using a static iframe (`assets/preview.html`) and `postMessage`.
     -   **Description:** The current preview uses a static HTML file and relies on `postMessage` to update content. This should be replaced with direct Angular rendering for a more integrated and accurate preview.
     -   **Steps:**
@@ -91,7 +84,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
         8.  Integrate with the (currently commented out/incomplete) `IEmailService` to send a confirmation email.
     **Files:** `PaymentController.cs` or new `WebhookController.cs`, `Order.cs`, `OrderItem.cs`, `Item.cs` (or stock table), `IEmailService.cs` (needs completion).
     **Depends on:** Completed Email Service Implementation.
--   [ ] ⚠️ **Complete Payment Failure Handling (Webhook):**
+-   [x] ⚠️ **Complete Payment Failure Handling (Webhook):**
     -   **Description:** The backend **lacks a webhook endpoint** to receive failure events (e.g., `payment_intent.payment_failed`, `checkout.session.async_payment_failed`) from Stripe. While a `HandleFailedPayment` helper exists in `PaymentController`, it is never called. Robust order linkage for PaymentIntent-level failures might need verification.
     -   **Impact:** Payment failures occurring asynchronously or related to PaymentIntents might not update the internal order status correctly, leaving orders 'Pending' or without clear failure tracking.
     -   **Action:**
@@ -128,9 +121,9 @@ This document tracks pending tasks, potential improvements, and areas needing at
 
 ## ✅ Testing
 
--   [ ] 🔥 **Increase Unit Test Coverage:** Add more unit tests for services, controllers, and components, focusing on critical logic (auth, payments, cart).
--   [ ] ⚠️ **Implement Integration Tests:** Add integration tests for API endpoints, especially those involving database interactions or external services (Stripe - potentially mocked).
--   [ ] ⚠️ **Set up End-to-End (E2E) Tests:** Implement E2E tests for key user flows (registration, login, adding to cart, checkout).
+-   [ ] 🔥 **Increase Unit Test Coverage:** Add more unit tests for services, controllers, and components, focusing on critical logic (auth, payments, cart, **products**).
+-   [ ] ⚠️ **Implement Integration Tests:** Add integration tests for API endpoints, especially those involving database interactions or external services (Stripe - potentially mocked, **Images**).
+-   [ ] ⚠️ **Set up End-to-End (E2E) Tests:** Implement E2E tests for key user flows (registration, login, adding to cart, checkout, **product management**).
 -   [ ] 🔥 **Fix Existing Test Issues:** Address commented-out tests or failing tests in `Server/Tests/`. Ensure tests run correctly in the pipeline.
 
 ## 📚 Documentation
@@ -149,7 +142,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
 
 ## ✨ UI/UX Improvements
 
--   [ ] ⚠️ **Implement Loading States:** Ensure appropriate loading indicators (`LoadingOneComponent` or similar) are used during data fetching or processing across the application.
+-   [ ] ⚠️ **Implement Loading States:** Ensure appropriate loading indicators (`LoadingOneComponent` or similar) are used during data fetching or processing across the application (Review Product Management component loading states).
 -   [ ] 🧊 **Refine UI based on Figma:** Conduct a review against the Figma designs and implement necessary adjustments for visual consistency and usability.
 -   [ ] 🧊 **Improve Mobile Responsiveness:** Test thoroughly on various mobile devices and refine styles where needed.
 -   [x] ⚠️ **Standardize Dashboard Component Styles:**

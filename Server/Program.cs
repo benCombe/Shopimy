@@ -94,6 +94,8 @@ var app = builder.Build();
 // Apply the CORS policy
 app.UseCors("AllowAngularApp");
 
+app.UseStaticFiles(); // Add this line to serve static files from wwwroot
+
 app.Use(async (context, next) =>
 {
     Console.WriteLine($"Request: {context.Request.Method} {context.Request.Path}");
