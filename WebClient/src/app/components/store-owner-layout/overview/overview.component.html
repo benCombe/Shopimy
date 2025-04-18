@@ -1,62 +1,86 @@
-<div id="main">
+<div class="overview-container">
+  <div class="page-header">
+    <h1>Dashboard Overview</h1>
+    <p class="page-description">Welcome to your store dashboard. Here's a quick summary of your store's performance.</p>
+  </div>
 
-    <div class ="title">
-        <h2>Quick Analytics</h2>
-
+  <div class="dashboard-grid">
+    <!-- Recent Purchases Card -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Recent Purchases</h2>
+      </div>
+      <div class="card-content">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Amounts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Product 1</td>
+              <td>5</td>
+            </tr>
+            <tr>
+              <td>Product 2</td>
+              <td>3</td>
+            </tr>
+            <tr>
+              <td>Product 3</td>
+              <td>2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="section">
-        
-        <div id="analytic-info">
-            <h3>Recent Purchase</h3>
-            <div id = "analytic-list-wrapper">
-                <table id ="analytic-list">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Amounts</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Product 1</td>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <td>Product 2</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>Product 3</td>
-                            <td>2</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <!-- Store Visits Card -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Visits to Store</h2>
+      </div>
+      <div class="card-content">
+        <div class="graph-container">
+          <img class="analytics-img" src="resources/images/tempGraph.jpg" alt="Store Visits Graph">
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Quick Links Section -->
+  <div class="quick-links-section">
+    <div class="section-header">
+      <h2>Quick Links</h2>
+      <p class="section-description">Quick access to common store management tasks</p>
     </div>
-    
-    <div id="analytic-graph">
-        <h3>Visists to Store</h3>
-        <img class= "analytics-img" src="resources/images/tempGraph.jpg">
+    <div class="quick-links-grid">
+      <a class="quick-link-card" (click)="navigateTo('Store Editor')">
+        <div class="icon-container">
+          <i class="fa-solid fa-pencil"></i>
+        </div>
+        <span>Edit Store</span>
+      </a>
+      <a class="quick-link-card" (click)="navigateTo('Products')">
+        <div class="icon-container">
+          <i class="fa-solid fa-box"></i>
+        </div>
+        <span>Add Product</span>
+      </a>
+      <a class="quick-link-card" (click)="navigateTo('Promotions')">
+        <div class="icon-container">
+          <i class="fa-solid fa-tag"></i>
+        </div>
+        <span>Add Promotion</span>
+      </a>
+      <a class="quick-link-card" (click)="navigateTo('Settings')">
+        <div class="icon-container">
+          <i class="fa-solid fa-gear"></i>
+        </div>
+        <span>Store Settings</span>
+      </a>
     </div>
-    </div>
-    
-<div class="QuickLinks">
-    <h2>Quick Links</h2>
-    <button>
-        Edit Store
-    </button>
-    <button>
-        Add Product
-    </button>
-    <button>
-        Add Promotion
-    </button>
-    <button>
-        Store Settings
-    </button>
-</div>
-
+  </div>
 </div>
 

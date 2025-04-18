@@ -25,6 +25,9 @@ export class CheckoutComponent implements AfterViewInit{
     private fb: FormBuilder,
     private paymentService: PaymentService,
     private shopService: ShoppingService
+    private themeService: ThemeService,
+    private paymentService: PaymentService,
+    private shoppingService: ShoppingService
   ) {
     this.shippingForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -52,15 +55,29 @@ export class CheckoutComponent implements AfterViewInit{
 
       const amount = 50.00; // Example amount - REPLACE with cartTotal
       const productName = `Order for ${this.storeDetails.name}`; // Example product name - REPLACE with cartItemsDescription or similar
+    if (!this.storeDetails || !this.storeDetails.name) {
+      console.error('Store details are missing or invalid.');
+      alert('Cannot proceed to payment: Store information is missing.');
+      return;
+    }
 
-      // Ensure amount is valid
-      if (amount <= 0) {
-        console.error('Invalid order amount.');
-        alert('Cannot proceed to payment with an empty cart or invalid amount.');
-        return;
-      }
+    // Get the current subtotal from ShoppingService
+    let subtotal = 0;
+    this.shoppingService.SubTotal$.subscribe(value => {
+      subtotal = value;
+    }).unsubscribe();
 
-      this.paymentService.createCheckoutSession(amount, productName, this.storeDetails.id.toString())
+    // Check if cart is empty or subtotal is invalid
+    if (subtotal <= 0) {
+      console.error('Cart is empty or subtotal is invalid:', subtotal);
+      alert('Cannot proceed to payment with an empty cart.');
+      return;
+    }
+
+    if (this.shippingForm.valid) {
+      const productName = `Order from ${this.storeDetails.name}`;
+
+      this.paymentService.createCheckoutSession(subtotal, productName, this.storeDetails.id.toString())
         .subscribe({
           next: (response) => {
             window.location.href = response.sessionUrl;
@@ -72,7 +89,7 @@ export class CheckoutComponent implements AfterViewInit{
         });
     } else {
       this.shippingForm.markAllAsTouched();
-      console.error('Shipping form is invalid or store details are missing.');
+      console.error('Shipping form is invalid.');
     }
   }
 

@@ -30,16 +30,19 @@
 
     <!-- Hamburger Menu Button -->
     <div id="hamburger" (click)="toggleMobileMenu()" *ngIf="isMobile">
-      <i class="fa-solid fa-bars"></i>
+      <i class="fa-solid" [ngClass]="{'fa-bars': !isMobileMenuOpen, 'fa-xmark': isMobileMenuOpen}"></i>
     </div>
 
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
+
     <!-- Mobile Menu Dropdown -->
-    <div *ngIf="isMobileMenuOpen && isMobile" id="mobile-menu">
+    <div id="mobile-menu" [class.show-mobile-menu]="isMobileMenuOpen">
+      <div class="mobile-menu-header">Resources</div>
       <ul>
-        <li *ngFor="let option of options" class="opt">{{ option.label }}</li>
-        <li *ngIf="isLoggedIn" class="opt" routerLink="/profile">Profile</li>
-        <li *ngIf="isLoggedIn" class="opt" (click)="logout()">Logout</li>
-        <li *ngIf="!isLoggedIn" class="opt" routerLink="/login">Log In</li>
+        <li *ngFor="let option of options" class="opt" [routerLink]="option.link" (click)="closeMobileMenu()">
+          {{ option.label }}
+        </li>
       </ul>
     </div>
 

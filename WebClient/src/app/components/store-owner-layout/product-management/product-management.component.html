@@ -1,91 +1,244 @@
-
 <div id="main">
     <div class="section">
-        <div id="Product-info">
-            <h3>Inventory</h3>
-            <div id = "Product-list-wrapper">
-                <table id ="Product-list">
+        <div class="section-header">
+            <h2>Product Management</h2>
+            <p class="section-description">Manage your products and inventory</p>
+            <button class="standard-button" (click)="showAddProductForm()" aria-label="Add new product">+ Add New Product</button>
+        </div>
+
+        <!-- Product Form (Add/Edit) -->
+        <div class="product-form-container" *ngIf="isEditMode || currentProductId === null && productForm.dirty">
+            <h3>{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h3>
+            <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+                <!-- Basic Product Info -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Product Name *</label>
+                        <input 
+                            id="name" 
+                            type="text" 
+                            formControlName="name" 
+                            placeholder="Enter product name"
+                            [class.error]="productForm.get('name')?.invalid && productForm.get('name')?.touched"
+                            aria-required="true">
+                        <div class="error-message" *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+                            Product name is required
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="categoryId">Category *</label>
+                        <select 
+                            id="categoryId" 
+                            formControlName="categoryId"
+                            [class.error]="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched"
+                            aria-required="true">
+                            <option value="">Select a category</option>
+                            <option *ngFor="let category of categories" [value]="category.categoryId">
+                                {{ category.name }}
+                            </option>
+                        </select>
+                        <div class="error-message" *ngIf="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched">
+                            Category is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea 
+                        id="description" 
+                        formControlName="description" 
+                        rows="4" 
+                        placeholder="Enter product description"
+                        [class.error]="productForm.get('description')?.invalid && productForm.get('description')?.touched">
+                    </textarea>
+                    <div class="error-message" *ngIf="productForm.get('description')?.invalid && productForm.get('description')?.touched">
+                        Description too long (max 1000 characters)
+                    </div>
+                </div>
+                
+                <!-- Product Image Section -->
+                <div class="image-section">
+                    <label>Product Image</label>
+                    
+                    <div class="image-upload-container">
+                        <div class="image-preview-container" *ngIf="imagePreview; else noImage">
+                            <img [src]="imagePreview" alt="Product preview" class="image-preview">
+                            <button type="button" class="remove-image-btn" (click)="removeSelectedImage()" aria-label="Remove image">✕</button>
+                        </div>
+                        
+                        <ng-template #noImage>
+                            <div class="no-image-placeholder">
+                                <i class="fa fa-image"></i>
+                                <span>No image selected</span>
+                            </div>
+                        </ng-template>
+                        
+                        <div class="upload-controls">
+                            <input 
+                                type="file" 
+                                id="product-image" 
+                                accept="image/*" 
+                                (change)="onFileSelected($event)" 
+                                style="display: none"
+                                aria-label="Upload product image">
+                            <button 
+                                type="button" 
+                                class="standard-button small" 
+                                (click)="openFileInput()">
+                                {{ imagePreview ? 'Change Image' : 'Upload Image' }}
+                            </button>
+                            <small class="image-hint">Recommended size: 800x600px, max 2MB</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden field to store the image URL -->
+                    <input type="hidden" formControlName="imageUrl">
+                </div>
+
+                <!-- Variants Section -->
+                <div class="variants-section">
+                    <div class="section-header">
+                        <h4>Product Variants</h4>
+                        <button type="button" class="standard-button small" (click)="addVariant()" aria-label="Add variant">+ Add Variant</button>
+                    </div>
+
+                    <div formArrayName="variants">
+                        <div class="variant-container" *ngFor="let variant of variants.controls; let i = index">
+                            <div [formGroupName]="i" class="variant-form">
+                                <div class="variant-header">
+                                    <h5>Variant #{{ i + 1 }}</h5>
+                                    <button type="button" class="remove-variant" (click)="removeVariant(i)" *ngIf="variants.length > 1" aria-label="Remove variant">✕</button>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="price-{{i}}">Price *</label>
+                                        <input 
+                                            id="price-{{i}}" 
+                                            type="number" 
+                                            formControlName="price" 
+                                            placeholder="0.00"
+                                            min="0"
+                                            step="0.01"
+                                            [class.error]="variant.get('price')?.invalid && variant.get('price')?.touched"
+                                            aria-required="true">
+                                        <div class="error-message" *ngIf="variant.get('price')?.invalid && variant.get('price')?.touched">
+                                            Valid price is required
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="salePrice-{{i}}">Sale Price</label>
+                                        <input 
+                                            id="salePrice-{{i}}" 
+                                            type="number" 
+                                            formControlName="salePrice" 
+                                            placeholder="Optional"
+                                            min="0"
+                                            step="0.01"
+                                            [class.error]="variant.get('salePrice')?.invalid && variant.get('salePrice')?.touched">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="quantity-{{i}}">Quantity *</label>
+                                        <input 
+                                            id="quantity-{{i}}" 
+                                            type="number" 
+                                            formControlName="quantity" 
+                                            placeholder="0"
+                                            min="0"
+                                            step="1"
+                                            [class.error]="variant.get('quantity')?.invalid && variant.get('quantity')?.touched"
+                                            aria-required="true">
+                                        <div class="error-message" *ngIf="variant.get('quantity')?.invalid && variant.get('quantity')?.touched">
+                                            Valid quantity is required
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="type-{{i}}">Type</label>
+                                        <input id="type-{{i}}" type="text" formControlName="type" placeholder="Optional">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="size-{{i}}">Size</label>
+                                        <input id="size-{{i}}" type="text" formControlName="size" placeholder="Optional">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="color-{{i}}">Color</label>
+                                        <input id="color-{{i}}" type="text" formControlName="color" placeholder="Optional">
+                                    </div>
+                                </div>
+                                
+                                <!-- Hidden field for variant ID (for existing variants) -->
+                                <input type="hidden" formControlName="id">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="standard-button secondary" (click)="cancelEdit()" [disabled]="isSaving">Cancel</button>
+                    <button type="submit" class="standard-button primary" [disabled]="productForm.invalid || isSaving">
+                        <span *ngIf="!isSaving">Save Product</span>
+                        <span *ngIf="isSaving" class="saving-indicator">
+                            <div class="spinner-small"></div> Saving...
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Product List -->
+        <div class="product-list-container" *ngIf="!isLoading">
+            <h3>Your Products</h3>
+            <div class="table-container">
+                <table class="standard-table">
                     <thead>
                         <tr>
-                            <th>Item</th>
-                            <th>Available</th>
-                            <th>On Order:</th>
-                            <th>Catagory</th>
+                            <th>Image</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Price Range</th>
+                            <th>Total Stock</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Product 1</td>
-                            <td>50</td>
-                            <td>5</td>
-                            <td>Digital</td>
+                        <tr *ngIf="products.length === 0">
+                            <td colspan="6" class="no-products">No products available. Add your first product!</td>
                         </tr>
-                        <tr>
-                            <td>Product 2</td>
-                            <td>56</td>
-                            <td>7</td>
-                            <td>Digital</td>
-                        </tr>
-                        <tr>
-                            <td>Product 3</td>
-                            <td>41</td>
-                            <td>11</td>
-                            <td>Digital</td>
-                        </tr>
-                        <tr>
-                            <td>Product 4</td>
-                            <td>32</td>
-                            <td>5</td>
-                            <td>Knit Kit</td>
-                        </tr>
-                        <tr>
-                            <td>Product 5</td>
-                            <td>21</td>
-                            <td>5</td>
-                            <td>Clothing</td>
+                        <tr *ngFor="let product of products">
+                            <td class="product-image-cell">
+                                <img 
+                                    [src]="product.imageUrl || 'assets/images/default.png'" 
+                                    alt="Product thumbnail"
+                                    class="product-thumbnail">
+                            </td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ getCategoryName(product.categoryId) }}</td>
+                            <td>{{ getPriceRange(product) }}</td>
+                            <td>{{ getTotalStock(product) }}</td>
+                            <td class="actions-cell">
+                                <button class="standard-button small" (click)="editProduct(product)" aria-label="Edit product">Edit</button>
+                                <button class="standard-button small" (click)="deleteProduct(product.listId!)" aria-label="Delete product">Delete</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>    
         </div>
-        <button>Restock</button>
-
-        <div id="Product-info">
-            <h3>Catagories</h3>
-            <div id = "Product-list-wrapper">
-                <table id ="Product-list">
-                    <thead>
-                        <tr>
-                            <th>Catagory</th>
-                            <th>Total Items</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Digital</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>Knit Kit</td>
-                            <td>12</td>
-                        </tr>
-                        <tr>
-                            <td>Physical Sweater</td>
-                            <td>6</td>
-                        </tr>
-                        <tr>
-                            <td>Acessories</td>
-                            <td>7</td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div>    
+        
+        <!-- Loading Indicator -->
+        <div class="loading-container" *ngIf="isLoading">
+            <div class="loading-spinner" aria-hidden="true"></div>
+            <p>Loading products...</p>
         </div>
-        <button>Add New Catagory</button>
-
-
     </div>
-    
 </div>
 

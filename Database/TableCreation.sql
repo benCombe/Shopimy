@@ -132,6 +132,7 @@ create table ItemImages(
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
 
+
 CREATE TABLE OrderLog (
 	order_id INT IDENTITY(1,1) PRIMARY KEY,
 	store_id INT,
@@ -151,4 +152,30 @@ CREATE TABLE OrderItems (
 	FOREIGN KEY (order_id) REFERENCES OrderLog(order_id), 
 	FOREIGN KEY (item_id) REFERENCES Items(item_id),
 	PRIMARY KEY (order_id, item_id)
+
+CREATE TABLE Orders (
+    order_id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    store_id INT NOT NULL,
+    order_date DATETIME2 DEFAULT SYSUTCDATETIME(),
+    total_amount DECIMAL(10,2) NOT NULL,
+    status NVARCHAR(20) NOT NULL DEFAULT 'Pending', -- 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'
+    shipping_address NVARCHAR(255) NULL,
+    shipping_city NVARCHAR(100) NULL,
+    shipping_state NVARCHAR(100) NULL,
+    shipping_postal_code NVARCHAR(20) NULL,
+    shipping_country NVARCHAR(100) NULL,
+    payment_method NVARCHAR(50) NULL,
+    payment_transaction_id NVARCHAR(100) NULL,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION,
+    FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE NO ACTION
+);
+
+CREATE TABLE OrderItems (
+    order_item_id INT IDENTITY(1,1) PRIMARY KEY,
+    order_id INT NOT NULL,
+    item_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price_paid DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
 );

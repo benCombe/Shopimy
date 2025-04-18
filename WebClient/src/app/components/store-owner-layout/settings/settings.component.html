@@ -1,6 +1,5 @@
 <div id="main">
 
-
   <div class="section">
     <fieldset>
       <legend>Payment Info</legend>
@@ -14,8 +13,12 @@
       <input type="text" id="Phone" name="Phone" placeholder="Phone"><br><br>
       <label for="birthday"><h2>Birthday</h2></label>
       <input type="date" id="birthday" name="birthday"><br><br>
-      <input type="submit" value="Submit" width="50px">
-
+      <!-- <input type="submit" value="Submit" width="50px"> -->
     </fieldset>
   </div>
+
+  <div class="section save-section">
+    <button class="save-btn" (click)="saveSettings()">Save Settings</button>
+  </div>
+
 </div>
