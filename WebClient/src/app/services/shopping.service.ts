@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { UserService } from './user.service';
 /* This service will handle purchasing tasks */
 
@@ -7,6 +7,7 @@ import { BasicItem } from '../models/basic-item';
 import { User } from '../models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { CheckoutItem } from '../models/checkout-item.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,7 @@ export class ShoppingService {
         this.storeToDB = true;
       } else {
         this.loadGuestCart();
+        this.storeToDB = false; // Ensure storeToDB is false for guest
       }
     });
   }
@@ -51,7 +53,7 @@ export class ShoppingService {
 
   private updateTotal(): void {
     const cart = this.CartSubject.getValue();
-    const total = parseFloat(cart.reduce((sum, item) => sum + Math.min(item.price, item.salePrice), 0).toFixed(2));
+    const total = parseFloat(cart.reduce((sum, item) => sum + (item.salePrice > 0 ? item.salePrice : item.price), 0).toFixed(2));
     this.SubTotalSubject.next(total);
   }
 
@@ -77,6 +79,32 @@ export class ShoppingService {
     } else {
       this.saveGuestCart();
     }
+  }
+
+  // New method to get cart items grouped by item ID with quantities
+  getGroupedCartItems(): CheckoutItem[] {
+    const cart = this.CartSubject.getValue();
+    const groupedItems: { [key: number]: CheckoutItem } = {};
+
+    cart.forEach(item => {
+      // Use listId as the unique key for cart items (could be product or variant ID)
+      const key = item.listId; 
+      // Determine the price to use (sale price if available and > 0, otherwise regular price)
+      const price = item.salePrice > 0 ? item.salePrice : item.price;
+
+      if (groupedItems[key]) {
+        groupedItems[key].quantity += 1;
+      } else {
+        groupedItems[key] = {
+          id: key, // Use listId as the ID sent to backend
+          name: item.name,
+          price: price, // Use the determined price
+          quantity: 1
+        };
+      }
+    });
+
+    return Object.values(groupedItems);
   }
 
   //syncs cart with database

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PaymentDetails } from '../models/payment-details';
 import { environment } from '../../environments/environment';
+import { CheckoutItem } from '../models/checkout-item.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +27,11 @@ export class PaymentService {
     return this.http.post<{ clientSecret: string }>(`${this.userPaymentUrl}/create-setup-intent`, {});
   }
 
-  createCheckoutSession(amount: number, productName: string, storeId?: string): Observable<{ sessionUrl: string }> {
-    return this.http.post<{ sessionUrl: string }>(`${this.apiUrl}/create-checkout-session`, { amount, productName, storeId });
+  // Updated method to accept items list and storeUrl
+  createCheckoutSession(items: CheckoutItem[], storeUrl: string, storeId: number): Observable<{ sessionId: string, sessionUrl: string }> {
+    // Payload structure matches Backend CheckoutSessionRequest
+    const payload = { items, storeUrl, storeId }; 
+    return this.http.post<{ sessionId: string, sessionUrl: string }>(`${this.apiUrl}/create-checkout-session`, payload);
   }
   
   // Remove old savePaymentInformation

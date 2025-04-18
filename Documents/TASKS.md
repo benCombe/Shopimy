@@ -68,6 +68,25 @@ This document tracks pending tasks, potential improvements, and areas needing at
     -   **Files:** `Server/Controllers/PaymentController.cs`
     -   **Depends On:** N/A (Backend change only)
     -   **Context:** Prepares the backend to receive detailed cart information for more accurate Stripe Checkout sessions and order creation. Frontend changes to send this data will follow.
+-   [x] 🔥 **Fix Checkout Payload Mismatch:**
+    -   **Description:** `CheckoutComponent` sends `subtotal`/`productName`/`storeId` to `PaymentService.createCheckoutSession`, but the service signature and backend (`PaymentController`) expect `List<CheckoutItem>` and `StoreUrl`.
+    -   **Impact:** Checkout fails due to incorrect payload structure. Backend returns BadRequest.
+    -   **Action:** Refactor `CheckoutComponent` to get detailed cart items (from `ShoppingService`) and `storeUrl`. Format payload as `List<CheckoutItem>` and `StoreUrl`. Update `PaymentService.createCheckoutSession` signature accordingly.
+    -   **Files:** `CheckoutComponent.ts`, `PaymentService.ts`, `PaymentController.cs`, `ShoppingService.ts` (verify interface)
+-   [ ] 🔥 **Implement Missing Order Fulfillment Steps (Webhook):**
+    -   **Description:** The `PaymentController.Webhook` handler for `checkout.session.completed` is missing logic to decrease stock and send confirmation emails.
+    -   **Impact:** Inventory is inaccurate, and customers don't receive confirmation emails, violating requirements FR4.5.3, FR4.8.1.
+    -   **Action:** Implement stock update logic (using `OrderItems`) and integrate with the email service (see `EMAIL_MANAGEMENT.md`) within the webhook handler.
+    -   **Files:** `PaymentController.cs`, relevant Stock/Email services.
+-   [ ] ⚠️ **Complete Payment Failure Handling (Webhook):**
+    -   **Description:** Handling for `payment_intent.payment_failed` may lack robust order linkage. The `HandleFailedPayment` helper needs review/completion.
+    -   **Impact:** PaymentIntent-level failures might leave orders in 'Pending' or without clear failure tracking.
+    -   **Action:** Investigate `PaymentIntent` <-> `Order` linking if needed. Review/complete `HandleFailedPayment` logic. Consider updating order status to 'Failed' on relevant events.
+    -   **Files:** `PaymentController.cs`
+-   [ ] ⚠️ **Verify Frontend Cart Data Availability:**
+    -   **Description:** Need to confirm `ShoppingService` can provide the detailed cart item list (`List<{ id, name, price, quantity }>`) required for the corrected `createCheckoutSession` payload.
+    -   **Action:** Verify or update `ShoppingService` to expose the necessary cart data structure.
+    -   **Files:** `ShoppingService.ts`
 
 ### Reviews & Ratings
 -   [ ] ⚠️ **Implement Review Submission:** Create backend endpoint and frontend UI for authenticated users to submit ratings and comments for products they've purchased. (`ReviewsController`, `ItemPageComponent` or similar)
