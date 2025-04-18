@@ -1,3 +1,4 @@
+import { ShoppingCartComponent } from './../shopping-cart/shopping-cart.component';
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import { ThemeService } from '../../../services/theme.service';
@@ -22,6 +23,8 @@ export class CheckoutComponent implements AfterViewInit{
 
   constructor(
     private fb: FormBuilder,
+    private paymentService: PaymentService,
+    private shopService: ShoppingService
     private themeService: ThemeService,
     private paymentService: PaymentService,
     private shoppingService: ShoppingService
@@ -40,14 +43,18 @@ export class CheckoutComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    /* this.themeService.setThemeOne("theme1");
-    this.themeService.setThemeTwo("theme2");
-    this.themeService.setThemeThree("theme3");
-    this.themeService.setFontColor("fc");
-    this.themeService.setButtonHoverColor("hover"); */
+
   }
 
   proceedToPayment() {
+    if (this.shippingForm.valid && this.storeDetails) {
+      // TODO: Replace placeholders with actual order details from your cart/order service
+      // Example: Inject a CartService and get items/total
+      // const cartTotal = this.cartService.getTotal(); // Get total amount
+      // const cartItemsDescription = this.cartService.getItemsDescription(); // Get a description (e.g., "Order #12345" or summary)
+
+      const amount = 50.00; // Example amount - REPLACE with cartTotal
+      const productName = `Order for ${this.storeDetails.name}`; // Example product name - REPLACE with cartItemsDescription or similar
     if (!this.storeDetails || !this.storeDetails.name) {
       console.error('Store details are missing or invalid.');
       alert('Cannot proceed to payment: Store information is missing.');
@@ -85,4 +92,24 @@ export class CheckoutComponent implements AfterViewInit{
       console.error('Shipping form is invalid.');
     }
   }
+
+  placeOrder(){
+    const email = this.shippingForm.get('email')?.value;
+    const deliveryAddress = this.shippingForm.get("firstName")?.value
+                   + " " + this.shippingForm.get('lastName')?.value
+                   + ", " + this.shippingForm.get('address')?.value
+                   + ", " + this.shippingForm.get('city')?.value
+                   + ", " + this.shippingForm.get('province')?.value
+                   + ", " + this.shippingForm.get('country')?.value
+                   + ", " + this.shippingForm.get('postalCode')?.value;
+
+    this.shopService.placeOrder(email, deliveryAddress).subscribe({
+      next: (orderId) => {
+
+        console.log("Order placed successfully, Order ID:", orderId);
+
+      }
+    });
+  }
+
 }

@@ -12,7 +12,6 @@ CREATE TABLE Users (
     subscribed BIT NOT NULL DEFAULT 0
 );
 
-
 CREATE TABLE ActiveUsers (
     user_id INT NOT NULL,
     login_date DATETIME2 DEFAULT SYSUTCDATETIME(),
@@ -133,6 +132,27 @@ create table ItemImages(
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
 
+
+CREATE TABLE OrderLog (
+	order_id INT IDENTITY(1,1) PRIMARY KEY,
+	store_id INT,
+	purchaser_id INT,
+	purchaser_email NVARCHAR(100) NOT NULL,
+	delivery_address NVARCHAR(255) NOT NULL,
+	stripe_token NVARCHAR(255),
+	order_date DATETIME NOT NULL,
+	order_status NVARCHAR(50),
+	FOREIGN KEY (store_id) REFERENCES Stores(store_id)
+);
+
+CREATE TABLE OrderItems (
+	order_id INT,
+	item_id INT,
+	quantity INT,
+	FOREIGN KEY (order_id) REFERENCES OrderLog(order_id), 
+	FOREIGN KEY (item_id) REFERENCES Items(item_id),
+	PRIMARY KEY (order_id, item_id)
+
 CREATE TABLE Orders (
     order_id INT IDENTITY(1,1) PRIMARY KEY,
     user_id INT NOT NULL,
@@ -158,5 +178,4 @@ CREATE TABLE OrderItems (
     quantity INT NOT NULL,
     price_paid DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );

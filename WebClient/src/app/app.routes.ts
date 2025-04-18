@@ -16,6 +16,7 @@ import { CategoryPageComponent } from './components/customer-layout/category-pag
 import { ItemPageComponent } from './components/customer-layout/item-page/item-page.component';
 import { SuccessComponent } from './components/SuccessComponent';
 import { CancelComponent } from './components/CancelComponent';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { OrdersComponent } from './components/store-owner-layout/orders/orders.component';
 
 export const appRoutes: Routes = [
@@ -26,6 +27,7 @@ export const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'profile', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: StoreOwnerDashboardComponent },
+  { path: '404', component: PageNotFoundComponent },
   { path: 'dashboard/categories', component: CategoryListComponent },
   { path: 'dashboard/categories/new', component: CategoryFormComponent },
   { path: 'dashboard/categories/edit/:id', component: CategoryFormComponent },
@@ -37,7 +39,7 @@ export const appRoutes: Routes = [
   { path: 'categories/:id/edit', component: CategoryFormComponent },
   { path: 'success', component: SuccessComponent },
   { path: 'cancel', component: CancelComponent },
-  
+
   {
     path: ':storeUrl',
     component: StorePageComponent,
