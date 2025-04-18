@@ -85,7 +85,12 @@
   <!-- END Replace Payment Methods -->
 
   <div id="purchase-history" class="section" role="region" aria-labelledby="purchase-history-heading">
-    <h2 id="purchase-history-heading">Purchase History</h2> <!-- TODO Dynamic Information -->
+    <div class="header-actions">
+      <h2 id="purchase-history-heading">
+        <i class="fa-solid fa-history" aria-hidden="true"></i>
+        Purchase History
+      </h2>
+    </div>
     <div id="ph-list-wrapper" class="table-responsive">
       <table id="ph-list">
         <thead>
@@ -131,9 +136,22 @@
       </table>
       <!-- Scroll indicator -->
       <div class="scroll-indicator">
-        <i class="fa-solid fa-arrows-left-right"></i>
+        <i class="fa-solid fa-arrows-left-right" aria-hidden="true"></i>
       </div>
     </div>
+    
+    <!-- Pagination placeholder for when API is connected -->
+    <!-- <div class="pagination-controls" *ngIf="purchases && purchases.length > 0 && totalPages > 1">
+      <button [disabled]="currentPage === 1" (click)="previousPage()">
+        <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        Previous
+      </button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button [disabled]="currentPage === totalPages" (click)="nextPage()">
+        Next
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div> -->
   </div>
 
   <!-- START Add Delivery Addresses -->
@@ -227,20 +245,47 @@
   <!-- END Add Delivery Addresses -->
 
   <div id="wishlists" class="section" role="region" aria-labelledby="wishlists-heading">
-    <h2 id="wishlists-heading">Wish Lists</h2>
-    <div *ngIf="wishlists && wishlists.length === 0" class="empty-state" role="status">
-      <i class="fa-solid fa-heart" aria-hidden="true"></i>
+    <div class="header-actions">
+      <h2 id="wishlists-heading">
+        <i class="fa-solid fa-heart" aria-hidden="true"></i>
+        Wish Lists
+      </h2>
+      <button *ngIf="wishlists && wishlists.length > 0" class="add-button" aria-label="Create new wish list">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i> Create New List
+      </button>
+    </div>
+    
+    <div *ngIf="wishlists && wishlists.length === 0" class="wishlist-container empty-state" role="status">
+      <div class="wishlist-icon">
+        <i class="fa-solid fa-heart" aria-hidden="true"></i>
+      </div>
       <p>You don't have any wish lists yet.</p>
       <p class="suggestion">Create a list to save your favorite products.</p>
-      <button class="add-button" style="margin-top: 16px;" aria-label="Create new wish list">
+      <button class="create-wishlist-btn" aria-label="Create new wish list">
         <i class="fa-solid fa-plus" aria-hidden="true"></i> Create Wish List
       </button>
     </div>
-    <div *ngIf="wishlists && wishlists.length > 0" id="lists" class="center-col" role="list">
-      <div *ngFor="let list of wishlists" class="wl-item center-spaced" role="listitem">
-        <label>{{ list.name }}</label>
-        <div class="wl-options">
-          <button class="wl-delete" [attr.aria-label]="'Delete ' + list.name + ' wish list'">
+    
+    <div *ngIf="wishlists && wishlists.length > 0" class="wishlist-grid" role="list">
+      <div *ngFor="let list of wishlists" class="wishlist-card" role="listitem">
+        <div class="wishlist-header">
+          <h3 class="wishlist-name">{{ list.name }}</h3>
+          <span class="wishlist-count">{{ list.items?.length || 0 }} items</span>
+        </div>
+        
+        <div class="wishlist-preview" *ngIf="list.items && list.items.length > 0">
+          <!-- Preview of items in wishlist -->
+          <div class="preview-items">
+            <img *ngFor="let item of list.items.slice(0, 3)" [src]="item.image" [alt]="item.name" class="preview-item-image">
+            <div *ngIf="list.items.length > 3" class="more-items">+{{ list.items.length - 3 }}</div>
+          </div>
+        </div>
+        
+        <div class="wishlist-actions">
+          <button class="edit-button" [attr.aria-label]="'View ' + list.name + ' wish list'">
+            View List
+          </button>
+          <button class="delete" [attr.aria-label]="'Delete ' + list.name + ' wish list'">
             <i class="fa-solid fa-trash" aria-hidden="true"></i>
           </button>
         </div>
