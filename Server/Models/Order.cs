@@ -14,6 +14,10 @@ namespace Server.Models // Assuming Server.Models is the correct namespace
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int StoreId { get; set; } // Link back to the store
+        public int UserId { get; set; } // Foreign key to the User table
+        [ForeignKey("UserId")]
+        public virtual User? User { get; set; } // Navigation property to the User
+        public string? Notes { get; set; } // Added for storing notes like payment failure reasons
         // Add other relevant fields: UserId, ShippingAddress, BillingAddress, etc.
 
         // Navigation property for related OrderItems

@@ -13,6 +13,9 @@ This document tracks pending tasks, potential improvements, and areas needing at
 
 ### Authentication & User Management
 -   [ ] 🔥 **Implement Email Sending Service:** Integrate a service (SendGrid, Mailgun, SMTP) for sending transactional emails. (`EMAIL_MANAGEMENT.md`, `Program.cs`)
+-   [ ] ⚠️ **Define IEmailService Interface:** Create the `IEmailService` interface in `Server/Services/IEmailService.cs` with necessary methods (e.g., `Task SendOrderConfirmationEmailAsync(User user, Order order);`).
+-   [ ] ⚠️ **Implement EmailService:** Create the `EmailService` class in `Server/Services/EmailService.cs` implementing `IEmailService`. Include logic for connecting to the chosen email provider and handling configuration/secrets. (Depends on choosing a provider in the task above).
+-   [ ] ⚠️ **Verify EmailService DI Registration:** Ensure `builder.Services.AddScoped<IEmailService, EmailService>();` (or similar) is correctly configured in `Program.cs` once the interface and implementation exist.
 -   [ ] 🔥 **Implement Email Verification Flow:** Send verification email upon registration and check `User.Verified` status during login/access control. (`AccountController`, `UserService`, `REQUIREMENTS.md FR4.1.5`)
 -   [ ] ⚠️ **Implement Password Reset Flow:** Create UI, backend logic, and email sending for password resets. (`AccountController`, `UserService`, `REQUIREMENTS.md FR4.1.6`)
 -   [ ] 🧊 **Implement Social Logins:** Add Google/Facebook OAuth login functionality. (`LoginComponent`, `AccountController`)
@@ -73,11 +76,12 @@ This document tracks pending tasks, potential improvements, and areas needing at
     -   **Impact:** Checkout fails due to incorrect payload structure. Backend returns BadRequest.
     -   **Action:** Refactor `CheckoutComponent` to get detailed cart items (from `ShoppingService`) and `storeUrl`. Format payload as `List<CheckoutItem>` and `StoreUrl`. Update `PaymentService.createCheckoutSession` signature accordingly.
     -   **Files:** `CheckoutComponent.ts`, `PaymentService.ts`, `PaymentController.cs`, `ShoppingService.ts` (verify interface)
--   [ ] 🔥 **Implement Missing Order Fulfillment Steps (Webhook):**
-    -   **Description:** The `PaymentController.Webhook` handler for `checkout.session.completed` is missing logic to decrease stock and send confirmation emails.
-    -   **Impact:** Inventory is inaccurate, and customers don't receive confirmation emails, violating requirements FR4.5.3, FR4.8.1.
-    -   **Action:** Implement stock update logic (using `OrderItems`) and integrate with the email service (see `EMAIL_MANAGEMENT.md`) within the webhook handler.
-    -   **Files:** `PaymentController.cs`, relevant Stock/Email services.
+-   [x] 🔥 **Implement Order Fulfillment in Webhook**
+    **Task:** 🔥 Implement Missing Order Fulfillment Steps (Webhook)
+    **Description:** The `PaymentController.Webhook` handler for `checkout.session.completed` is missing logic to decrease stock and send confirmation emails.
+    **Impact:** Inventory is inaccurate, and customers don't receive confirmation emails, violating requirements FR4.5.3, FR4.8.1.
+    **Action:** Implement stock update logic (using `OrderItems`) and integrate with the email service (see `EMAIL_MANAGEMENT.md`) within the webhook handler.
+    **Files:** `PaymentController.cs`, relevant Stock/Email services.
 -   [ ] ⚠️ **Complete Payment Failure Handling (Webhook):**
     -   **Description:** Handling for `payment_intent.payment_failed` may lack robust order linkage. The `HandleFailedPayment` helper needs review/completion.
     -   **Impact:** PaymentIntent-level failures might leave orders in 'Pending' or without clear failure tracking.
@@ -98,7 +102,6 @@ This document tracks pending tasks, potential improvements, and areas needing at
 
 ## ⚠️ Technical Debt & Refactoring
 
--   [ ] ⚠️ **Review `ItemsController.cs`:** Decide whether to reintegrate, replace, or remove the commented-out stock update logic. Ensure stock updates are handled correctly elsewhere if removed.
 -   [X] ⚠️ **Review `ItemsController.cs`:** Removed the old commented-out `ItemsController.cs` as it was replaced by the updated `ItemController.cs`.
 -   [ ] 🧊 **Refactor Large Components:** Review components for potential breakdown into smaller, reusable parts (check against `.cursorrules` file size limit).
 -   [ ] 🧊 **Consolidate API Calls:** Review frontend services for potential consolidation or optimization of HTTP requests.
@@ -170,7 +173,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
         12. Remove redundant or unused styles after refactoring.
         13. Verify visual consistency across all dashboard sections after changes, ensuring they align with the login/register page aesthetic.
     -   **Depends on:** Defined global styles in `styles.css` and `README-STYLES.md`.
--   [ ] ⚠️ **Fix Mobile Hamburger Menu:**
+-   [x] ⚠️ **Fix Mobile Hamburger Menu:**
     -   **Description:** The mobile hamburger menu in `TopNavComponent` isn't opening/closing correctly and doesn't display the navigation links from the `options` array (which correspond to the desktop "Resources" dropdown).
     -   **Goal:** Ensure the hamburger icon toggles the slide-out mobile menu (`#mobile-menu`), populate the menu with the correct links from the `options` array using `*ngFor` and `[routerLink]`, and verify that clicking the overlay or a navigation link closes the menu.
     -   **Files:** `WebClient/src/app/components/top-nav/top-nav.component.ts`, `WebClient/src/app/components/top-nav/top-nav.component.html`, `WebClient/src/app/components/top-nav/top-nav.component.css`

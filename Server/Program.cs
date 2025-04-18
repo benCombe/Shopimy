@@ -30,6 +30,7 @@ builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+//builder.Services.AddScoped<IEmailService, EmailService>();
 
 
 // Register Swagger (Swashbuckle)
