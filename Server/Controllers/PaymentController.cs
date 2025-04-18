@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System;
+using System.Linq; // Added for Select
 
 
 [ApiController]
@@ -29,43 +30,43 @@ public class PaymentController : ControllerBase
         //       Stripe session back to your internal order when the webhook is received.
         //       Example: metadata.Add("orderId", newOrder.Id.ToString());
 
+        var lineItems = request.Items.Select(item => new SessionLineItemOptions
+        {
+            PriceData = new SessionLineItemPriceDataOptions
+            {
+                Currency = "cad",
+                UnitAmount = (long)(item.Price * 100), // amount in cents
+                ProductData = new SessionLineItemPriceDataProductDataOptions
+                {
+                    Name = item.Name,
+                },
+            },
+            Quantity = item.Quantity,
+        }).ToList();
+
         var options = new SessionCreateOptions
         {
             PaymentMethodTypes = new List<string> { "card" },
             Mode = "payment",
-            LineItems = new List<SessionLineItemOptions>
-            {
-                new SessionLineItemOptions
-                {
-                    PriceData = new SessionLineItemPriceDataOptions
-                    {
-                        Currency = "cad",
-                        UnitAmount = (long)(request.Amount * 100), // amount in cents
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                        {
-                            Name = request.ProductName,
-                        },
-                    },
-                    Quantity = 1, // Assuming quantity 1, adjust if needed
-                },
-            },
+            LineItems = lineItems, // Use the generated list of line items
             Metadata = new Dictionary<string, string>
             { 
-                // Add your internal identifiers here if needed
+                // Keep existing metadata, potentially add orderId here later
                 { "storeId", request.StoreId.ToString() },
-                { "categoryId", request.CategoryId.ToString() }
+                { "categoryId", request.CategoryId.ToString() } 
                 // { "orderId", your_internal_order_id.ToString() }
             },
-            SuccessUrl = "https://shopimy.com/success?session_id={CHECKOUT_SESSION_ID}", // Use environment variables for URLs
-            CancelUrl = "https://shopimy.com/cancel", // Use environment variables for URLs
+            SuccessUrl = _configuration["Stripe:SuccessUrl"] ?? "https://localhost:4200/success?session_id={CHECKOUT_SESSION_ID}", // Use configuration or default
+            CancelUrl = _configuration["Stripe:CancelUrl"] ?? "https://localhost:4200/cancel", // Use configuration or default
             // Consider adding customer_email or linking to a Stripe Customer if user is logged in
+            // CustomerEmail = request.CustomerEmail, // If you add CustomerEmail to CheckoutSessionRequest
             // Customer = stripeCustomerId, // If user is logged in and has Stripe Customer ID
         };
 
         var service = new SessionService();
         Session session = service.Create(options);
 
-        return Ok(new { sessionUrl = session.Url });
+        return Ok(new { sessionId = session.Id, sessionUrl = session.Url }); // Return Session ID as well
     }
 
     // POST api/payment/webhook
@@ -147,13 +148,26 @@ public class PaymentController : ControllerBase
     }
 }
 
+// Request model for creating a checkout session
 public class CheckoutSessionRequest
 {
-    public decimal Amount { get; set; }
-    public required string ProductName { get; set; }
-    public int StoreId { get; set; }
-    public int CategoryId { get; set; }
-    // Optionally include additional fields such as CustomerEmail, etc.
+    // Removed Amount and ProductName
+    // public decimal Amount { get; set; }
+    // public required string ProductName { get; set; }
+
+    public required List<CheckoutItem> Items { get; set; } // List of items in the cart
+    public int StoreId { get; set; } // Kept for metadata, might be derivable from items later
+    public int CategoryId { get; set; } // Kept for metadata, might be derivable from items later
+    // public string CustomerEmail { get; set; } // Optional: Pass customer email
+}
+
+// Represents a single item in the checkout request
+public class CheckoutItem
+{
+    public int Id { get; set; }       // Internal ID of the item/variant
+    public required string Name { get; set; } // Name to display in Stripe
+    public decimal Price { get; set; } // Price per unit
+    public int Quantity { get; set; }  // Quantity being purchased
 }
 
     // Optionally include additional fields e.g., customer email or description

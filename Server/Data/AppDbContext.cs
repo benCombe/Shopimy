@@ -36,6 +36,7 @@ namespace Server.Data
             // Define table names explicitly (optional)
             modelBuilder.Entity<User>(entity =>
             {
+                entity.ToTable("Users");
                 entity.Property(e => e.FirstName).HasColumnName("first_name");
                 entity.Property(e => e.LastName).HasColumnName("last_name");
                 entity.Property(e => e.Email).HasColumnName("email");
@@ -46,6 +47,7 @@ namespace Server.Data
                 entity.Property(e => e.Verified).HasColumnName("verified");
                 entity.Property(e => e.Subscribed).HasColumnName("subscribed");
                 entity.Property(e => e.DOB).HasColumnName("dob");
+                entity.Property(e => e.StripeCustomerId).HasColumnName("stripe_customer_id");
             });
 
             modelBuilder.Entity<ActiveUser>(entity =>

@@ -42,8 +42,9 @@ export class PaymentService {
   }
 
   // Get saved payment methods for the user (response might need adjustment later)
-  getPaymentMethods(userId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.userPaymentUrl}/methods/${userId}`);
+  getPaymentMethods(): Observable<any[]> {
+    // Use the simplified route without userId
+    return this.http.get<any[]>(`${this.userPaymentUrl}/methods`); 
   }
 
   // Delete a payment method (endpoint might need adjustment)
@@ -53,8 +54,8 @@ export class PaymentService {
   }
 
   // Set default payment method (endpoint might need adjustment)
-  setDefaultPaymentMethod(userId: number, paymentMethodId: string): Observable<boolean> {
-    // The identifier might change from 'paymentId' to Stripe's PaymentMethod ID (string)
-    return this.http.put<boolean>(`${this.userPaymentUrl}/default`, { userId, paymentMethodId });
+  setDefaultPaymentMethod(paymentMethodId: string): Observable<boolean> {
+    // Remove userId from the payload
+    return this.http.put<boolean>(`${this.userPaymentUrl}/default`, { paymentMethodId });
   }
 }
