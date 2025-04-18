@@ -34,7 +34,28 @@ This document tracks pending tasks, potential improvements, and areas needing at
     -   **Description:** `ProductManagementComponent` updated to handle variant-specific image uploads (via URLs), draft/publish using `availFrom`, and manage variant add/remove during edits. Logic for CRUD operations verified. `ItemService` interfaces updated.
     -   **Files:** `ProductManagementComponent.ts`, `ProductManagementComponent.html`, `ItemService.ts`, `ImageController.cs`, `ItemController.cs`
 -   [ ] 🧊 **Refine Product Management CSS:** Update styles in `ProductManagementComponent.css` for new status badges and layout adjustments (e.g., variant image controls). (`ProductManagementComponent.css`)
--   [ ] 🔥 **Test Product Management Lifecycle:** Conduct thorough manual and automated testing for adding (draft/publish), editing (variants, images, dates), and deleting products. (`ProductManagementComponent`, `ItemController`, `ImageController`)
+-   [ ] 🔥 **Test Product Management Lifecycle (In Progress):** Conduct thorough manual and automated testing for the complete product lifecycle (add, edit, delete).
+    *   **Scope:**
+        *   **Adding:** Test creating products as Drafts (`availFrom` = null), Published (`availFrom` <= now), and Scheduled (`availFrom` > now). Include adding initial variants and uploading variant-specific images (via URL).
+        *   **Editing:** Test modifying product details (name, description, category), availability dates (`availFrom`, `availTo`), adding/editing/deleting variants (including price, stock, type, size, color), and updating variant images (via URL). Test changing status (Draft -> Published, Published -> Draft, etc.).
+        *   **Deleting:** Test deleting entire product listings and verify cascading deletes of associated items/images. Consider impact on existing orders.
+        *   **Verification:** Confirm correct data persistence in the database (`Listing`, `Items`, `ItemImages` tables). Verify that Draft/Scheduled products are correctly filtered out in customer-facing views. Check edge cases (last variant deletion, invalid inputs, order linkage).
+    *   **Testing Plan:**
+        *   [X] **Analyze Existing Coverage:** Review existing tests (`ProductManagementComponent.spec.ts`, `ItemControllerTests.cs`). Identified minimal coverage.
+        *   [X] **Define Manual Test Cases:** Create detailed manual scenarios covering the lifecycle and edge cases (See AI Chat/Planning Doc).
+        *   [ ] **Implement Unit Tests:**
+            *   Create `item.service.spec.ts` and test service methods (API calls, data mapping).
+            *   Expand `product-management.component.spec.ts` to test form logic, validation, status calculation, variant management, and service interactions (using mocks).
+        *   [ ] **Implement Integration Tests:**
+            *   Expand `ItemControllerTests.cs` to cover CRUD operations, status logic based on `availFrom`, variant add/edit/delete, and invalid data handling. Test response codes and database state. Test deletion prevention if linked to orders.
+            *   Create `ImageControllerTests.cs` (or add to `ItemControllerTests`) to test image URL association with variants during create/update.
+        *   [ ] **Implement E2E Tests:** (Requires framework setup - e.g., Cypress/Playwright)
+            *   Automate key user flows: Add product (with variants/images), Edit product (variant price/status), Delete product. Verify UI elements, data persistence, and customer view updates.
+        *   [ ] **Execute & Verify:** Run all manual and automated tests. Ensure all pass and acceptance criteria are met.
+    *   **Key Files:** `WebClient/src/app/components/store-owner-layout/product-management/product-management.component.ts`, `WebClient/src/app/services/item.service.ts`, `Server/Controllers/ItemController.cs`, `Server/Controllers/ImageController.cs`, `Server/Models/Listing.cs`, `Server/Models/Item.cs`, `Server/Models/ItemImage.cs`, `Server/Data/AppDbContext.cs`. Test files: `*.spec.ts`, `*Tests.cs`.
+    *   **Acceptance Criteria:**
+        *   Comprehensive manual test cases executed and passed.
+        *   Detailed automated test plan implemented (Unit, Integration, E2E).
 -   [ ] ⚠️ **Verify Customer Product View Filtering:** Ensure customer-facing views (store page, category pages) correctly filter out draft (`availFrom IS NULL`) and future-scheduled (`availFrom > GETDATE()`) products based on backend logic. (Requires checking relevant frontend components and potentially backend query adjustments).
 -   [x] 🔥 **Refactor Store Preview Component:** Modify `StorePreviewComponent` to dynamically render Angular components based on its `theme`, `selectedComponents`, and `storeData` inputs, instead of using a static iframe (`assets/preview.html`) and `postMessage`.
     -   **Description:** The current preview uses a static HTML file and relies on `postMessage` to update content. This should be replaced with direct Angular rendering for a more integrated and accurate preview.

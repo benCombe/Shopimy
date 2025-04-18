@@ -59,7 +59,7 @@ export interface ProductListItem {
   imageUrl?: string;
   availFrom?: Date | null;
   availTo?: Date | null;
-  status?: 'Draft' | 'Published' | 'Scheduled';
+  status?: 'Draft' | 'Published' | 'Scheduled' | 'Expired';
 }
 
 // Interface for detailed product with variants

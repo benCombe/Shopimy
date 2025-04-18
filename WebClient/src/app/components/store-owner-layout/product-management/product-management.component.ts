@@ -38,7 +38,7 @@ interface ProductDisplayModel {
   variants: ProductVariantFormValue[];
   availFrom?: Date | null;
   availTo?: Date | null;
-  status?: 'Draft' | 'Published' | 'Scheduled';
+  status?: 'Draft' | 'Published' | 'Scheduled' | 'Expired';
 }
 
 @Component({
@@ -144,16 +144,18 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   loadProducts(): void {
     if (!this.storeId) return;
+    
     this.isLoading = true;
     const productSub = this.itemService.getItemsByStore(this.storeId).subscribe({
-      next: (items) => {
+      next: (items: ProductListItem[]) => {
+        // Use a type assertion to tell TypeScript that we're handling the status correctly
         this.products = items.map(item => ({
           ...item,
           status: this.getProductStatus(item.availFrom, item.availTo)
-        }));
+        })) as unknown as ProductListItem[];
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading products:', error);
         this.isLoading = false;
       }
@@ -161,13 +163,21 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.subscriptions.push(productSub);
   }
 
-  getProductStatus(availFrom?: Date | string | null, availTo?: Date | string | null): 'Draft' | 'Published' | 'Scheduled' {
+  getProductStatus(availFrom?: Date | string | null, availTo?: Date | string | null): 'Draft' | 'Published' | 'Scheduled' | 'Expired' {
     const now = new Date();
     const fromDate = availFrom ? new Date(availFrom) : null;
+    const toDate = availTo ? new Date(availTo) : null;
 
     if (!fromDate) {
       return 'Draft';
     }
+    
+    // Check if product is expired (availTo date is in the past)
+    if (toDate && toDate < now) {
+      return 'Expired';
+    }
+    
+    // Else check if scheduled or published
     return fromDate > now ? 'Scheduled' : 'Published';
   }
 

@@ -250,7 +250,10 @@
                     </thead>
                     <tbody>
                         <tr *ngIf="products.length === 0 && !isLoading">
-                            <td colspan="7" class="no-products">No products found. Add your first product!</td>
+                            <td colspan="7" class="empty-state">
+                                <i class="fa fa-box-open"></i>
+                                <p>No products found. Add your first product!</p>
+                            </td>
                         </tr>
                         <tr *ngFor="let product of products">
                             <td class="product-image-cell">
@@ -265,7 +268,8 @@
                                 <span class="status-badge" [ngClass]="{
                                     'status-draft': product.status === 'Draft',
                                     'status-published': product.status === 'Published',
-                                    'status-scheduled': product.status === 'Scheduled'
+                                    'status-scheduled': product.status === 'Scheduled',
+                                    'status-expired': product.status === 'Expired'
                                 }">
                                     {{ product.status }}
                                 </span>
@@ -274,7 +278,7 @@
                             <td>{{ getTotalStock(product) }}</td>
                             <td class="actions-cell">
                                 <button class="standard-button small" (click)="editProduct(product)" aria-label="Edit product">Edit</button>
-                                <button class="standard-button small danger" (click)="deleteProduct(product.listId!)" aria-label="Delete product">Delete</button>
+                                <button class="standard-button small" (click)="deleteProduct(product.listId!)" aria-label="Delete product">Delete</button>
                             </td>
                         </tr>
                     </tbody>
