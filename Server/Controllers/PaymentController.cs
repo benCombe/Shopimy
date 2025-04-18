@@ -114,4 +114,3 @@ public class CheckoutSessionRequest
 
     // Optionally include additional fields e.g., customer email or description
     // public string CustomerEmail { get; set; }
-}

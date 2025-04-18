@@ -1,9 +1,11 @@
+import { ShoppingCartComponent } from './../shopping-cart/shopping-cart.component';
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import { ThemeService } from '../../../services/theme.service';
 import { StoreDetails } from '../../../models/store-details';
 import { OrderSummaryComponent } from "../order-summary/order-summary.component";
 import { PaymentService } from '../../../services/payment.service';
+import { ShoppingService } from '../../../services/shopping.service';
 
 @Component({
   selector: 'app-checkout',
@@ -21,8 +23,8 @@ export class CheckoutComponent implements AfterViewInit{
 
   constructor(
     private fb: FormBuilder,
-    private themeService: ThemeService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private shopService: ShoppingService
   ) {
     this.shippingForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -38,11 +40,7 @@ export class CheckoutComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    /* this.themeService.setThemeOne("theme1");
-    this.themeService.setThemeTwo("theme2");
-    this.themeService.setThemeThree("theme3");
-    this.themeService.setFontColor("fc");
-    this.themeService.setButtonHoverColor("hover"); */
+
   }
 
   proceedToPayment() {
@@ -51,7 +49,7 @@ export class CheckoutComponent implements AfterViewInit{
       // Example: Inject a CartService and get items/total
       // const cartTotal = this.cartService.getTotal(); // Get total amount
       // const cartItemsDescription = this.cartService.getItemsDescription(); // Get a description (e.g., "Order #12345" or summary)
-      
+
       const amount = 50.00; // Example amount - REPLACE with cartTotal
       const productName = `Order for ${this.storeDetails.name}`; // Example product name - REPLACE with cartItemsDescription or similar
 
@@ -77,4 +75,24 @@ export class CheckoutComponent implements AfterViewInit{
       console.error('Shipping form is invalid or store details are missing.');
     }
   }
+
+  placeOrder(){
+    const email = this.shippingForm.get('email')?.value;
+    const deliveryAddress = this.shippingForm.get("firstName")?.value
+                   + " " + this.shippingForm.get('lastName')?.value
+                   + ", " + this.shippingForm.get('address')?.value
+                   + ", " + this.shippingForm.get('city')?.value
+                   + ", " + this.shippingForm.get('province')?.value
+                   + ", " + this.shippingForm.get('country')?.value
+                   + ", " + this.shippingForm.get('postalCode')?.value;
+
+    this.shopService.placeOrder(email, deliveryAddress).subscribe({
+      next: (orderId) => {
+
+        console.log("Order placed successfully, Order ID:", orderId);
+
+      }
+    });
+  }
+
 }

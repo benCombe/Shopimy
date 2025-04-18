@@ -28,7 +28,7 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   subtotal: number = 0.00;
   shippingCost: number = 0;
 
-  tempImages: string[] = ["resources/images/sweater-sample.jpg", "resources/images/sweater-sample2.jpg"]
+ // tempImages: string[] = ["resources/images/sweater-sample.jpg", "resources/images/sweater-sample2.jpg"]
 
   constructor(
     private storeService: StoreService,
@@ -44,6 +44,9 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
 
     this.shopService.Cart$.subscribe(cart => {
       this.cartItems = cart;
+      cart.forEach(i => {
+        console.log(i.item.name + " ("+ i.quantity +")")
+      });
     });
     this.shopService.SubTotal$.subscribe(total => {
       this.subtotal = total;
@@ -79,11 +82,13 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   }
 
   increaseQuantity(item: BasicItem){
-
+    this.shopService.updateItemQuantity(item, 1);
   }
 
   decreaseQuantity(item: BasicItem){
-    
+    this.shopService.updateItemQuantity(item, -1);
   }
+
+
 
 }
