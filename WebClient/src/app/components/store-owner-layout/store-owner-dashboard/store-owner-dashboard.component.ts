@@ -89,12 +89,12 @@ interface OrderDetail {
 }
 
 let ITEM_DATA: Item[] = [
-  {Id: '1', Name: 'Phone', OriginalPrice: 100, SalePrice: 90, OnSale: true, Description: 'This is a Phone', QuantityInStock: 10, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 5, CategoryIds: [1], ImageUrl: 'assets/images/default.png'},
-    {Id: '2', Name: 'T-Shirt', OriginalPrice: 200, SalePrice: 180, OnSale: true, Description: 'This is a T-Shirt', QuantityInStock: 20, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 4, CategoryIds: [2], ImageUrl: 'assets/images/default.png'},
-    {Id: '3', Name: 'Stand Mixer', OriginalPrice: 300, SalePrice: 270, OnSale: true, Description: 'This is Stand Mixer', QuantityInStock: 30, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 3, CategoryIds: [3], ImageUrl: 'assets/images/default.png'},
-    {Id: '4', Name: 'Ave Maria: The Book', OriginalPrice: 500, SalePrice: 360, OnSale: true, Description: 'This is soft cover book', QuantityInStock: 40, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 2, CategoryIds: [4], ImageUrl: 'assets/images/default.png'},
-    {Id: '4', Name: 'Item 4', OriginalPrice: 500, SalePrice: 360, OnSale: true, Description: 'This is item 4', QuantityInStock: 40, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 2, CategoryIds: [4], ImageUrl: 'assets/images/default.png'},
-    {Id: '4', Name: 'Item 4', OriginalPrice: 500, SalePrice: 360, OnSale: true, Description: 'This is item 4', QuantityInStock: 40, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 2, CategoryIds: [4], ImageUrl: 'assets/images/default.png'},
+  {Id: 1, Name: 'Phone', OriginalPrice: 100, SalePrice: 90, OnSale: true, Description: 'This is a Phone', QuantityInStock: 10, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 5, CategoryIds: [1], ImageUrl: 'assets/images/default.png'},
+    {Id: 2, Name: 'T-Shirt', OriginalPrice: 200, SalePrice: 180, OnSale: true, Description: 'This is a T-Shirt', QuantityInStock: 20, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 4, CategoryIds: [2], ImageUrl: 'assets/images/default.png'},
+    {Id: 3, Name: 'Stand Mixer', OriginalPrice: 300, SalePrice: 270, OnSale: true, Description: 'This is Stand Mixer', QuantityInStock: 30, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 3, CategoryIds: [3], ImageUrl: 'assets/images/default.png'},
+    {Id: 4, Name: 'Ave Maria: The Book', OriginalPrice: 500, SalePrice: 360, OnSale: true, Description: 'This is soft cover book', QuantityInStock: 40, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 2, CategoryIds: [4], ImageUrl: 'assets/images/default.png'},
+    {Id: 4, Name: 'Item 4', OriginalPrice: 500, SalePrice: 360, OnSale: true, Description: 'This is item 4', QuantityInStock: 40, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 2, CategoryIds: [4], ImageUrl: 'assets/images/default.png'},
+    {Id: 4, Name: 'Item 4', OriginalPrice: 500, SalePrice: 360, OnSale: true, Description: 'This is item 4', QuantityInStock: 40, AvailFrom: new Date(), AvailTo: new Date(), CurrentRating: 2, CategoryIds: [4], ImageUrl: 'assets/images/default.png'},
   
 ];
 
@@ -190,7 +190,7 @@ export class StoreOwnerDashboardComponent {
   theme: StoreDetails | null | undefined; //theme data for the dashboard
   category: Category | null | undefined; //category data for the dashboard
 
-  storeDetails = new StoreDetails(1, '', 'My Store', '#cccccc', '#808080', '#ffffff', '#000000', 'Calibri', '', '', []);
+  storeDetails = new StoreDetails(1, '', 'My Store', '#cccccc', '#808080', '#ffffff', '#000000', 'Calibri', '', '', '', '', []) // Initialize with default values
   productData: Item[] = ITEM_DATA;      //data for product tables
   categoryData: Category[] = CAT_DATA;  //data for category tables
   orderData: OrderDetail[] = ORD_DATA;  //data for order tables - updated to use OrderDetail interface
@@ -399,8 +399,8 @@ export class StoreOwnerDashboardComponent {
     this.themeService.setFontFamily(this.storeDetails.fontFamily);
     this.themeService.setBannerText(this.storeDetails.bannerText);
     this.themeService.setLogoText(this.storeDetails.logoText);
-    this.themeService.setLogoUrl(this.storeDetails.LogoUrl || '');
-    this.themeService.setBannerUrl(this.storeDetails.BannerUrl || '');
+    this.themeService.setLogoUrl(this.storeDetails.logoURL || '');
+    this.themeService.setBannerUrl(this.storeDetails.bannerURL || '');
     
     console.log('Store details updated:', this.storeDetails);
   }

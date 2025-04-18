@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 
 interface AnalyticsData {
@@ -23,7 +23,7 @@ interface SalesDataPoint {
 
 @Component({
   selector: 'app-analytics',
-  imports: [NgFor, NgIf, MatTableModule],
+  imports: [NgFor, MatTableModule],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.css'
 })

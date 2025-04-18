@@ -2,14 +2,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { PromotionsComponent } from "../promotions/promotions.component";
 import { Item } from '../../../models/item';
 import { MatTableModule } from '@angular/material/table';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor } from '@angular/common';
 
 let ITEM_DATA: Item[] = [];
 
 @Component({
   selector: 'app-overview',
   imports: [
-    NgFor, NgIf, PromotionsComponent, MatTableModule
+    NgFor, MatTableModule
   ],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css'

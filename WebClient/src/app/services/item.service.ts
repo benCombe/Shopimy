@@ -18,7 +18,7 @@ export class ItemService {
 
   private defaultItem: Item = new Item({
     Name: '',
-    Id: '',
+    Id: 0,
     OriginalPrice: 0,
     SalePrice: 0,
     OnSale: false,

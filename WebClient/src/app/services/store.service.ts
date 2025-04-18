@@ -22,7 +22,7 @@ export class StoreService {
   private categoryBaseUrl = '/api/categories';
 
   // defaultStore for testing purposes
-  private defaultStore: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1", "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []);
+  private defaultStore: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1", "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "", []);
 
 
   activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "", []));

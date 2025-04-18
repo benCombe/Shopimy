@@ -12,7 +12,7 @@ export class ThemeService {
   private renderer: Renderer2;
   private apiUrl = environment.apiUrl;
 
-  storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "",[]); //Get via API
+  storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", [], "", ""); //Get via API
 
   private activeThemeSubject = new BehaviorSubject<StoreDetails>(this.storeDetails);
   public activeTheme$ : Observable<StoreDetails> = this.activeThemeSubject.asObservable();

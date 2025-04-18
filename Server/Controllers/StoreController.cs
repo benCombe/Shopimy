@@ -225,28 +225,69 @@ namespace Server.Controllers
                 }
 
                 string blobUrl = blobClient.Uri.ToString();
-
-                var store = await _context.StoreThemes.FirstOrDefaultAsync(s => s.StoreId == storeId);
                 
-                if (store != null)
-                {                    
-                    switch (imageType.ToLower())
-                    {
-                        case "banner":
-                            store.BannerImagePath = blobUrl;
-                            break;
-                        case "logo":
-                            store.LogoImagePath = blobUrl;
-                            break;
-                    }
-                    
-                    _context.StoreThemes.Update(store);
-                    await _context.SaveChangesAsync();
+                // Check if the store exists
+                var store = await _context.Stores.FirstOrDefaultAsync(s => s.StoreId == storeId);
+                if (store == null)
+                {
+                    return NotFound("Store not found.");
                 }
+
+                switch (imageType.ToLower())
+                {
+                    case "banner":
+                        // Check if a banner already exists for this store
+                        var existingBanner = await _context.StoreBanners
+                            .FirstOrDefaultAsync(b => b.StoreID == storeId);
+                        
+                        if (existingBanner != null)
+                        {
+                            // Update existing record
+                            existingBanner.BannerURL = blobUrl;
+                            _context.StoreBanners.Update(existingBanner);
+                        }
+                        else
+                        {
+                            // Create new record
+                            _context.StoreBanners.Add(new StoreBanner
+                            {
+                                StoreID = storeId,
+                                BannerURL = blobUrl
+                            });
+                        }
+                        break;
+                        
+                    case "logo":
+                        // Check if a logo already exists for this store
+                        var existingLogo = await _context.StoreLogos
+                            .FirstOrDefaultAsync(l => l.StoreID == storeId);
+                        
+                        if (existingLogo != null)
+                        {
+                            // Update existing record
+                            existingLogo.LogoURL = blobUrl;
+                            _context.StoreLogos.Update(existingLogo);
+                        }
+                        else
+                        {
+                            // Create new record
+                            _context.StoreLogos.Add(new StoreLogo
+                            {
+                                StoreID = storeId,
+                                LogoURL = blobUrl
+                            });
+                        }
+                        break;
+                        
+                    default:
+                        return BadRequest("Invalid image type. Use 'banner' or 'logo'.");
+                }
+                
+                await _context.SaveChangesAsync();
 
                 return Ok(new { 
                     success = true, 
-                    message = "Image uploaded successfully", 
+                    message = $"{imageType} uploaded successfully", 
                     filePath = blobUrl 
                 });
             }

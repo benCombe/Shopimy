@@ -12,7 +12,7 @@ let CAT_DATA: Category[] = [];
 
 @Component({
   selector: 'app-product-management',
-  imports: [NgFor, NgIf, MatTableModule],
+  imports: [ MatTableModule],
   templateUrl: './product-management.component.html',
   styleUrl: './product-management.component.css'
 })

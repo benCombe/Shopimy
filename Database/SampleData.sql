@@ -52,7 +52,7 @@ VALUES
 
 INSERT INTO Listing (store_id, name, description, category)
 VALUES
-(10000005, 'Combat Rifle', '5.56mm Caliber Rifle' 13),
+(10000005, 'Combat Rifle', '5.56mm Caliber Rifle', 13),
 (10000005, 'Laser Gun', 'Uses fusion cell ammunition, hand pistol', 13),
 (10000005, 'Plasma Gun', 'Uses plasma cartridges, hand pistol', 13),
 (10000005, 'Raider Armour Set', 'Includes chest piece, left/right arms and legs', 18),

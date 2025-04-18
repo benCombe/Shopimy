@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor } from '@angular/common';
 import { Item } from '../../../models/item';
 
 // Interface for order summary data
@@ -23,7 +23,7 @@ interface OrderDetail {
 
 @Component({
   selector: 'app-orders',
-  imports: [NgFor, NgIf, MatTableModule],
+  imports: [NgFor, MatTableModule],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
