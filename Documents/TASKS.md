@@ -107,7 +107,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] ⚠️ **Implement Loading States:** Ensure appropriate loading indicators (`LoadingOneComponent` or similar) are used during data fetching or processing across the application.
 -   [ ] 🧊 **Refine UI based on Figma:** Conduct a review against the Figma designs and implement necessary adjustments for visual consistency and usability.
 -   [ ] 🧊 **Improve Mobile Responsiveness:** Test thoroughly on various mobile devices and refine styles where needed.
--   [ ] ⚠️ **Standardize Dashboard Component Styles:**
+-   [x] ⚠️ **Standardize Dashboard Component Styles:**
     -   **Description:** Refactor the CSS/SCSS for components within the `StoreOwnerDashboardComponent` layout (`Overview`, `Profile`, `Settings`, `ProductManagement`, `CategoryList`, `Orders`, `Themes`, `StoreEditor`, `Promotions`, `Analytics`, `SideNav`) to ensure they consistently use the global CSS variables and standard classes defined in `styles.css` and documented in `README-STYLES.md`. The goal is to make these components visually match the style established by the `LoginComponent` and `RegisterComponent` (which should also be using the global styles). Address inconsistencies in colors, fonts, spacing, button styles, table layouts, card layouts, form elements, etc.
     -   **Files:**
         -   `WebClient/src/styles.css` (Reference - Source of Truth)
@@ -146,6 +146,10 @@ This document tracks pending tasks, potential improvements, and areas needing at
         12. Remove redundant or unused styles after refactoring.
         13. Verify visual consistency across all dashboard sections after changes, ensuring they align with the login/register page aesthetic.
     -   **Depends on:** Defined global styles in `styles.css` and `README-STYLES.md`.
+-   [ ] ⚠️ **Fix Mobile Hamburger Menu:**
+    -   **Description:** The mobile hamburger menu in `TopNavComponent` isn't opening/closing correctly and doesn't display the navigation links from the `options` array (which correspond to the desktop "Resources" dropdown).
+    -   **Goal:** Ensure the hamburger icon toggles the slide-out mobile menu (`#mobile-menu`), populate the menu with the correct links from the `options` array using `*ngFor` and `[routerLink]`, and verify that clicking the overlay or a navigation link closes the menu.
+    -   **Files:** `WebClient/src/app/components/top-nav/top-nav.component.ts`, `WebClient/src/app/components/top-nav/top-nav.component.html`, `WebClient/src/app/components/top-nav/top-nav.component.css`
 
 ## 🔒 Security Enhancements
 
