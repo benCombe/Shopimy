@@ -219,8 +219,9 @@
 /* Mobile sidebar toggle button */
 .mobile-sidebar-toggle {
   position: fixed;
-  top: 15px;
-  left: 15px;
+  /* We'll control these with inline styles dynamically */
+  /* top: 15px;
+  right: 15px; */
   z-index: 999;
   background-color: var(--main-color);
   color: var(--second-color);
@@ -231,9 +232,18 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  cursor: grab;
   font-size: 1.3rem;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.2s;
+  touch-action: none; /* Prevents browser handling of all panning and zooming gestures */
+  user-select: none; /* Prevent text selection during drag */
+}
+
+.mobile-sidebar-toggle:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+  background-color: var(--second-color);
+  color: var(--main-color);
 }
 
 .mobile-sidebar-toggle:hover, 
