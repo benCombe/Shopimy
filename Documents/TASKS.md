@@ -76,21 +76,37 @@ This document tracks pending tasks, potential improvements, and areas needing at
     -   **Impact:** Checkout fails due to incorrect payload structure. Backend returns BadRequest.
     -   **Action:** Refactor `CheckoutComponent` to get detailed cart items (from `ShoppingService`) and `storeUrl`. Format payload as `List<CheckoutItem>` and `StoreUrl`. Update `PaymentService.createCheckoutSession` signature accordingly.
     -   **Files:** `CheckoutComponent.ts`, `PaymentService.ts`, `PaymentController.cs`, `ShoppingService.ts` (verify interface)
--   [x] 🔥 **Implement Order Fulfillment in Webhook**
-    **Task:** 🔥 Implement Missing Order Fulfillment Steps (Webhook)
-    **Description:** The `PaymentController.Webhook` handler for `checkout.session.completed` is missing logic to decrease stock and send confirmation emails.
-    **Impact:** Inventory is inaccurate, and customers don't receive confirmation emails, violating requirements FR4.5.3, FR4.8.1.
-    **Action:** Implement stock update logic (using `OrderItems`) and integrate with the email service (see `EMAIL_MANAGEMENT.md`) within the webhook handler.
-    **Files:** `PaymentController.cs`, relevant Stock/Email services.
+-   [ ] 🔥 **Implement Order Fulfillment in Webhook**
+    **Task:** 🔥 Implement Stripe Webhook Endpoint and Order Fulfillment
+    **Description:** The backend currently **lacks a webhook endpoint** to receive `checkout.session.completed` events from Stripe. This prevents order fulfillment steps (updating status to 'Paid', decreasing stock, sending confirmation emails) from running.
+    **Impact:** Orders remain 'Pending', inventory is inaccurate, and customers don't receive confirmation emails, violating requirements FR4.5.3, FR4.8.1.
+    **Action:**
+        1.  Create a public `[HttpPost("webhook")]` endpoint (e.g., in `WebhookController.cs` or `PaymentController.cs`).
+        2.  Implement Stripe webhook signature verification.
+        3.  Parse the incoming `Event` object, specifically looking for `checkout.session.completed`.
+        4.  Retrieve the `Session` object and extract the `internalOrderId` from metadata.
+        5.  Find the corresponding `Order` in the database.
+        6.  Update the `Order.Status` to 'Paid' or 'Processing'.
+        7.  Implement logic to decrease stock quantity for each `OrderItem` in the order.
+        8.  Integrate with the (currently commented out/incomplete) `IEmailService` to send a confirmation email.
+    **Files:** `PaymentController.cs` or new `WebhookController.cs`, `Order.cs`, `OrderItem.cs`, `Item.cs` (or stock table), `IEmailService.cs` (needs completion).
+    **Depends on:** Completed Email Service Implementation.
 -   [ ] ⚠️ **Complete Payment Failure Handling (Webhook):**
-    -   **Description:** Handling for `payment_intent.payment_failed` may lack robust order linkage. The `HandleFailedPayment` helper needs review/completion.
-    -   **Impact:** PaymentIntent-level failures might leave orders in 'Pending' or without clear failure tracking.
-    -   **Action:** Investigate `PaymentIntent` <-> `Order` linking if needed. Review/complete `HandleFailedPayment` logic. Consider updating order status to 'Failed' on relevant events.
-    -   **Files:** `PaymentController.cs`
--   [ ] ⚠️ **Verify Frontend Cart Data Availability:**
+    -   **Description:** The backend **lacks a webhook endpoint** to receive failure events (e.g., `payment_intent.payment_failed`, `checkout.session.async_payment_failed`) from Stripe. While a `HandleFailedPayment` helper exists in `PaymentController`, it is never called. Robust order linkage for PaymentIntent-level failures might need verification.
+    -   **Impact:** Payment failures occurring asynchronously or related to PaymentIntents might not update the internal order status correctly, leaving orders 'Pending' or without clear failure tracking.
+    -   **Action:**
+        1.  Create/use the same public `[HttpPost("webhook")]` endpoint as fulfillment.
+        2.  Implement/reuse Stripe webhook signature verification.
+        3.  Parse the incoming `Event` object, looking for relevant failure types (`payment_intent.payment_failed`, `checkout.session.async_payment_failed`, etc.).
+        4.  Extract necessary information (Session, PaymentIntent, metadata).
+        5.  Retrieve `internalOrderId` from metadata if available.
+        6.  Call the existing `HandleFailedPayment` helper in `PaymentController` with appropriate details (ID, metadata, failure reason).
+        7.  Verify/refine `HandleFailedPayment` logic to robustly link failures (especially `PaymentIntent` ones) to the internal `Order` and update status to 'Failed'.
+    -   **Files:** `PaymentController.cs` or new `WebhookController.cs`.
+-   [x] ⚠️ **Verify Frontend Cart Data Availability:**
     -   **Description:** Need to confirm `ShoppingService` can provide the detailed cart item list (`List<{ id, name, price, quantity }>`) required for the corrected `createCheckoutSession` payload.
-    -   **Action:** Verify or update `ShoppingService` to expose the necessary cart data structure.
-    -   **Files:** `ShoppingService.ts`
+    -   **Action:** Verification complete. `ShoppingService` correctly exposes the necessary data structure via `CartSubject`, and `CheckoutComponent` consumes it correctly.
+    -   **Files:** `ShoppingService.ts`, `CheckoutComponent.ts`
 
 ### Reviews & Ratings
 -   [ ] ⚠️ **Implement Review Submission:** Create backend endpoint and frontend UI for authenticated users to submit ratings and comments for products they've purchased. (`ReviewsController`, `ItemPageComponent` or similar)
@@ -107,6 +123,8 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] 🧊 **Consolidate API Calls:** Review frontend services for potential consolidation or optimization of HTTP requests.
 -   [ ] ⚠️ **Error Handling:** Systematically review error handling in both frontend and backend. Ensure consistent logging and user-friendly feedback.
 -   [ ] 🧊 **Code Style Consistency:** Run linters/formatters (ESLint, Prettier for frontend; .NET formatting tools for backend) across the codebase.
+-   [ ] 🧊 **Review Redundant Order Logic:** Investigate `placeOrder` and `createOrder` methods in `ShoppingService.ts` (lines ~222-257). Determine if this non-Stripe order flow is necessary or if it should be removed to avoid confusion with the primary Stripe payment process. (`ShoppingService.ts`)
+-   [ ] 🧊 **Centralize Stripe Configuration:** Move Stripe API key initialization (`StripeConfiguration.ApiKey = ...`) from `UserPaymentController.cs` constructor to a central location during application startup (e.g., `Program.cs`). (`UserPaymentController.cs`, `Program.cs`)
 
 ## ✅ Testing
 
@@ -145,52 +163,3 @@ This document tracks pending tasks, potential improvements, and areas needing at
         -   `WebClient/src/app/components/store-owner-layout/overview/overview.component.css`
         -   `WebClient/src/app/components/store-owner-layout/profile/profile.component.css`
         -   `WebClient/src/app/components/store-owner-layout/settings/settings.component.css`
-        -   `WebClient/src/app/components/store-owner-layout/product-management/product-management.component.css`
-        -   `WebClient/src/app/components/category-list/category-list.component.ts` (Check inline styles & HTML classes)
-        -   `WebClient/src/app/components/category-list/category-list.component.html` (Check HTML classes)
-        -   `WebClient/src/app/components/category-form/category-form.component.ts` (Check inline styles & HTML classes)
-        -   `WebClient/src/app/components/category-form/category-form.component.html` (Check HTML classes)
-        -   `WebClient/src/app/components/store-owner-layout/orders/orders.component.css`
-        -   `WebClient/src/app/components/store-owner-layout/themes/themes.component.ts` (Check inline styles & HTML classes)
-        -   `WebClient/src/app/components/store-owner-layout/themes/themes.component.html` (Check HTML classes)
-        -   `WebClient/src/app/components/store-owner-layout/store-editor/store-editor.component.ts` (Check inline styles & HTML classes)
-        -   `WebClient/src/app/components/store-owner-layout/store-editor/store-editor.component.html` (Check HTML classes)
-        -   `WebClient/src/app/components/store-owner-layout/promotions/promotions.component.css`
-        -   `WebClient/src/app/components/store-owner-layout/analytics/analytics.component.css`
-        -   `WebClient/src/app/components/store-owner-layout/side-nav/side-nav.component.css`
-    -   **Instructions:**
-        1.  Review `styles.css` and `README-STYLES.md` to understand the standard variables (e.g., `var(--main-color)`, `var(--second-color)`) and classes (e.g., `.standard-button`, `.standard-table`, `.table-container`, `.dashboard-card`, `.form-group`, etc.).
-        2.  Visually inspect the `LoginComponent` and `RegisterComponent` to understand the target look and feel (assuming they correctly use the global styles).
-        3.  Go through each listed dashboard component's CSS file (or inline styles/classes in `.ts`/`.html` files).
-        4.  Identify hardcoded values (e.g., `#333`, `1rem`, `1px solid black`, specific font names) or styles/classes that deviate from the standard defined in `styles.css` and `README-STYLES.md`.
-        5.  Replace these deviations with the corresponding CSS variables or standard classes.
-        6.  Ensure consistent use of spacing, padding, margins, potentially using variables if defined.
-        7.  Standardize button appearances using `.standard-button` and modifiers if applicable.
-        8.  Standardize table layouts using `.standard-table` and `.table-container`.
-        9.  Standardize card layouts using `.dashboard-card` (or similar standard class).
-        10. Standardize form elements (labels, inputs, selects, textareas) using `.form-group` and ensuring consistent styling.
-        11. Standardize section headers (h1, h2, h3) for consistency.
-        12. Remove redundant or unused styles after refactoring.
-        13. Verify visual consistency across all dashboard sections after changes, ensuring they align with the login/register page aesthetic.
-    -   **Depends on:** Defined global styles in `styles.css` and `README-STYLES.md`.
--   [x] ⚠️ **Fix Mobile Hamburger Menu:**
-    -   **Description:** The mobile hamburger menu in `TopNavComponent` isn't opening/closing correctly and doesn't display the navigation links from the `options` array (which correspond to the desktop "Resources" dropdown).
-    -   **Goal:** Ensure the hamburger icon toggles the slide-out mobile menu (`#mobile-menu`), populate the menu with the correct links from the `options` array using `*ngFor` and `[routerLink]`, and verify that clicking the overlay or a navigation link closes the menu.
-    -   **Files:** `WebClient/src/app/components/top-nav/top-nav.component.ts`, `WebClient/src/app/components/top-nav/top-nav.component.html`, `WebClient/src/app/components/top-nav/top-nav.component.css`
-
-## 🔒 Security Enhancements
-
--   [ ] ⚠️ **Conduct Security Review:** Perform a basic security audit, checking for common vulnerabilities (XSS, CSRF, insecure direct object references, etc.).
--   [ ] ⚠️ **Review Dependency Security:** Check dependencies for known vulnerabilities.
-
-## 🧊 Future Features / Nice-to-Haves
-
--   [ ] **Admin Role:** Define and implement an administrative role for platform management.
--   [ ] **Advanced Promotions:** Implement more complex discount rules (e.g., BOGO, tiered discounts).
--   [ ] **Multiple Stores per User:** Ensure the data model and UI fully support sellers managing multiple distinct stores.
--   [ ] **Internationalization (i18n):** Add support for multiple languages.
--   **Shipping Integration:** Integrate with shipping carriers for real-time rates and label printing.
--   **Inventory Management:** More advanced stock tracking features (low stock alerts, variants).
-
----
-*Add new tasks under the appropriate sections.*
