@@ -7,3 +7,4 @@ obj/
 packages/
 
 appsettings.secrets.json
+appsettings.json

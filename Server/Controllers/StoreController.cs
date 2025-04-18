@@ -28,8 +28,26 @@ namespace Server.Controllers
         {
             _context = context;
             _configuration = configuration;
+            
             string connectionString = _configuration.GetConnectionString("AzureBlobStorage");
-            _blobServiceClient = new BlobServiceClient(connectionString);
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                // Log a warning or handle the missing connection string
+                // For development, you could use the Azure Storage Emulator
+                connectionString = "UseDevelopmentStorage=true";
+            }
+            
+            try
+            {
+                _blobServiceClient = new BlobServiceClient(connectionString);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                Console.WriteLine($"Error initializing blob service: {ex.Message}");
+                // Initialize with null - operations using this will need to check for null
+                _blobServiceClient = null;
+            }
         }
 
         [HttpGet("{url}")]
@@ -39,7 +57,7 @@ namespace Server.Controllers
             var store = await _context.Stores
                 .Where(s => s.StoreUrl == url)
                 .FirstOrDefaultAsync();
-
+            
             if (store == null)
             {
                 return NotFound("Store not found.");
@@ -62,7 +80,7 @@ namespace Server.Controllers
             {
                 return NotFound("Banner not found.");
             }
-            
+
             var logo = await _context.StoreLogos
                 .Where(s => s.StoreID == store.StoreId)
                 .FirstOrDefaultAsync();
@@ -71,13 +89,11 @@ namespace Server.Controllers
             {
                 return NotFound("Logo not found.");
             }
-        
 
-            // 🔹 Fetch categories linked to this store
             var categories = await _context.Categories
                 .Where(c => c.StoreId == store.StoreId)
                 .ToListAsync();
-            
+
             StoreDetails storeDetails = new StoreDetails(
                 store.StoreId,
                 store.StoreUrl,
@@ -96,6 +112,7 @@ namespace Server.Controllers
 
             return Ok(storeDetails);
         }
+
 
         [HttpPost("upload")]
         [Authorize]
@@ -168,7 +185,7 @@ namespace Server.Controllers
                     var existingCategories = await _context.Categories
                         .Where(c => c.StoreId == store.StoreId)
                         .ToListAsync();
-                    
+
                     if (existingCategories.Any())
                     {
                         _context.Categories.RemoveRange(existingCategories);
@@ -199,6 +216,11 @@ namespace Server.Controllers
         [Authorize]
         public async Task<IActionResult> UploadImage(IFormFile file, [FromQuery] int storeId, [FromQuery] string imageType)
         {
+            if (_blobServiceClient == null)
+            {
+                return StatusCode(500, new { success = false, message = "Blob storage is not configured properly." });
+            }
+            
             if (file == null || file.Length == 0)
                 return BadRequest("File is empty or not provided");
 
@@ -218,7 +240,7 @@ namespace Server.Controllers
 
                 var uniqueFileName = $"{storeId}/{imageType}_{Guid.NewGuid()}{ext}";
                 BlobClient blobClient = containerClient.GetBlobClient(uniqueFileName);
-
+            
                 using (var stream = file.OpenReadStream())
                 {
                     await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType });
@@ -226,7 +248,6 @@ namespace Server.Controllers
 
                 string blobUrl = blobClient.Uri.ToString();
                 
-                // Check if the store exists
                 var store = await _context.Stores.FirstOrDefaultAsync(s => s.StoreId == storeId);
                 if (store == null)
                 {
@@ -236,19 +257,16 @@ namespace Server.Controllers
                 switch (imageType.ToLower())
                 {
                     case "banner":
-                        // Check if a banner already exists for this store
                         var existingBanner = await _context.StoreBanners
                             .FirstOrDefaultAsync(b => b.StoreID == storeId);
                         
                         if (existingBanner != null)
                         {
-                            // Update existing record
                             existingBanner.BannerURL = blobUrl;
                             _context.StoreBanners.Update(existingBanner);
                         }
                         else
                         {
-                            // Create new record
                             _context.StoreBanners.Add(new StoreBanner
                             {
                                 StoreID = storeId,
@@ -256,21 +274,18 @@ namespace Server.Controllers
                             });
                         }
                         break;
-                        
+
                     case "logo":
-                        // Check if a logo already exists for this store
                         var existingLogo = await _context.StoreLogos
                             .FirstOrDefaultAsync(l => l.StoreID == storeId);
                         
                         if (existingLogo != null)
                         {
-                            // Update existing record
                             existingLogo.LogoURL = blobUrl;
                             _context.StoreLogos.Update(existingLogo);
                         }
                         else
                         {
-                            // Create new record
                             _context.StoreLogos.Add(new StoreLogo
                             {
                                 StoreID = storeId,
@@ -278,7 +293,7 @@ namespace Server.Controllers
                             });
                         }
                         break;
-                        
+
                     default:
                         return BadRequest("Invalid image type. Use 'banner' or 'logo'.");
                 }

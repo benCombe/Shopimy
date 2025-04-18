@@ -12,7 +12,7 @@ export class ThemeService {
   private renderer: Renderer2;
   private apiUrl = environment.apiUrl;
 
-  storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", [], "", ""); //Get via API
+  storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "", []); //Get via API
 
   private activeThemeSubject = new BehaviorSubject<StoreDetails>(this.storeDetails);
   public activeTheme$ : Observable<StoreDetails> = this.activeThemeSubject.asObservable();
@@ -80,14 +80,14 @@ export class ThemeService {
   setLogoUrl(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
     elements.forEach((element) => {
-      this.renderer.setAttribute(element as HTMLElement, 'src', this.storeDetails.LogoUrl || '');
+      this.renderer.setAttribute(element as HTMLElement, 'src', this.storeDetails.logoURL || '');
     });
   }
 
   setBannerUrl(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
     elements.forEach((element) => {
-      this.renderer.setAttribute(element as HTMLElement, 'src', this.storeDetails.BannerUrl || '');
+      this.renderer.setAttribute(element as HTMLElement, 'src', this.storeDetails.bannerURL || '');
     });
   }
 
@@ -168,11 +168,11 @@ export class ThemeService {
           if (event instanceof HttpResponse && event.body && event.body.success) {
             // Update the local store details with the new image path from Azure Blob Storage
             if (imageType === 'logo') {
-              this.storeDetails.LogoUrl = event.body.filePath;
+              this.storeDetails.logoURL = event.body.filePath;
               // Update logo elements if any are present
               this.setLogoUrl('logo-image');
             } else if (imageType === 'banner') {
-              this.storeDetails.BannerUrl = event.body.filePath;
+              this.storeDetails.bannerURL = event.body.filePath;
               // Update banner elements if any are present
               this.setBannerUrl('banner-image');
             }
