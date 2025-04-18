@@ -1,5 +1,5 @@
 import { ShoppingCartComponent } from './../shopping-cart/shopping-cart.component';
-import { AfterViewInit, Component, Input, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import { ThemeService } from '../../../services/theme.service';
 import { OrderSummaryComponent } from "../order-summary/order-summary.component";
@@ -20,18 +20,9 @@ import { StoreDetails } from '../../../models/store-details';
   styleUrl: './checkout.component.css'
 })
 
-export class CheckoutComponent {
+export class CheckoutComponent implements OnInit {
 
   shippingForm: FormGroup;
-
-  constructor(
-    private fb: FormBuilder,
-    private paymentService: PaymentService,
-    private shopService: ShoppingService
-    private themeService: ThemeService,
-    private paymentService: PaymentService,
-    private shoppingService: ShoppingService
-  ) {
   storeUrl: string = '';
   storeId: number = 0;
   storeDetails: StoreDetails | null = null;
@@ -39,6 +30,7 @@ export class CheckoutComponent {
   isLoading: boolean = false;
 
   private fb = inject(FormBuilder);
+  private themeService = inject(ThemeService);
   private paymentService = inject(PaymentService);
   private shoppingService = inject(ShoppingService);
   private route = inject(ActivatedRoute);
@@ -58,11 +50,7 @@ export class CheckoutComponent {
     });
   }
 
-  ngAfterViewInit(): void {
-
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,15}$')]],
-    });
-
+  ngOnInit(): void {
     this.loadCheckoutData();
   }
 
@@ -87,7 +75,12 @@ export class CheckoutComponent {
         }
         this.storeDetails = storeDetails;
         this.storeId = storeDetails.id;
-        this.checkoutItems = this.shoppingService.getGroupedCartItems();
+        this.checkoutItems = this.shoppingService.CartSubject.getValue().map(cartItem => ({
+          id: cartItem.item.listId,
+          name: cartItem.item.name,
+          price: Math.min(cartItem.item.price, cartItem.item.salePrice),
+          quantity: cartItem.quantity
+        }));
         if (this.checkoutItems.length === 0) {
            console.warn('Checkout initiated with an empty cart.');
         }
@@ -101,52 +94,65 @@ export class CheckoutComponent {
     });
   }
 
-  proceedToPayment() {
+  proceedToPayment(): void {
     if (this.shippingForm.valid && this.storeDetails) {
       // TODO: Replace placeholders with actual order details from your cart/order service
       // Example: Inject a CartService and get items/total
       // const cartTotal = this.cartService.getTotal(); // Get total amount
       // const cartItemsDescription = this.cartService.getItemsDescription(); // Get a description (e.g., "Order #12345" or summary)
 
-      const amount = 50.00; // Example amount - REPLACE with cartTotal
-      const productName = `Order for ${this.storeDetails.name}`; // Example product name - REPLACE with cartItemsDescription or similar
-    if (!this.storeDetails || !this.storeDetails.name) {
-      console.error('Store details are missing or invalid.');
-    if (!this.storeUrl || this.storeId === 0) {
-      console.error('Store URL or ID is missing.');
-      alert('Cannot proceed to payment: Store information is missing.');
-      return;
-    }
+      // const amount = 50.00; // Example amount - REPLACE with cartTotal
+      // const productName = `Order for ${this.storeDetails.name}`; // Example product name - REPLACE with cartItemsDescription or similar
 
-    this.checkoutItems = this.shoppingService.getGroupedCartItems();
+      // --- Consolidate checks --- //
+      if (!this.storeUrl || this.storeId === 0) {
+        console.error('Store URL or ID is missing.');
+        alert('Cannot proceed to payment: Store information is missing.');
+        return;
+      }
 
-    if (!this.checkoutItems || this.checkoutItems.length === 0) {
-      console.error('Cart is empty.');
-      alert('Cannot proceed to payment with an empty cart.');
-      return;
-    }
+      if (!this.storeDetails || !this.storeDetails.name) {
+        console.error('Store details are missing or invalid.');
+        alert('Cannot proceed to payment: Store details are invalid.');
+        return;
+      }
 
-    if (this.shippingForm.valid) {
-      this.isLoading = true;
-      this.paymentService.createCheckoutSession(this.checkoutItems, this.storeUrl, this.storeId)
-        .subscribe({
-          next: (response) => {
-            window.location.href = response.sessionUrl;
-          },
-          error: (error) => {
-            console.error('Error creating Stripe checkout session:', error);
-            alert('Could not proceed to payment. Please try again later.');
-            this.isLoading = false;
-          }
-        });
-    } else {
-      this.shippingForm.markAllAsTouched();
-      console.error('Shipping form is invalid.');
-      alert('Please fill in all required shipping information.');
+      // Get grouped items inside the payment method if needed, or ensure it's up-to-date
+      this.checkoutItems = this.shoppingService.CartSubject.getValue().map(cartItem => ({
+        id: cartItem.item.listId,
+        name: cartItem.item.name,
+        price: Math.min(cartItem.item.price, cartItem.item.salePrice),
+        quantity: cartItem.quantity
+      }));
+
+      if (!this.checkoutItems || this.checkoutItems.length === 0) {
+        console.error('Cart is empty.');
+        alert('Cannot proceed to payment with an empty cart.');
+        return;
+      }
+
+      if (this.shippingForm.valid) {
+        this.isLoading = true;
+        this.paymentService.createCheckoutSession(this.checkoutItems, this.storeUrl, this.storeId)
+          .subscribe({
+            next: (response) => {
+              window.location.href = response.sessionUrl;
+            },
+            error: (error) => {
+              console.error('Error creating Stripe checkout session:', error);
+              alert('Could not proceed to payment. Please try again later.');
+              this.isLoading = false;
+            }
+          });
+      } else {
+        this.shippingForm.markAllAsTouched();
+        console.error('Shipping form is invalid.');
+        alert('Please fill in all required shipping information.');
+      }
     }
   }
 
-  placeOrder(){
+  placeOrder() {
     const email = this.shippingForm.get('email')?.value;
     const deliveryAddress = this.shippingForm.get("firstName")?.value
                    + " " + this.shippingForm.get('lastName')?.value
@@ -156,11 +162,14 @@ export class CheckoutComponent {
                    + ", " + this.shippingForm.get('country')?.value
                    + ", " + this.shippingForm.get('postalCode')?.value;
 
-    this.shopService.placeOrder(email, deliveryAddress).subscribe({
-      next: (orderId) => {
-
-        console.log("Order placed successfully, Order ID:", orderId);
-
+    this.shoppingService.placeOrder(email, deliveryAddress).subscribe({
+      next: (orderId: any) => {
+        console.log("Order placed successfully (Placeholder - verify flow), Order ID:", orderId);
+        // TODO: Likely need to clear cart, navigate to confirmation page, etc.
+      },
+      error: (err: any) => {
+        console.error("Error placing order (Placeholder):", err);
+        alert("Failed to place order. Please contact support.");
       }
     });
   }

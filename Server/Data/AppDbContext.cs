@@ -30,8 +30,7 @@ namespace Server.Data
         public DbSet<OrderLogEntry> OrderLog {get; set;}
         public DbSet<OrderItem> OrderItems {get; set;}
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Server.Models.Order> Orders { get; set; }
 
         // Ensure table names match conventions  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -92,7 +91,7 @@ namespace Server.Data
             modelBuilder.Entity<OrderLogEntry>().ToTable("OrderLog");
             modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
             modelBuilder.Entity<Review>().ToTable("Reviews");
-            modelBuilder.Entity<Order>().ToTable("Orders");
+            modelBuilder.Entity<Server.Models.Order>().ToTable("Orders");
             modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
         }
     }

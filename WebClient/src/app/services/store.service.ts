@@ -35,9 +35,7 @@ export class StoreService {
   private currentThemeSubject = new BehaviorSubject<string>('light');
   currentTheme$ = this.currentThemeSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    // TODO: Potentially load initial theme from a persistent source (e.g., backend, localStorage)
-  }
+  // TODO: Potentially load initial theme from a persistent source (e.g., backend, localStorage)
 
   // Method to create a new store.
   createStore(storeData: any): Observable<StoreDetails> {
