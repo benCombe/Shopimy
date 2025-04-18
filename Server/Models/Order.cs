@@ -15,6 +15,7 @@ namespace Server.Models // Assuming Server.Models is the correct namespace
         [Key]
         public int Id { get; set; }
         public string? StripeSessionId { get; set; } // Link to Stripe session
+        public string? StripePaymentIntentId { get; set; } // Link to Stripe Payment Intent
         public string Status { get; set; } = "Pending"; // e.g., Pending, Paid, Failed, Processing, Shipped, Cancelled
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

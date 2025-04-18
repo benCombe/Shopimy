@@ -29,14 +29,14 @@ public class PaymentController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly AppDbContext _context; // Inject DbContext
-    private readonly IEmailService _emailService; // Inject Email Service - Uncommented
+    //private readonly IEmailService _emailService; // Inject Email Service - Uncommented
 
     // Inject AppDbContext and IEmailService
-    public PaymentController(IConfiguration configuration, AppDbContext context, IEmailService emailService /* - Uncommented */)
+    public PaymentController(IConfiguration configuration, AppDbContext context /* IEmailService emailService */)
     {
         _configuration = configuration;
         _context = context; // Assign injected context
-        _emailService = emailService; // Assign injected email service - Uncommented
+        //_emailService = emailService; // Assign injected email service - Uncommented
         // Load the secret key from configuration (Appsettings.secrets.json)
         StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
     }
@@ -78,13 +78,14 @@ public class PaymentController : ControllerBase
         await _context.SaveChangesAsync(); // Save to get the Order ID
 
         // Now that newOrder.Id exists, create the OrderItems using the updated constructor
-        newOrder.OrderItems = request.Items.Select(item => new OrderItem(
-            newOrder.Id,       // Pass the generated OrderId
-            item.Id,           // This is the ListingId
-            item.Quantity,     // Pass the Quantity
-            item.Price,        // Pass the Price as UnitPrice
-            item.Name          // Pass the Name as ProductName
-        )).ToList();
+        newOrder.OrderItems = request.Items.Select(item => new OrderItem
+        {
+            OrderId = newOrder.Id,       // Pass the generated OrderId
+            ProductId = item.Id,           // This is the ListingId (Corrected field name)
+            Quantity = item.Quantity,     // Pass the Quantity
+            UnitPrice = item.Price,        // Pass the Price as UnitPrice
+            ProductName = item.Name          // Pass the Name as ProductName
+        }).ToList();
 
         // Associate the items with the order (EF Core might handle this automatically depending on navigation properties)
         // If OrderItems aren't saved automatically, uncomment the line below or ensure Order.OrderItems navigation property is correctly configured.
@@ -168,7 +169,7 @@ public class PaymentController : ControllerBase
             Console.WriteLine($"Webhook received: {stripeEvent.Type}"); // Log event type
 
             // Handle the checkout.session.completed event
-            if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+            if (stripeEvent.Type == "checkout.session.completed")
             {
                 var session = stripeEvent.Data.Object as Session;
 
@@ -201,30 +202,30 @@ public class PaymentController : ControllerBase
                         // Decrease stock for each item in the order
                         foreach (var orderItem in order.OrderItems)
                         {
-                            // Assuming OrderItem.ItemId maps to BasicItem.ListId (the product ID)
-                            var item = await _context.BasicItem.FindAsync(orderItem.ItemId); // Find the product/listing
+                            // Assuming OrderItem.ProductId maps to BasicItem.ListId (the product ID)
+                            var item = await _context.BasicItem.FindAsync(orderItem.ProductId); // Find the product/listing
                             if (item != null)
                             {
                                 // Check if enough stock exists (optional, but recommended)
-                                if (item.Quantity >= orderItem.Quantity)
+                                if (item.quantity >= orderItem.Quantity)
                                 {
-                                    item.Quantity -= orderItem.Quantity;
+                                    item.quantity -= orderItem.Quantity;
                                 }
                                 else
                                 {
                                     // Handle insufficient stock scenario
-                                    Console.WriteLine($"Webhook Warning: Insufficient stock for Item ID {item.ListId} in Order {order.Id}. Requested: {orderItem.Quantity}, Available: {item.Quantity}. Setting stock to 0.");
-                                    item.Quantity = 0; // Or log error, mark order for review, etc.
+                                    Console.WriteLine($"Webhook Warning: Insufficient stock for Item ID {item.ListId} (Product ID: {orderItem.ProductId}) in Order {order.Id}. Requested: {orderItem.Quantity}, Available: {item.quantity}. Setting stock to 0.");
+                                    item.quantity = 0; // Or log error, mark order for review, etc.
                                     // Consider adding a note to the order
-                                    order.Notes = (order.Notes ?? "") + $"Warning: Insufficient stock for Item ID {item.ListId}. ";
+                                    order.Notes = (order.Notes ?? "") + $"Warning: Insufficient stock for Product ID {orderItem.ProductId}. ";
                                 }
                             }
                             else
                             {
                                 // Handle item not found scenario
-                                Console.WriteLine($"Webhook Error: Item with ID {orderItem.ItemId} not found for OrderItem {orderItem.Id} in Order {order.Id}.");
+                                Console.WriteLine($"Webhook Error: Item with ID {orderItem.ProductId} not found for OrderItem {orderItem.Id} in Order {order.Id}.");
                                 // Consider adding a note to the order
-                                order.Notes = (order.Notes ?? "") + $"Error: Item ID {orderItem.ItemId} not found during fulfillment. ";
+                                order.Notes = (order.Notes ?? "") + $"Error: Product ID {orderItem.ProductId} not found during fulfillment. ";
                             }
                         }
 
@@ -258,83 +259,122 @@ public class PaymentController : ControllerBase
                     return BadRequest("Missing or invalid internalOrderId in metadata.");
                 }
             }
-            // --- Optional: Handle Payment Failed Event ---
-            // else if (stripeEvent.Type == Events.CheckoutSessionAsyncPaymentFailed || stripeEvent.Type == Events.PaymentIntentPaymentFailed)
-            // {
-            //     Session session = null;
-            //     Dictionary<string, string> metadata = null;
-            //     string failureReason = "Unknown";
-            //     string sessionId = null; // For logging
+            // Handle asynchronous payment failure
+            else if (stripeEvent.Type == "checkout.session.async_payment_failed")
+            {
+                var session = stripeEvent.Data.Object as Session;
+                if (session == null)
+                {
+                    Console.WriteLine("Webhook Error: Could not deserialize session object for async payment failure.");
+                    return BadRequest("Invalid session object in webhook for async failure.");
+                }
 
-            //     if (stripeEvent.Data.Object is Session failedSession) {
-            //         session = failedSession;
-            //         metadata = session.Metadata;
-            //         sessionId = session.Id;
-            //         failureReason = session.Status.ToString(); // Or more specific reason if available
-            //     } else if (stripeEvent.Data.Object is PaymentIntent failedPaymentIntent) {
-            //         // Attempt to get metadata if linked to a session, might require fetching the session
-            //         // This part can be complex if PaymentIntent isn't directly linked via metadata easily
-            //         // For simplicity, we rely on metadata from the event context if possible,
-            //         // or fetch related session if needed (adds complexity/latency).
-            //         // metadata = ... // Fetch metadata if possible
-            //         failureReason = failedPaymentIntent.Status.ToString(); // Or LastPaymentError details
-            //         // sessionId = ... // Potentially extract from related charge/session if possible
-            //     }
+                Console.WriteLine($"Webhook processing: {stripeEvent.Type} for Session ID: {session.Id}");
+                await HandleFailedPayment(session.Id, session.Metadata, "Async payment failed");
+            }
+            // Handle payment intent failure (could be direct PI or PI created by a session)
+            else if (stripeEvent.Type == "payment_intent.payment_failed")
+            {
+                var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
+                if (paymentIntent == null)
+                {
+                    Console.WriteLine("Webhook Error: Could not deserialize PaymentIntent object for payment failure.");
+                    return BadRequest("Invalid PaymentIntent object in webhook for failure.");
+                }
 
-            //     await HandleFailedPayment(sessionId, metadata, failureReason);
-            // }
-            // --- End Optional Failure Handling ---
+                Console.WriteLine($"Webhook processing: {stripeEvent.Type} for Payment Intent ID: {paymentIntent.Id}");
+                // Pass PaymentIntent.Id as the first argument (instead of session ID)
+                await HandleFailedPayment(paymentIntent.Id, paymentIntent.Metadata, paymentIntent.LastPaymentError?.Message ?? "Payment failed");
+            }
+            // Handle other event types
             else
             {
-                Console.WriteLine($"Webhook Info: Unhandled event type: {stripeEvent.Type}");
-                // You might want to handle other event types here
+                Console.WriteLine($"Unhandled event type: {stripeEvent.Type}");
             }
 
-            return Ok(); // Return 200 OK to Stripe
+            return Ok();
         }
         catch (StripeException e)
         {
             Console.WriteLine($"Stripe Webhook Error: {e.Message}");
-            return BadRequest($"Webhook error: {e.Message}");
+            return BadRequest($"Stripe webhook signature error: {e.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Webhook Internal Server Error: {ex.Message}");
-            // Log the full exception details for debugging
-            Console.WriteLine(ex.ToString());
-            return StatusCode(500, "Internal server error");
+            Console.WriteLine($"Webhook Processing Error: {ex.Message}");
+            // Log the full exception details if needed
+            // Console.WriteLine(ex.ToString());
+            return StatusCode(500, "Internal server error during webhook processing.");
         }
     }
 
-    // --- Helper method to handle failed payments (Moved inside PaymentController) ---
-    private async Task HandleFailedPayment(string? sessionId, Dictionary<string, string>? metadata, string failureReason)
+    // --- Helper Method for Failed Payments ---
+    // Modified to handle lookup by SessionId, PaymentIntentId, or internalOrderId from metadata
+    private async Task HandleFailedPayment(string? identifier, Dictionary<string, string>? metadata, string failureReason)
     {
-        Console.WriteLine($"Handling failed payment. Session ID: {sessionId}, Reason: {failureReason}");
+        Console.WriteLine($"HandleFailedPayment called. Identifier: {identifier}, Reason: {failureReason}");
+        Order? order = null;
+
+        // 1. Try finding order by internalOrderId in metadata (most reliable if present)
         if (metadata != null && metadata.TryGetValue("internalOrderId", out var orderIdStr) && int.TryParse(orderIdStr, out var internalOrderId))
         {
-             var order = await _context.Orders.FindAsync(internalOrderId); // Use injected _context
-             if (order != null)
-             {
-                 if (order.Status == "Pending")
-                 {
-                     order.Status = "Failed";
-                     order.Notes = $"Payment failed: {failureReason}"; // Use Notes property added earlier
-                     await _context.SaveChangesAsync(); // Use injected _context
-                     Console.WriteLine($"Updated Order {internalOrderId} status to Failed due to: {failureReason}");
-                 }
-                 else
-                 {
-                     Console.WriteLine($"Order {internalOrderId} was not in Pending status (Status: {order.Status}). No update made for failure.");
-                 }
-             }
-             else
-             {
-                  Console.WriteLine($"Webhook Warning: Order with ID {internalOrderId} not found during failure handling.");
-             }
+            Console.WriteLine($"Attempting lookup by internalOrderId from metadata: {internalOrderId}");
+            order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == internalOrderId);
+        }
+
+        // 2. If not found via metadata and identifier looks like a session ID (cs_...)
+        if (order == null && identifier?.StartsWith("cs_") == true)
+        {
+            Console.WriteLine($"Attempting lookup by StripeSessionId: {identifier}");
+            order = await _context.Orders.FirstOrDefaultAsync(o => o.StripeSessionId == identifier);
+        }
+        // 3. If not found via metadata or session ID, and identifier looks like a payment intent ID (pi_...)
+        // IMPORTANT: This relies on the Order model having a StripePaymentIntentId field,
+        // which should be populated during the checkout.session.completed event.
+        // If the field doesn't exist, this lookup will fail or cause an error.
+        else if (order == null && identifier?.StartsWith("pi_") == true)
+        {
+            Console.WriteLine($"Attempting lookup by StripePaymentIntentId: {identifier}");
+             // Check if the Order model actually has StripePaymentIntentId before uncommenting/using this.
+             // If Order model was updated as per the checkout.session.completed logic, this should work.
+             order = await _context.Orders.FirstOrDefaultAsync(o => o.StripePaymentIntentId == identifier);
+             // --- Temporary Workaround/Placeholder if StripePaymentIntentId doesn't exist yet ---
+             // If StripePaymentIntentId is not yet on the Order model, we cannot directly link
+             // payment_intent.failed events reliably without metadata. Log this issue.
+             // Console.WriteLine("WARNING: Lookup by StripePaymentIntentId skipped. Verify Order model has StripePaymentIntentId field and it's populated.");
+             // You might need alternative logic here, e.g., querying related Sessions if PI metadata is empty.
+             // For now, we proceed without finding the order via PI ID if the field is missing.
+        }
+
+        if (order != null)
+        {
+            // Check if already failed to avoid redundant updates
+            if (order.Status != "Failed")
+            {
+                Console.WriteLine($"Order found (ID: {order.Id}). Updating status to Failed.");
+                order.Status = "Failed";
+                // Append failure reason to notes, preserving existing notes
+                order.Notes = string.IsNullOrEmpty(order.Notes)
+                    ? $"Payment Failed: {failureReason}"
+                    : $"{order.Notes} | Payment Failed: {failureReason}";
+
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Order {order.Id} status updated to Failed.");
+            }
+            else
+            {
+                Console.WriteLine($"Order {order.Id} already marked as Failed. No status change needed.");
+            }
         }
         else
         {
-             Console.WriteLine($"Webhook Warning: Could not find/parse internalOrderId in metadata for failed payment session {sessionId}.");
+            Console.WriteLine($"HandleFailedPayment Warning: Could not find corresponding order for identifier '{identifier}' or associated metadata.");
+            // Consider logging more details from metadata if available
+            if (metadata != null && metadata.Any())
+            {
+                var metaDetails = string.Join(", ", metadata.Select(kv => $"{kv.Key}={kv.Value}"));
+                Console.WriteLine($"Metadata received: {metaDetails}");
+            }
         }
     }
     // --- End Helper Method ---
