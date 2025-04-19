@@ -139,6 +139,12 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] 🧊 **Code Style Consistency:** Run linters/formatters (ESLint, Prettier for frontend; .NET formatting tools for backend) across the codebase.
 -   [ ] 🧊 **Review Redundant Order Logic:** Investigate `placeOrder` and `createOrder` methods in `ShoppingService.ts` (lines ~222-257). Determine if this non-Stripe order flow is necessary or if it should be removed to avoid confusion with the primary Stripe payment process. (`ShoppingService.ts`)
 -   [ ] 🧊 **Centralize Stripe Configuration:** Move Stripe API key initialization (`StripeConfiguration.ApiKey = ...`) from `UserPaymentController.cs` constructor to a central location during application startup (e.g., `Program.cs`). (`UserPaymentController.cs`, `Program.cs`)
+-   [x] 🧊 **Style Audit: Refactor Dashboard Button Styles:** Replace custom/redefined button styles (`.button`, `.primary-button`, `.secondary-button`, `.edit-button`, `.add-button`, `.save-btn`) with the global `.standard-button` class and modifiers. (`store-owner-dashboard.component.css`, `profile.component.css`, `settings.component.css`, `product-management.component.css`)
+-   [ ] 🧊 **Style Audit: Refactor Dashboard Table Styles:** Ensure consistency with global `.standard-table` styles, particularly background and border styles. (`product-management.component.css`, `profile.component.css`)
+-   [ ] 🧊 **Style Audit: Refactor Dashboard Form Styles:** Harmonize form element styles, removing non-standard background colors and redundant definitions. (`product-management.component.css`, `settings.component.css`)
+-   [ ] 🧊 **Style Audit: Replace Hardcoded Values with CSS Variables:** Replace hardcoded colors, shadows, border-radii, and spacing values with appropriate global CSS variables defined in `styles.css`. (Affects multiple dashboard component CSS files)
+-   [ ] 🧊 **Style Audit: Remove Component-Level `:root` Variables:** Remove the `:root` definition from `profile.component.css` and use global variables instead. (`profile.component.css`)
+-   [ ] 🧊 **Style Audit: General Style Consistency Pass:** Perform a general pass over dashboard components to ensure consistent use of global styles and patterns defined in `README-STYLES.md`. (Affects multiple dashboard component CSS files)
 
 ## ✅ Testing
 
@@ -177,3 +183,26 @@ This document tracks pending tasks, potential improvements, and areas needing at
         -   `WebClient/src/app/components/store-owner-layout/overview/overview.component.css`
         -   `WebClient/src/app/components/store-owner-layout/profile/profile.component.css`
         -   `WebClient/src/app/components/store-owner-layout/settings/settings.component.css`
+    - [ ] ⚠️ **Style Audit based on README-STYLES.md**
+    - **Goal:** Perform a comprehensive style audit of the frontend codebase (`WebClient/src/`) against the guidelines defined in `WebClient/src/README-STYLES.md`.
+    - **Context:** The `README-STYLES.md` file defines the core theme (CSS variables), global styles, and component styling patterns (like buttons, forms, cards) intended for use across the application, particularly demonstrated in the Landing Page, Login, and Register components.
+    - **Acceptance Criteria:**
+        - All relevant frontend styling files (`.css`, `.scss`) within `WebClient/src/` are reviewed.
+        - A list of deviations from `README-STYLES.md` is generated, including:
+            - File path and line number of the deviation.
+            - Description of the deviation (e.g., "Hardcoded color `#FFFFFF` used instead of `var(--color-text-on-primary)`").
+            - Reference to the specific variable or rule in `README-STYLES.md` that should have been used.
+            - A suggested correction based on the guidelines.
+        - Audit focuses on:
+            - Consistent use of defined CSS variables (colors, fonts, spacing, radii, shadows).
+            - Adherence to defined spacing units/patterns.
+            - Correct usage of the primary font (`--main-font-fam`).
+            - Consistent application of standard button styles (`.standard-button`) and component-specific styles where appropriate (e.g., `#login-btn`).
+            - Consistent application of form element styles (inputs, labels, error messages).
+            - Consistent application of card styles (where applicable).
+            - Identification of styles that deviate significantly or use hardcoded values where variables exist.
+            - Identification of styles used in components *not* covered by variables/classes in `README-STYLES.md` (flag for potential addition to the guide).
+    - **Files:**
+        - **Input:** `WebClient/src/README-STYLES.md`
+        - **Target Scope:** `WebClient/src/**/*.css`, `WebClient/src/**/*.scss` (Primary focus), `WebClient/src/**/*.html` (Secondary check for class usage consistency)
+    - **Notes:** Focus purely on style adherence as defined in the guide. Do not suggest functional changes or major refactoring beyond style correction.

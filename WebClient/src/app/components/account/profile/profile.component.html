@@ -29,9 +29,8 @@
         <i class="fas fa-user-circle section-icon"></i>
         Account Information
       </h2>
-      <button class="edit-button" *ngIf="!editMode" (click)="toggleEditMode()">
-        <i class="fas fa-edit"></i>
-        <span>Edit Profile</span>
+      <button class="standard-button secondary small" *ngIf="!editMode" (click)="toggleEditMode()">
+        Edit<i class="fas fa-edit ml-2"></i>
       </button>
     </div>
 
@@ -314,9 +313,9 @@
             <i class="fas fa-check-circle"></i>
             Set as Default
           </button>
-          <button class="delete" (click)="deleteAddress(address.id!)">
-            <i class="fas fa-trash"></i>
-            Delete
+          <button class="standard-button secondary small danger" (click)="deleteAddress(address.id!)">
+            <i class="fas fa-trash-alt"></i>
+            <span>Delete</span>
           </button>
         </div>
       </div>
@@ -392,9 +391,9 @@
             <i class="fas fa-check-circle"></i>
             Set as Default
           </button>
-          <button class="delete" (click)="deletePaymentMethod(method.id)">
-            <i class="fas fa-trash"></i>
-            Delete
+          <button class="standard-button secondary small danger" (click)="deletePaymentMethod(method.id)">
+            <i class="fas fa-trash-alt"></i>
+            <span>Delete</span>
           </button>
         </div>
       </div>
@@ -433,9 +432,8 @@
             <i class="fas fa-eye"></i>
             View List
           </button>
-          <button class="delete" (click)="deleteWishList(list.id)">
-            <i class="fas fa-trash"></i>
-            Delete
+          <button class="standard-button secondary small danger" (click)="deleteWishList(list.id)">
+            <i class="fas fa-trash-alt"></i>
           </button>
         </div>
       </div>

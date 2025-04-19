@@ -2,7 +2,7 @@
   <div id="account-info" class="section" role="region" aria-labelledby="account-info-heading">
     <h2 id="account-info-heading">Account Info</h2>
     <div class="edit-wrapper">
-      <button id="edit-btn" class="center-spaced" aria-label="Edit Account Information">
+      <button id="edit-btn" class="standard-button secondary small center-spaced" aria-label="Edit Account Information">
         Edit<i class="fa-solid fa-pencil" aria-hidden="true"></i>
       </button>
     </div>
@@ -36,7 +36,7 @@
   <div id="payment-methods" class="section" role="region" aria-labelledby="payment-methods-heading">
     <div class="header-actions">
       <h2 id="payment-methods-heading">Payment Methods</h2>
-      <button class="add-button" (click)="toggleAddPayment()" [attr.aria-expanded]="showAddPayment" aria-controls="payment-form">
+      <button class="standard-button primary" (click)="toggleAddPayment()" [attr.aria-expanded]="showAddPayment" aria-controls="payment-form">
         {{ showAddPayment ? 'Cancel' : 'Add New Payment Method' }}
       </button>
     </div>
@@ -57,7 +57,7 @@
       <div class="security-notice">
         <p>Your payment information is securely handled by Stripe.</p>
       </div>
-      <button type="button" (click)="savePaymentMethod()" [disabled]="isSavingPaymentMethod || !stripe || !cardElement">
+      <button type="button" class="standard-button primary" (click)="savePaymentMethod()" [disabled]="isSavingPaymentMethod || !stripe || !cardElement">
         {{ isSavingPaymentMethod ? 'Saving...' : 'Save Payment Method' }}
       </button>
     </form>
@@ -76,8 +76,8 @@
           <p>Expires: {{ method.expiryMonth }}/{{ method.expiryYear }}</p>
         </div>
         <div class="payment-actions">
-          <button *ngIf="!method.isDefault" (click)="setDefaultPaymentMethod(method.id)">Set as Default</button>
-          <button class="delete" (click)="deletePaymentMethod(method.id)">Delete</button>
+          <button *ngIf="!method.isDefault" class="standard-button secondary small" (click)="setDefaultPaymentMethod(method.id)">Set as Default</button>
+          <button class="standard-button secondary small danger" (click)="deletePaymentMethod(method.id)">Delete</button>
         </div>
       </div>
     </div>
@@ -158,7 +158,7 @@
   <div id="delivery-addresses" class="section" role="region" aria-labelledby="delivery-addresses-heading">
     <div class="header-actions">
       <h2 id="delivery-addresses-heading">Delivery Addresses</h2>
-      <button class="add-button" (click)="toggleAddDelivery()" [attr.aria-expanded]="showAddDelivery" aria-controls="address-form">
+      <button class="standard-button primary" (click)="toggleAddDelivery()" [attr.aria-expanded]="showAddDelivery" aria-controls="address-form">
         {{ showAddDelivery ? 'Cancel' : 'Add New Address' }}
       </button>
     </div>
@@ -218,7 +218,7 @@
         <label for="isDefault">Set as default address</label>
       </div>
 
-      <button type="submit" [disabled]="deliveryForm.invalid">Save Address</button>
+      <button type="submit" class="standard-button primary" [disabled]="deliveryForm.invalid">Save Address</button>
     </form>
 
     <!-- List of addresses -->
@@ -236,8 +236,8 @@
           <p>{{ address.phone }}</p>
         </div>
         <div class="address-actions">
-          <button *ngIf="!address.isDefault" (click)="address.id && setDefaultAddress(address.id)">Set as Default</button>
-          <button class="delete" (click)="address.id && deleteAddress(address.id)">Delete</button>
+          <button *ngIf="!address.isDefault" class="standard-button secondary small" (click)="address.id && setDefaultAddress(address.id)">Set as Default</button>
+          <button class="standard-button secondary small danger" (click)="address.id && deleteAddress(address.id)">Delete</button>
         </div>
       </div>
     </div>
@@ -267,28 +267,14 @@
     </div>
     
     <div *ngIf="wishlists && wishlists.length > 0" class="wishlist-grid" role="list">
-      <div *ngFor="let list of wishlists" class="wishlist-card" role="listitem">
-        <div class="wishlist-header">
-          <h3 class="wishlist-name">{{ list.name }}</h3>
-          <span class="wishlist-count">{{ list.items?.length || 0 }} items</span>
+      <div class="wishlist-item" *ngFor="let list of wishlists">
+        <div class="wishlist-info">
+          <h4>{{ list.name }}</h4>
+          <p>{{ list.itemCount }} items</p>
         </div>
-        
-        <div class="wishlist-preview" *ngIf="list.items && list.items.length > 0">
-          <!-- Preview of items in wishlist -->
-          <div class="preview-items">
-            <img *ngFor="let item of list.items.slice(0, 3)" [src]="item.image" [alt]="item.name" class="preview-item-image">
-            <div *ngIf="list.items.length > 3" class="more-items">+{{ list.items.length - 3 }}</div>
-          </div>
-        </div>
-        
-        <div class="wishlist-actions">
-          <button class="edit-button" [attr.aria-label]="'View ' + list.name + ' wish list'">
-            View List
-          </button>
-          <button class="delete" [attr.aria-label]="'Delete ' + list.name + ' wish list'">
-            <i class="fa-solid fa-trash" aria-hidden="true"></i>
-          </button>
-        </div>
+        <button class="standard-button secondary small" [attr.aria-label]="'View ' + list.name + ' wish list'">
+          View <i class="fa-solid fa-eye" aria-hidden="true"></i>
+        </button>
       </div>
     </div>
   </div>

@@ -178,12 +178,29 @@
   margin-top: var(--header-height);
   width: calc(100% - var(--sidebar-width-desktop));
   transition: all 0.3s ease;
-  overflow: hidden;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .main-content.sidebar-collapsed {
   margin-left: var(--sidebar-collapsed-width);
   width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+/* Animation for content transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease;
 }
 
 /* Responsive Adjustments */
@@ -267,18 +284,4 @@
   .sidebar {
     width: 85%;
   }
-}
-
-/* Animation styles */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.fade-in {
-  animation: fadeIn 0.3s ease-in-out;
 } 
