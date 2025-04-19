@@ -9,6 +9,14 @@
   justify-content: center;
 }
 
+/* Add margin-left for desktop views to account for sidebar */
+@media (min-width: 992px) {
+  #container {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+  }
+}
+
 #main {
   width: 100%;
   max-width: 1200px;
@@ -260,6 +268,120 @@
   }
   
   .chart-container {
+    height: 180px;
+  }
+}
+
+/* Component-specific styles */
+
+/* Custom chart styles */
+.custom-chart-container {
+  height: 250px;
+  overflow: hidden;
+}
+
+/* Quick stats cards */
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.quick-stat-card {
+  background-color: white;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.quick-stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--main-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.quick-stat-label {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.quick-stat-trend {
+  margin-top: var(--spacing-xs);
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.trend-up {
+  color: var(--color-success);
+}
+
+.trend-down {
+  color: var(--color-error);
+}
+
+/* Recent activity */
+.activity-item {
+  display: flex;
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color-light);
+  gap: var(--spacing-sm);
+  align-items: flex-start;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  background-color: rgba(0, 0, 0, 0.05);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex-grow: 1;
+}
+
+.activity-title {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.activity-time {
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .quick-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .quick-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .custom-chart-container {
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-chart-container {
     height: 180px;
   }
 }

@@ -451,6 +451,140 @@
   }
 }
 
+/* Component-specific styles */
+
+/* Order grid layouts */
+.order-section,
+.total-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--spacing-xl);
+  row-gap: var(--spacing-xl);
+}
+
+#order-graph,
+#total-graph {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+/* Order item styles */
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-item-details {
+  flex-grow: 1;
+}
+
+.order-item-id {
+  font-weight: 600;
+  color: var(--main-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.order-item-customer {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.order-item-price {
+  font-weight: 600;
+  color: var(--second-color);
+}
+
+.order-item-date {
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary);
+}
+
+/* Custom order status badges */
+.status-badge.shipped {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.status-badge.delivered {
+  background-color: rgba(5, 150, 105, 0.2);
+  color: #059669;
+}
+
+.status-badge.cancelled {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.status-badge.returned {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+/* Order filters */
+.order-filters {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.filter-label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--main-color);
+}
+
+.filter-select {
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .order-section,
+  .total-section {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  #order-graph,
+  #total-graph {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+  }
+  
+  .order-filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .order-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .order-item-price {
+    margin-top: var(--spacing-xs);
+  }
+}
+
 
 
 
