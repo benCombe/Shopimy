@@ -108,12 +108,23 @@ namespace Server.Controllers
         [Authorize]
         public async Task<ActionResult<StoreDetails>> GetCurrentUserStore()
         {
-            // Get the user ID from the token
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Use constant
-            // Use TryParse for safety
-            if (!int.TryParse(userIdClaim, out var userId) || userId == 0)
+            // Get the user ID from the token - look for numeric claim
+            int userId = 0;
+            var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
+            
+            // Try to find the claim with numeric value (user ID)
+            foreach (var claim in nameIdentifierClaims)
             {
-                Console.WriteLine($"ERROR (GetCurrentUserStore): Failed to parse User ID from claim. Value was: '{userIdClaim ?? "NULL"}'");
+                if (int.TryParse(claim.Value, out int parsedId) && parsedId > 0)
+                {
+                    userId = parsedId;
+                    break;
+                }
+            }
+            
+            if (userId == 0)
+            {
+                Console.WriteLine("ERROR (GetCurrentUserStore): Failed to find a valid numeric User ID from claims.");
                 return Unauthorized("Invalid user authentication token.");
             }
 
@@ -187,17 +198,53 @@ namespace Server.Controllers
             Console.WriteLine("--- End Claim Dump ---");
             // === DETAILED CLAIM LOGGING END ===
 
-
-            // Get the user ID from the token
-            // Use ClaimTypes.NameIdentifier for consistency
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Use ClaimTypes constant
-            Console.WriteLine($"DEBUG: Found NameIdentifier claim value: {userIdClaim ?? "NULL"}"); // Keep debug for now
-            if (!int.TryParse(userIdClaim, out var userId) || userId == 0) // Use TryParse for safety
+            // Get the user ID from the token - look for numeric claim
+            int userId = 0;
+            var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
+            
+            // Try to find the claim with numeric value (user ID)
+            foreach (var claim in nameIdentifierClaims)
             {
-                // Log the problematic claim value for easier debugging
-                Console.WriteLine($"ERROR: Failed to parse User ID from claim. Value was: '{userIdClaim ?? "NULL"}'");
-                return Unauthorized("Invalid user authentication token."); // More specific error
+                if (int.TryParse(claim.Value, out int parsedId) && parsedId > 0)
+                {
+                    userId = parsedId;
+                    break;
+                }
             }
+            
+            if (userId == 0)
+            {
+                Console.WriteLine("ERROR: Failed to find a valid numeric User ID from claims.");
+                return Unauthorized("Invalid user authentication token.");
+            }
+
+            // Get user email from the non-numeric claim with NameIdentifier type
+            // or from the Subject claim which should have the email
+            string userEmail = "";
+            foreach (var claim in nameIdentifierClaims)
+            {
+                if (!int.TryParse(claim.Value, out _) && claim.Value.Contains('@'))
+                {
+                    userEmail = claim.Value;
+                    break;
+                }
+            }
+            
+            // Fallback to using the Sub claim if needed
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                userEmail = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            }
+            
+            if (string.IsNullOrEmpty(userEmail) || !userEmail.Contains('@'))
+            {
+                Console.WriteLine("ERROR: Failed to find a valid email address in the claims.");
+                // We'll continue with a default value since we have the user ID
+                userEmail = $"user{userId}@example.com";
+            }
+
+            // Extract username from email (part before the @ symbol)
+            string username = userEmail.Split('@')[0];
 
             // Check if user already has a store
             var existingStore = await _context.Stores
@@ -219,11 +266,22 @@ namespace Server.Controllers
                 return BadRequest("Store URL already exists");
             }
 
-            // Create new store
+            // Check if store name (username) already exists
+            string storeName = username;
+            int suffix = 1;
+            
+            // Keep checking with incrementing numbers until we find a unique name
+            while (await _context.Stores.AnyAsync(s => s.Name == storeName))
+            {
+                storeName = $"{username}{suffix}";
+                suffix++;
+            }
+
+            // Create new store with the extracted and validated username
             var store = new Store
             {
                 StoreOwnerId = userId,
-                Name = storeDetails.Name,
+                Name = storeName,
                 StoreUrl = storeDetails.URL
             };
 
@@ -240,7 +298,7 @@ namespace Server.Controllers
                 FontColor = storeDetails.FontColor,
                 FontFamily = storeDetails.FontFamily,
                 BannerText = storeDetails.BannerText,
-                LogoText = storeDetails.LogoText,
+                LogoText = storeDetails.LogoText ?? storeName, // Default LogoText to store name if not provided
                 ComponentVisibility = storeDetails.ComponentVisibility
             };
 
@@ -266,8 +324,9 @@ namespace Server.Controllers
             
             await _context.SaveChangesAsync();
 
-            // Return the created store details
+            // Return the created store details with the actual store name used
             storeDetails.Id = store.StoreId;
+            storeDetails.Name = storeName; // Update the name in the response
             return CreatedAtAction(nameof(GetStoreDetails), new { url = store.StoreUrl }, storeDetails);
         }
 
@@ -276,15 +335,24 @@ namespace Server.Controllers
         [Authorize]
         public async Task<ActionResult<StoreDetails>> UpdateStore([FromBody] StoreDetails storeDetails)
         {
-            // Get the user ID from the token
-            // Use ClaimTypes.NameIdentifier for consistency
-            var userIdClaimUpdate = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Use ClaimTypes constant
-            Console.WriteLine($"DEBUG (Update): Found NameIdentifier claim value: {userIdClaimUpdate ?? "NULL"}"); // Keep debug for now
-            if (!int.TryParse(userIdClaimUpdate, out var userId) || userId == 0) // Use TryParse for safety
+            // Get the user ID from the token - look for numeric claim
+            int userId = 0;
+            var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
+            
+            // Try to find the claim with numeric value (user ID)
+            foreach (var claim in nameIdentifierClaims)
             {
-                // Log the problematic claim value for easier debugging
-                Console.WriteLine($"ERROR (Update): Failed to parse User ID from claim. Value was: '{userIdClaimUpdate ?? "NULL"}'");
-                return Unauthorized("Invalid user authentication token."); // More specific error
+                if (int.TryParse(claim.Value, out int parsedId) && parsedId > 0)
+                {
+                    userId = parsedId;
+                    break;
+                }
+            }
+            
+            if (userId == 0)
+            {
+                Console.WriteLine("ERROR (UpdateStore): Failed to find a valid numeric User ID from claims.");
+                return Unauthorized("Invalid user authentication token.");
             }
 
             // Check if this is the user's store

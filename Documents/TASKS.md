@@ -166,6 +166,16 @@ This document tracks pending tasks, potential improvements, and areas needing at
 
 ## ⚠️ Technical Debt & Refactoring
 
+-   [ ] 🔥 **Fix Store Name Derivation During Creation:** The store creation process (`StoreController.CreateStore`) incorrectly uses the user's full email address (e.g., `user@example.com`) as the default or initial store name. It should only use the username part (e.g., `user`).
+    -   **Description:** When a new store is created, the logic assigns the owner's email directly to the `Store.Name` field. This leads to invalid store names and potentially violates database constraints if the name needs to be unique or has character restrictions.
+    -   **Impact:** Incorrect store names are created, potentially causing errors or user confusion. The `store_url` might also be derived incorrectly if based on the name.
+    -   **Action:** Modify the backend logic (likely in `StoreController.cs`) where the store name is assigned during creation. Extract the username part from the user's email (the part before the '@' symbol) and use that as the initial store name. Ensure this extracted name is checked for uniqueness before saving.
+    -   **Files:** `Server/Controllers/StoreController.cs`, `Server/Models/Store.cs`, `Server/Models/StoreDetails.cs`
+    -   **Acceptance Criteria:**
+        *   New stores created have their `Name` field populated with the username part of the owner's email.
+        *   The store creation process completes successfully without errors related to the store name format.
+        *   The generated store name is checked for uniqueness against existing store names.   
+
 -   [X] ⚠️ **Review `ItemsController.cs`:** Removed the old commented-out `ItemsController.cs` as it was replaced by the updated `ItemController.cs`.
 -   [ ] 🧊 **Refactor Large Components:** Review components for potential breakdown into smaller, reusable parts (check against `.cursorrules` file size limit).
 -   [ ] 🧊 **Consolidate API Calls:** Review frontend services for potential consolidation or optimization of HTTP requests.
