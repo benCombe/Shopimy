@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Item } from '../models/item'; // Assume you have this model
 import { StoreDetails } from '../models/store-details';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators'; // For simulating async operations
 import { ComponentVisibility, DEFAULT_VISIBILITY } from '../models/component-visibility.model';
+import { CookieService } from './cookie.service'; // Import CookieService
 
 // Define an interface for API serialization that extends StoreDetails
 interface StoreDetailsForApi extends Omit<StoreDetails, 'componentVisibility'> {
@@ -33,7 +34,11 @@ export class StoreService {
   activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "", []));
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router ) { }
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private cookieService: CookieService // Inject CookieService
+  ) { }
 
   // Use BehaviorSubject to hold the current theme and allow easy access/updates
   // Initialize with a default theme or load from local storage/backend
@@ -46,8 +51,14 @@ export class StoreService {
   createStore(storeData: StoreDetails): Observable<StoreDetails> {
     // Convert to API format (serialize componentVisibility)
     const storeDataForApi = this.prepareStoreDataForApi(storeData);
+    const token = this.cookieService.get('auth_token'); // Get token from CookieService
+    if (!token) {
+      console.error('Authentication token not found. Cannot create store.');
+      return throwError(() => new Error('Authentication required.'));
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Create headers
 
-    return this.http.post<StoreDetails>(this.apiUrl, storeDataForApi).pipe(
+    return this.http.post<StoreDetails>(this.apiUrl, storeDataForApi, { headers }).pipe( // Add headers to request
       tap((newStore) => {
         // Update the active store
         this.activeStoreSubject.next(this.deserializeStore(newStore));
@@ -62,7 +73,14 @@ export class StoreService {
 
   // Get the current user's store
   getCurrentUserStore(): Observable<StoreDetails> {
-    return this.http.get<StoreDetails>(this.apiUrl).pipe(
+    const token = this.cookieService.get('auth_token'); // Get token from CookieService
+    if (!token) {
+      console.error('Authentication token not found. Cannot get user store.');
+      return throwError(() => new Error('Authentication required.'));
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Create headers
+
+    return this.http.get<StoreDetails>(this.apiUrl, { headers }).pipe( // Add headers to request
       map(store => this.deserializeStore(store)),
       tap(store => {
         this.activeStoreSubject.next(store);
@@ -186,9 +204,15 @@ export class StoreService {
   updateStore(store: StoreDetails): Observable<StoreDetails> {
     // Convert to API format (serialize componentVisibility)
     const storeDataForApi = this.prepareStoreDataForApi(store);
+    const token = this.cookieService.get('auth_token'); // Get token from CookieService
+    if (!token) {
+      console.error('Authentication token not found. Cannot update store.');
+      return throwError(() => new Error('Authentication required.'));
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Create headers
     
     // Send update to backend
-    return this.http.put<StoreDetails>(`${this.apiUrl}/update`, storeDataForApi).pipe(
+    return this.http.put<StoreDetails>(`${this.apiUrl}/update`, storeDataForApi, { headers }).pipe( // Add headers to request
       map(response => this.deserializeStore(response)),
       tap(updatedStore => {
         // Update the BehaviorSubject with the response from the server

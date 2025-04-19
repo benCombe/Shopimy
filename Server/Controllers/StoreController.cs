@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Linq; // Add this for LINQ operations on claims
 
 
 namespace Server.Controllers
@@ -108,10 +109,12 @@ namespace Server.Controllers
         public async Task<ActionResult<StoreDetails>> GetCurrentUserStore()
         {
             // Get the user ID from the token
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-            if (userId == 0)
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Use constant
+            // Use TryParse for safety
+            if (!int.TryParse(userIdClaim, out var userId) || userId == 0)
             {
-                return Unauthorized("Invalid user authentication");
+                Console.WriteLine($"ERROR (GetCurrentUserStore): Failed to parse User ID from claim. Value was: '{userIdClaim ?? "NULL"}'");
+                return Unauthorized("Invalid user authentication token.");
             }
 
             // Find store for this user
@@ -168,11 +171,32 @@ namespace Server.Controllers
         [Authorize]
         public async Task<ActionResult<StoreDetails>> CreateStore([FromBody] StoreDetails storeDetails)
         {
-            // Get the user ID from the token
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-            if (userId == 0)
+            // === DETAILED CLAIM LOGGING START ===
+            Console.WriteLine("--- Dumping Claims in CreateStore ---");
+            if (User?.Identity?.IsAuthenticated == true)
             {
-                return Unauthorized("Invalid user authentication");
+                foreach (var claim in User.Claims)
+                {
+                    Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("User is not authenticated or ClaimsPrincipal is null.");
+            }
+            Console.WriteLine("--- End Claim Dump ---");
+            // === DETAILED CLAIM LOGGING END ===
+
+
+            // Get the user ID from the token
+            // Use ClaimTypes.NameIdentifier for consistency
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Use ClaimTypes constant
+            Console.WriteLine($"DEBUG: Found NameIdentifier claim value: {userIdClaim ?? "NULL"}"); // Keep debug for now
+            if (!int.TryParse(userIdClaim, out var userId) || userId == 0) // Use TryParse for safety
+            {
+                // Log the problematic claim value for easier debugging
+                Console.WriteLine($"ERROR: Failed to parse User ID from claim. Value was: '{userIdClaim ?? "NULL"}'");
+                return Unauthorized("Invalid user authentication token."); // More specific error
             }
 
             // Check if user already has a store
@@ -253,10 +277,14 @@ namespace Server.Controllers
         public async Task<ActionResult<StoreDetails>> UpdateStore([FromBody] StoreDetails storeDetails)
         {
             // Get the user ID from the token
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-            if (userId == 0)
+            // Use ClaimTypes.NameIdentifier for consistency
+            var userIdClaimUpdate = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Use ClaimTypes constant
+            Console.WriteLine($"DEBUG (Update): Found NameIdentifier claim value: {userIdClaimUpdate ?? "NULL"}"); // Keep debug for now
+            if (!int.TryParse(userIdClaimUpdate, out var userId) || userId == 0) // Use TryParse for safety
             {
-                return Unauthorized("Invalid user authentication");
+                // Log the problematic claim value for easier debugging
+                Console.WriteLine($"ERROR (Update): Failed to parse User ID from claim. Value was: '{userIdClaimUpdate ?? "NULL"}'");
+                return Unauthorized("Invalid user authentication token."); // More specific error
             }
 
             // Check if this is the user's store

@@ -6,6 +6,11 @@ using Microsoft.OpenApi.Models;
 using Server.Data;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+
+// Clear default claim mappings
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var builder = WebApplication.CreateBuilder(args);
 

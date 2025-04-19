@@ -30,6 +30,9 @@ namespace Server.Models
         [Column("log_timestamp")]
         public DateTime? LogTimestamp {get; set;}
 
+        // Parameterless constructor for EF Core
+        public OrderLogEntry() {}
+
         public OrderLogEntry(
             int OrderId,
             int StoreId,
