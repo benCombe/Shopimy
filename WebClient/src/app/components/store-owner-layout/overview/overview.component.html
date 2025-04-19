@@ -5,34 +5,50 @@
   </div>
 
   <div class="dashboard-grid">
-    <!-- Recent Purchases Card -->
+    <!-- Recent Sales Card -->
     <div class="dashboard-card">
       <div class="card-header">
-        <h2>Recent Purchases</h2>
+        <h2>Recent Sales</h2>
       </div>
       <div class="card-content">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Amounts</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Product 1</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>Product 2</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <td>Product 3</td>
-              <td>2</td>
-            </tr>
-          </tbody>
-        </table>
+        <div *ngIf="isLoading" class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading recent orders...</p>
+        </div>
+        
+        <div *ngIf="error" class="error-message">
+          <p>{{ error }}</p>
+          <button class="standard-button" (click)="loadRecentOrders()">Retry</button>
+        </div>
+        
+        <div *ngIf="!isLoading && !error">
+          <table class="data-table" *ngIf="recentOrders.length > 0">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of recentOrders">
+                <td>{{ order.customerName }}</td>
+                <td>{{ order.orderDate | date:'MMM d, y' }}</td>
+                <td>{{ order.totalAmount | currency }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="'status-' + order.status.toLowerCase()">
+                    {{ order.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div *ngIf="recentOrders.length === 0" class="empty-state">
+            <p>No orders found. Start selling to see your orders here!</p>
+          </div>
+        </div>
       </div>
     </div>
 

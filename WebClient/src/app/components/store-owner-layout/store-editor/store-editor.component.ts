@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { NgFor } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NgFor, NgIf } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user';
 import { Subscription } from 'rxjs';
@@ -8,14 +10,24 @@ import { StoreService } from '../../../services/store.service';
 import { StoreDetails } from '../../../models/store-details';
 import { StoreTheme } from '../../../models/store-theme.model';
 import { StorePreviewComponent } from '../../shared/store-preview/store-preview.component';
+import { ComponentVisibility, DEFAULT_VISIBILITY } from '../../../models/component-visibility.model';
+import { ThemesComponent } from '../themes/themes.component';
+import { ProductManagementComponent } from '../product-management/product-management.component';
+import { LoadingService } from '../../../services/loading.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-store-editor',
   standalone: true,
   imports: [
     NgFor,
+    NgIf,
     FormsModule,
-    StorePreviewComponent
+    ReactiveFormsModule,
+    StorePreviewComponent,
+    ThemesComponent,
+    ProductManagementComponent,
+    RouterLink
   ],
   templateUrl: './store-editor.component.html',
   styles: [`
@@ -209,25 +221,60 @@ import { StorePreviewComponent } from '../../shared/store-preview/store-preview.
       padding-top: 24px;
       display: flex;
       justify-content: flex-end;
+      gap: 10px;
     }
     
-    .save-btn {
-      padding: 10px 20px;
-      background-color: var(--second-color);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
+    .standard-form-group {
+      margin-bottom: 16px;
+    }
+    
+    .standard-form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      color: var(--main-color);
+    }
+    
+    .standard-form-control {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.9rem;
       font-family: var(--main-font-fam);
     }
     
-    .save-btn:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    .text-danger {
+      color: #dc3545;
+      font-size: 0.8rem;
+      margin-top: 4px;
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 16px;
+    }
+    
+    .tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      color: var(--main-color);
+      font-size: 0.9rem;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .tab.active {
+      border-bottom-color: var(--second-color);
+      font-weight: 500;
+    }
+    
+    .tab-content {
+      min-height: 300px;
+    }
+    
+    .theme-preview {
+      margin-top: 20px;
     }
     
     @media (min-width: 1440px) {
@@ -247,95 +294,102 @@ import { StorePreviewComponent } from '../../shared/store-preview/store-preview.
         min-height: 600px;
       }
     }
-    
-    @media (max-width: 768px) {
-      .editor-container {
-        padding: 16px;
-      }
-      
-      .editor-content {
-        flex-direction: column;
-      }
-      
-      .component-panel {
-        width: 100%;
-        max-width: 100%;
-        min-width: auto;
-      }
-      
-      .editor-header h2 {
-        font-size: 1.5rem;
-      }
-      
-      .preview-panel {
-        min-height: 400px;
-      }
-      
-      .preview-frame-wrapper {
-        min-height: 350px;
-      }
-    }
   `]
 })
 export class StoreEditorComponent implements OnInit, OnDestroy {
+  @ViewChild('storeForm') storeForm!: NgForm;
+  @ViewChild(ThemesComponent) themesComponent!: ThemesComponent;
+  
   user: User | null | undefined;
   store: StoreDetails | null = null;
   private userSubscription: Subscription | undefined;
   private storeSubscription: Subscription | undefined;
   
-  // Initial component state
+  activeTab: string = 'basic'; // basic, theme, components, products
+  isInitialSetup: boolean = false;
+  isLoading: boolean = true;
+  formErrors: { [key: string]: string } = {};
+  
   availableComponents = [
-    { id: 'header', name: 'Header', isSelected: true },
+    { id: 'header', name: 'Header & Navigation', isSelected: true },
     { id: 'hero', name: 'Hero Banner', isSelected: true },
     { id: 'featured', name: 'Featured Products', isSelected: true },
-    { id: 'categories', name: 'Category Showcase', isSelected: false },
-    { id: 'testimonials', name: 'Testimonials', isSelected: false },
-    { id: 'newsletter', name: 'Newsletter Signup', isSelected: false },
+    { id: 'categories', name: 'Categories', isSelected: true },
+    { id: 'testimonials', name: 'Testimonials', isSelected: true },
+    { id: 'newsletter', name: 'Newsletter Signup', isSelected: true },
     { id: 'footer', name: 'Footer', isSelected: true }
   ];
 
   constructor(
     private userService: UserService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private loadingService: LoadingService,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.userSubscription = this.userService.activeUser$.subscribe(u => {
-      this.user = u;
+    this.loadingService.setIsLoading(true);
+    this.isLoading = true;
+    
+    // Get current user
+    this.userSubscription = this.userService.activeUser$.subscribe(user => {
+      this.user = user;
     });
     
-    // Subscribe to the active store
+    // Get current store details
     this.storeSubscription = this.storeService.activeStore$.subscribe(store => {
       if (store) {
         this.store = store;
-        this.updateComponentSelection();
+        // If store ID is 0, it means this is initial setup
+        this.isInitialSetup = !store.id;
+        
+        // Update component selection based on stored visibility
+        this.updateComponentSelectionFromStore();
+        
+        this.isLoading = false;
+        this.loadingService.setIsLoading(false);
       } else {
-        // Create a fallback store if none is returned
+        // No store found, handle initial setup
         this.initializeFallbackStore();
+        this.isLoading = false;
+        this.loadingService.setIsLoading(false);
       }
     });
   }
 
+  updateComponentSelectionFromStore() {
+    if (this.store && this.store.componentVisibility) {
+      // Update isSelected for each component based on store's componentVisibility
+      this.availableComponents.forEach(component => {
+        const key = component.id as keyof ComponentVisibility;
+        component.isSelected = this.store?.componentVisibility[key] !== false;
+      });
+    }
+  }
+
   initializeFallbackStore() {
-    // Create a default store if none is loaded
-    this.store = {
-      id: 0,
-      name: 'Default Store',
-      url: '',
-      theme_1: '#393727',
-      theme_2: '#D0933D',
-      theme_3: '#D3CEBB',
-      fontColor: '#333333',
-      fontFamily: '"Inria Serif", serif',
-      bannerText: 'Welcome to our store',
-      logoText: 'Store',
-      logoURL: '',
-      bannerURL: '',
-      categories: []
-    };
+    // Create a fallback store for initial setup with empty data
+    this.store = new StoreDetails(
+      0, 
+      '', 
+      '', 
+      '#393727', 
+      '#D0933D', 
+      '#D3CEBB', 
+      '#333333', 
+      'sans-serif', 
+      'Welcome to our store', 
+      '', 
+      '', 
+      '', 
+      [],
+      DEFAULT_VISIBILITY
+    );
+    this.isInitialSetup = true;
   }
 
   ngOnDestroy() {
+    // Clean up subscriptions to prevent memory leaks
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
@@ -344,72 +398,149 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateComponentSelection() {
-    // TODO: Update component selection based on store settings
-    // For now, just using the default selection
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
   }
 
   toggleComponent(component: any) {
     component.isSelected = !component.isSelected;
-    // Angular's change detection will update the preview automatically
-    // when the selectedComponents change
+    this.updateComponentVisibility();
+    this.updatePreview();
+  }
+  
+  updateComponentVisibility() {
+    if (!this.store) return;
+    
+    // Update the store's component visibility based on selected components
+    const visibility: ComponentVisibility = { ...DEFAULT_VISIBILITY };
+    
+    this.availableComponents.forEach(component => {
+      const key = component.id as keyof ComponentVisibility;
+      visibility[key] = component.isSelected;
+    });
+    
+    this.store.componentVisibility = visibility;
   }
 
   updatePreview() {
-    // No need to do anything here. Angular's change detection will update
-    // the preview automatically when the inputs change.
+    // This will be automatically handled by Angular's change detection
+    // as the inputs to the StorePreviewComponent will be updated
   }
 
   getSelectedComponentIds(): string[] {
     return this.availableComponents
-      .filter(c => c.isSelected)
-      .map(c => c.id);
+      .filter(component => component.isSelected)
+      .map(component => component.id);
   }
 
   getCurrentTheme(): StoreTheme | null {
-    if (!this.store) {
-      return {
-        mainColor: '#393727',
-        secondColor: '#D0933D',
-        thirdColor: '#D3CEBB',
-        altColor: '#d5d5d5',
-        mainFontFam: '"Inria Serif", serif'
-      };
-    }
+    if (!this.store) return null;
     
     return {
-      mainColor: this.store.theme_1 || '#393727',
-      secondColor: this.store.theme_2 || '#D0933D',
-      thirdColor: this.store.theme_3 || '#D3CEBB',
-      altColor: this.store.fontColor || '#d5d5d5',
-      mainFontFam: this.store.fontFamily || '"Inria Serif", serif'
+      mainColor: this.store.theme_1,
+      secondColor: this.store.theme_2,
+      thirdColor: this.store.theme_3,
+      altColor: this.store.fontColor,
+      mainFontFam: this.store.fontFamily
     };
+  }
+  
+  updateTheme(theme: StoreTheme) {
+    if (!this.store) return;
+    
+    this.store.theme_1 = theme.mainColor;
+    this.store.theme_2 = theme.secondColor;
+    this.store.theme_3 = theme.thirdColor;
+    this.store.fontColor = theme.altColor;
+    this.store.fontFamily = theme.mainFontFam;
+    
+    // Update preview
+    this.updatePreview();
+  }
+  
+  validateForm(): boolean {
+    this.formErrors = {};
+    let isValid = true;
+    
+    // Check store name
+    if (!this.store?.name) {
+      this.formErrors['name'] = 'Store name is required';
+      isValid = false;
+    }
+    
+    // Check store URL
+    if (!this.store?.url) {
+      this.formErrors['url'] = 'Store URL is required';
+      isValid = false;
+    } else if (!/^[a-z0-9-]+$/.test(this.store.url)) {
+      this.formErrors['url'] = 'URL can only contain lowercase letters, numbers, and hyphens';
+      isValid = false;
+    }
+    
+    return isValid;
   }
 
   saveChanges() {
-    if (!this.store) return;
+    if (!this.validateForm()) {
+      // Show appropriate tab with errors
+      if (this.formErrors['name'] || this.formErrors['url']) {
+        this.activeTab = 'basic';
+      }
+      return;
+    }
     
-    // Get selected components
-    const selectedComponents = this.getSelectedComponentIds();
+    this.loadingService.setIsLoading(true);
     
-    // Save the store with updated component configuration
-    // For now, just log the information
-    console.log('Saving store configuration:', {
-      storeId: this.store.id,
-      storeName: this.store.name,
-      selectedComponents: selectedComponents
-    });
+    // Make sure visibility is properly updated
+    this.updateComponentVisibility();
     
-    // In a real implementation, you would update the store with the component selection
-    // and then save it using the store service
-    // For example:
-    // this.store.componentConfig = JSON.stringify(selectedComponents);
-    // this.storeService.updateStore(this.store).subscribe({
-    //   next: () => console.log('Store saved successfully'),
-    //   error: (err) => console.error('Error saving store', err)
-    // });
-    
-    // Show a success message
-    alert('Store configuration saved successfully!');
+    if (this.isInitialSetup) {
+      // Create new store
+      this.storeService.createStore(this.store!).subscribe({
+        next: (createdStore) => {
+          this.store = createdStore;
+          this.isInitialSetup = false;
+          this.loadingService.setIsLoading(false);
+          
+          // Navigate to products page for further setup
+          this.router.navigate(['/dashboard'], { queryParams: { page: 'Products' } });
+        },
+        error: (error) => {
+          console.error('Error creating store:', error);
+          this.loadingService.setIsLoading(false);
+          
+          // Handle specific errors
+          if (error.message.includes('URL already exists')) {
+            this.formErrors['url'] = 'This URL is already taken. Please choose another one.';
+            this.activeTab = 'basic';
+          }
+        }
+      });
+    } else {
+      // Update existing store
+      this.storeService.updateStore(this.store!).subscribe({
+        next: (updatedStore) => {
+          this.store = updatedStore;
+          this.loadingService.setIsLoading(false);
+        },
+        error: (error) => {
+          console.error('Error updating store:', error);
+          this.loadingService.setIsLoading(false);
+          
+          // Handle specific errors
+          if (error.message.includes('URL already exists')) {
+            this.formErrors['url'] = 'This URL is already taken. Please choose another one.';
+            this.activeTab = 'basic';
+          }
+        }
+      });
+    }
+  }
+  
+  // Method to navigate to the store's public page
+  viewStore() {
+    if (this.store && this.store.url) {
+      window.open(`/${this.store.url}`, '_blank');
+    }
   }
 } 

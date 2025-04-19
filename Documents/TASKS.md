@@ -31,7 +31,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
     -   **Status:** Mostly complete. Backend APIs (`ItemController`, `CategoriesController`, `OrdersController`, `ImageController`), DB structure, and frontend services (`ItemService`, `CategoryService`, `OrderService`, `ImageService`) updated. `ProductManagementComponent` updated.
     -   **Remaining:** Verify/update other management components (`CategoryListComponent`, `OrdersComponent`) if they were affected or need similar refactoring. Improve error handling/loading states across all components.
 -   [X] ⚠️ **Verify & Update Frontend Management Components:**
-    -   **Description:** `ProductManagementComponent` updated to handle variant-specific image uploads (via URLs), draft/publish using `availFrom`, and manage variant add/remove during edits. Logic for CRUD operations verified. `ItemService` interfaces updated.
+    -   **Description:** `ProductManagementComponent` updated to handle variant-specific image uploads (via URL), draft/publish using `availFrom`, and manage variant add/remove during edits. Logic for CRUD operations verified. `ItemService` interfaces updated.
     -   **Files:** `ProductManagementComponent.ts`, `ProductManagementComponent.html`, `ItemService.ts`, `ImageController.cs`, `ItemController.cs`
 -   [ ] 🧊 **Refine Product Management CSS:** Update styles in `ProductManagementComponent.css` for new status badges and layout adjustments (e.g., variant image controls). (`ProductManagementComponent.css`)
 -   [ ] 🔥 **Test Product Management Lifecycle (In Progress):** Conduct thorough manual and automated testing for the complete product lifecycle (add, edit, delete).
@@ -57,7 +57,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
         *   Comprehensive manual test cases executed and passed.
         *   Detailed automated test plan implemented (Unit, Integration, E2E).
 -   [ ] ⚠️ **Verify Customer Product View Filtering:** Ensure customer-facing views (store page, category pages) correctly filter out draft (`availFrom IS NULL`) and future-scheduled (`availFrom > GETDATE()`) products based on backend logic. (Requires checking relevant frontend components and potentially backend query adjustments).
--   [x] 🔥 **Refactor Store Preview Component:** Modify `StorePreviewComponent` to dynamically render Angular components based on its `theme`, `selectedComponents`, and `storeData` inputs, instead of using a static iframe (`assets/preview.html`) and `postMessage`.
+-   [X] 🔥 **Refactor Store Preview Component:** Modify `StorePreviewComponent` to dynamically render Angular components based on its `theme`, `selectedComponents`, and `storeData` inputs, instead of using a static iframe (`assets/preview.html`) and `postMessage`.
     -   **Description:** The current preview uses a static HTML file and relies on `postMessage` to update content. This should be replaced with direct Angular rendering for a more integrated and accurate preview.
     -   **Steps:**
         1.  Remove the `iframe` element and related properties/logic (`previewUrl`, `frameLoaded`, `showFallback`, `ngAfterViewInit`, `onFrameLoad`, `onFrameError`) from `StorePreviewComponent.ts` and `.html`.
@@ -68,6 +68,23 @@ This document tracks pending tasks, potential improvements, and areas needing at
         6.  Remove the `sendUpdateToPreview` method and its calls from parent components (`StoreEditorComponent.ts`, `ThemesComponent.ts`) as Angular's change detection will now handle updates automatically when inputs change.
     -   **Files:** `StorePreviewComponent.ts`, `StorePreviewComponent.html`, `StorePreviewComponent.css`, `StoreEditorComponent.ts`, `ThemesComponent.ts`
     -   **Depends on:** Existence and functionality of individual store section components (Header, Hero, etc.). Task focuses on the preview structure, not creating those child components.
+-   [ ] 🔥 **Implement Initial Store Setup Workflow:**
+    -   **Description:** Currently, the `/dashboard` route (Store Owner Dashboard) shows an overview but lacks a dedicated flow for initial store setup or editing. Implement the UI and logic for a user to create/edit their store for the first time. This involves integrating theme selection, component selection, product addition, and store information editing into a cohesive workflow, likely centered around the `StoreEditorComponent`.
+    -   **Acceptance Criteria:**
+        *   User can navigate to a store creation/editing interface (e.g., via `StoreEditorComponent` within the dashboard).
+        *   UI elements are present for:
+            *   Setting Store Name and URL.
+            *   Selecting a theme (`ThemesComponent`).
+            *   Selecting which components to display (e.g., featured products, categories, testimonials - managed by `StoreEditorComponent`).
+            *   Adding/managing at least one initial product (`ProductManagementComponent` integration).
+            *   Editing banner/logo text.
+        *   Changes made in the editor controls are reflected in the `StorePreviewComponent`.
+        *   User can save the store configuration.
+        *   Saving persists data to the backend (`Stores`, `StoreThemes`, `Listing`, `Items` tables).
+        *   The created/updated store is viewable at its public URL (`/:storeUrl`).
+        *   Basic form validation and user feedback are implemented.
+    -   **Files:** `StoreOwnerDashboardComponent.ts`, `StoreEditorComponent.ts`, `ThemesComponent.ts`, `ProductManagementComponent.ts`, `StorePreviewComponent.ts`, `SideNavComponent.ts`, `StoreService.ts`, `ItemService.ts`, `Server/Controllers/StoreController.cs`, `Server/Controllers/ItemController.cs`, `Server/Models/Store.cs`, `Server/Models/StoreTheme.cs`, `Server/Models/Listing.cs`, `Server/Models/Item.cs`
+    -   **Priority:** 🔥 High
 
 ### Shopping Cart & Checkout
 -   [x] 🔥 **Integrate Cart with Checkout:** Modify `CheckoutComponent` to use the actual cart subtotal from `ShoppingService` instead of a hardcoded amount when calling `PaymentService.createCheckoutSession`. Also, ensure a descriptive product name (using the store name) is passed. Add checks for empty cart/invalid subtotal. (See `CheckoutComponent.ts`, `ShoppingService.ts`, `PaymentService.ts`)
@@ -129,6 +146,23 @@ This document tracks pending tasks, potential improvements, and areas needing at
 ### Analytics
 -   [ ] ⚠️ **Implement Backend Analytics Tracking:** Add logic to track views, sales, etc., and store/aggregate this data. (`REQUIREMENTS.md FR4.7.1`)
 -   [ ] ⚠️ **Connect Analytics Frontend:** Fetch and display actual analytics data in the `AnalyticsComponent` instead of placeholders. (`AnalyticsComponent`, `AnalyticsService`)
+- [ ] 🔥 **Implement Live Data for Recent Sales Component:**
+    - **Description:** The "Recent Sales" section within the `OverviewComponent` currently displays static dummy data. This task involves replacing the dummy data with live order data fetched from the backend API.
+    - **Acceptance Criteria:**
+        - `OverviewComponent` calls a method in `OrderService` (frontend) to fetch recent orders.
+        - `OrderService` makes an HTTP GET request to the `/api/orders` endpoint (backend).
+        - The component displays the 5-10 most recent orders for the *currently logged-in store owner*.
+        - Data displayed should include: Customer Name, Order Date, Total Amount, and Status.
+        - All static/dummy order data structures are removed from `OverviewComponent`.
+        - A loading indicator is shown while data is being fetched.
+        - Appropriate error handling is implemented for the API call.
+        - Implementation adheres to `.cursorrules` (no mock data in component, relies on backend auth).
+    - **Files:**
+        - `WebClient/src/app/components/store-owner-layout/overview/overview.component.ts`
+        - `WebClient/src/app/components/store-owner-layout/overview/overview.component.html`
+        - `WebClient/src/app/services/order.service.ts` (or create if doesn't exist)
+        - `Server/Controllers/OrdersController.cs` (Reference - already fetches orders for the store owner)
+    - **Context:** The backend `OrdersController` already provides an endpoint (`/api/orders`) that fetches orders for the authenticated store owner. The frontend needs to utilize this endpoint via the `OrderService`. The frontend component will likely need to sort/limit the results to show only the most recent sales.
 
 ## ⚠️ Technical Debt & Refactoring
 

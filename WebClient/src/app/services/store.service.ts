@@ -8,7 +8,12 @@ import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators'; // For simulating async operations
+import { ComponentVisibility, DEFAULT_VISIBILITY } from '../models/component-visibility.model';
 
+// Define an interface for API serialization that extends StoreDetails
+interface StoreDetailsForApi extends Omit<StoreDetails, 'componentVisibility'> {
+  componentVisibility: string;
+}
 
 interface Response {
   details: StoreDetails;
@@ -38,14 +43,15 @@ export class StoreService {
   // TODO: Potentially load initial theme from a persistent source (e.g., backend, localStorage)
 
   // Method to create a new store.
-  createStore(storeData: any): Observable<StoreDetails> {
-    return this.http.post<StoreDetails>(this.apiUrl, storeData).pipe(
+  createStore(storeData: StoreDetails): Observable<StoreDetails> {
+    // Convert to API format (serialize componentVisibility)
+    const storeDataForApi = this.prepareStoreDataForApi(storeData);
+
+    return this.http.post<StoreDetails>(this.apiUrl, storeDataForApi).pipe(
       tap((newStore) => {
-        // Optionally update the active store or log success
+        // Update the active store
+        this.activeStoreSubject.next(this.deserializeStore(newStore));
         console.log('Store created successfully:', newStore);
-        // If the creation response returns the full StoreDetails,
-        // you might want to update the activeStoreSubject here:
-        // this.activeStoreSubject.next(newStore);
       }),
       catchError((error) => {
         console.error('Error creating store:', error);
@@ -54,28 +60,24 @@ export class StoreService {
     );
   }
 
+  // Get the current user's store
+  getCurrentUserStore(): Observable<StoreDetails> {
+    return this.http.get<StoreDetails>(this.apiUrl).pipe(
+      map(store => this.deserializeStore(store)),
+      tap(store => {
+        this.activeStoreSubject.next(store);
+      }),
+      catchError(error => {
+        console.error('Error fetching current user store', error);
+        return throwError(() => new Error('Failed to fetch current user store.'));
+      })
+    );
+  }
+
   // Active getStoreDetails method: maps the response to a new StoreDetails instance.
   getStoreDetails(url: string): Observable<StoreDetails> {
     return this.http.get<StoreDetails>(`${this.apiUrl}/${url}`).pipe(
-      map((resp) => {
-        return new StoreDetails(
-          resp.id, // Ensure ID is a string or number as expected
-          resp.url,
-          resp.name,
-          resp.theme_1,
-          resp.theme_2,
-          resp.theme_3,
-          resp.fontColor,
-          resp.fontFamily,
-          resp.bannerText,
-          resp.logoText,
-          resp.bannerURL,
-          resp.logoURL,
-          resp.categories.map(cat =>
-            new Category(cat.categoryId, cat.storeId, cat.name, cat.parentCategory)
-          )
-        );
-      }),
+      map(resp => this.deserializeStore(resp)),
       tap((storeDetails) => {
         this.activeStoreSubject.next(storeDetails);
         console.log("Mapped StoreDetails:", storeDetails);
@@ -87,6 +89,58 @@ export class StoreService {
         console.error('Error fetching store details:', error);
         return throwError(() => new Error('Failed to fetch store details.'));
       })
+    );
+  }
+
+  // Helper function to prepare store data for API
+  private prepareStoreDataForApi(store: StoreDetails): StoreDetailsForApi {
+    // Create a copy of the store object
+    const storeDataCopy = { ...store } as any;
+    
+    // Serialize componentVisibility if it exists
+    if (storeDataCopy.componentVisibility) {
+      storeDataCopy.componentVisibility = JSON.stringify(storeDataCopy.componentVisibility);
+    }
+    
+    return storeDataCopy as StoreDetailsForApi;
+  }
+
+  // Helper function to deserialize store data from the API
+  private deserializeStore(store: any): StoreDetails {
+    // Parse component visibility if it's a string
+    let componentVisibility: ComponentVisibility | undefined;
+    if (store.componentVisibility) {
+      try {
+        if (typeof store.componentVisibility === 'string') {
+          componentVisibility = JSON.parse(store.componentVisibility);
+        } else {
+          componentVisibility = store.componentVisibility as ComponentVisibility;
+        }
+      } catch (e) {
+        console.error('Error parsing component visibility', e);
+        componentVisibility = DEFAULT_VISIBILITY;
+      }
+    } else {
+      componentVisibility = DEFAULT_VISIBILITY;
+    }
+    
+    return new StoreDetails(
+      store.id, 
+      store.url,
+      store.name,
+      store.theme_1,
+      store.theme_2,
+      store.theme_3,
+      store.fontColor,
+      store.fontFamily,
+      store.bannerText,
+      store.logoText,
+      store.bannerURL,
+      store.logoURL,
+      store.categories?.map((cat: any) =>
+        new Category(cat.categoryId, cat.storeId, cat.name, cat.parentCategory)
+      ) || [],
+      componentVisibility
     );
   }
 
@@ -130,16 +184,32 @@ export class StoreService {
   }
 
   updateStore(store: StoreDetails): Observable<StoreDetails> {
-    // Update the local BehaviorSubject
-    this.activeStoreSubject.next(store);
+    // Convert to API format (serialize componentVisibility)
+    const storeDataForApi = this.prepareStoreDataForApi(store);
     
     // Send update to backend
-    return this.http.put<StoreDetails>(`${this.apiUrl}/update`, store).pipe(
+    return this.http.put<StoreDetails>(`${this.apiUrl}/update`, storeDataForApi).pipe(
+      map(response => this.deserializeStore(response)),
       tap(updatedStore => {
         // Update the BehaviorSubject with the response from the server
         this.activeStoreSubject.next(updatedStore);
+      }),
+      catchError(error => {
+        console.error('Error updating store', error);
+        return throwError(() => new Error('Failed to update store configuration.'));
       })
     );
+  }
+
+  // Update component visibility
+  updateComponentVisibility(visibility: ComponentVisibility): Observable<StoreDetails> {
+    const currentStore = this.activeStoreSubject.value;
+    const updatedStore = { 
+      ...currentStore, 
+      componentVisibility: visibility 
+    };
+    
+    return this.updateStore(updatedStore);
   }
 
   // TODO: Add methods for saving/loading other store settings as needed

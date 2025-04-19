@@ -385,3 +385,18 @@
     height: 180px;
   }
 }
+
+/* Create Store Prompt */
+.create-store-prompt {
+  margin: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.prompt-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
