@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Shopimy.Server.Models;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Server.Models
 {
@@ -33,6 +34,7 @@ namespace Server.Models
         public string BannerURL {get; set;} = string.Empty;
         public string LogoURL {get; set;} = string.Empty;
         public List<Category> Categories { get; set; } = new List<Category>();
+        public string ComponentVisibility { get; set; } = string.Empty;
 
         public StoreDetails() { 
             URL = string.Empty;
@@ -47,6 +49,7 @@ namespace Server.Models
             BannerURL = string.Empty;
             LogoURL = string.Empty;
             Categories = new List<Category>();
+            ComponentVisibility = string.Empty;
         }
 
         public StoreDetails(
@@ -62,7 +65,8 @@ namespace Server.Models
             string LogoText,
             string BannerURL,
             string LogoURL,
-            List<Category> Categories
+            List<Category> Categories,
+            string ComponentVisibility = ""
         ){
             this.Id = Id;
             this.URL = URL;
@@ -77,6 +81,7 @@ namespace Server.Models
             this.BannerURL = BannerURL;
             this.LogoURL = LogoURL;
             this.Categories = Categories ?? new List<Category>();
+            this.ComponentVisibility = ComponentVisibility;
         }
     }
 }

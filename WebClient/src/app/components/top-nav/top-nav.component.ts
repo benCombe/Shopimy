@@ -50,14 +50,34 @@ export class TopNavComponent implements OnInit {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    console.log("Mobile menu toggled:", this.isMobileMenuOpen ? "Open" : "Closed");
+    
+    // If opening mobile menu, close other menus
+    if (this.isMobileMenuOpen) {
+      this.isDropdownOpen = false;
+      this.isUserMenuOpen = false;
+      
+      // Prevent scrolling when mobile menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restore scrolling when mobile menu is closed
+      document.body.style.overflow = '';
+    }
   }
 
   closeMobileMenu() {
-    this.isMobileMenuOpen = false;
+    if (this.isMobileMenuOpen) {
+      this.isMobileMenuOpen = false;
+      
+      // Restore scrolling when mobile menu is closed
+      document.body.style.overflow = '';
+      console.log("Mobile menu closed");
+    }
   }
 
   logout() {
     this.userService.logout();
+    this.closeMobileMenu(); // Close mobile menu if open
   }
 
   @HostListener('window:resize', [])
@@ -65,6 +85,7 @@ export class TopNavComponent implements OnInit {
     this.isMobile = window.innerWidth <= 768;
     if (!this.isMobile) {
       this.isMobileMenuOpen = false; // Close mobile menu when resizing to desktop
+      document.body.style.overflow = ''; // Restore scrolling
     }
   }
 
@@ -93,5 +114,11 @@ export class TopNavComponent implements OnInit {
     }
 
     // We don't need to handle mobile menu here since we have a dedicated overlay for it
+  }
+
+  navigateAndCloseMenu(link: string) {
+    console.log("Navigating to:", link);
+    this.closeMobileMenu();
+    // The routerLink directive will handle the actual navigation
   }
 }

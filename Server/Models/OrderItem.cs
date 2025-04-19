@@ -1,35 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System;
 
-//TODO ADD TO CONTEXT
-
-namespace Server.Models
+namespace Server.Models // Assuming Server.Models is the correct namespace
 {
-    public class OrderItem{
+    public class OrderItem
+    {
         [Key]
-        [Column("order_id")]
-        public int OrderId {get; set;}
-        [Key]
-        [Column("item_id")]
-        public int ItemId {get; set;}
-        [Column("quantity")]
-        public int Quantity {get; set;}
+        public int Id { get; set; }
+        public int OrderId { get; set; }
 
+        // Foreign key navigation property back to Order
+        [ForeignKey("OrderId")]
+        public virtual Order? Order { get; set; }
 
-        public OrderItem(
-            int OrderId,
-            int ItemId,
-            int Quantity
-        ){
-            this.OrderId = OrderId;
-            this.ItemId = ItemId;
-            this.Quantity = Quantity;
-        }
-
-
-        public void setOrderId(int id){
-            this.OrderId = id;
-        }
+        public int ProductId { get; set; } // Refers to your internal Product/Item ID
+        public string ProductName { get; set; } = string.Empty; // Store name at time of order
+        public int Quantity { get; set; }
+        public decimal UnitPrice { get; set; } // Price at time of order
     }
-}
+} 

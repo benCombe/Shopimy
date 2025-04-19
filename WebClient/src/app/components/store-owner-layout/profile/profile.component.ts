@@ -92,7 +92,7 @@ export class ProfileComponent implements OnInit {
   }
 
   loadPaymentMethods(userId: number): void {
-    this.paymentService.getPaymentMethods(userId).subscribe(methods => {
+    this.paymentService.getPaymentMethods().subscribe(methods => {
       this.paymentMethods = methods;
     });
   }
@@ -209,7 +209,7 @@ export class ProfileComponent implements OnInit {
 
   setDefaultPaymentMethod(paymentMethodId: string): void {
     if (this.user && this.user.Id > 0) {
-        this.paymentService.setDefaultPaymentMethod(this.user.Id, paymentMethodId).subscribe(success => {
+        this.paymentService.setDefaultPaymentMethod(paymentMethodId).subscribe(success => {
         if (success) {
             this.loadPaymentMethods(this.user!.Id);
         }

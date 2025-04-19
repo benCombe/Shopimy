@@ -25,6 +25,13 @@ namespace Server.Models
         public DateTime? OrderDate {get; set;}
         [Column("order_status")]
         public string? OrderStatus {get; set;}
+        [Column("total_amount")]
+        public decimal? TotalAmount {get; set;}
+        [Column("log_timestamp")]
+        public DateTime? LogTimestamp {get; set;}
+
+        // Parameterless constructor for EF Core
+        public OrderLogEntry() {}
 
         public OrderLogEntry(
             int OrderId,
@@ -47,13 +54,15 @@ namespace Server.Models
             this.OrderStatus = OrderStatus;
         }
 
-        public OrderLogEntry(Order order){
-            this.StoreId = order.StoreId;
-            this.PurchaserId = order.PurchaserId;
-            this.DeliveryAddress = order.DeliveryAddress;
-            this.StripeToken = order.StripeToken;
-            this.OrderDate = order.OrderDate;
-            this.OrderStatus = order.OrderStatus;
+        public OrderLogEntry(Order order)
+        {
+            OrderId = order.Id;
+            StoreId = order.StoreId;
+            PurchaserId = order.UserId;
+            OrderDate = order.CreatedAt;
+            OrderStatus = order.Status;
+            TotalAmount = order.TotalAmount;
+            LogTimestamp = DateTime.UtcNow;
         }
     }
 }

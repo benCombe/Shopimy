@@ -90,7 +90,17 @@ namespace Server.Controllers
             // Generate JWT token
             string token = GenerateJwtToken(user);
 
-            // Insert into ActiveUsers table
+            // Check if user already has an active session and remove it
+            var existingActiveUser = await _context.ActiveUsers.FirstOrDefaultAsync(au => au.UserId == user.Id);
+            if (existingActiveUser != null)
+            {
+                _context.ActiveUsers.Remove(existingActiveUser);
+                // Save changes immediately after removal to avoid potential conflicts
+                // if SaveChangesAsync below fails for other reasons.
+                await _context.SaveChangesAsync(); 
+            }
+
+            // Insert new record into ActiveUsers table
             var activeUser = new ActiveUser
             {
                 UserId = user.Id,

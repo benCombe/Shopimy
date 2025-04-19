@@ -24,7 +24,7 @@
 
   </div>
   <app-shopping-cart *ngIf="currentView === 'cart'" [storeDetails]="storeData"></app-shopping-cart>
-  <app-checkout *ngIf="currentView === 'checkout'" [storeDetails]="storeData"></app-checkout>
+  <app-checkout *ngIf="currentView === 'checkout'"></app-checkout>
   <ng-container *ngFor="let c of storeData?.categories">
     <app-category-page *ngIf="currentView === c.name" [category]="c" [storeDetails]="storeData"></app-category-page>
   </ng-container>

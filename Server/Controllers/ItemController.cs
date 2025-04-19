@@ -87,12 +87,13 @@ namespace Server.Controllers
                            SUM(i.quantity) as total_quantity,
                            (SELECT TOP 1 img.blob FROM ItemImages img 
                             JOIN Items i2 ON img.item_id = i2.item_id 
-                            WHERE i2.list_id = l.list_id AND img.item_index = 0) as image_url
+                            WHERE i2.list_id = l.list_id AND img.item_index = 0) as image_url,
+                           l.availFrom, l.availTo
                     FROM Listing l
                     JOIN Items i ON l.list_id = i.list_id
                     LEFT JOIN Categories c ON l.category = c.category_id
                     WHERE l.store_id = @storeId
-                    GROUP BY l.list_id, l.name, l.description, l.category, c.name
+                    GROUP BY l.list_id, l.name, l.description, l.category, c.name, l.availFrom, l.availTo
                     ORDER BY l.list_id DESC";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -116,6 +117,12 @@ namespace Server.Controllers
                             listing.totalQuantity = reader.GetInt32(reader.GetOrdinal("total_quantity"));
                             listing.imageUrl = !reader.IsDBNull(reader.GetOrdinal("image_url")) 
                                 ? reader.GetString(reader.GetOrdinal("image_url")) 
+                                : null;
+                            listing.availFrom = !reader.IsDBNull(reader.GetOrdinal("availFrom")) 
+                                ? (DateTime?)reader.GetDateTime(reader.GetOrdinal("availFrom")) 
+                                : null;
+                            listing.availTo = !reader.IsDBNull(reader.GetOrdinal("availTo")) 
+                                ? (DateTime?)reader.GetDateTime(reader.GetOrdinal("availTo")) 
                                 : null;
                             
                             listings.Add(listing);
@@ -701,29 +708,6 @@ namespace Server.Controllers
             }
         }
 
-        // POST: api/item/upload-image
-        [HttpPost("upload-image")]
-        [Authorize]
-        public async Task<IActionResult> UploadProductImage([FromBody] ImageUploadRequest request)
-        {
-            int storeId = GetCurrentStoreId();
-            if (storeId <= 0)
-            {
-                return Unauthorized("Store ID not found in claims or invalid");
-            }
-
-            // Validate the image URL format (should be base64 or a valid URL)
-            if (string.IsNullOrEmpty(request.ImageData))
-            {
-                return BadRequest("Image data is required");
-            }
-
-            // For simplicity, we're just returning the image data as-is
-            // In a real implementation, you might want to save this to a file storage service
-            // and return a URL to the saved image
-            return Ok(new { imageUrl = request.ImageData });
-        }
-
         private int GetCurrentStoreId()
         {
             // This retrieves the current store's ID from the authenticated user's claims
@@ -773,10 +757,5 @@ namespace Server.Controllers
         public string Colour { get; set; }
         public int Quantity { get; set; }
         public List<string> Images { get; set; }
-    }
-
-    public class ImageUploadRequest
-    {
-        public string ImageData { get; set; }
     }
 }

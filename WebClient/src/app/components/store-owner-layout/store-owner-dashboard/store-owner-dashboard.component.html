@@ -1,6 +1,19 @@
 <div id="container">
   <app-side-nav (pageChange)="onPageChange($event)"></app-side-nav>
   <div id="main" #main>
+    <!-- Create Store Prompt -->
+    <div *ngIf="showCreateStorePrompt && currentPage !== 'Store Editor'" class="dashboard-card create-store-prompt">
+      <div class="card-header">
+        <h2>Welcome to Shopimy</h2>
+      </div>
+      <div class="card-content">
+        <p>You don't have a store yet. Let's create one now!</p>
+        <div class="prompt-actions">
+          <button class="standard-button primary" (click)="onPageChange('Store Editor')">Create Your Store</button>
+        </div>
+      </div>
+    </div>
+    
     <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
       <app-overview (pageNavigate)="onPageChange($event)"></app-overview>
     </div>

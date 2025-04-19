@@ -117,22 +117,16 @@ public class ShoppingCartController : ControllerBase
     [HttpPost("place_order")]
     public async Task<IActionResult> PlaceOrder([FromBody] Order order){
         
-        if (order == null || order.Items.Length <= 0){
-            return BadRequest("Invalid Request");
+        if (order == null || order.OrderItems == null || order.OrderItems.Count <= 0){
+            return BadRequest("Invalid Request: Order or OrderItems missing or empty.");
         }
 
         OrderLogEntry entry = new(order);
         _context.OrderLog.Add(entry);
         await _context.SaveChangesAsync();
 
-        int id = entry.OrderId;
-        
-        foreach (OrderItem item in order.Items){
-            item.setOrderId(id);
-            _context.OrderItems.Add(item);
-        }
-        await _context.SaveChangesAsync();
-        return Ok(id); //TODO return receipt info
-        
+        int logEntryId = entry.OrderId;
+
+        return Ok(logEntryId);
     }
 }

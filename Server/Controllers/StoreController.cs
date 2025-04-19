@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Linq; // Add this for LINQ operations on claims
 
 
 namespace Server.Controllers
@@ -94,12 +95,290 @@ namespace Server.Controllers
                 themes.LogoText,
                 string.IsNullOrEmpty(banner?.BannerURL) ? "" : banner.BannerURL,
                 string.IsNullOrEmpty(logo?.LogoURL) ? "" : logo.LogoURL,
-                categories
+                categories,
+                themes.ComponentVisibility
             );
 
             // ✅ Return both store details and categories
             return Ok(storeDetails);
         }
-    }
 
+        // Get store details for the current logged-in user
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<StoreDetails>> GetCurrentUserStore()
+        {
+            // Get the user ID from the token
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Use constant
+            // Use TryParse for safety
+            if (!int.TryParse(userIdClaim, out var userId) || userId == 0)
+            {
+                Console.WriteLine($"ERROR (GetCurrentUserStore): Failed to parse User ID from claim. Value was: '{userIdClaim ?? "NULL"}'");
+                return Unauthorized("Invalid user authentication token.");
+            }
+
+            // Find store for this user
+            var store = await _context.Stores
+                .Where(s => s.StoreOwnerId == userId)
+                .FirstOrDefaultAsync();
+
+            if (store == null)
+            {
+                // No store found, return empty response that can be used for initial setup
+                return Ok(new StoreDetails());
+            }
+
+            // Get other store details
+            var themes = await _context.StoreThemes
+                .Where(s => s.StoreId == store.StoreId)
+                .FirstOrDefaultAsync();
+
+            var banner = await _context.StoreBanners
+                .Where(s => s.StoreID == store.StoreId)
+                .FirstOrDefaultAsync();
+            
+            var logo = await _context.StoreLogos
+                .Where(s => s.StoreID == store.StoreId)
+                .FirstOrDefaultAsync();
+
+            // Fetch categories linked to this store
+            var categories = await _context.Categories
+                .Where(c => c.StoreId == store.StoreId)
+                .ToListAsync();
+            
+            StoreDetails storeDetails = new StoreDetails(
+                store.StoreId,
+                store.StoreUrl,
+                store.Name,
+                themes?.Theme_1 ?? "#393727",
+                themes?.Theme_2 ?? "#D0933D",
+                themes?.Theme_3 ?? "#D3CEBB",
+                themes?.FontColor ?? "#333333",
+                themes?.FontFamily ?? "sans-serif",
+                themes?.BannerText ?? "Welcome to our store",
+                themes?.LogoText ?? store.Name,
+                banner?.BannerURL ?? "",
+                logo?.LogoURL ?? "",
+                categories,
+                themes?.ComponentVisibility ?? ""
+            );
+
+            return Ok(storeDetails);
+        }
+
+        // Create a new store
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<StoreDetails>> CreateStore([FromBody] StoreDetails storeDetails)
+        {
+            // === DETAILED CLAIM LOGGING START ===
+            Console.WriteLine("--- Dumping Claims in CreateStore ---");
+            if (User?.Identity?.IsAuthenticated == true)
+            {
+                foreach (var claim in User.Claims)
+                {
+                    Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("User is not authenticated or ClaimsPrincipal is null.");
+            }
+            Console.WriteLine("--- End Claim Dump ---");
+            // === DETAILED CLAIM LOGGING END ===
+
+
+            // Get the user ID from the token
+            // Use ClaimTypes.NameIdentifier for consistency
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Use ClaimTypes constant
+            Console.WriteLine($"DEBUG: Found NameIdentifier claim value: {userIdClaim ?? "NULL"}"); // Keep debug for now
+            if (!int.TryParse(userIdClaim, out var userId) || userId == 0) // Use TryParse for safety
+            {
+                // Log the problematic claim value for easier debugging
+                Console.WriteLine($"ERROR: Failed to parse User ID from claim. Value was: '{userIdClaim ?? "NULL"}'");
+                return Unauthorized("Invalid user authentication token."); // More specific error
+            }
+
+            // Check if user already has a store
+            var existingStore = await _context.Stores
+                .Where(s => s.StoreOwnerId == userId)
+                .FirstOrDefaultAsync();
+
+            if (existingStore != null)
+            {
+                return BadRequest("User already has a store");
+            }
+
+            // Check if store URL is unique
+            var storeWithSameUrl = await _context.Stores
+                .Where(s => s.StoreUrl == storeDetails.URL)
+                .FirstOrDefaultAsync();
+
+            if (storeWithSameUrl != null)
+            {
+                return BadRequest("Store URL already exists");
+            }
+
+            // Create new store
+            var store = new Store
+            {
+                StoreOwnerId = userId,
+                Name = storeDetails.Name,
+                StoreUrl = storeDetails.URL
+            };
+
+            _context.Stores.Add(store);
+            await _context.SaveChangesAsync();
+
+            // Create themes
+            var theme = new StoreTheme
+            {
+                StoreId = store.StoreId,
+                Theme_1 = storeDetails.Theme_1,
+                Theme_2 = storeDetails.Theme_2,
+                Theme_3 = storeDetails.Theme_3,
+                FontColor = storeDetails.FontColor,
+                FontFamily = storeDetails.FontFamily,
+                BannerText = storeDetails.BannerText,
+                LogoText = storeDetails.LogoText,
+                ComponentVisibility = storeDetails.ComponentVisibility
+            };
+
+            _context.StoreThemes.Add(theme);
+            
+            // Create banner
+            var banner = new StoreBanner
+            {
+                StoreID = store.StoreId,
+                BannerURL = storeDetails.BannerURL
+            };
+
+            _context.StoreBanners.Add(banner);
+
+            // Create logo
+            var logo = new StoreLogo
+            {
+                StoreID = store.StoreId,
+                LogoURL = storeDetails.LogoURL
+            };
+
+            _context.StoreLogos.Add(logo);
+            
+            await _context.SaveChangesAsync();
+
+            // Return the created store details
+            storeDetails.Id = store.StoreId;
+            return CreatedAtAction(nameof(GetStoreDetails), new { url = store.StoreUrl }, storeDetails);
+        }
+
+        // Update store configuration
+        [HttpPut("update")]
+        [Authorize]
+        public async Task<ActionResult<StoreDetails>> UpdateStore([FromBody] StoreDetails storeDetails)
+        {
+            // Get the user ID from the token
+            // Use ClaimTypes.NameIdentifier for consistency
+            var userIdClaimUpdate = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Use ClaimTypes constant
+            Console.WriteLine($"DEBUG (Update): Found NameIdentifier claim value: {userIdClaimUpdate ?? "NULL"}"); // Keep debug for now
+            if (!int.TryParse(userIdClaimUpdate, out var userId) || userId == 0) // Use TryParse for safety
+            {
+                // Log the problematic claim value for easier debugging
+                Console.WriteLine($"ERROR (Update): Failed to parse User ID from claim. Value was: '{userIdClaimUpdate ?? "NULL"}'");
+                return Unauthorized("Invalid user authentication token."); // More specific error
+            }
+
+            // Check if this is the user's store
+            var store = await _context.Stores
+                .Where(s => s.StoreId == storeDetails.Id)
+                .FirstOrDefaultAsync();
+
+            if (store == null)
+            {
+                return NotFound("Store not found");
+            }
+
+            if (store.StoreOwnerId != userId)
+            {
+                return Forbid("You don't have permission to update this store");
+            }
+
+            // If changing URL, check if it's unique
+            if (store.StoreUrl != storeDetails.URL)
+            {
+                var storeWithSameUrl = await _context.Stores
+                    .Where(s => s.StoreUrl == storeDetails.URL && s.StoreId != storeDetails.Id)
+                    .FirstOrDefaultAsync();
+
+                if (storeWithSameUrl != null)
+                {
+                    return BadRequest("Store URL already exists");
+                }
+            }
+
+            // Update store
+            store.Name = storeDetails.Name;
+            store.StoreUrl = storeDetails.URL;
+            _context.Stores.Update(store);
+
+            // Update themes
+            var theme = await _context.StoreThemes
+                .Where(s => s.StoreId == store.StoreId)
+                .FirstOrDefaultAsync();
+
+            if (theme == null)
+            {
+                theme = new StoreTheme
+                {
+                    StoreId = store.StoreId
+                };
+                _context.StoreThemes.Add(theme);
+            }
+
+            theme.Theme_1 = storeDetails.Theme_1;
+            theme.Theme_2 = storeDetails.Theme_2;
+            theme.Theme_3 = storeDetails.Theme_3;
+            theme.FontColor = storeDetails.FontColor;
+            theme.FontFamily = storeDetails.FontFamily;
+            theme.BannerText = storeDetails.BannerText;
+            theme.LogoText = storeDetails.LogoText;
+            theme.ComponentVisibility = storeDetails.ComponentVisibility;
+
+            // Update banner
+            var banner = await _context.StoreBanners
+                .Where(s => s.StoreID == store.StoreId)
+                .FirstOrDefaultAsync();
+
+            if (banner == null)
+            {
+                banner = new StoreBanner
+                {
+                    StoreID = store.StoreId
+                };
+                _context.StoreBanners.Add(banner);
+            }
+
+            banner.BannerURL = storeDetails.BannerURL;
+
+            // Update logo
+            var logo = await _context.StoreLogos
+                .Where(s => s.StoreID == store.StoreId)
+                .FirstOrDefaultAsync();
+
+            if (logo == null)
+            {
+                logo = new StoreLogo
+                {
+                    StoreID = store.StoreId
+                };
+                _context.StoreLogos.Add(logo);
+            }
+
+            logo.LogoURL = storeDetails.LogoURL;
+
+            await _context.SaveChangesAsync();
+
+            // Return the updated store details
+            return Ok(storeDetails);
+        }
+    }
 }

@@ -10,7 +10,7 @@ export type ButtonSize = 'small' | 'medium' | 'large';
   imports: [CommonModule],
   template: `
     <button 
-      class="button" 
+      class="standard-button" 
       [ngClass]="[variant, size]" 
       [disabled]="disabled || loading"
       (click)="onClick($event)">
@@ -19,77 +19,6 @@ export type ButtonSize = 'small' | 'medium' | 'large';
     </button>
   `,
   styles: [`
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: background-color 0.2s, opacity 0.2s;
-      gap: 0.5rem;
-    }
-
-    .button:disabled {
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-
-    /* Sizes */
-    .small {
-      font-size: 0.875rem;
-      padding: 0.375rem 0.75rem;
-    }
-    
-    .medium {
-      font-size: 1rem;
-      padding: 0.5rem 1rem;
-    }
-    
-    .large {
-      font-size: 1.125rem;
-      padding: 0.75rem 1.5rem;
-    }
-
-    /* Variants */
-    .primary {
-      background-color: var(--primary);
-      color: white;
-    }
-    
-    .primary:hover:not(:disabled) {
-      background-color: var(--primary-dark);
-    }
-    
-    .secondary {
-      background-color: var(--secondary);
-      color: var(--text);
-    }
-    
-    .secondary:hover:not(:disabled) {
-      background-color: var(--secondary-dark);
-    }
-    
-    .tertiary {
-      background-color: transparent;
-      color: var(--primary);
-      box-shadow: inset 0 0 0 1px var(--primary);
-    }
-    
-    .tertiary:hover:not(:disabled) {
-      background-color: var(--primary-light);
-    }
-    
-    .danger {
-      background-color: var(--error);
-      color: white;
-    }
-    
-    .danger:hover:not(:disabled) {
-      background-color: var(--error-dark);
-    }
-
     /* Loading spinner */
     .spinner {
       width: 1rem;

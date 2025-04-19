@@ -103,7 +103,12 @@
 </div>
 
 <!-- Mobile toggle button - visible only on mobile -->
-<div *ngIf="isMobile" class="mobile-sidebar-toggle" (click)="toggleMobileSidebar()">
+<div *ngIf="isMobile" class="mobile-sidebar-toggle" 
+     (click)="toggleMobileSidebar()" 
+     [style.top.px]="hamburgerPosition.y" 
+     [style.right.px]="hamburgerPosition.right"
+     (mousedown)="onDragStart($event)"
+     (touchstart)="onTouchStart($event)">
   <i class="fa-solid fa-bars"></i>
 </div>
 

@@ -113,7 +113,7 @@ export class ProfileComponent implements OnInit {
 
       if (user.Id > 0) {
         this.loadDeliveryAddresses(user.Id);
-        this.loadPaymentMethods(user.Id);
+        this.loadPaymentMethods();
         this.loadPurchaseHistory(user.Id, this.currentPage);
         this.loadWishLists(user.Id);
       }
@@ -126,8 +126,8 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  loadPaymentMethods(userId: number): void {
-    this.paymentService.getPaymentMethods(userId).subscribe(methods => {
+  loadPaymentMethods(): void {
+    this.paymentService.getPaymentMethods().subscribe(methods => {
       this.paymentMethods = methods;
     });
   }
@@ -237,7 +237,7 @@ export class ProfileComponent implements OnInit {
             this.paymentService.savePaymentMethod(paymentMethodId, this.newPaymentIsDefault)
               .subscribe({
                 next: () => {
-                  this.loadPaymentMethods(this.user.Id);
+                  this.loadPaymentMethods();
                   this.toggleAddPayment();
                   this.isSavingPaymentMethod = false;
                 },
@@ -273,10 +273,10 @@ export class ProfileComponent implements OnInit {
 
   deletePaymentMethod(paymentId: any): void {
     if (confirm('Are you sure you want to delete this payment method?')) {
-      this.paymentService.deletePaymentMethod(paymentId).subscribe(success => {
-        if (success) {
-          this.loadPaymentMethods(this.user.Id);
-        }
+      this.paymentService.deletePaymentMethod(paymentId).subscribe(() => {
+        this.loadPaymentMethods();
+      }, error => {
+        console.error('Error deleting payment method:', error);
       });
     }
   }
@@ -290,10 +290,10 @@ export class ProfileComponent implements OnInit {
   }
 
   setDefaultPaymentMethod(paymentMethodId: string): void {
-    this.paymentService.setDefaultPaymentMethod(this.user.Id, paymentMethodId).subscribe(success => {
-      if (success) {
-        this.loadPaymentMethods(this.user.Id);
-      }
+    this.paymentService.setDefaultPaymentMethod(paymentMethodId).subscribe(() => {
+      this.loadPaymentMethods();
+    }, error => {
+      console.error('Error setting default payment method:', error);
     });
   }
 

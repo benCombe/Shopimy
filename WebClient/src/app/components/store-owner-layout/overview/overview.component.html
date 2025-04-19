@@ -5,34 +5,50 @@
   </div>
 
   <div class="dashboard-grid">
-    <!-- Recent Purchases Card -->
+    <!-- Recent Sales Card -->
     <div class="dashboard-card">
       <div class="card-header">
-        <h2>Recent Purchases</h2>
+        <h2>Recent Sales</h2>
       </div>
       <div class="card-content">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Amounts</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Product 1</td>
-              <td>5</td>
-            </tr>
-            <tr>
-              <td>Product 2</td>
-              <td>3</td>
-            </tr>
-            <tr>
-              <td>Product 3</td>
-              <td>2</td>
-            </tr>
-          </tbody>
-        </table>
+        <div *ngIf="isLoading" class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading recent orders...</p>
+        </div>
+        
+        <div *ngIf="error" class="error-message">
+          <p>{{ error }}</p>
+          <button class="standard-button" (click)="loadRecentOrders()">Retry</button>
+        </div>
+        
+        <div *ngIf="!isLoading && !error">
+          <table class="data-table" *ngIf="recentOrders.length > 0">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of recentOrders">
+                <td>{{ order.customerName }}</td>
+                <td>{{ order.orderDate | date:'MMM d, y' }}</td>
+                <td>{{ order.totalAmount | currency }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="'status-' + order.status.toLowerCase()">
+                    {{ order.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div *ngIf="recentOrders.length === 0" class="empty-state">
+            <p>No orders found. Start selling to see your orders here!</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -60,25 +76,33 @@
         <div class="icon-container">
           <i class="fa-solid fa-pencil"></i>
         </div>
-        <span>Edit Store</span>
+        <div class="fc-title">Edit Store</div>
+        <div class="fc-divider"></div>
+        <div class="fc-body">Customize your store's appearance and settings</div>
       </a>
       <a class="quick-link-card" (click)="navigateTo('Products')">
         <div class="icon-container">
           <i class="fa-solid fa-box"></i>
         </div>
-        <span>Add Product</span>
+        <div class="fc-title">Add Product</div>
+        <div class="fc-divider"></div>
+        <div class="fc-body">Create and manage your product listings</div>
       </a>
       <a class="quick-link-card" (click)="navigateTo('Promotions')">
         <div class="icon-container">
           <i class="fa-solid fa-tag"></i>
         </div>
-        <span>Add Promotion</span>
+        <div class="fc-title">Add Promotion</div>
+        <div class="fc-divider"></div>
+        <div class="fc-body">Create special offers and discounts</div>
       </a>
       <a class="quick-link-card" (click)="navigateTo('Settings')">
         <div class="icon-container">
           <i class="fa-solid fa-gear"></i>
         </div>
-        <span>Store Settings</span>
+        <div class="fc-title">Store Settings</div>
+        <div class="fc-divider"></div>
+        <div class="fc-body">Configure your store preferences</div>
       </a>
     </div>
   </div>
