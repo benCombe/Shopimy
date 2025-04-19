@@ -2,7 +2,7 @@
   width: 100%;
   min-height: calc(100vh - 70px);
   background-color: var(--third-color);
-  padding: 2rem 1rem;
+  padding: var(--spacing-xl, 2rem) var(--spacing-md, 1rem);
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;
@@ -15,7 +15,7 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  gap: var(--spacing-xl, 24px);
   box-sizing: border-box;
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
@@ -34,22 +34,22 @@
 
 .dashboard-card {
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
+  padding: var(--spacing-xl, 2rem);
   transition: all 0.3s ease;
 }
 
 .dashboard-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg, 0 6px 8px rgba(0, 0, 0, 0.2));
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-lg, 1.5rem);
 }
 
 .card-header h2 {
@@ -66,22 +66,22 @@
 .card-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--spacing-md, 1rem);
 }
 
 .stat-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: var(--spacing-md, 1rem);
   background-color: var(--third-color);
-  border-radius: 8px;
+  border-radius: var(--border-radius, 8px);
   transition: all 0.2s ease;
 }
 
 .stat-item:hover {
   transform: translateX(4px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .stat-label {
@@ -100,11 +100,11 @@
 .chart-container {
   width: 100%;
   height: 300px;
-  margin-top: 1rem;
+  margin-top: var(--spacing-md, 1rem);
   background-color: white;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: var(--border-radius, 8px);
+  padding: var(--spacing-md, 1rem);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.05));
 }
 
 /* Table Container */
@@ -112,14 +112,14 @@
   width: 100%;
   overflow-x: auto;
   overflow-y: auto;
-  border-radius: 8px;
+  border-radius: var(--border-radius, 8px);
   background-color: rgba(0, 0, 0, 0.03);
   position: relative;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
   max-height: calc(100vh - 200px);
   padding: 0;
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-md, 16px);
 }
 
 .table-container::-webkit-scrollbar {
@@ -146,7 +146,7 @@
 }
 
 .standard-table th {
-  padding: 16px;
+  padding: var(--spacing-md, 16px);
   text-align: left;
   font-size: 1rem;
   color: var(--main-color);
@@ -159,16 +159,16 @@
 }
 
 .standard-table td {
-  padding: 16px;
+  padding: var(--spacing-md, 16px);
   text-align: left;
   vertical-align: middle;
   font-size: 0.95rem;
-  color: #444;
+  color: var(--color-text-on-surface, #444);
   line-height: 1.4;
 }
 
 .standard-table tr {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
   transition: background-color 0.2s ease;
 }
 
@@ -187,7 +187,7 @@
   }
   
   .dashboard-card {
-    padding: 1.5rem;
+    padding: var(--spacing-lg, 1.5rem);
   }
   
   .card-header h2 {
@@ -197,26 +197,26 @@
 
 @media (max-width: 768px) {
   #container {
-    padding: 1rem;
+    padding: var(--spacing-md, 1rem);
   }
-
+  
   #main {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: var(--spacing-md, 16px);
   }
-
+  
   .dashboard-card {
-    padding: 1.5rem;
+    padding: var(--spacing-md, 1rem);
   }
-
+  
   .card-header h2 {
     font-size: 1.4rem;
   }
-
+  
   .stat-item {
-    padding: 0.75rem;
+    padding: var(--spacing-sm, 0.75rem);
   }
-
+  
   .chart-container {
     height: 250px;
   }
@@ -224,38 +224,41 @@
 
 @media (max-width: 480px) {
   #container {
-    padding: 0.75rem;
+    padding: var(--spacing-sm, 0.75rem) var(--spacing-xs, 0.5rem);
   }
-
+  
   .dashboard-card {
-    padding: 1rem;
+    padding: var(--spacing-sm, 0.75rem);
   }
-
+  
   .card-header h2 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
-
+  
   .stat-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+    padding: var(--spacing-sm, 0.5rem);
+    font-size: 0.9rem;
   }
-
+  
+  .stat-value {
+    font-size: 1rem;
+  }
+  
   .chart-container {
     height: 200px;
+    padding: var(--spacing-sm, 0.5rem);
   }
 }
 
-/* Landscape mode optimization */
 @media (orientation: landscape) and (max-height: 500px) {
   #container {
-    padding: 0.75rem;
+    padding: var(--spacing-sm, 0.75rem);
   }
-
+  
   .dashboard-card {
-    padding: 1rem;
+    padding: var(--spacing-sm, 0.75rem);
   }
-
+  
   .chart-container {
     height: 180px;
   }

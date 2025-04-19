@@ -5,7 +5,7 @@
   background-color: var(--main-color);
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md, 2px 0 10px rgba(0, 0, 0, 0.1));
   z-index: 1000;
   font-family: var(--main-font-fam);
   color: var(--third-color);
@@ -20,7 +20,7 @@
 
 /* Chrome, Edge, Safari scrollbar styling */
 #sidebar::-webkit-scrollbar {
-  width: 6px;
+  width: var(--scrollbar-width, 6px);
 }
 
 #sidebar::-webkit-scrollbar-track {
@@ -29,7 +29,7 @@
 
 #sidebar::-webkit-scrollbar-thumb {
   background-color: rgba(211, 206, 187, 0.3);
-  border-radius: 6px;
+  border-radius: var(--scrollbar-border-radius, 6px);
 }
 
 #sidebar::-webkit-scrollbar-thumb:hover {
@@ -38,7 +38,7 @@
 
 /* Sidebar header with logo */
 .sidebar-header {
-  padding: 20px;
+  padding: var(--spacing-md, 20px);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -68,7 +68,7 @@
   color: var(--third-color);
   font-size: 1.5rem;
   cursor: pointer;
-  padding: 5px;
+  padding: var(--spacing-xs, 5px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +85,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  padding: var(--spacing-md, 20px) 0;
   overflow-y: auto;
 }
 
@@ -93,13 +93,13 @@
 .nav-item {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
+  padding: var(--spacing-sm, 12px) var(--spacing-md, 20px);
   color: var(--third-color);
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 1rem;
   border-left: 4px solid transparent;
-  gap: 12px;
+  gap: var(--spacing-sm, 12px);
 }
 
 .nav-item i {
@@ -131,7 +131,7 @@
 .nav-item-content {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-sm, 12px);
 }
 
 .dropdown-icon {
@@ -151,7 +151,7 @@
 
 /* Section with dropdown */
 .nav-section {
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-sm, 8px);
 }
 
 /* Subnav container (dropdown content) */
@@ -168,7 +168,7 @@
 
 /* Subnav items styling */
 .subnav-item {
-  padding: 10px 20px 10px 52px;
+  padding: var(--spacing-sm, 10px) var(--spacing-md, 20px) var(--spacing-sm, 10px) 52px;
   color: var(--third-color);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -191,18 +191,14 @@
 /* Logout button */
 .logout-button {
   margin-top: auto;
-  padding: 16px 20px;
+  padding: var(--spacing-md, 16px) var(--spacing-md, 20px);
   color: var(--third-color);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-sm, 12px);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
-  background-color: var(--main-color);
-  position: sticky;
-  bottom: 0;
-  z-index: 2;
 }
 
 .logout-button:hover {
@@ -216,78 +212,76 @@
   font-size: 1.1rem;
 }
 
-/* Mobile sidebar toggle button */
+/* Mobile sidebar toggle */
 .mobile-sidebar-toggle {
+  display: none;
   position: fixed;
-  /* We'll control these with inline styles dynamically */
-  /* top: 15px;
-  right: 15px; */
-  z-index: 999;
+  top: var(--spacing-md, 20px);
+  left: var(--spacing-md, 20px);
+  z-index: 1001;
   background-color: var(--main-color);
-  color: var(--second-color);
+  color: var(--third-color);
+  border: none;
   width: 44px;
   height: 44px;
-  border-radius: 50%;
-  display: none; /* Hidden by default, shown in mobile */
+  border-radius: var(--border-radius-round, 50%);
+  font-size: 1.5rem;
+  box-shadow: var(--shadow-md, 0 2px 5px rgba(0, 0, 0, 0.2));
+  cursor: pointer;
+  transition: all 0.2s ease;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  cursor: grab;
-  font-size: 1.3rem;
-  transition: transform 0.2s, background-color 0.2s;
-  touch-action: none; /* Prevents browser handling of all panning and zooming gestures */
-  user-select: none; /* Prevent text selection during drag */
 }
 
 .mobile-sidebar-toggle:active {
-  cursor: grabbing;
-  transform: scale(1.05);
-  background-color: var(--second-color);
-  color: var(--main-color);
+  transform: scale(0.95);
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.2));
 }
 
 .mobile-sidebar-toggle:hover, 
 .mobile-sidebar-toggle:focus {
-  transform: scale(1.05);
+  color: var(--second-color);
+  outline: none;
 }
 
-/* Mobile overlay */
+/* Overlay for mobile sidebar */
 .sidebar-overlay {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 990;
-  display: none;
+  z-index: 999;
   opacity: 0;
   transition: opacity 0.3s ease;
+  cursor: pointer;
 }
 
 .sidebar-overlay.active {
-  display: block;
   opacity: 1;
+  display: block;
 }
 
-/* Responsive styles */
+/* Responsive adjustments */
 @media (max-width: 991px) {
   #sidebar {
-    width: 240px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
 }
 
 @media (max-width: 768px) {
   #sidebar {
-    left: -280px;
-    width: 280px;
-    transition: left 0.3s ease;
-    z-index: 999;
+    width: 80%;
+    max-width: 300px;
+    box-shadow: var(--shadow-lg, 2px 0 15px rgba(0, 0, 0, 0.3));
   }
   
   #sidebar.mobile-visible {
-    left: 0;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+    transform: translateX(0);
+    box-shadow: var(--shadow-lg, 5px 0 25px rgba(0, 0, 0, 0.3));
   }
   
   .mobile-sidebar-toggle {
@@ -295,35 +289,36 @@
   }
   
   #shopimy-logo {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
   }
   
   .nav-item, .subnav-item {
-    padding: 14px 20px;
+    padding-top: var(--spacing-sm, 10px);
+    padding-bottom: var(--spacing-sm, 10px);
   }
   
   .subnav-item {
-    padding-left: 52px;
+    padding-left: 48px;
   }
 }
 
 @media (max-width: 480px) {
   #sidebar {
-    width: 260px;
-    left: -260px;
+    width: 85%;
+    max-width: 280px;
   }
   
   #sidebar.mobile-visible {
-    left: 0;
+    transform: translateX(0);
   }
   
   #shopimy-logo {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
   
   .mobile-sidebar-toggle {
     width: 40px;
     height: 40px;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 }
