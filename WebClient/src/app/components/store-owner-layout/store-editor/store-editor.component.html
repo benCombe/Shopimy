@@ -107,7 +107,7 @@
             <div class="component-info">
               <span class="component-name">{{ component.name }}</span>
               <label class="switch">
-                <input type="checkbox" [(ngModel)]="component.isSelected" >
+                <input type="checkbox" [(ngModel)]="component.isSelected" (click)="toggleComponent(component)">
                 <span class="slider round"></span>
               </label>
             </div>

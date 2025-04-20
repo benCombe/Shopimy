@@ -409,6 +409,11 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
+    
+    // If switching to components tab, make sure component visibility is updated
+    if (tab === 'components') {
+      this.updateComponentSelectionFromStore();
+    }
   }
 
   toggleComponent(component: any) {
