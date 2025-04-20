@@ -129,6 +129,9 @@
       
       <!-- Action Buttons -->
       <div class="actions">
+        <div *ngIf="saveError" class="alert alert-danger error-message">
+          {{ saveError }}
+        </div>
         <button class="standard-button secondary" *ngIf="!isInitialSetup" (click)="viewStore()">View Store</button>
         <button class="standard-button primary" (click)="saveChanges()">
           {{ isInitialSetup ? 'Create Store' : 'Save Changes' }}

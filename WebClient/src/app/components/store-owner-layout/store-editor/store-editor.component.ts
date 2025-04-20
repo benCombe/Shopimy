@@ -12,7 +12,6 @@ import { StoreTheme } from '../../../models/store-theme.model';
 import { StorePreviewComponent } from '../../shared/store-preview/store-preview.component';
 import { ComponentVisibility, DEFAULT_VISIBILITY } from '../../../models/component-visibility.model';
 import { ThemesComponent } from '../themes/themes.component';
-import { ProductManagementComponent } from '../product-management/product-management.component';
 import { LoadingService } from '../../../services/loading.service';
 import { Router } from '@angular/router';
 
@@ -26,7 +25,6 @@ import { Router } from '@angular/router';
     ReactiveFormsModule,
     StorePreviewComponent,
     ThemesComponent,
-    ProductManagementComponent,
     RouterLink
   ],
   templateUrl: './store-editor.component.html',
@@ -309,6 +307,7 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
   isInitialSetup: boolean = false;
   isLoading: boolean = true;
   formErrors: { [key: string]: string } = {};
+  saveError: string | null = null;
   
   availableComponents = [
     { id: 'header', name: 'Header & Navigation', isSelected: true },
@@ -481,6 +480,7 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
   }
 
   saveChanges() {
+    this.saveError = null;
     if (!this.validateForm()) {
       // Show appropriate tab with errors
       if (this.formErrors['name'] || this.formErrors['url']) {
@@ -508,11 +508,12 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Error creating store:', error);
           this.loadingService.setIsLoading(false);
+          this.saveError = error.error?.message || error.message || 'Failed to create store. Please check inputs.';
           
-          // Handle specific errors
-          if (error.message.includes('URL already exists')) {
+          if (error.error?.message?.includes('URL already exists') || error.message?.includes('URL already exists')) {
             this.formErrors['url'] = 'This URL is already taken. Please choose another one.';
             this.activeTab = 'basic';
+            this.saveError = this.formErrors['url'];
           }
         }
       });
@@ -526,11 +527,12 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Error updating store:', error);
           this.loadingService.setIsLoading(false);
+          this.saveError = error.error?.message || error.message || 'Failed to update store. Please check inputs.';
           
-          // Handle specific errors
-          if (error.message.includes('URL already exists')) {
+          if (error.error?.message?.includes('URL already exists') || error.message?.includes('URL already exists')) {
             this.formErrors['url'] = 'This URL is already taken. Please choose another one.';
             this.activeTab = 'basic';
+            this.saveError = this.formErrors['url'];
           }
         }
       });

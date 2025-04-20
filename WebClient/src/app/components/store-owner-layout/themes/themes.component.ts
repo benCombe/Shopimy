@@ -163,27 +163,6 @@ export class ThemesComponent implements OnInit {
     }
   }
 
-  saveTheme() {
-    if (!this.currentStore) return;
-    
-    // Update the store object
-    this.currentStore.theme_1 = this.customTheme.mainColor;
-    this.currentStore.theme_2 = this.customTheme.secondColor;
-    this.currentStore.theme_3 = this.customTheme.thirdColor;
-    this.currentStore.fontColor = this.customTheme.altColor;
-    this.currentStore.fontFamily = this.customTheme.mainFontFam;
-    
-    // Save the store
-    this.storeService.updateStore(this.currentStore).subscribe({
-      next: (response) => {
-        console.log('Theme saved successfully');
-      },
-      error: (error) => {
-        console.error('Error saving theme', error);
-      }
-    });
-  }
-  
   emitThemeUpdate() {
     this.themeUpdated.emit({
       mainColor: this.customTheme.mainColor,

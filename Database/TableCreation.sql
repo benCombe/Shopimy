@@ -37,21 +37,23 @@ CREATE TABLE StoreThemes (
     font_family VARCHAR(200) NOT NULL,
     banner_text varchar(50),
     logo_text varchar(50),
+    component_visibility NVARCHAR(MAX) NULL,
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE
 );
 
 CREATE TABLE StoreBanners (
     store_id INT NOT NULL,
     banner_url VARCHAR(200) NOT NULL,
+    PRIMARY KEY (store_id),
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
 );
 
 CREATE TABLE StoreLogos (
     store_id INT NOT NULL,
     logo_url VARCHAR(200) NOT NULL,
+    PRIMARY KEY (store_id),
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
 );
-
 
 CREATE TABLE Categories (
     category_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -73,7 +75,6 @@ CREATE TABLE ShoppingCarts (
 	FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION,
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
-
 
 CREATE VIEW ItemsView AS
     SELECT
@@ -132,7 +133,6 @@ create table ItemImages(
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
 
-
 CREATE TABLE OrderLog (
 	order_id INT IDENTITY(1,1) PRIMARY KEY,
 	store_id INT,
@@ -144,14 +144,6 @@ CREATE TABLE OrderLog (
 	order_status NVARCHAR(50),
 	FOREIGN KEY (store_id) REFERENCES Stores(store_id)
 );
-
-CREATE TABLE OrderItems (
-	order_id INT,
-	item_id INT,
-	quantity INT,
-	FOREIGN KEY (order_id) REFERENCES OrderLog(order_id), 
-	FOREIGN KEY (item_id) REFERENCES Items(item_id),
-	PRIMARY KEY (order_id, item_id)
 
 CREATE TABLE Orders (
     order_id INT IDENTITY(1,1) PRIMARY KEY,

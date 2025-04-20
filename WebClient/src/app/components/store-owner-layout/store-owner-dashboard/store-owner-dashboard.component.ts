@@ -74,6 +74,9 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
       if (!this.hasStore) {
         this.showCreateStorePrompt = true;
         this.currentPage = "Store Editor";
+      } else {
+        // Explicitly set to false if the user *does* have a store
+        this.showCreateStorePrompt = false; 
       }
       
       this.loadingService.setIsLoading(false);

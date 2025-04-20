@@ -5,13 +5,14 @@ import { RouterLink, Router } from '@angular/router';
 import { StoreService } from '../../services/store.service';
 import { StoreDetails } from '../../models/store-details';
 import { ThemesComponent } from '../store-owner-layout/themes/themes.component';
-import { ToggleVisibilityComponent } from '../toggle-visibility/toggle-visibility.component';
 import { Subscription } from 'rxjs';
+import { ComponentVisibility, DEFAULT_VISIBILITY } from '../../models/component-visibility.model';
+import { StoreTheme } from '../../models/store-theme.model';
 
 @Component({
   selector: 'app-store-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ThemesComponent, ToggleVisibilityComponent, RouterLink],
+  imports: [CommonModule, FormsModule, ThemesComponent, RouterLink],
   templateUrl: './store-editor.component.html',
   styleUrl: './store-editor.component.css'
 })
@@ -36,34 +37,22 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
           this.isCreateMode = false;
         } else {
           this.isCreateMode = true;
-          this.store = {
-            id: 0,
-            userId: '',  // Will be set on server
-            name: '',
-            description: '',
-            logoUrl: '',
-            bannerUrl: '',
-            phoneNumber: '',
-            email: '',
-            isActive: false,
-            storeTheme: {
-              id: 0,
-              name: 'Earthy Tones',
-              mainColor: '#393727',
-              secondColor: '#D0933D',
-              thirdColor: '#D3CEBB',
-              altColor: '#333333',
-              mainFontFam: 'sans-serif'
-            },
-            slug: '',
-            address: {
-              street: '',
-              city: '',
-              state: '',
-              postalCode: '',
-              country: ''
-            }
-          };
+          this.store = new StoreDetails(
+            0,
+            '',
+            '',
+            '#393727',
+            '#D0933D',
+            '#D3CEBB',
+            '#333333',
+            'sans-serif',
+            'Welcome to our store',
+            '',
+            '',
+            '',
+            [],
+            DEFAULT_VISIBILITY
+          );
         }
       })
     );
@@ -103,15 +92,13 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateStoreTheme(theme: any): void {
+  updateStoreTheme(theme: StoreTheme): void {
     if (this.store) {
-      this.store.storeTheme = theme;
-    }
-  }
-
-  updateVisibility(isActive: boolean): void {
-    if (this.store) {
-      this.store.isActive = isActive;
+      this.store.theme_1 = theme.mainColor;
+      this.store.theme_2 = theme.secondColor;
+      this.store.theme_3 = theme.thirdColor;
+      this.store.fontColor = theme.altColor;
+      this.store.fontFamily = theme.mainFontFam;
     }
   }
 } 

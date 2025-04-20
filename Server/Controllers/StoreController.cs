@@ -247,87 +247,101 @@ namespace Server.Controllers
             string username = userEmail.Split('@')[0];
 
             // Check if user already has a store
-            var existingStore = await _context.Stores
+            var existingStoreCheck = await _context.Stores
+                .AsNoTracking() // Use AsNoTracking for read-only checks
                 .Where(s => s.StoreOwnerId == userId)
                 .FirstOrDefaultAsync();
 
-            if (existingStore != null)
+            if (existingStoreCheck != null)
             {
                 return BadRequest("User already has a store");
             }
 
             // Check if store URL is unique
-            var storeWithSameUrl = await _context.Stores
+            var storeWithSameUrlCheck = await _context.Stores
+                .AsNoTracking()
                 .Where(s => s.StoreUrl == storeDetails.URL)
                 .FirstOrDefaultAsync();
 
-            if (storeWithSameUrl != null)
+            if (storeWithSameUrlCheck != null)
             {
                 return BadRequest("Store URL already exists");
             }
 
-            // Check if store name (username) already exists
+            // Check if store name (username) already exists and find a unique one
             string storeName = username;
             int suffix = 1;
-            
-            // Keep checking with incrementing numbers until we find a unique name
-            while (await _context.Stores.AnyAsync(s => s.Name == storeName))
+            while (await _context.Stores.AsNoTracking().AnyAsync(s => s.Name == storeName))
             {
                 storeName = $"{username}{suffix}";
                 suffix++;
             }
 
-            // Create new store with the extracted and validated username
-            var store = new Store
+            // Start Transaction
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                StoreOwnerId = userId,
-                Name = storeName,
-                StoreUrl = storeDetails.URL
-            };
+                try
+                {
+                    // Create new store with the extracted and validated username
+                    var store = new Store
+                    {
+                        StoreOwnerId = userId,
+                        Name = storeName,
+                        StoreUrl = storeDetails.URL
+                    };
+                    _context.Stores.Add(store);
+                    await _context.SaveChangesAsync(); // Save store to get its ID
 
-            _context.Stores.Add(store);
-            await _context.SaveChangesAsync();
+                    // Create themes
+                    var theme = new StoreTheme
+                    {
+                        StoreId = store.StoreId,
+                        Theme_1 = storeDetails.Theme_1,
+                        Theme_2 = storeDetails.Theme_2,
+                        Theme_3 = storeDetails.Theme_3,
+                        FontColor = storeDetails.FontColor,
+                        FontFamily = storeDetails.FontFamily,
+                        BannerText = storeDetails.BannerText,
+                        LogoText = storeDetails.LogoText ?? storeName, // Default LogoText to store name if not provided
+                        ComponentVisibility = storeDetails.ComponentVisibility
+                    };
+                    _context.StoreThemes.Add(theme);
+                    
+                    // Create banner
+                    var banner = new StoreBanner
+                    {
+                        StoreID = store.StoreId,
+                        BannerURL = storeDetails.BannerURL
+                    };
+                    _context.StoreBanners.Add(banner);
 
-            // Create themes
-            var theme = new StoreTheme
-            {
-                StoreId = store.StoreId,
-                Theme_1 = storeDetails.Theme_1,
-                Theme_2 = storeDetails.Theme_2,
-                Theme_3 = storeDetails.Theme_3,
-                FontColor = storeDetails.FontColor,
-                FontFamily = storeDetails.FontFamily,
-                BannerText = storeDetails.BannerText,
-                LogoText = storeDetails.LogoText ?? storeName, // Default LogoText to store name if not provided
-                ComponentVisibility = storeDetails.ComponentVisibility
-            };
+                    // Create logo
+                    var logo = new StoreLogo
+                    {
+                        StoreID = store.StoreId,
+                        LogoURL = storeDetails.LogoURL
+                    };
+                    _context.StoreLogos.Add(logo);
+                    
+                    // Save all related entities
+                    await _context.SaveChangesAsync();
 
-            _context.StoreThemes.Add(theme);
-            
-            // Create banner
-            var banner = new StoreBanner
-            {
-                StoreID = store.StoreId,
-                BannerURL = storeDetails.BannerURL
-            };
+                    // Commit transaction
+                    await transaction.CommitAsync();
 
-            _context.StoreBanners.Add(banner);
-
-            // Create logo
-            var logo = new StoreLogo
-            {
-                StoreID = store.StoreId,
-                LogoURL = storeDetails.LogoURL
-            };
-
-            _context.StoreLogos.Add(logo);
-            
-            await _context.SaveChangesAsync();
-
-            // Return the created store details with the actual store name used
-            storeDetails.Id = store.StoreId;
-            storeDetails.Name = storeName; // Update the name in the response
-            return CreatedAtAction(nameof(GetStoreDetails), new { url = store.StoreUrl }, storeDetails);
+                    // Return the created store details with the actual store name used
+                    storeDetails.Id = store.StoreId;
+                    storeDetails.Name = storeName; // Update the name in the response
+                    return CreatedAtAction(nameof(GetStoreDetails), new { url = store.StoreUrl }, storeDetails);
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaction in case of error
+                    await transaction.RollbackAsync();
+                    Console.WriteLine($"Error creating store: {ex.Message}"); // Log the error
+                    return StatusCode(500, "An error occurred while creating the store.");
+                }
+            }
         }
 
         // Update store configuration
@@ -355,98 +369,117 @@ namespace Server.Controllers
                 return Unauthorized("Invalid user authentication token.");
             }
 
-            // Check if this is the user's store
-            var store = await _context.Stores
-                .Where(s => s.StoreId == storeDetails.Id)
-                .FirstOrDefaultAsync();
-
-            if (store == null)
+            // Start Transaction
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                return NotFound("Store not found");
-            }
-
-            if (store.StoreOwnerId != userId)
-            {
-                return Forbid("You don't have permission to update this store");
-            }
-
-            // If changing URL, check if it's unique
-            if (store.StoreUrl != storeDetails.URL)
-            {
-                var storeWithSameUrl = await _context.Stores
-                    .Where(s => s.StoreUrl == storeDetails.URL && s.StoreId != storeDetails.Id)
-                    .FirstOrDefaultAsync();
-
-                if (storeWithSameUrl != null)
+                try
                 {
-                    return BadRequest("Store URL already exists");
+                    // Check if this is the user's store
+                    var store = await _context.Stores
+                        .Where(s => s.StoreId == storeDetails.Id)
+                        .FirstOrDefaultAsync();
+
+                    if (store == null)
+                    {
+                        return NotFound("Store not found");
+                    }
+
+                    if (store.StoreOwnerId != userId)
+                    {
+                        return Forbid("You don't have permission to update this store");
+                    }
+
+                    // If changing URL, check if it's unique
+                    if (store.StoreUrl != storeDetails.URL)
+                    {
+                        var storeWithSameUrl = await _context.Stores
+                            .AsNoTracking()
+                            .Where(s => s.StoreUrl == storeDetails.URL && s.StoreId != storeDetails.Id)
+                            .FirstOrDefaultAsync();
+
+                        if (storeWithSameUrl != null)
+                        {
+                            return BadRequest("Store URL already exists");
+                        }
+                    }
+
+                    // Update store
+                    store.Name = storeDetails.Name;
+                    store.StoreUrl = storeDetails.URL;
+                    _context.Stores.Update(store);
+
+                    // Update themes
+                    var theme = await _context.StoreThemes
+                        .Where(s => s.StoreId == store.StoreId)
+                        .FirstOrDefaultAsync();
+
+                    if (theme == null)
+                    {
+                        theme = new StoreTheme
+                        {
+                            StoreId = store.StoreId
+                        };
+                        _context.StoreThemes.Add(theme);
+                    }
+
+                    theme.Theme_1 = storeDetails.Theme_1;
+                    theme.Theme_2 = storeDetails.Theme_2;
+                    theme.Theme_3 = storeDetails.Theme_3;
+                    theme.FontColor = storeDetails.FontColor;
+                    theme.FontFamily = storeDetails.FontFamily;
+                    theme.BannerText = storeDetails.BannerText;
+                    theme.LogoText = storeDetails.LogoText;
+                    theme.ComponentVisibility = storeDetails.ComponentVisibility;
+
+                    // Update banner
+                    var banner = await _context.StoreBanners
+                        .Where(s => s.StoreID == store.StoreId)
+                        .FirstOrDefaultAsync();
+
+                    if (banner == null)
+                    {
+                        banner = new StoreBanner
+                        {
+                            StoreID = store.StoreId
+                        };
+                        _context.StoreBanners.Add(banner);
+                    }
+
+                    banner.BannerURL = storeDetails.BannerURL;
+
+                    // Update logo
+                    var logo = await _context.StoreLogos
+                        .Where(s => s.StoreID == store.StoreId)
+                        .FirstOrDefaultAsync();
+
+                    if (logo == null)
+                    {
+                        logo = new StoreLogo
+                        {
+                            StoreID = store.StoreId
+                        };
+                        _context.StoreLogos.Add(logo);
+                    }
+
+                    logo.LogoURL = storeDetails.LogoURL;
+
+                    // Save changes
+                    await _context.SaveChangesAsync();
+
+                    // Commit transaction
+                    await transaction.CommitAsync();
+
+                    // Return the updated store details
+                    return Ok(storeDetails);
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaction in case of error
+                    await transaction.RollbackAsync();
+                    Console.WriteLine($"Error updating store: {ex.Message}"); // Log the error
+                    return StatusCode(500, "An error occurred while updating the store.");
                 }
             }
-
-            // Update store
-            store.Name = storeDetails.Name;
-            store.StoreUrl = storeDetails.URL;
-            _context.Stores.Update(store);
-
-            // Update themes
-            var theme = await _context.StoreThemes
-                .Where(s => s.StoreId == store.StoreId)
-                .FirstOrDefaultAsync();
-
-            if (theme == null)
-            {
-                theme = new StoreTheme
-                {
-                    StoreId = store.StoreId
-                };
-                _context.StoreThemes.Add(theme);
-            }
-
-            theme.Theme_1 = storeDetails.Theme_1;
-            theme.Theme_2 = storeDetails.Theme_2;
-            theme.Theme_3 = storeDetails.Theme_3;
-            theme.FontColor = storeDetails.FontColor;
-            theme.FontFamily = storeDetails.FontFamily;
-            theme.BannerText = storeDetails.BannerText;
-            theme.LogoText = storeDetails.LogoText;
-            theme.ComponentVisibility = storeDetails.ComponentVisibility;
-
-            // Update banner
-            var banner = await _context.StoreBanners
-                .Where(s => s.StoreID == store.StoreId)
-                .FirstOrDefaultAsync();
-
-            if (banner == null)
-            {
-                banner = new StoreBanner
-                {
-                    StoreID = store.StoreId
-                };
-                _context.StoreBanners.Add(banner);
-            }
-
-            banner.BannerURL = storeDetails.BannerURL;
-
-            // Update logo
-            var logo = await _context.StoreLogos
-                .Where(s => s.StoreID == store.StoreId)
-                .FirstOrDefaultAsync();
-
-            if (logo == null)
-            {
-                logo = new StoreLogo
-                {
-                    StoreID = store.StoreId
-                };
-                _context.StoreLogos.Add(logo);
-            }
-
-            logo.LogoURL = storeDetails.LogoURL;
-
-            await _context.SaveChangesAsync();
-
-            // Return the updated store details
-            return Ok(storeDetails);
         }
     }
 }
