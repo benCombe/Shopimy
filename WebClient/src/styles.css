@@ -1,3 +1,7 @@
+/* Global Style Definitions Extracted from Landing, Login, and Registration Pages */
+/* These styles define the unified visual language as seen on the landing, login, and registration pages. */
+/* Please consolidate common CSS rules here (e.g., colors, fonts, spacing, buttons, tables) according to README-STYLES.md. */
+
 /* You can add global styles to this file, and also import other style files */
 
 /* *{
@@ -475,6 +479,65 @@ img {
     padding: 4px 8px;
     font-size: 0.8rem;
   }
+}
+
+/* Global Container */
+.global-container {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Global Main Content Area */
+.global-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  flex-grow: 1;  /* allow main to expand and center content vertically */
+  min-height: calc(100vh - 70px);  /* maintain height minus header */
+  background-color: var(--main-color);  /* match landing, login, register backgrounds */
+}
+
+/* Global Card Style */
+.global-card {
+  background-color: var(--third-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Global Button Style */
+.global-btn {
+  padding: 0.75rem;
+  background-color: var(--main-color);
+  color: var(--second-color);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.global-btn:hover:not(:disabled) {
+  background-color: var(--second-color);
+  color: white;
+}
+
+.global-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.global-btn.full-width {
+  width: 100%;
+  max-width: 100%;
 }
 
 

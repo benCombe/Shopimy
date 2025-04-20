@@ -2,33 +2,43 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { ItemService, ProductCreatePayload, ProductUpdatePayload, ProductVariantPayload } from '../../../services/item.service';
+import {
+  ItemService,
+  ProductCreatePayload,
+  ProductUpdatePayload,
+  ProductVariantPayload,
+  ProductListItem,
+  ProductDetail,
+  ProductVariant as ProductVariantDetail
+} from '../../../services/item.service';
 import { CategoryService, Category } from '../../../services/category.service';
 import { StoreService } from '../../../services/store.service';
-import { Item } from '../../../models/item';
-import { BasicItem } from '../../../models/basic-item';
-import { ProductListItem } from '../../../services/item.service';
 
-// Interface for the product variant (Items)
-interface ProductVariant {
-  id?: number;
+// Interface for the variant form group structure (includes local state for file/preview)
+interface ProductVariantFormValue {
+  itemId?: number;
   price: number;
   salePrice?: number;
   quantity: number;
   type?: string;
   size?: string;
-  color?: string;
+  colour?: string;
+  imageUrl?: string;
+  imagePreview?: string | ArrayBuffer | null;
+  imageFile?: File | null;
 }
 
-// Interface for our combined Listing + Items model
-interface Product {
+// Interface for our combined Product model used in the component state
+interface ProductDisplayModel {
   listId?: number;
   name: string;
   description: string;
   categoryId: number;
   storeId: number;
-  variants: ProductVariant[];
-  imageUrl?: string;
+  variants: ProductVariantFormValue[];
+  availFrom?: Date | null;
+  availTo?: Date | null;
+  status?: 'Draft' | 'Published' | 'Scheduled' | 'Expired';
 }
 
 @Component({
@@ -39,30 +49,17 @@ interface Product {
   styleUrl: './product-management.component.css'
 })
 export class ProductManagementComponent implements OnInit, OnDestroy {
-  // Form for adding/editing products
   productForm: FormGroup;
-  
-  // Lists to hold data
-  products: Product[] = [];
+  products: ProductListItem[] = [];
   categories: Category[] = [];
-  
-  // Current state tracking
   isLoading = false;
   isEditMode = false;
-  currentProductId: number | null = null;
+  currentListId: number | null = null;
   isSaving = false;
-  
-  // Track store id
   storeId: number | null = null;
-  
-  // File and image handling
-  selectedFile: File | null = null;
-  imagePreview: string | ArrayBuffer | null = null;
-  
-  // Subscription management
-  private storeSubscription: Subscription | null = null;
-  
-  // Reference to access Document object
+
+  private subscriptions: Subscription[] = [];
+
   document = document;
 
   constructor(
@@ -71,116 +68,122 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     private categoryService: CategoryService,
     private storeService: StoreService
   ) {
-    // Initialize the form
     this.productForm = this.createProductForm();
   }
 
   ngOnInit(): void {
-    // Subscribe to active store to get the store ID
-    this.storeSubscription = this.storeService.activeStore$.subscribe(store => {
+    const storeSub = this.storeService.activeStore$.subscribe(store => {
       if (store) {
         this.storeId = store.id;
         this.loadProducts();
         this.loadCategories();
+      } else {
+        this.storeId = null;
+        this.products = [];
+        this.categories = [];
       }
     });
+    this.subscriptions.push(storeSub);
   }
 
   ngOnDestroy(): void {
-    // Clean up subscriptions to prevent memory leaks
-    if (this.storeSubscription) {
-      this.storeSubscription.unsubscribe();
-    }
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  // Initialize the product form
   createProductForm(): FormGroup {
     return this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       description: ['', Validators.maxLength(1000)],
       categoryId: ['', Validators.required],
-      variants: this.fb.array([this.createVariantFormGroup()]),
-      imageUrl: [''] // Hidden field to store the image URL
+      availFrom: [null],
+      availTo: [null],
+      variants: this.fb.array([this.createVariantFormGroup()])
     });
   }
 
-  // Create a form group for a product variant
-  createVariantFormGroup(): FormGroup {
+  createVariantFormGroup(variant: Partial<ProductVariantFormValue> = {}): FormGroup {
     return this.fb.group({
-      id: [null], // For existing variants
-      price: [0, [Validators.required, Validators.min(0)]],
-      salePrice: [null, Validators.min(0)],
-      quantity: [0, [Validators.required, Validators.min(0)]],
-      type: [''],
-      size: [''],
-      color: ['']
+      itemId: [variant.itemId || 0],
+      price: [variant.price || 0, [Validators.required, Validators.min(0.01)]],
+      salePrice: [variant.salePrice || null, Validators.min(0)],
+      quantity: [variant.quantity || 0, [Validators.required, Validators.min(0)]],
+      type: [variant.type || ''],
+      size: [variant.size || ''],
+      colour: [variant.colour || ''],
+      imageUrl: [variant.imageUrl || ''],
+      imagePreview: [variant.imagePreview || null],
+      imageFile: [variant.imageFile || null]
     });
   }
 
-  // Get the variants form array from the product form
   get variants(): FormArray {
     return this.productForm.get('variants') as FormArray;
   }
 
-  // Add a new variant form group to the variants form array
   addVariant(): void {
     this.variants.push(this.createVariantFormGroup());
   }
 
-  // Remove a variant form group from the variants form array
   removeVariant(index: number): void {
     if (this.variants.length > 1) {
+      const variantToRemove = this.variants.at(index);
+      const itemIdToRemove = variantToRemove.get('itemId')?.value;
+      if (itemIdToRemove > 0) {
+        let deletedIds = this.productForm.get('deletedVariantIds')?.value || [];
+        deletedIds.push(itemIdToRemove);
+        if (!this.productForm.get('deletedVariantIds')) {
+          this.productForm.addControl('deletedVariantIds', this.fb.control([]));
+        }
+        this.productForm.patchValue({ deletedVariantIds: deletedIds });
+      }
       this.variants.removeAt(index);
+    } else {
+      alert("A product must have at least one variant.");
     }
   }
 
-  // Load products from the backend
   loadProducts(): void {
     if (!this.storeId) return;
     
     this.isLoading = true;
-    
-    // Use the ItemService to fetch products by store
-    this.itemService.getItemsByStore(this.storeId).subscribe({
-      next: (items) => {
-        // Process the products data
-        this.products = items.map(item => this.mapItemToProduct(item));
+    const productSub = this.itemService.getItemsByStore(this.storeId).subscribe({
+      next: (items: ProductListItem[]) => {
+        // Use a type assertion to tell TypeScript that we're handling the status correctly
+        this.products = items.map(item => ({
+          ...item,
+          status: this.getProductStatus(item.availFrom, item.availTo)
+        })) as unknown as ProductListItem[];
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading products:', error);
         this.isLoading = false;
       }
     });
+    this.subscriptions.push(productSub);
   }
 
-  // Map API response to our Product interface
-  private mapItemToProduct(item: any): Product {
-    return {
-      listId: item.id,
-      name: item.Name,
-      description: item.Description || '',
-      categoryId: item.CategoryIds?.[0] || 0,
-      storeId: this.storeId!,
-      imageUrl: item.ImageUrl || '',
-      variants: [{
-        id: item.Id,
-        price: item.OriginalPrice,
-        salePrice: item.SalePrice,
-        quantity: item.QuantityInStock,
-        // Placeholder for variant specifics that might not be in the Item model
-        type: '',
-        size: '',
-        color: ''
-      }]
-    };
+  getProductStatus(availFrom?: Date | string | null, availTo?: Date | string | null): 'Draft' | 'Published' | 'Scheduled' | 'Expired' {
+    const now = new Date();
+    const fromDate = availFrom ? new Date(availFrom) : null;
+    const toDate = availTo ? new Date(availTo) : null;
+
+    if (!fromDate) {
+      return 'Draft';
+    }
+    
+    // Check if product is expired (availTo date is in the past)
+    if (toDate && toDate < now) {
+      return 'Expired';
+    }
+    
+    // Else check if scheduled or published
+    return fromDate > now ? 'Scheduled' : 'Published';
   }
 
-  // Load categories from the backend
   loadCategories(): void {
     if (!this.storeId) return;
-    
-    this.categoryService.getCategories().subscribe({
+    const categorySub = this.categoryService.getCategories().subscribe({
       next: (categories: Category[]) => {
         this.categories = categories.filter(c => c.storeId === this.storeId);
       },
@@ -188,170 +191,164 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         console.error('Error loading categories:', error);
       }
     });
+    this.subscriptions.push(categorySub);
   }
 
-  // Edit an existing product
-  editProduct(product: Product): void {
-    this.isEditMode = true;
-    this.currentProductId = product.listId || null;
-    this.imagePreview = product.imageUrl || null;
-    
-    // Clear existing variants
-    while (this.variants.length) {
-      this.variants.removeAt(0);
-    }
-    
-    // Add form groups for each variant
-    product.variants.forEach(variant => {
-      this.variants.push(this.fb.group({
-        id: [variant.id],
-        price: [variant.price, [Validators.required, Validators.min(0)]],
-        salePrice: [variant.salePrice, Validators.min(0)],
-        quantity: [variant.quantity, [Validators.required, Validators.min(0)]],
-        type: [variant.type || ''],
-        size: [variant.size || ''],
-        color: [variant.color || '']
-      }));
-    });
-    
-    // Set form values for the product
-    this.productForm.patchValue({
-      name: product.name,
-      description: product.description,
-      categoryId: product.categoryId,
-      imageUrl: product.imageUrl || ''
+  editProduct(productListItem: ProductListItem): void {
+    if (!productListItem.listId) return;
+
+    this.isLoading = true;
+    this.itemService.getProductDetails(productListItem.listId).subscribe({
+      next: (productDetail: ProductDetail) => {
+        this.isEditMode = true;
+        this.currentListId = productDetail.listId;
+
+        this.productForm.reset();
+        this.variants.clear();
+
+        this.productForm.patchValue({
+          name: productDetail.name,
+          description: productDetail.description,
+          categoryId: productDetail.categoryId,
+          availFrom: productDetail.availFrom ? new Date(productDetail.availFrom).toISOString().split('T')[0] : null,
+          availTo: productDetail.availTo ? new Date(productDetail.availTo).toISOString().split('T')[0] : null,
+        });
+
+        if (!this.productForm.get('deletedVariantIds')) {
+          this.productForm.addControl('deletedVariantIds', this.fb.control([]));
+        } else {
+          this.productForm.get('deletedVariantIds')?.reset([]);
+        }
+
+        productDetail.variants.forEach(variant => {
+          this.variants.push(this.createVariantFormGroup({
+            itemId: variant.itemId,
+            price: variant.price,
+            salePrice: variant.salePrice,
+            quantity: variant.quantity,
+            type: variant.type,
+            size: variant.size,
+            colour: variant.colour,
+            imageUrl: variant.images?.[0] || '',
+            imagePreview: variant.images?.[0] || null
+          }));
+        });
+
+        this.isLoading = false;
+        window.scrollTo(0, 0);
+      },
+      error: (error) => {
+        console.error('Error fetching product details:', error);
+        this.isLoading = false;
+        alert('Failed to load product details. Please try again.');
+      }
     });
   }
 
-  // Cancel editing or adding a product
   cancelEdit(): void {
     this.isEditMode = false;
-    this.currentProductId = null;
-    this.selectedFile = null;
-    this.imagePreview = null;
+    this.currentListId = null;
     this.productForm.reset();
-    
-    // Reset to single variant
-    while (this.variants.length) {
-      this.variants.removeAt(0);
-    }
+    this.variants.clear();
     this.variants.push(this.createVariantFormGroup());
+    if (this.productForm.get('deletedVariantIds')) {
+      this.productForm.removeControl('deletedVariantIds');
+    }
   }
 
-  // Save a product (create new or update existing)
-  saveProduct(): void {
-    if (this.productForm.invalid || !this.storeId) return;
-    
+  saveProduct(publish: boolean = false): void {
+    this.productForm.markAllAsTouched();
+
+    if (this.productForm.invalid || !this.storeId) {
+      console.warn("Form is invalid or Store ID missing.");
+      return;
+    }
+
     this.isSaving = true;
-    
-    const formData = this.productForm.value;
-    const baseProductData = {
-      name: formData.name,
-      description: formData.description,
-      categoryId: formData.categoryId,
-      variants: formData.variants.map((v: any) => ({
-        itemId: v.id || 0, // 0 for new variants
-        price: v.price,
-        salePrice: v.salePrice || 0, // Default to 0 if undefined
-        quantity: v.quantity,
-        type: v.type || '',
-        size: v.size || '',
-        colour: v.color || '',
-        images: []
-      }))
-    };
-    
-    // If editing, include the product ID and cast to update payload
-    if (this.isEditMode && this.currentProductId) {
+    const formData = this.productForm.getRawValue();
+
+    const variantPayloads: ProductVariantPayload[] = formData.variants.map((v: ProductVariantFormValue) => ({
+      itemId: v.itemId || 0,
+      price: v.price,
+      salePrice: v.salePrice ?? 0,
+      quantity: v.quantity,
+      type: v.type || undefined,
+      size: v.size || undefined,
+      colour: v.colour || undefined,
+      images: v.imageUrl ? [v.imageUrl] : []
+    }));
+
+    const availFromDate = publish ? new Date() : null;
+    const availToDate = formData.availTo ? new Date(formData.availTo) : null;
+
+    if (this.isEditMode && this.currentListId) {
       const updatePayload: ProductUpdatePayload = {
-        ...baseProductData
+        name: formData.name,
+        description: formData.description,
+        categoryId: formData.categoryId,
+        availFrom: availFromDate,
+        availTo: availToDate,
+        variants: variantPayloads,
+        deletedVariantIds: formData.deletedVariantIds || []
       };
-      
-      // Update the product
-      this.itemService.updateProduct(this.currentProductId, updatePayload).subscribe({
+
+      const updateSub = this.itemService.updateProduct(this.currentListId, updatePayload).subscribe({
         next: (result) => {
-          // Handle successful update
           console.log('Product updated:', result);
-          
-          // If there's a new file selected, upload it
-          if (this.selectedFile && this.currentProductId) {
-            this.uploadProductImage(this.currentProductId);
-          } else {
-            this.handleSaveComplete();
-          }
+          this.handleSaveSuccess();
         },
-        error: (error) => {
-          console.error('Error updating product:', error);
-          this.isSaving = false;
-          alert('Failed to update product. Please try again.');
-        }
+        error: (error) => this.handleSaveError(error, 'update')
       });
+      this.subscriptions.push(updateSub);
     } else {
-      // Create a new product
       const createPayload: ProductCreatePayload = {
-        ...baseProductData,
-        storeId: this.storeId!
+        storeId: this.storeId!,
+        name: formData.name,
+        description: formData.description,
+        categoryId: formData.categoryId,
+        availFrom: availFromDate,
+        availTo: availToDate,
+        variants: variantPayloads
       };
-      
-      this.itemService.createProduct(createPayload).subscribe({
+
+      const createSub = this.itemService.createProduct(createPayload).subscribe({
         next: (result) => {
-          // Handle successful creation
           console.log('Product created:', result);
-          
-          // If there's a file selected, upload it
-          if (this.selectedFile && result.listId) {
-            this.uploadProductImage(result.listId);
-          } else {
-            this.handleSaveComplete();
-          }
+          this.handleSaveSuccess();
         },
-        error: (error) => {
-          console.error('Error creating product:', error);
-          this.isSaving = false;
-          alert('Failed to create product. Please try again.');
-        }
+        error: (error) => this.handleSaveError(error, 'create')
       });
+      this.subscriptions.push(createSub);
     }
   }
-  
-  // Handle the completion of the save operation
-  private handleSaveComplete(): void {
+
+  private handleSaveSuccess(): void {
     this.isSaving = false;
+    alert(`Product ${this.isEditMode ? 'updated' : 'saved'} successfully!`);
     this.cancelEdit();
     this.loadProducts();
   }
 
-  // Calculate the price range for display
-  getPriceRange(product: Product): string {
-    if (!product.variants || product.variants.length === 0) {
-      return 'N/A';
-    }
-    
-    const prices = product.variants.map(v => v.salePrice !== undefined && v.salePrice < v.price ? v.salePrice : v.price);
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    
-    return min === max ? `$${min.toFixed(2)}` : `$${min.toFixed(2)} - $${max.toFixed(2)}`;
+  private handleSaveError(error: any, action: 'create' | 'update'): void {
+    console.error(`Error ${action} product:`, error);
+    this.isSaving = false;
+    const message = error?.error?.message || `Failed to ${action} product. Please try again.`;
+    alert(message);
   }
 
-  // Calculate the total stock for display
-  getTotalStock(product: Product): number {
-    if (!product.variants || product.variants.length === 0) {
-      return 0;
-    }
-    
-    return product.variants.reduce((sum, variant) => sum + variant.quantity, 0);
-  }
-
-  // Delete a product
-  deleteProduct(productId: number): void {
-    if (confirm('Are you sure you want to delete this product?')) {
+  deleteProduct(listId: number): void {
+    if (!listId) return;
+    if (confirm('Are you sure you want to delete this product and all its variants? This cannot be undone.')) {
       this.isLoading = true;
-      
-      this.itemService.deleteProduct(productId).subscribe({
+      const deleteSub = this.itemService.deleteProduct(listId).subscribe({
         next: () => {
-          console.log('Product deleted:', productId);
-          this.loadProducts();
+          console.log('Product deleted:', listId);
+          this.products = this.products.filter(p => p.listId !== listId);
+          this.isLoading = false;
+          alert('Product deleted successfully.');
+          if (this.isEditMode && this.currentListId === listId) {
+            this.cancelEdit();
+          }
         },
         error: (error) => {
           console.error('Error deleting product:', error);
@@ -359,84 +356,92 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
           alert('Failed to delete product. Please try again.');
         }
       });
+      this.subscriptions.push(deleteSub);
     }
   }
 
-  // Show the add product form
   showAddProductForm(): void {
-    this.isEditMode = false;
-    this.currentProductId = null;
-    this.selectedFile = null;
-    this.imagePreview = null;
-    this.productForm.reset();
-    
-    // Reset to single variant
-    while (this.variants.length) {
-      this.variants.removeAt(0);
-    }
-    this.variants.push(this.createVariantFormGroup());
+    this.cancelEdit();
   }
-  
-  // Handle file selection for product image
-  onFileSelected(event: Event): void {
+
+  onFileSelected(event: Event, variantIndex: number): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      this.selectedFile = input.files[0];
-      
-      // Create a preview
+    const variantFormGroup = this.variants.at(variantIndex) as FormGroup;
+
+    if (input.files && input.files[0] && variantFormGroup) {
+      const file = input.files[0];
+      variantFormGroup.patchValue({ imageFile: file });
+
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
-          this.imagePreview = e.target.result;
+          const base64String = e.target.result as string;
+          variantFormGroup.patchValue({ imagePreview: base64String });
+          this.uploadVariantImage(base64String, variantIndex);
         }
       };
-      reader.readAsDataURL(this.selectedFile);
+      reader.readAsDataURL(file);
     }
   }
-  
-  // Upload a product image
-  private uploadProductImage(itemId: number): void {
-    if (!this.selectedFile) return;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
-        const base64String = e.target.result.toString();
-        this.itemService.uploadProductImage(base64String).subscribe({
-          next: (response) => {
-            console.log('Image uploaded:', response);
-            this.handleSaveComplete();
-          },
-          error: (error) => {
-            console.error('Error uploading image:', error);
-            // Even if image upload fails, we still consider the product save complete
-            this.handleSaveComplete();
-            alert('Product saved, but image upload failed. You can try uploading the image again by editing the product.');
-          }
+
+  private uploadVariantImage(base64String: string, variantIndex: number): void {
+    const variantFormGroup = this.variants.at(variantIndex) as FormGroup;
+    if (!variantFormGroup) return;
+
+    this.itemService.uploadProductImage(base64String).subscribe({
+      next: (response) => {
+        console.log(`Image uploaded for variant ${variantIndex}:`, response);
+        variantFormGroup.patchValue({
+          imageUrl: response.imageUrl,
+          imagePreview: response.imageUrl,
+          imageFile: null
+        });
+        variantFormGroup.get('imageUrl')?.markAsDirty();
+      },
+      error: (error) => {
+        console.error(`Error uploading image for variant ${variantIndex}:`, error);
+        alert(`Failed to upload image for variant ${variantIndex + 1}. Please try again.`);
+        variantFormGroup.patchValue({
+          imagePreview: null,
+          imageFile: null
         });
       }
-    };
-    reader.readAsDataURL(this.selectedFile);
-  }
-  
-  // Remove the currently selected image
-  removeSelectedImage(): void {
-    this.selectedFile = null;
-    this.imagePreview = null;
-    this.productForm.patchValue({ imageUrl: '' });
+    });
   }
 
-  // Method to open file input
-  openFileInput(): void {
-    const fileInput = document.getElementById('product-image') as HTMLInputElement;
+  removeSelectedImage(variantIndex: number): void {
+    const variantFormGroup = this.variants.at(variantIndex) as FormGroup;
+    if (variantFormGroup) {
+      variantFormGroup.patchValue({
+        imageFile: null,
+        imagePreview: null,
+        imageUrl: ''
+      });
+      variantFormGroup.get('imageUrl')?.markAsDirty();
+    }
+  }
+
+  openFileInput(variantIndex: number): void {
+    const fileInput = this.document.getElementById(`variant-image-${variantIndex}`) as HTMLInputElement;
     if (fileInput) {
       fileInput.click();
     }
   }
 
-  // Helper method to find category name
   getCategoryName(categoryId: number): string {
     const category = this.categories.find(c => c.categoryId === categoryId);
     return category ? category.name : 'Uncategorized';
+  }
+
+  getPriceRange(product: ProductListItem): string {
+    if (product.minPrice === product.maxPrice) {
+      return `$${product.minPrice.toFixed(2)}`;
+    } else {
+      return `$${product.minPrice.toFixed(2)} - $${product.maxPrice.toFixed(2)}`;
+    }
+  }
+
+  getTotalStock(product: ProductListItem): number {
+    return product.totalQuantity;
   }
 }

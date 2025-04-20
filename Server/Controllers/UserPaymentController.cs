@@ -144,23 +144,24 @@ public class UserPaymentController : ControllerBase
         }
     }
 
-    [HttpGet("methods/{userIdRouteParam}")] // Renamed param to avoid confusion
-    public async Task<ActionResult> GetPaymentMethods(int userIdRouteParam) // Use route param name
+    [HttpGet("methods")]
+    public async Task<ActionResult> GetPaymentMethods(/* int userIdRouteParam */) // <-- Remove parameter
     {
         // --- 1. Get Authenticated User and Validate Access ---
         var requestingUserId = GetCurrentUserId();
         if (requestingUserId == null) return Unauthorized();
 
-        // **** Authorization Check: Ensure user is requesting their own methods ****
-        if (requestingUserId.Value != userIdRouteParam)
-        {
-            return Forbid("You are not authorized to view these payment methods.");
-        }
+        // **** Authorization Check: No longer needed as we use the authenticated user directly ****
+        // if (requestingUserId.Value != userIdRouteParam)
+        // {
+        //     return Forbid("You are not authorized to view these payment methods.");
+        // }
 
         var user = await FindUserByIdAsync(requestingUserId.Value); // Use authenticated user's ID
         if (user?.StripeCustomerId == null)
         {
-            return Ok(new List<object>()); // No Stripe customer, no saved methods
+            // Return empty list immediately if no Stripe customer ID
+            return Ok(new List<object>()); 
         }
         string stripeCustomerId = user.StripeCustomerId;
 
