@@ -53,28 +53,31 @@ namespace Server.Controllers
                 .Where(s => s.StoreId == store.StoreId)
                 .FirstOrDefaultAsync();
 
-            if (themes == null)
+            // Don't return NotFound if themes are missing, use defaults later
+            /* if (themes == null)
             {
                 return NotFound("Themes not found.");
-            }
+            } */
 
             var banner = await _context.StoreBanners
                 .Where(s => s.StoreID == store.StoreId)
                 .FirstOrDefaultAsync();
 
-            if (banner == null)
+            // Don't return NotFound if banner is missing, use defaults later
+            /* if (banner == null)
             {
                 return NotFound("Banner not found.");
-            }
+            } */
             
             var logo = await _context.StoreLogos
                 .Where(s => s.StoreID == store.StoreId)
                 .FirstOrDefaultAsync();
 
-            if (logo == null)
+            // Don't return NotFound if logo is missing, use defaults later
+            /* if (logo == null)
             {
                 return NotFound("Logo not found.");
-            }
+            } */
         
 
             // 🔹 Fetch categories linked to this store
@@ -82,21 +85,22 @@ namespace Server.Controllers
                 .Where(c => c.StoreId == store.StoreId)
                 .ToListAsync();
             
+            // Construct StoreDetails, using defaults for missing optional data
             StoreDetails storeDetails = new StoreDetails(
                 store.StoreId,
                 store.StoreUrl,
                 store.Name,
-                themes.Theme_1,
-                themes.Theme_2,
-                themes.Theme_3,
-                themes.FontColor,
-                themes.FontFamily,
-                themes.BannerText,
-                themes.LogoText,
-                string.IsNullOrEmpty(banner?.BannerURL) ? "" : banner.BannerURL,
-                string.IsNullOrEmpty(logo?.LogoURL) ? "" : logo.LogoURL,
-                categories,
-                themes.ComponentVisibility
+                themes?.Theme_1 ?? "#393727", // Default Theme 1
+                themes?.Theme_2 ?? "#D0933D", // Default Theme 2
+                themes?.Theme_3 ?? "#D3CEBB", // Default Theme 3
+                themes?.FontColor ?? "#333333", // Default Font Color
+                themes?.FontFamily ?? "sans-serif", // Default Font Family
+                themes?.BannerText ?? "", // Default Banner Text
+                themes?.LogoText ?? store.Name, // Default Logo Text (use store name)
+                banner?.BannerURL ?? "", // Default Banner URL
+                logo?.LogoURL ?? "", // Default Logo URL
+                categories, // Categories can be empty list if none
+                themes?.ComponentVisibility ?? "{}" // Default Component Visibility (empty JSON)
             );
 
             // ✅ Return both store details and categories
@@ -157,17 +161,21 @@ namespace Server.Controllers
                 .Where(c => c.StoreId == store.StoreId)
                 .ToListAsync();
             
+            // Use actual URL/name rather than defaults if they exist
+            string storeName = string.IsNullOrEmpty(store.Name) ? "My Store" : store.Name;
+            string storeUrl = string.IsNullOrEmpty(store.StoreUrl) ? "my-store" : store.StoreUrl;
+            
             StoreDetails storeDetails = new StoreDetails(
                 store.StoreId,
-                store.StoreUrl,
-                store.Name,
+                storeUrl,
+                storeName,
                 themes?.Theme_1 ?? "#393727",
                 themes?.Theme_2 ?? "#D0933D",
                 themes?.Theme_3 ?? "#D3CEBB",
                 themes?.FontColor ?? "#333333",
                 themes?.FontFamily ?? "sans-serif",
                 themes?.BannerText ?? "Welcome to our store",
-                themes?.LogoText ?? store.Name,
+                themes?.LogoText ?? storeName,
                 banner?.BannerURL ?? "",
                 logo?.LogoURL ?? "",
                 categories,
@@ -349,6 +357,27 @@ namespace Server.Controllers
         [Authorize]
         public async Task<ActionResult<StoreDetails>> UpdateStore([FromBody] StoreDetails storeDetails)
         {
+            // Additional validation and logging
+            Console.WriteLine($"UpdateStore received: ID={storeDetails.Id}, URL={storeDetails.URL}, Name={storeDetails.Name}");
+            
+            if (storeDetails.Id <= 0)
+            {
+                Console.WriteLine("ERROR: Store ID is missing or invalid");
+                return BadRequest("Store ID is required");
+            }
+            
+            if (string.IsNullOrEmpty(storeDetails.URL))
+            {
+                Console.WriteLine("ERROR: Store URL is missing");
+                return BadRequest("Store URL is required");
+            }
+            
+            if (string.IsNullOrEmpty(storeDetails.Name))
+            {
+                Console.WriteLine("ERROR: Store Name is missing");
+                return BadRequest("Store Name is required");
+            }
+            
             // Get the user ID from the token - look for numeric claim
             int userId = 0;
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
@@ -381,11 +410,13 @@ namespace Server.Controllers
 
                     if (store == null)
                     {
+                        Console.WriteLine($"ERROR: Store with ID {storeDetails.Id} not found");
                         return NotFound("Store not found");
                     }
 
                     if (store.StoreOwnerId != userId)
                     {
+                        Console.WriteLine($"ERROR: User {userId} does not own store {storeDetails.Id}");
                         return Forbid("You don't have permission to update this store");
                     }
 

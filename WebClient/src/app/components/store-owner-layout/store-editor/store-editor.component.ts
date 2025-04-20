@@ -335,25 +335,35 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
       this.user = user;
     });
     
-    // Get current store details
-    this.storeSubscription = this.storeService.activeStore$.subscribe(store => {
-      if (store) {
-        this.store = store;
-        // If store ID is 0, it means this is initial setup
-        this.isInitialSetup = !store.id;
+    // Force reload store data directly from the backend instead of relying on activeStore$
+    this.storeService.getCurrentUserStore().subscribe(
+      (store: StoreDetails) => {
+        console.log("Store editor received store directly from backend:", store);
         
-        // Update component selection based on stored visibility
-        this.updateComponentSelectionFromStore();
+        if (store && store.id > 0) {
+          // We have a valid store with ID
+          this.store = store;
+          this.isInitialSetup = false;
+          console.log("Setting store and isInitialSetup=false because ID exists:", store.id);
+          
+          // Update component selection based on stored visibility
+          this.updateComponentSelectionFromStore();
+        } else {
+          // No valid store found, handle initial setup
+          console.log("No valid store found in direct backend call, initializing fallback");
+          this.initializeFallbackStore();
+        }
         
         this.isLoading = false;
         this.loadingService.setIsLoading(false);
-      } else {
-        // No store found, handle initial setup
+      },
+      (error: Error) => {
+        console.error("Error loading store from backend:", error);
         this.initializeFallbackStore();
         this.isLoading = false;
         this.loadingService.setIsLoading(false);
       }
-    });
+    );
   }
 
   updateComponentSelectionFromStore() {
@@ -494,6 +504,9 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     // Make sure visibility is properly updated
     this.updateComponentVisibility();
     
+    // Ensure store data is valid before sending
+    this.sanitizeStoreData();
+    
     if (this.isInitialSetup) {
       // Create new store
       this.storeService.createStore(this.store!).subscribe({
@@ -544,5 +557,62 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     if (this.store && this.store.url) {
       window.open(`/${this.store.url}`, '_blank');
     }
+  }
+
+  // Set correct URL for your store in the preview component
+  getCorrectStoreUrl(): string {
+    // If this is an existing store with URL use that
+    if (this.store && this.store.url && this.store.url !== 'DEFAULT') {
+      return this.store.url;
+    }
+    
+    // Fallback to a preview URL
+    return 'preview';
+  }
+
+  // Helper to ensure store data is valid before saving
+  sanitizeStoreData() {
+    if (!this.store) return;
+    
+    // Ensure the ID is preserved
+    if (this.store.id <= 0) {
+      console.warn("Store ID is missing or invalid, this might cause issues with updates");
+    }
+    
+    // Validate store name
+    if (!this.store.name || this.store.name === 'DEFAULT') {
+      this.store.name = 'My Store';
+    }
+    
+    // Validate store URL
+    if (!this.store.url || this.store.url === 'DEFAULT') {
+      this.store.url = 'my-store';
+    }
+    
+    // Validate theme colors
+    if (!this.store.theme_1 || !this.store.theme_1.startsWith('#')) {
+      this.store.theme_1 = '#393727';
+    }
+    if (!this.store.theme_2 || !this.store.theme_2.startsWith('#')) {
+      this.store.theme_2 = '#D0933D';
+    }
+    if (!this.store.theme_3 || !this.store.theme_3.startsWith('#')) {
+      this.store.theme_3 = '#D3CEBB';
+    }
+    if (!this.store.fontColor || !this.store.fontColor.startsWith('#')) {
+      this.store.fontColor = '#333333';
+    }
+    
+    // Validate font family
+    if (!this.store.fontFamily) {
+      this.store.fontFamily = 'sans-serif';
+    }
+    
+    // Ensure component visibility is set
+    if (!this.store.componentVisibility) {
+      this.store.componentVisibility = DEFAULT_VISIBILITY;
+    }
+    
+    console.log("Sanitized store data:", this.store);
   }
 } 

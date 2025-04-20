@@ -80,9 +80,29 @@ export class StoreService {
     }
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Create headers
 
+    console.log("Fetching current user store with auth token:", token.substring(0, 10) + "...");
     return this.http.get<StoreDetails>(this.apiUrl, { headers }).pipe( // Add headers to request
-      map(store => this.deserializeStore(store)),
+      map(store => {
+        console.log("Raw store response from API:", store);
+        if (store && typeof store === 'object') {
+          // Ensure store has an ID and isn't empty
+          if (!store.id || store.id === 0) {
+            console.warn("Store returned from API has no ID or ID=0:", store);
+          }
+          if (store.name === 'DEFAULT' || !store.name) {
+            console.warn("Store has default or empty name:", store.name);
+          }
+          if (store.url === 'DEFAULT' || !store.url) {
+            console.warn("Store has default or empty URL:", store.url);
+          }
+          return this.deserializeStore(store);
+        } else {
+          console.error("Invalid store data returned from API:", store);
+          return new StoreDetails(0, '', '', '#393727', '#D0933D', '#D3CEBB', '#333333', 'sans-serif', '', '', '', '', [], DEFAULT_VISIBILITY);
+        }
+      }),
       tap(store => {
+        console.log("Setting active store after deserialization:", store);
         this.activeStoreSubject.next(store);
       }),
       catchError(error => {
@@ -115,8 +135,39 @@ export class StoreService {
     // Create a copy of the store object
     const storeDataCopy = { ...store } as any;
     
+    // Ensure all required fields have valid values
+    if (!storeDataCopy.name || storeDataCopy.name === 'DEFAULT') {
+      storeDataCopy.name = "My Store";
+    }
+    
+    if (!storeDataCopy.url || storeDataCopy.url === 'DEFAULT') {
+      storeDataCopy.url = "my-store";
+    }
+    
+    // Validate color formats - ensure they start with #
+    if (!storeDataCopy.theme_1 || !storeDataCopy.theme_1.startsWith('#')) {
+      storeDataCopy.theme_1 = "#393727";
+    }
+    if (!storeDataCopy.theme_2 || !storeDataCopy.theme_2.startsWith('#')) {
+      storeDataCopy.theme_2 = "#D0933D";
+    }
+    if (!storeDataCopy.theme_3 || !storeDataCopy.theme_3.startsWith('#')) {
+      storeDataCopy.theme_3 = "#D3CEBB";
+    }
+    if (!storeDataCopy.fontColor || !storeDataCopy.fontColor.startsWith('#')) {
+      storeDataCopy.fontColor = "#333333";
+    }
+    
+    // Ensure font family is set
+    if (!storeDataCopy.fontFamily) {
+      storeDataCopy.fontFamily = "sans-serif";
+    }
+    
     // Serialize componentVisibility if it exists
-    if (storeDataCopy.componentVisibility) {
+    if (!storeDataCopy.componentVisibility || Object.keys(storeDataCopy.componentVisibility).length === 0) {
+      // Set default component visibility if missing
+      storeDataCopy.componentVisibility = JSON.stringify(DEFAULT_VISIBILITY);
+    } else if (typeof storeDataCopy.componentVisibility !== 'string') {
       storeDataCopy.componentVisibility = JSON.stringify(storeDataCopy.componentVisibility);
     }
     
@@ -204,6 +255,8 @@ export class StoreService {
   updateStore(store: StoreDetails): Observable<StoreDetails> {
     // Convert to API format (serialize componentVisibility)
     const storeDataForApi = this.prepareStoreDataForApi(store);
+    console.log("Updating store with data:", JSON.stringify(storeDataForApi, null, 2));
+    
     const token = this.cookieService.get('auth_token'); // Get token from CookieService
     if (!token) {
       console.error('Authentication token not found. Cannot update store.');
@@ -220,6 +273,10 @@ export class StoreService {
       }),
       catchError(error => {
         console.error('Error updating store', error);
+        // Show the actual backend error message
+        if (error.error) {
+          console.error('Backend Error Details:', error.error);
+        }
         return throwError(() => new Error('Failed to update store configuration.'));
       })
     );

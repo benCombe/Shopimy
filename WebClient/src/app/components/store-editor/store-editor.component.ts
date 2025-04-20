@@ -22,6 +22,17 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
   activeSection = 'basic-info';
   private subscription = new Subscription();
   
+  // Example structure for managing component visibility selection
+  availableComponents = [
+    { name: 'header', label: 'Header', isSelected: true },
+    { name: 'hero', label: 'Hero Banner', isSelected: true },
+    { name: 'featured', label: 'Featured Products', isSelected: true },
+    { name: 'categories', label: 'Category List', isSelected: true },
+    { name: 'testimonials', label: 'Testimonials', isSelected: true },
+    { name: 'newsletter', label: 'Newsletter Signup', isSelected: true },
+    { name: 'footer', label: 'Footer', isSelected: true },
+  ];
+
   constructor(
     private storeService: StoreService,
     private router: Router
@@ -35,6 +46,8 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
         if (store) {
           this.store = store;
           this.isCreateMode = false;
+          // Initialize isSelected based on the new store's default visibility
+          this.updateAvailableComponentsFromStore();
         } else {
           this.isCreateMode = true;
           this.store = new StoreDetails(
@@ -53,6 +66,8 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
             [],
             DEFAULT_VISIBILITY
           );
+          // Initialize isSelected based on the new store's default visibility
+          this.updateAvailableComponentsFromStore();
         }
       })
     );
@@ -66,8 +81,37 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     this.activeSection = section;
   }
 
+  // New method to update component visibility based on checkbox states
+  updateComponentVisibility(): void {
+    if (!this.store) return;
+
+    const newVisibility: ComponentVisibility = { ...DEFAULT_VISIBILITY }; // Start with defaults
+    this.availableComponents.forEach(comp => {
+      if (newVisibility.hasOwnProperty(comp.name)) {
+        (newVisibility as any)[comp.name] = comp.isSelected;
+      }
+    });
+    this.store.componentVisibility = newVisibility;
+    console.log('Updated component visibility:', this.store.componentVisibility);
+  }
+
+  // Helper to sync checkbox states FROM the store data (e.g., on init)
+  updateAvailableComponentsFromStore(): void {
+    if (!this.store) return;
+    this.availableComponents.forEach(comp => {
+      if (this.store!.componentVisibility.hasOwnProperty(comp.name)) {
+        comp.isSelected = (this.store!.componentVisibility as any)[comp.name];
+      }
+    });
+  }
+
   saveStore(): void {
     if (!this.store) return;
+    
+    // Ensure component visibility is updated before saving
+    this.updateComponentVisibility(); 
+    
+    // Theme properties should already be updated via updateStoreTheme event
     
     if (this.isCreateMode) {
       this.storeService.createStore(this.store).subscribe({

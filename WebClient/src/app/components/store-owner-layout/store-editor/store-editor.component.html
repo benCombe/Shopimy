@@ -69,7 +69,6 @@
               name="bannerText" 
               class="standard-form-control" 
               [(ngModel)]="store!.bannerText"
-              (ngModelChange)="updatePreview()"
             >
           </div>
           
@@ -81,7 +80,6 @@
               name="logoText" 
               class="standard-form-control" 
               [(ngModel)]="store!.logoText"
-              (ngModelChange)="updatePreview()"
             >
           </div>
         </form>
@@ -109,7 +107,7 @@
             <div class="component-info">
               <span class="component-name">{{ component.name }}</span>
               <label class="switch">
-                <input type="checkbox" [(ngModel)]="component.isSelected" (change)="updatePreview()">
+                <input type="checkbox" [(ngModel)]="component.isSelected" >
                 <span class="slider round"></span>
               </label>
             </div>
@@ -142,7 +140,10 @@
     <!-- Right Column: Preview -->
     <div class="preview-panel">
       <h3>Live Preview</h3>
-      <p class="panel-description">See your changes reflected live below.</p>
+      <p *ngIf="!isInitialSetup" class="panel-description">
+        Preview of your store at: <a [href]="'/' + store?.url" target="_blank">/{{ store?.url }}</a>
+      </p>
+      <p *ngIf="isInitialSetup" class="panel-description">See your changes reflected live below.</p>
       <div class="preview-frame-wrapper">
         <app-store-preview 
           [selectedComponents]="getSelectedComponentIds()" 

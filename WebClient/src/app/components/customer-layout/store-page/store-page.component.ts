@@ -77,7 +77,10 @@ export class StorePageComponent implements AfterViewInit, OnInit{
           next: (data) => {
             this.storeData = data;
             this.storeNavService.initialize();
-
+            
+            // Apply theme from store data
+            console.log("Applying store theme:", data.theme_1, data.theme_2, data.theme_3);
+            this.applyStoreTheme(data);
 
             this.storeNavService.currentUrl$.subscribe(u =>{
               console.log("URL: " + u);
@@ -102,14 +105,33 @@ export class StorePageComponent implements AfterViewInit, OnInit{
 
 
   ngAfterViewInit(): void {
-/*     this.themeService.setThemeOne("theme1");
-    this.themeService.setThemeTwo("theme2");
-    this.themeService.setThemeThree("theme3");
-    this.themeService.setFontColor("fc");
-    this.themeService.setButtonHoverColor("hover") */
+    // Apply theme on after view init as well to ensure components have loaded
+    if (this.storeData) {
+      this.applyStoreTheme(this.storeData);
+    }
   }
 
-
+  // New method to apply the store theme
+  applyStoreTheme(storeData: StoreDetails): void {
+    // Update theme service with store details
+    if (!storeData) return;
+    
+    // Apply theme to root elements with CSS classes
+    this.themeService.setThemeOne('theme1');
+    this.themeService.setThemeTwo('theme2');
+    this.themeService.setThemeThree('theme3');
+    this.themeService.setFontColor('fc');
+    this.themeService.setButtonHoverColor('hover');
+    this.themeService.setFontFamily('body');
+    
+    // Also apply theme variables to :root for global CSS access
+    const rootStyle = document.documentElement.style;
+    rootStyle.setProperty('--main-color', storeData.theme_1);
+    rootStyle.setProperty('--second-color', storeData.theme_2);
+    rootStyle.setProperty('--third-color', storeData.theme_3);
+    rootStyle.setProperty('--alt-color', storeData.fontColor);
+    rootStyle.setProperty('--main-font-fam', storeData.fontFamily);
+  }
 
   changeView(v: string): void{
     this.currentView = v;
