@@ -162,6 +162,25 @@ export class StoreService {
     if (!storeDataCopy.fontFamily) {
       storeDataCopy.fontFamily = "sans-serif";
     }
+
+    // Validate and format URLs
+    if (storeDataCopy.logoURL && storeDataCopy.logoURL.trim() !== '') {
+      // If URL doesn't start with http:// or https://, prepend https://
+      if (!storeDataCopy.logoURL.match(/^https?:\/\//)) {
+        storeDataCopy.logoURL = `https://${storeDataCopy.logoURL}`;
+      }
+    } else {
+      storeDataCopy.logoURL = ''; // Empty string if no URL
+    }
+
+    if (storeDataCopy.bannerURL && storeDataCopy.bannerURL.trim() !== '') {
+      // If URL doesn't start with http:// or https://, prepend https://
+      if (!storeDataCopy.bannerURL.match(/^https?:\/\//)) {
+        storeDataCopy.bannerURL = `https://${storeDataCopy.bannerURL}`;
+      }
+    } else {
+      storeDataCopy.bannerURL = ''; // Empty string if no URL
+    }
     
     // Serialize componentVisibility if it exists
     if (!storeDataCopy.componentVisibility || Object.keys(storeDataCopy.componentVisibility).length === 0) {

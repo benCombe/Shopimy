@@ -398,118 +398,141 @@ namespace Server.Controllers
                 return Unauthorized("Invalid user authentication token.");
             }
 
-            // Start Transaction
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            try 
             {
-                try
+                // Create an execution strategy
+                var strategy = _context.Database.CreateExecutionStrategy();
+                StoreDetails result = null;
+                
+                await strategy.ExecuteAsync(async () =>
                 {
-                    // Check if this is the user's store
-                    var store = await _context.Stores
-                        .Where(s => s.StoreId == storeDetails.Id)
-                        .FirstOrDefaultAsync();
-
-                    if (store == null)
+                    // All database operations will now be part of the execution strategy
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
-                        Console.WriteLine($"ERROR: Store with ID {storeDetails.Id} not found");
-                        return NotFound("Store not found");
-                    }
-
-                    if (store.StoreOwnerId != userId)
-                    {
-                        Console.WriteLine($"ERROR: User {userId} does not own store {storeDetails.Id}");
-                        return Forbid("You don't have permission to update this store");
-                    }
-
-                    // If changing URL, check if it's unique
-                    if (store.StoreUrl != storeDetails.URL)
-                    {
-                        var storeWithSameUrl = await _context.Stores
-                            .AsNoTracking()
-                            .Where(s => s.StoreUrl == storeDetails.URL && s.StoreId != storeDetails.Id)
-                            .FirstOrDefaultAsync();
-
-                        if (storeWithSameUrl != null)
+                        try
                         {
-                            return BadRequest("Store URL already exists");
+                            // Check if this is the user's store
+                            var store = await _context.Stores
+                                .Where(s => s.StoreId == storeDetails.Id)
+                                .FirstOrDefaultAsync();
+
+                            if (store == null)
+                            {
+                                throw new InvalidOperationException("Store not found");
+                            }
+
+                            if (store.StoreOwnerId != userId)
+                            {
+                                throw new UnauthorizedAccessException("You don't have permission to update this store");
+                            }
+
+                            // If changing URL, check if it's unique
+                            if (store.StoreUrl != storeDetails.URL)
+                            {
+                                var storeWithSameUrl = await _context.Stores
+                                    .AsNoTracking()
+                                    .Where(s => s.StoreUrl == storeDetails.URL && s.StoreId != storeDetails.Id)
+                                    .FirstOrDefaultAsync();
+
+                                if (storeWithSameUrl != null)
+                                {
+                                    throw new InvalidOperationException("Store URL already exists");
+                                }
+                            }
+
+                            // Update store
+                            store.Name = storeDetails.Name;
+                            store.StoreUrl = storeDetails.URL;
+                            _context.Stores.Update(store);
+
+                            // Update themes
+                            var theme = await _context.StoreThemes
+                                .Where(s => s.StoreId == store.StoreId)
+                                .FirstOrDefaultAsync();
+
+                            if (theme == null)
+                            {
+                                theme = new StoreTheme
+                                {
+                                    StoreId = store.StoreId
+                                };
+                                _context.StoreThemes.Add(theme);
+                            }
+
+                            theme.Theme_1 = storeDetails.Theme_1;
+                            theme.Theme_2 = storeDetails.Theme_2;
+                            theme.Theme_3 = storeDetails.Theme_3;
+                            theme.FontColor = storeDetails.FontColor;
+                            theme.FontFamily = storeDetails.FontFamily;
+                            theme.BannerText = storeDetails.BannerText;
+                            theme.LogoText = storeDetails.LogoText;
+                            theme.ComponentVisibility = storeDetails.ComponentVisibility;
+
+                            // Update banner
+                            var banner = await _context.StoreBanners
+                                .Where(s => s.StoreID == store.StoreId)
+                                .FirstOrDefaultAsync();
+
+                            if (banner == null)
+                            {
+                                banner = new StoreBanner
+                                {
+                                    StoreID = store.StoreId
+                                };
+                                _context.StoreBanners.Add(banner);
+                            }
+
+                            banner.BannerURL = storeDetails.BannerURL;
+
+                            // Update logo
+                            var logo = await _context.StoreLogos
+                                .Where(s => s.StoreID == store.StoreId)
+                                .FirstOrDefaultAsync();
+
+                            if (logo == null)
+                            {
+                                logo = new StoreLogo
+                                {
+                                    StoreID = store.StoreId
+                                };
+                                _context.StoreLogos.Add(logo);
+                            }
+
+                            logo.LogoURL = storeDetails.LogoURL;
+
+                            // Save changes
+                            await _context.SaveChangesAsync();
+
+                            // Commit transaction
+                            await transaction.CommitAsync();
+
+                            // Store the result
+                            result = storeDetails;
+                        }
+                        catch (Exception ex)
+                        {
+                            // Rollback transaction in case of error
+                            await transaction.RollbackAsync();
+                            Console.WriteLine($"Error in update transaction: {ex.Message}");
+                            throw; // Re-throw to be caught by outer catch
                         }
                     }
+                });
 
-                    // Update store
-                    store.Name = storeDetails.Name;
-                    store.StoreUrl = storeDetails.URL;
-                    _context.Stores.Update(store);
-
-                    // Update themes
-                    var theme = await _context.StoreThemes
-                        .Where(s => s.StoreId == store.StoreId)
-                        .FirstOrDefaultAsync();
-
-                    if (theme == null)
-                    {
-                        theme = new StoreTheme
-                        {
-                            StoreId = store.StoreId
-                        };
-                        _context.StoreThemes.Add(theme);
-                    }
-
-                    theme.Theme_1 = storeDetails.Theme_1;
-                    theme.Theme_2 = storeDetails.Theme_2;
-                    theme.Theme_3 = storeDetails.Theme_3;
-                    theme.FontColor = storeDetails.FontColor;
-                    theme.FontFamily = storeDetails.FontFamily;
-                    theme.BannerText = storeDetails.BannerText;
-                    theme.LogoText = storeDetails.LogoText;
-                    theme.ComponentVisibility = storeDetails.ComponentVisibility;
-
-                    // Update banner
-                    var banner = await _context.StoreBanners
-                        .Where(s => s.StoreID == store.StoreId)
-                        .FirstOrDefaultAsync();
-
-                    if (banner == null)
-                    {
-                        banner = new StoreBanner
-                        {
-                            StoreID = store.StoreId
-                        };
-                        _context.StoreBanners.Add(banner);
-                    }
-
-                    banner.BannerURL = storeDetails.BannerURL;
-
-                    // Update logo
-                    var logo = await _context.StoreLogos
-                        .Where(s => s.StoreID == store.StoreId)
-                        .FirstOrDefaultAsync();
-
-                    if (logo == null)
-                    {
-                        logo = new StoreLogo
-                        {
-                            StoreID = store.StoreId
-                        };
-                        _context.StoreLogos.Add(logo);
-                    }
-
-                    logo.LogoURL = storeDetails.LogoURL;
-
-                    // Save changes
-                    await _context.SaveChangesAsync();
-
-                    // Commit transaction
-                    await transaction.CommitAsync();
-
-                    // Return the updated store details
-                    return Ok(storeDetails);
-                }
-                catch (Exception ex)
+                // Return the result after execution strategy completes
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = ex switch
                 {
-                    // Rollback transaction in case of error
-                    await transaction.RollbackAsync();
-                    Console.WriteLine($"Error updating store: {ex.Message}"); // Log the error
-                    return StatusCode(500, "An error occurred while updating the store.");
-                }
+                    UnauthorizedAccessException _ => ex.Message,
+                    InvalidOperationException _ => ex.Message,
+                    _ => "An error occurred while updating the store."
+                };
+                
+                Console.WriteLine($"Error updating store: {ex.Message}");
+                return StatusCode(500, errorMessage);
             }
         }
     }

@@ -61,11 +61,9 @@ namespace Server.Models
         [StringLength(50, ErrorMessage = "Logo Text cannot be longer than 50 characters.")]
         public string LogoText {get; set;} = string.Empty;
 
-        [Url(ErrorMessage = "Invalid URL format for Banner URL.")]
         [StringLength(200, ErrorMessage = "Banner URL cannot be longer than 200 characters.")]
         public string BannerURL {get; set;} = string.Empty;
 
-        [Url(ErrorMessage = "Invalid URL format for Logo URL.")]
         [StringLength(200, ErrorMessage = "Logo URL cannot be longer than 200 characters.")]
         public string LogoURL {get; set;} = string.Empty;
 
@@ -131,6 +129,21 @@ namespace Server.Models
         // Custom validation for ComponentVisibility (example: check if valid JSON)
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            // Only validate BannerURL/LogoURL if non-empty
+            if (!string.IsNullOrWhiteSpace(BannerURL))
+            {
+                if (!Uri.IsWellFormedUriString(BannerURL, UriKind.Absolute))
+                {
+                    yield return new ValidationResult("Invalid URL format for Banner URL.", new[] { nameof(BannerURL) });
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(LogoURL))
+            {
+                if (!Uri.IsWellFormedUriString(LogoURL, UriKind.Absolute))
+                {
+                    yield return new ValidationResult("Invalid URL format for Logo URL.", new[] { nameof(LogoURL) });
+                }
+            }
             ValidationResult? jsonError = null;
             if (!string.IsNullOrWhiteSpace(ComponentVisibility))
             {
