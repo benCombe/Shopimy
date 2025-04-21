@@ -1,4 +1,4 @@
-   #main{
+#main{
     width: 100%;
     height: 20vw;
     background-color: #D3CEBB;
@@ -65,7 +65,7 @@
         height: 17vw;
     }
 
-    @media only screen and (max-width: 650px) {
+    @media only screen and (max-width: 600px) {
         #main{
             width: 100%;
             height: 100%;
@@ -74,7 +74,7 @@
         #itemDesc{
             font-size: 3vw;
             width: 50vw;
-            height: 15vw;
+            height: 10vw;
             overflow: hidden;
         }
         #itemName{
@@ -96,9 +96,10 @@
         }
         #textSide{
             vertical-align: top;
+            width: 40%;
         }
         #price{
-            font-size: 7vw;
+            font-size: 5vw;
             width: 15vw;
             margin-top: 0.1vw;
             margin-bottom: 0.1vw;
@@ -124,4 +125,3 @@
             height: 5vw;
         }
     }
-    
