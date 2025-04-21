@@ -6,9 +6,9 @@ namespace Server.Models
     {
         public int Id { get; set; }
         public int ProductId { get; set; } // Foreign key for Product
-        public string UserId { get; set; } // Foreign key for User (assuming string ID)
+        public required string UserId { get; set; } // Foreign key for User (assuming string ID)
         public int Rating { get; set; } // e.g., 1-5 stars
-        public string Comment { get; set; }
+        public required string Comment { get; set; }
         public DateTime CreatedAt { get; set; }
 
         // Navigation properties (optional but recommended)

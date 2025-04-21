@@ -248,32 +248,39 @@ export class ProfileComponent implements OnInit {
           }
         }).then(result => {
           if (result.error) {
-            this.cardError = result.error.message || 'An unknown error occurred.';
+            this.cardError = result.error.message || 'An error occurred with your card';
             this.isSavingPaymentMethod = false;
-          } else if (result.setupIntent?.status === 'succeeded') {
-            const paymentMethodId = result.setupIntent.payment_method as string;
-            this.paymentService.savePaymentMethod(paymentMethodId, this.newPaymentIsDefault)
-              .subscribe({
-                next: () => {
+          } else if (result.setupIntent && result.setupIntent.payment_method) {
+            // Send the payment method ID to our server to save
+            this.paymentService.savePaymentMethod(
+              typeof result.setupIntent.payment_method === 'string' 
+              ? result.setupIntent.payment_method 
+              : result.setupIntent.payment_method.id,
+              this.newPaymentIsDefault
+            ).subscribe({
+              next: (success) => {
+                if (success) {
                   this.loadPaymentMethods();
-                  this.toggleAddPayment();
-                  this.isSavingPaymentMethod = false;
-                },
-                error: (err) => {
-                  console.error('Error saving payment method to backend:', err);
-                  this.cardError = 'Could not save payment method. Please try again.';
-                  this.isSavingPaymentMethod = false;
+                  this.showAddPayment = false;
+                  this.newPaymentIsDefault = false;
                 }
-              });
+                this.isSavingPaymentMethod = false;
+              },
+              error: (error) => {
+                console.error('Error saving payment method:', error);
+                this.cardError = 'Failed to save payment method. Please try again.';
+                this.isSavingPaymentMethod = false;
+              }
+            });
           } else {
-             this.cardError = 'Payment setup failed. Status: ' + result.setupIntent?.status;
-             this.isSavingPaymentMethod = false;
+            this.cardError = 'An unexpected error occurred. Please try again.';
+            this.isSavingPaymentMethod = false;
           }
         });
       },
-      error: (err) => {
-        console.error('Error creating SetupIntent:', err);
-        this.cardError = 'Could not initialize payment setup. Please try again.';
+      error: (error) => {
+        console.error('Setup intent creation failed:', error);
+        this.cardError = 'Could not process your card. Please try again.';
         this.isSavingPaymentMethod = false;
       }
     });
@@ -281,67 +288,73 @@ export class ProfileComponent implements OnInit {
 
   deleteAddress(addressId: number): void {
     if (confirm('Are you sure you want to delete this address?')) {
-      this.deliveryService.deleteDeliveryAddress(addressId).subscribe(success => {
-        if (success) {
+      this.deliveryService.deleteDeliveryAddress(addressId).subscribe({
+        next: () => {
           this.loadDeliveryAddresses(this.user.Id);
-        }
+        },
+        error: (error: any) => console.error('Error deleting address:', error)
       });
     }
   }
 
   deletePaymentMethod(paymentId: any): void {
     if (confirm('Are you sure you want to delete this payment method?')) {
-      this.paymentService.deletePaymentMethod(paymentId).subscribe(() => {
-        this.loadPaymentMethods();
-      }, error => {
-        console.error('Error deleting payment method:', error);
+      this.paymentService.deletePaymentMethod(paymentId).subscribe({
+        next: () => {
+          this.loadPaymentMethods();
+        },
+        error: (error: any) => console.error('Error deleting payment method:', error)
       });
     }
   }
 
   setDefaultAddress(addressId: number): void {
-    this.deliveryService.setDefaultDeliveryAddress(this.user.Id, addressId).subscribe(success => {
-      if (success) {
+    this.deliveryService.setDefaultDeliveryAddress(this.user.Id, addressId).subscribe({
+      next: () => {
         this.loadDeliveryAddresses(this.user.Id);
-      }
+      },
+      error: (error: any) => console.error('Error setting default address:', error)
     });
   }
 
   setDefaultPaymentMethod(paymentMethodId: string): void {
-    this.paymentService.setDefaultPaymentMethod(paymentMethodId).subscribe(() => {
-      this.loadPaymentMethods();
-    }, error => {
-      console.error('Error setting default payment method:', error);
+    this.paymentService.setDefaultPaymentMethod(paymentMethodId).subscribe({
+      next: () => {
+        this.loadPaymentMethods();
+      },
+      error: (error: any) => console.error('Error setting default payment method:', error)
     });
   }
 
   setActiveTab(tab: string): void {
     this.activeTab = tab;
     
-    // If switching to Payment tab and Stripe is loaded, mount card element
-    if (tab === 'payment' && this.showAddPayment && this.stripe) {
-      this.mountCardElement();
+    // Clean up any open forms when switching tabs
+    if (tab !== 'delivery') {
+      this.showAddDelivery = false;
+    }
+    if (tab !== 'payment') {
+      this.unmountCardElement();
+      this.showAddPayment = false;
     }
   }
 
   toggleAddDelivery(): void {
     this.showAddDelivery = !this.showAddDelivery;
-    if (this.showAddDelivery) {
+    if (!this.showAddDelivery) {
       this.deliveryForm.reset();
     }
   }
 
   toggleAddPayment(): void {
     this.showAddPayment = !this.showAddPayment;
-    if (this.showAddPayment) {
-      this.cardError = null;
-      this.newPaymentIsDefault = false;
-      this.mountCardElement();
+    if (this.showAddPayment && this.stripe) {
+      setTimeout(() => this.mountCardElement(), 0);
     } else {
       this.unmountCardElement();
     }
   }
-  
+
   toggleEditMode(): void {
     this.editMode = !this.editMode;
     if (!this.editMode) {
@@ -355,9 +368,10 @@ export class ProfileComponent implements OnInit {
       });
     }
   }
-  
+
   cancelEdit(): void {
     this.editMode = false;
+    // Reset form to original values
     this.profileForm.patchValue({
       firstName: this.user.FirstName,
       lastName: this.user.LastName,
@@ -368,96 +382,91 @@ export class ProfileComponent implements OnInit {
   }
 
   mountCardElement(): void {
-    if (this.stripe && this.cardElementRef && !this.cardElement) {
-      const elements = this.stripe.elements();
-      this.cardElement = elements.create('card', {
-        style: {
-          base: {
-            color: '#32325d',
-            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-            fontSmoothing: 'antialiased',
-            fontSize: '16px',
-            '::placeholder': {
-              color: '#aab7c4'
-            }
-          },
-          invalid: {
-            color: '#e53e3e',
-            iconColor: '#e53e3e'
-          }
-        }
-      });
-      this.cardElement.mount(this.cardElementRef.nativeElement);
-
-      this.cardElement.on('change', (event) => {
-        this.cardError = event.error ? event.error.message : null;
-      });
-    } else if (this.stripe && this.cardElementRef && this.cardElement) {
-       this.cardElement.focus();
+    if (!this.stripe || !this.cardElementRef) {
+      console.warn('Stripe not loaded or card element reference not available');
+      return;
     }
+
+    // First unmount to avoid duplicate elements
+    this.unmountCardElement();
+
+    // Create a card element
+    const elements = this.stripe.elements();
+    this.cardElement = elements.create('card', {
+      style: {
+        base: {
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '16px',
+          color: '#32325d',
+          '::placeholder': {
+            color: '#aab7c4',
+          },
+        },
+        invalid: {
+          color: '#fa755a',
+          iconColor: '#fa755a',
+        },
+      },
+    });
+
+    // Mount the card element
+    this.cardElement.mount(this.cardElementRef.nativeElement);
   }
 
   unmountCardElement(): void {
     if (this.cardElement) {
       this.cardElement.unmount();
-      this.cardElement.destroy();
       this.cardElement = null;
     }
   }
-  
+
   getCardIcon(cardType: string): string {
-    const type = cardType.toLowerCase();
-    
-    if (type.includes('visa')) {
-      return 'fab fa-cc-visa';
-    } else if (type.includes('master')) {
-      return 'fab fa-cc-mastercard';
-    } else if (type.includes('amex') || type.includes('american')) {
-      return 'fab fa-cc-amex';
-    } else if (type.includes('discover')) {
-      return 'fab fa-cc-discover';
-    } else if (type.includes('diners')) {
-      return 'fab fa-cc-diners-club';
-    } else if (type.includes('jcb')) {
-      return 'fab fa-cc-jcb';
-    } else {
-      return 'far fa-credit-card';
-    }
+    const icons: { [key: string]: string } = {
+      'visa': 'fa-brands fa-cc-visa',
+      'mastercard': 'fa-brands fa-cc-mastercard',
+      'amex': 'fa-brands fa-cc-amex',
+      'discover': 'fa-brands fa-cc-discover',
+      'diners': 'fa-brands fa-cc-diners-club',
+      'jcb': 'fa-brands fa-cc-jcb',
+      'unionpay': 'fa-credit-card'
+    };
+
+    // Return default icon if type not found
+    return icons[cardType.toLowerCase()] || 'fa-regular fa-credit-card';
   }
-  
+
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.loadPurchaseHistory(this.user.Id, this.currentPage);
     }
   }
-  
+
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.loadPurchaseHistory(this.user.Id, this.currentPage);
     }
   }
-  
+
   createWishList(): void {
-    // Implement the create wishlist functionality
-    // This could navigate to a new page or open a modal dialog
-    console.log('Create wishlist');
+    // Modal or form would be shown to create a new wishlist
+    this.wishListService.createWishList({
+      userId: this.user.Id,
+      name: 'New Wishlist'
+    }).subscribe(
+      () => this.loadWishLists(this.user.Id)
+    );
   }
-  
+
   viewWishList(wishListId: number): void {
-    // Navigate to the wishlist detail page
-    console.log('View wishlist', wishListId);
+    // Navigate to wishlist detail page
   }
-  
+
   deleteWishList(wishListId: number): void {
-    if (confirm('Are you sure you want to delete this wish list?')) {
+    if (confirm('Are you sure you want to delete this wishlist?')) {
       this.wishListService.deleteWishList(wishListId).subscribe(
-        (success: boolean) => {
-          if (success) {
-            this.loadWishLists(this.user.Id);
-          }
-        }
+        () => this.loadWishLists(this.user.Id)
       );
     }
   }

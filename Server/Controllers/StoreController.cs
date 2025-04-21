@@ -147,6 +147,11 @@ namespace Server.Controllers
         {
             // Get the user ID from the token - look for numeric claim
             int userId = 0;
+            if (User == null)
+            {
+                Console.WriteLine("ERROR: User is null");
+                return Unauthorized("Invalid user authentication token.");
+            }
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
             
             // Try to find the claim with numeric value (user ID)
@@ -241,6 +246,11 @@ namespace Server.Controllers
 
             // Get the user ID from the token - look for numeric claim
             int userId = 0;
+            if (User == null)
+            {
+                Console.WriteLine("ERROR: User is null");
+                return Unauthorized("Invalid user authentication token.");
+            }
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
             
             // Try to find the claim with numeric value (user ID)
@@ -413,6 +423,11 @@ namespace Server.Controllers
             
             // Get the user ID from the token - look for numeric claim
             int userId = 0;
+            if (User == null)
+            {
+                Console.WriteLine("ERROR: User is null");
+                return Unauthorized("Invalid user authentication token.");
+            }
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
             
             // Try to find the claim with numeric value (user ID)

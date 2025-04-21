@@ -1,129 +1,157 @@
-<div class="profile-container">
-  <!-- Tab Navigation -->
-  <div class="editor-header">
-    <h1 class="editor-title">
-      <i class="fas fa-user-circle store-icon"></i>
-      Profile Editor
-    </h1>
-    <span class="store-url">Customize your personal information and contact details.</span>
-  </div>
-
-  <div class="editor-tabs">
-    <div class="tab-item" [class.active]="activeTab === 'profile'" (click)="setActiveTab('profile')">
-      <i class="fas fa-user"></i>
-      <span>Account Info</span>
+<!-- Wrap in global main container for consistent styling with login/registration -->
+<div class="global-main">
+  <div class="profile-container">
+    <!-- Editor Header -->
+    <div class="editor-header">
+      <h1 class="editor-title">
+        <i class="fas fa-user-circle store-icon"></i>
+        Profile Editor
+      </h1>
+      <span class="store-url">Manage your personal information and access your account settings.</span>
     </div>
-    <div class="tab-item" [class.active]="activeTab === 'payment'" (click)="setActiveTab('payment')">
-      <i class="fas fa-credit-card"></i>
-      <span>Payment Methods</span>
-    </div>
-    <div class="tab-item" [class.active]="activeTab === 'delivery'" (click)="setActiveTab('delivery')">
-      <i class="fas fa-truck"></i>
-      <span>Delivery</span>
-    </div>
-  </div>
 
-  <!-- Profile Information -->
-  <div class="tab-content" *ngIf="activeTab === 'profile'">
-    <div class="section-container">
-      <h2>Account Info</h2>
-      <p>Manage your personal information and contact details.</p>
-      
-      <button *ngIf="!editMode" class="add-button" (click)="toggleEditMode()">
-        <i class="fas fa-edit"></i> Edit Profile
-      </button>
-
-      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
-        <div class="form-group">
-          <label for="firstName">First Name</label>
-          <input 
-            type="text" 
-            id="firstName" 
-            formControlName="firstName" 
-            [readonly]="!editMode">
-        </div>
-        
-        <div class="form-group">
-          <label for="lastName">Last Name</label>
-          <input 
-            type="text" 
-            id="lastName" 
-            formControlName="lastName" 
-            [readonly]="!editMode">
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input 
-            type="email" 
-            id="email" 
-            formControlName="email" 
-            [readonly]="!editMode">
-        </div>
-        
-        <div class="form-group">
-          <label for="phone">Phone Number</label>
-          <input 
-            type="tel" 
-            id="phone" 
-            formControlName="phone" 
-            [readonly]="!editMode">
-        </div>
-
-        <div class="form-group">
-          <label for="country">Country</label>
-          <input 
-            type="text" 
-            id="country" 
-            formControlName="country" 
-            [readonly]="!editMode">
-        </div>
-        
-        <div class="form-actions" *ngIf="editMode">
-          <button type="button" class="cancel-button" (click)="cancelEdit()">
-            <i class="fas fa-times"></i>
-            Cancel
-          </button>
-          <button type="submit" class="save-button" [disabled]="profileForm.invalid || !profileForm.dirty">
-            <i class="fas fa-save" *ngIf="!isSavingProfile"></i>
-            <span class="loading-spinner" *ngIf="isSavingProfile"></span>
-            Save Changes
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Payment Methods -->
-  <div class="tab-content" *ngIf="activeTab === 'payment'">
-    <div class="section-container">
-      <h2>Payment Methods</h2>
-      <p>Manage your saved payment methods for faster checkout.</p>
-      
-      <button class="add-button" (click)="toggleAddPayment()">
-        <i class="fas fa-plus"></i> Add New Payment Method
-      </button>
-
-      <!-- Payment content placeholder -->
-      <div class="empty-message" *ngIf="!showAddPayment">
-        No payment methods saved. Add your first payment method.
+    <!-- Tab Navigation -->
+    <div class="editor-tabs">
+      <div class="tab-item" [class.active]="activeTab === 'profile'" (click)="setActiveTab('profile')">
+        <i class="fas fa-user"></i>
+        <span>Account Info</span>
+      </div>
+      <div class="tab-item" [class.active]="activeTab === 'payment'" (click)="setActiveTab('payment')">
+        <i class="fas fa-credit-card"></i>
+        <span>Payment Methods</span>
+      </div>
+      <div class="tab-item" [class.active]="activeTab === 'delivery'" (click)="setActiveTab('delivery')">
+        <i class="fas fa-truck"></i>
+        <span>Delivery</span>
       </div>
     </div>
-  </div>
 
-  <!-- Delivery Addresses -->
-  <div class="tab-content" *ngIf="activeTab === 'delivery'">
-    <div class="section-container">
-      <h2>Delivery Addresses</h2>
-      <p>Manage your saved delivery addresses for faster checkout.</p>
-      
-      <button class="add-button" (click)="toggleAddDelivery()">
-        <i class="fas fa-plus"></i> Add New Address
-      </button>
+    <!-- Profile Information -->
+    <div class="tab-content" *ngIf="activeTab === 'profile'">
+      <div class="section-container">
+        <h2>Account Info</h2>
+        <p>Manage your personal information and contact details.</p>
+        
+        <button *ngIf="!editMode" class="add-button" (click)="toggleEditMode()">
+          <i class="fas fa-edit"></i> Edit Profile
+        </button>
 
-      <!-- Delivery content placeholder -->
-      <div class="empty-message" *ngIf="!showAddDelivery">
-        No delivery addresses saved. Add your first address.
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input 
+              type="text" 
+              id="firstName" 
+              formControlName="firstName" 
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode">
+            <div *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched" class="error">
+              <i class="fas fa-exclamation-circle"></i> First Name is required
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input 
+              type="text" 
+              id="lastName" 
+              formControlName="lastName" 
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode">
+            <div *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched" class="error">
+              <i class="fas fa-exclamation-circle"></i> Last Name is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              readonly
+              class="disabled-input">
+            <div class="field-hint">Email cannot be changed as it's used for account identification</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              formControlName="phone" 
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode">
+            <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched" class="error">
+              <i class="fas fa-exclamation-circle"></i> Phone Number is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="country">Country</label>
+            <input 
+              type="text" 
+              id="country" 
+              formControlName="country" 
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode">
+            <div *ngIf="profileForm.get('country')?.invalid && profileForm.get('country')?.touched" class="error">
+              <i class="fas fa-exclamation-circle"></i> Country is required
+            </div>
+          </div>
+          
+          <div class="form-actions" *ngIf="editMode">
+            <button type="button" class="cancel-button" (click)="cancelEdit()">
+              <i class="fas fa-times"></i>
+              Cancel
+            </button>
+            <button type="submit" class="save-button" [disabled]="profileForm.invalid || !profileForm.dirty || isSavingProfile">
+              <i class="fas fa-save" *ngIf="!isSavingProfile"></i>
+              <span class="loading-spinner" *ngIf="isSavingProfile"></span>
+              {{ isSavingProfile ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="tab-content" *ngIf="activeTab === 'payment'">
+      <div class="section-container">
+        <h2>Payment Methods</h2>
+        <p>Manage your saved payment methods for faster checkout.</p>
+        
+        <button class="add-button" (click)="toggleAddPayment()">
+          <i class="fas fa-plus"></i> <span>Add New Payment Method</span>
+        </button>
+
+        <!-- Payment methods list or empty state -->
+        <div *ngIf="paymentMethods.length === 0 && !showAddPayment" class="empty-message">
+          <i class="fas fa-credit-card"></i>
+          <p>No payment methods saved. Add your first payment method.</p>
+        </div>
+        
+        <!-- Add payment form would go here -->
+      </div>
+    </div>
+    
+    <!-- Delivery Addresses -->
+    <div class="tab-content" *ngIf="activeTab === 'delivery'">
+      <div class="section-container">
+        <h2>Delivery Addresses</h2>
+        <p>Manage your saved addresses for easier checkout.</p>
+        
+        <button class="add-button" (click)="toggleAddDelivery()">
+          <i class="fas fa-plus"></i> <span>Add New Address</span>
+        </button>
+
+        <!-- Addresses list or empty state -->
+        <div *ngIf="deliveryAddresses.length === 0 && !showAddDelivery" class="empty-message">
+          <i class="fas fa-map-marker-alt"></i>
+          <p>No delivery addresses saved. Add your first address.</p>
+        </div>
+        
+        <!-- Add address form would go here -->
       </div>
     </div>
   </div>

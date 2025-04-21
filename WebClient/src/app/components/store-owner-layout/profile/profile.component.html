@@ -119,7 +119,7 @@
     <p class="section-description">Manage your saved payment methods for faster checkout.</p>
 
     <button class="standard-button primary full-width" (click)="toggleAddPayment()" [attr.aria-expanded]="showAddPayment" aria-controls="payment-form" *ngIf="!showAddPayment">
-      <i class="fa-solid fa-plus" aria-hidden="true"></i> Add New Payment Method
+      <i class="fa-solid fa-plus" aria-hidden="true"></i> <span>Add New Payment Method</span>
     </button>
 
     <!-- Add new payment method form -->
@@ -181,7 +181,7 @@
     <p class="section-description">Manage your saved delivery addresses for faster checkout.</p>
 
     <button class="standard-button primary full-width" (click)="toggleAddDelivery()" [attr.aria-expanded]="showAddDelivery" aria-controls="address-form" *ngIf="!showAddDelivery">
-      <i class="fa-solid fa-plus" aria-hidden="true"></i> Add New Address
+      <i class="fa-solid fa-plus" aria-hidden="true"></i> <span>Add New Address</span>
     </button>
 
     <!-- Add new address form -->

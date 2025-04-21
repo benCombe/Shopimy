@@ -254,14 +254,14 @@ namespace Server.Controllers
 
         private string GenerateJwtToken(User user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured")));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             // Make sure we're using the correct claim types and values
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), // Use ID as subject
-                new Claim(JwtRegisteredClaimNames.Email, user.Email), // Store email in a different claim
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? throw new InvalidOperationException("User email is null")), // Store email in a different claim
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) // Ensure this is the user ID as string
             };
@@ -279,16 +279,16 @@ namespace Server.Controllers
 
         public class TokenRequest
         {
-            public string Token { get; set; }
+            public required string Token { get; set; }
         }
         
         public class ProfileUpdateDTO
         {
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
-            public string Phone { get; set; }
-            public string Address { get; set; }
-            public string Country { get; set; }
+            public required string FirstName { get; set; }
+            public required string LastName { get; set; }
+            public required string Phone { get; set; }
+            public required string Address { get; set; }
+            public required string Country { get; set; }
         }
     }
 }
