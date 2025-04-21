@@ -1,7 +1,7 @@
 <div id="container">
   <app-store-nav  (ViewChanged)="changeView($event)"></app-store-nav>
   <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="currentView === 'store-page'" [ngStyle]="{ 'height': storePageHeight + 'vh' }">
-      <div id="banner" class="theme2" [style.background-image]="'url(' + storeData?.bannerURL + ')'">
+      <div id="banner" class="theme2" [style.background-image]="'url(' + currentBannerUrl + ')'">
         <div id="banner-text" class="center theme1 fc" [style.background-color]="storeData?.theme_1">
           <span [style.color]="storeData?.fontColor">{{storeData?.bannerText}}</span>
         </div>
