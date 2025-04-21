@@ -14,28 +14,74 @@
 }
 
 #item-container {
-  border: 1px solid red;
+  display: grid;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+/* Mobile-first: 1 column by default */
+#item-container {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+/* Small devices (landscape phones) */
+@media (min-width: 576px) {
+  #item-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 768px) {
+  #item-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Large devices (desktops) */
+@media (min-width: 992px) {
+  #item-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Apply styling to the item card component */
+app-item-card {
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
   display: flex;
-  flex-wrap: wrap;
- /* Automatically fill columns, with a minimum width of 250px */
-  gap: 20px; /* Gap between the items */
-  justify-items: flex-start; /* Center items in their grid cells */
-  padding: 10px;
-  margin-right: 5%;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 }
 
-.item-card {
-  flex: 1 1 5%;
-  box-sizing: border-box;
+app-item-card:hover {
+  transform: translateY(-5px);
 }
 
+#heading {
+  text-align: center;
+  margin: var(--spacing-lg) 0;
+  color: var(--text-color);
+}
 
+/* Responsive text sizes */
+#heading {
+  font-size: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  #heading {
+    font-size: 2rem;
+  }
+}
 
 #no-items{
   height: 50%;
   width: 100%;
 }
-
 
 @media (max-width: 768px) {
   #item-container {

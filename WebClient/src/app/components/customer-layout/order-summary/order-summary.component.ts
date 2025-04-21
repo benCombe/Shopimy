@@ -16,7 +16,7 @@ export class OrderSummaryComponent {
 
     @Input() storeDetails: StoreDetails | null = null;
 
-    cartItems: BasicItem[] = [];
+    cartItems: { item: BasicItem, quantity: number }[] = [];
     subtotal: number = 0.00;
     shippingCost: number = 0;
 

@@ -23,5 +23,7 @@ namespace Server.Models
         public string BannerText {get; set;} = string.Empty;
         [Column("logo_text")]
         public string LogoText {get; set;} = string.Empty;
+        [Column("component_visibility")]
+        public string ComponentVisibility {get; set;} = string.Empty;
     }
 }

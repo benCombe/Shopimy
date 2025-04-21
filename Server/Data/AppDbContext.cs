@@ -9,6 +9,7 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
 using Shopimy.Server.Models;
+using Stripe.Climate;
 
 namespace Server.Data
 {
@@ -26,7 +27,10 @@ namespace Server.Data
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<StoreBanner> StoreBanners { get; set; }
         public DbSet<StoreLogo> StoreLogos { get; set; }
+        public DbSet<OrderLogEntry> OrderLog {get; set;}
+        public DbSet<OrderItem> OrderItems {get; set;}
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Server.Models.Order> Orders { get; set; }
 
         // Ensure table names match conventions  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,6 +40,7 @@ namespace Server.Data
             // Define table names explicitly (optional)
             modelBuilder.Entity<User>(entity =>
             {
+                entity.ToTable("Users");
                 entity.Property(e => e.FirstName).HasColumnName("first_name");
                 entity.Property(e => e.LastName).HasColumnName("last_name");
                 entity.Property(e => e.Email).HasColumnName("email");
@@ -46,6 +51,7 @@ namespace Server.Data
                 entity.Property(e => e.Verified).HasColumnName("verified");
                 entity.Property(e => e.Subscribed).HasColumnName("subscribed");
                 entity.Property(e => e.DOB).HasColumnName("dob");
+                entity.Property(e => e.StripeCustomerId).HasColumnName("stripe_customer_id");
             });
 
             modelBuilder.Entity<ActiveUser>(entity =>
@@ -82,7 +88,11 @@ namespace Server.Data
             modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
             modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
             modelBuilder.Entity<TestItem>().ToTable("TestTable");
+            modelBuilder.Entity<OrderLogEntry>().ToTable("OrderLog");
+            modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
             modelBuilder.Entity<Review>().ToTable("Reviews");
+            modelBuilder.Entity<Server.Models.Order>().ToTable("Orders");
+            modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
         }
     }
 }

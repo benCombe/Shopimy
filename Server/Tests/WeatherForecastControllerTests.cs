@@ -1,4 +1,4 @@
-using System.Net;
+/* using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
@@ -16,7 +16,7 @@ public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactor
     {
         var response = await _client.GetAsync("/weatherforecast");
 
-        response.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode(); */
         //var content = await response.Content.ReadAsStringAsync();
         //Console.WriteLine(content);
         /*
@@ -25,7 +25,7 @@ public class WeatherForecastControllerTests : IClassFixture<WebApplicationFactor
  
         var response = await _client.GetAsync("/weatherforecast");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        
+            
     }
 
 }

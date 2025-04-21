@@ -1,125 +1,265 @@
 <div id="container">
   <app-top-nav></app-top-nav>
   <div id="main" class="center">
-    <div id="register-form-wrapper">
-      <h2>Register</h2>
-      <form id="register-form">
-
-        <!-- Name -->
-        <div id="name" class="center-spaced form-entry-container">
-          <div class="form-entry">
-            <label id="firstname-lbl" for="firstname" class="form-lbl">First Name *</label><br>
-            <!-- <input type="text" id="firstname" required [(ngModel)]="firstname" name="firstname"> -->
-            <input type="text" id="firstname" [(ngModel)]="firstname" name="firstname" required (blur)="validateFirstName()"
-                  [ngClass]="isFirstNameValid ? 'valid-input' : 'invalid-input'">
-          </div>
-          <div class="form-entry">
-            <label id="lastname-lbl" for="lastname" class="form-lbl">Last Name *</label><br>
-            <input type="text" id="lastname" [(ngModel)]="lastname" name="lastname" required (blur)="validateLastName()"
-                  [ngClass]="isLastNameValid ? 'valid-input' : 'invalid-input'">
-          </div>
-        </div>
-
-        <!-- Contact -->
-        <div id="contact" class="center-spaced form-entry-container">
-          <div class="form-entry">
-            <label id="email-lbl" for="email" class="form-lbl" >Email *</label><br>
-            <input type="text" id="email" placeholder="example@mail.com" required [(ngModel)]="email" name="email" (blur)="validateEmail()"
-                  [ngClass]="isEmailValid ? 'valid-input' : 'invalid-input'">
-          </div>
-          <div class="form-entry">
-            <label id="phone-lbl" for="phone" class="form-lbl">Phone *</label><br>
-            <input type="phone" id="phone" required [(ngModel)]="phone" name="phone" (blur)="validatePhone()"
-              [ngClass]="isPhoneValid ? 'valid-input' : 'invalid-input'">
-          </div>
-        </div>
-
-        <!-- DOB -->
-        <div class="form-entry-container">
-          <div class="form-entry">
-            <label id="dob-lbl" for="dob" class="form-lbl">Date of Birth *</label><br>
-            <input type="date" id="dob" required [(ngModel)]="dob" name="dob" (blur)="validateDOB()"
-              [ngClass]="isDobValid ? 'valid-input' : 'invalid-input'">
-          </div>
-        </div>
-
-        <!-- Address -->
-        <div class="form-entry-container">
-          <div class="form-entry">
-            <label id="country-lbl" for="country" class="form-lbl">Country *</label><br>
-            <select id="country" [(ngModel)]="selectedCountry" required name="country">
-              <option *ngFor="let country of countries" [value]="country.value">
-                {{ country.label }} ({{country.value}})
-              </option>
-            </select>
-          </div>
-        </div>
-        <div id="location" class="form-entry-container">
-          <div class="form-entry">
-            <label id="addr-lbl" for="address" class="form-lbl">Address *</label>
-            <input type="text" id="address" [(ngModel)]="address" required name="address">
-          </div>
-          <div class="form-entry">
-            <label id="provstate-lbl" for="provState" class="form-lbl">Province/State *</label>
-            <input type="text" id="provstate" [(ngModel)]="provState" required name="provState">
-          </div>
-          <div class="form-entry">
-            <label id="zip-lbl" for="zip" class="form-lbl">Zip/Postal Code *</label>
-            <input type="text" id="zip" [(ngModel)]="zip" required name="zip">
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Password -->
-        <div id="password-container">
-          <div id="pw-wrapper">
-            <div class="form-entry">
-              <label id="pw-lbl" for="dob" class="form-lbl">Password *</label><br>
-              <input type="password" id="pw" [(ngModel)]="password" name="password" (change)="validatePassword()" (input)="validatePassword()">
-            </div>
-            <div class="form-entry">
-              <label id="cpw-lbl" for="dob" class="form-lbl">Confirm Password *</label><br>
-              <input type="password" id="cpw" [(ngModel)]="confirmPassword" name="confirm-password" required (change)="validateConfirmPassword()" (input)="validateConfirmPassword()">
+    <div id="register-card">
+      <h1>Create Account</h1>
+      <form id="register-form" (ngSubmit)="register()" #registerForm="ngForm">
+        <!-- Name Section -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstname">First Name</label>
+            <input 
+              type="text" 
+              id="firstname" 
+              name="firstname"
+              [(ngModel)]="firstname"
+              required
+              #firstNameInput="ngModel"
+              [class.is-invalid]="!isFirstNameValid && firstNameInput.touched"
+              placeholder="Enter first name"
+              (blur)="validateFirstName()">
+            <div class="invalid-feedback" *ngIf="!isFirstNameValid && firstNameInput.touched">
+              Please enter a valid first name
             </div>
           </div>
-          <div id="pw-strength">
-            <h4 id="pws-title">Password Must Include:</h4>
-            <div class="pwcheck" id="charlength-check">
-              <div class="icon-wrapper center" [ngClass]="{'valid': hasValidLength, 'invalid': !hasValidLength}">
-                <i *ngIf="!hasValidLength" class="fa-solid fa-x"></i>
-                <i *ngIf="hasValidLength" class="fa-solid fa-check"></i>
-              </div>
-              <h4>8-20 Characters</h4>
-            </div>
-            <div class="pwcheck">
-              <div class="icon-wrapper center" [ngClass]="{'valid': hasUpperLower, 'invalid': !hasUpperLower}">
-                <i *ngIf="!hasUpperLower" class="fa-solid fa-x"></i>
-                <i *ngIf="hasUpperLower" class="fa-solid fa-check"></i>
-              </div>
-              <h4>At least 1 each uppercase letter, lowercase letter, number and symbol ($,!,etc.)</h4>
-            </div>
-            <div class="pwcheck">
-              <div class="icon-wrapper center" [ngClass]="{'valid': pwMatch, 'invalid': !pwMatch}">
-                <i *ngIf="!pwMatch" class="fa-solid fa-x"></i>
-                <i *ngIf="pwMatch" class="fa-solid fa-check"></i>
-              </div>
-              <h4>Passwords Match</h4>
+
+          <div class="form-group">
+            <label for="lastname">Last Name</label>
+            <input 
+              type="text" 
+              id="lastname" 
+              name="lastname"
+              [(ngModel)]="lastname"
+              required
+              #lastNameInput="ngModel"
+              [class.is-invalid]="!isLastNameValid && lastNameInput.touched"
+              placeholder="Enter last name"
+              (blur)="validateLastName()">
+            <div class="invalid-feedback" *ngIf="!isLastNameValid && lastNameInput.touched">
+              Please enter a valid last name
             </div>
           </div>
         </div>
-        <div class="divider" style="margin-top: 30px;"></div>
-        <div id="checkboxes">
-          <input type="checkbox" id="subscribe" name="subscribe" [(ngModel)]="subscribed">
-          <label id="subscribe-lbl" for="subscribe" class="form-lbl">I want to receive emails about news and products</label><br><br>
-          <input type="checkbox" id="accept-tc" required name="accept" [(ngModel)]="acceptTAC">
-          <label id="accept-tc-lbl" for="accept-tc" class="form-lbl">I Accept the Terms and Conditions</label>
+
+        <!-- Contact Section -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              [(ngModel)]="email"
+              required
+              #emailInput="ngModel"
+              [class.is-invalid]="!isEmailValid && emailInput.touched"
+              placeholder="example@email.com"
+              (blur)="validateEmail()">
+            <div class="invalid-feedback" *ngIf="!isEmailValid && emailInput.touched">
+              Please enter a valid email address
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              name="phone"
+              [(ngModel)]="phone"
+              required
+              #phoneInput="ngModel"
+              [class.is-invalid]="!isPhoneValid && phoneInput.touched"
+              placeholder="123-456-7890"
+              (blur)="validatePhone()">
+            <div class="invalid-feedback" *ngIf="!isPhoneValid && phoneInput.touched">
+              Format: 123-456-7890
+            </div>
+          </div>
         </div>
-        <button type="submit" id="submit-btn" (click)="register()">Register</button>
+
+        <!-- Date of Birth -->
+        <div class="form-group">
+          <label for="dob">Date of Birth</label>
+          <input 
+            type="date" 
+            id="dob" 
+            name="dob"
+            [(ngModel)]="dob"
+            required
+            #dobInput="ngModel"
+            [class.is-invalid]="!isDobValid && dobInput.touched"
+            (blur)="validateDOB()">
+          <div class="invalid-feedback" *ngIf="!isDobValid && dobInput.touched">
+            You must be at least 18 years old
+          </div>
+        </div>
+
+        <!-- Country Selection -->
+        <div class="form-group">
+          <label for="country">Country</label>
+          <select 
+            id="country" 
+            name="country"
+            [(ngModel)]="selectedCountry"
+            required
+            #countryInput="ngModel"
+            [class.is-invalid]="!selectedCountry && countryInput.touched">
+            <option value="">Select a country</option>
+            <option *ngFor="let country of countries" [value]="country.value">
+              {{ country.label }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="!selectedCountry && countryInput.touched">
+            Please select a country
+          </div>
+        </div>
+
+        <!-- Address Section -->
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input 
+            type="text" 
+            id="address" 
+            name="address"
+            [(ngModel)]="address"
+            required
+            placeholder="Street address"
+            #addressInput="ngModel"
+            [class.is-invalid]="!address && addressInput.touched">
+          <div class="invalid-feedback" *ngIf="!address && addressInput.touched">
+            Address is required
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="provState">Province/State</label>
+            <input 
+              type="text" 
+              id="provState" 
+              name="provState"
+              [(ngModel)]="provState"
+              required
+              placeholder="Province/State"
+              #provStateInput="ngModel"
+              [class.is-invalid]="!provState && provStateInput.touched">
+            <div class="invalid-feedback" *ngIf="!provState && provStateInput.touched">
+              Province/State is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="zip">Postal/ZIP Code</label>
+            <input 
+              type="text" 
+              id="zip" 
+              name="zip"
+              [(ngModel)]="zip"
+              required
+              placeholder="Postal/ZIP code"
+              #zipInput="ngModel"
+              [class.is-invalid]="!zip && zipInput.touched">
+            <div class="invalid-feedback" *ngIf="!zip && zipInput.touched">
+              Postal/ZIP code is required
+            </div>
+          </div>
+        </div>
+
+        <div class="divider">
+          <span>Password Information</span>
+        </div>
+
+        <!-- Password Section -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-input-group">
+            <input 
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              required
+              (input)="validatePassword()"
+              #passwordInput="ngModel"
+              [class.is-invalid]="!isPasswordValid && passwordInput.touched"
+              placeholder="Enter password">
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+              <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+            </button>
+          </div>
+          
+          <!-- Password Requirements -->
+          <div class="password-requirements">
+            <div class="requirement" [class.met]="hasValidLength">
+              <i class="fa-solid" [class.fa-check]="hasValidLength" [class.fa-xmark]="!hasValidLength"></i>
+              <span>8-20 characters</span>
+            </div>
+            <div class="requirement" [class.met]="hasUpperLower">
+              <i class="fa-solid" [class.fa-check]="hasUpperLower" [class.fa-xmark]="!hasUpperLower"></i>
+              <span>Uppercase, lowercase, number, and symbol</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="password-input-group">
+            <input 
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              id="confirmPassword"
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword"
+              required
+              (input)="validateConfirmPassword()"
+              #confirmPasswordInput="ngModel"
+              [class.is-invalid]="!pwMatch && confirmPasswordInput.touched"
+              placeholder="Confirm password">
+            <button type="button" class="password-toggle" (click)="toggleConfirmPasswordVisibility()">
+              <i class="fa-solid" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="!pwMatch && confirmPasswordInput.touched">
+            Passwords do not match
+          </div>
+        </div>
+
+        <!-- Terms and Newsletter -->
+        <div class="form-checkboxes">
+          <div class="checkbox-group">
+            <input 
+              type="checkbox" 
+              id="subscribe" 
+              name="subscribe"
+              [(ngModel)]="subscribed">
+            <label for="subscribe">I want to receive news and updates</label>
+          </div>
+          
+          <div class="checkbox-group">
+            <input 
+              type="checkbox" 
+              id="accept-tc" 
+              name="accept"
+              [(ngModel)]="acceptTAC"
+              required
+              #termsInput="ngModel"
+              [class.is-invalid]="!acceptTAC && termsInput.touched">
+            <label for="accept-tc">I accept the <a href="/terms" target="_blank">Terms and Conditions</a></label>
+            <div class="invalid-feedback" *ngIf="!acceptTAC && termsInput.touched">
+              You must accept the Terms and Conditions
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="register-btn" [disabled]="!isFormValid() || isLoading">
+          <span *ngIf="!isLoading">Create Account</span>
+          <i *ngIf="isLoading" class="fa-solid fa-spinner fa-spin"></i>
+        </button>
       </form>
-    </div>
-    <!-- <img [src]="imgURL"> -->
-    <img src="resources/images/workfromhome.jpg">
-  </div>
 
+      <div class="login-prompt">
+        Already have an account? <a routerLink="/login">Log in</a>
+      </div>
+    </div>
+  </div>
 </div>

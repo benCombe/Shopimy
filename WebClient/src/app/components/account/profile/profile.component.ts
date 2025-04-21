@@ -7,6 +7,8 @@ import { PaymentService } from '../../../services/payment.service';
 import { User } from '../../../models/user';
 import { DeliveryDetails } from '../../../models/delivery-details';
 import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
+import { PurchaseService, PurchaseHistoryResponse } from '../../../services/purchase.service';
+import { WishListService, WishList } from '../../../services/wishlist.service';
 
 @Component({
   selector: 'app-profile',
@@ -19,6 +21,8 @@ export class ProfileComponent implements OnInit {
   user!: User;
   deliveryAddresses: DeliveryDetails[] = [];
   paymentMethods: any[] = [];
+  purchaseHistory: any[] = [];
+  wishLists: any[] = [];
   
   profileForm!: FormGroup;
   deliveryForm!: FormGroup;
@@ -26,18 +30,30 @@ export class ProfileComponent implements OnInit {
   activeTab: string = 'profile';
   showAddDelivery: boolean = false;
   showAddPayment: boolean = false;
+  editMode: boolean = false;
+  
+  // Pagination
+  currentPage: number = 1;
+  totalPages: number = 1;
+  itemsPerPage: number = 10;
+  
+  // Loading states
+  isSavingProfile: boolean = false;
+  isSavingDelivery: boolean = false;
+  isSavingPaymentMethod: boolean = false;
   
   stripe: Stripe | null = null;
   cardElement: StripeCardElement | null = null;
   @ViewChild('cardElement') cardElementRef!: ElementRef;
   cardError: string | null = null;
-  isSavingPaymentMethod = false;
   newPaymentIsDefault = false;
   
   constructor(
     private userService: UserService,
     private deliveryService: DeliveryService,
     private paymentService: PaymentService,
+    private purchaseService: PurchaseService,
+    private wishListService: WishListService,
     private fb: FormBuilder
   ) { }
 
@@ -52,7 +68,8 @@ export class ProfileComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required]
+      phone: ['', Validators.required],
+      country: ['']
     });
 
     this.deliveryForm = this.fb.group({
@@ -90,12 +107,15 @@ export class ProfileComponent implements OnInit {
         firstName: user.FirstName,
         lastName: user.LastName,
         email: user.Email,
-        phone: user.Phone
+        phone: user.Phone,
+        country: user.Country || 'Canada' // Default value
       });
 
       if (user.Id > 0) {
         this.loadDeliveryAddresses(user.Id);
-        this.loadPaymentMethods(user.Id);
+        this.loadPaymentMethods();
+        this.loadPurchaseHistory(user.Id, this.currentPage);
+        this.loadWishLists(user.Id);
       }
     });
   }
@@ -106,25 +126,51 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  loadPaymentMethods(userId: number): void {
-    this.paymentService.getPaymentMethods(userId).subscribe(methods => {
+  loadPaymentMethods(): void {
+    this.paymentService.getPaymentMethods().subscribe(methods => {
       this.paymentMethods = methods;
     });
   }
+  
+  loadPurchaseHistory(userId: number, page: number): void {
+    this.purchaseService.getPurchaseHistory(userId, page, this.itemsPerPage).subscribe(
+      (result: PurchaseHistoryResponse) => {
+        this.purchaseHistory = result.purchases;
+        this.totalPages = Math.ceil(result.total / this.itemsPerPage);
+      }
+    );
+  }
+  
+  loadWishLists(userId: number): void {
+    this.wishListService.getWishLists(userId).subscribe(
+      (lists: WishList[]) => {
+        this.wishLists = lists;
+      }
+    );
+  }
 
   saveProfile(): void {
-    if (this.profileForm.valid) {
+    if (this.profileForm.valid && this.profileForm.dirty) {
+      this.isSavingProfile = true;
       const updatedUser: User = {
         ...this.user,
         FirstName: this.profileForm.value.firstName,
         LastName: this.profileForm.value.lastName,
         Email: this.profileForm.value.email,
-        Phone: this.profileForm.value.phone
+        Phone: this.profileForm.value.phone,
+        Country: this.profileForm.value.country
       };
       
-      this.userService.updateUserProfile(updatedUser).subscribe(success => {
-        if (success) {
-          console.log('Profile updated successfully');
+      this.userService.updateUserProfile(updatedUser).subscribe({
+        next: (success) => {
+          if (success) {
+            this.editMode = false;
+            this.isSavingProfile = false;
+          }
+        },
+        error: (error) => {
+          console.error('Error updating profile:', error);
+          this.isSavingProfile = false;
         }
       });
     }
@@ -132,6 +178,7 @@ export class ProfileComponent implements OnInit {
 
   saveDeliveryAddress(): void {
     if (this.deliveryForm.valid && this.user.Id > 0) {
+      this.isSavingDelivery = true;
       const newAddress = new DeliveryDetails(
         this.user.Id,
         this.deliveryForm.value.address,
@@ -143,11 +190,18 @@ export class ProfileComponent implements OnInit {
         this.deliveryForm.value.isDefault
       );
       
-      this.deliveryService.saveDeliveryAddress(newAddress).subscribe(success => {
-        if (success) {
-          this.loadDeliveryAddresses(this.user.Id);
-          this.showAddDelivery = false;
-          this.deliveryForm.reset();
+      this.deliveryService.saveDeliveryAddress(newAddress).subscribe({
+        next: (success) => {
+          if (success) {
+            this.loadDeliveryAddresses(this.user.Id);
+            this.showAddDelivery = false;
+            this.deliveryForm.reset();
+          }
+          this.isSavingDelivery = false;
+        },
+        error: (error) => {
+          console.error('Error saving delivery address:', error);
+          this.isSavingDelivery = false;
         }
       });
     }
@@ -183,8 +237,7 @@ export class ProfileComponent implements OnInit {
             this.paymentService.savePaymentMethod(paymentMethodId, this.newPaymentIsDefault)
               .subscribe({
                 next: () => {
-                  console.log('Payment method saved successfully');
-                  this.loadPaymentMethods(this.user.Id);
+                  this.loadPaymentMethods();
                   this.toggleAddPayment();
                   this.isSavingPaymentMethod = false;
                 },
@@ -220,10 +273,10 @@ export class ProfileComponent implements OnInit {
 
   deletePaymentMethod(paymentId: any): void {
     if (confirm('Are you sure you want to delete this payment method?')) {
-      this.paymentService.deletePaymentMethod(paymentId).subscribe(success => {
-        if (success) {
-          this.loadPaymentMethods(this.user.Id);
-        }
+      this.paymentService.deletePaymentMethod(paymentId).subscribe(() => {
+        this.loadPaymentMethods();
+      }, error => {
+        console.error('Error deleting payment method:', error);
       });
     }
   }
@@ -237,15 +290,20 @@ export class ProfileComponent implements OnInit {
   }
 
   setDefaultPaymentMethod(paymentMethodId: string): void {
-    this.paymentService.setDefaultPaymentMethod(this.user.Id, paymentMethodId).subscribe(success => {
-      if (success) {
-        this.loadPaymentMethods(this.user.Id);
-      }
+    this.paymentService.setDefaultPaymentMethod(paymentMethodId).subscribe(() => {
+      this.loadPaymentMethods();
+    }, error => {
+      console.error('Error setting default payment method:', error);
     });
   }
 
   setActiveTab(tab: string): void {
     this.activeTab = tab;
+    
+    // If switching to Payment tab and Stripe is loaded, mount card element
+    if (tab === 'payment' && this.showAddPayment && this.stripe) {
+      this.mountCardElement();
+    }
   }
 
   toggleAddDelivery(): void {
@@ -265,11 +323,52 @@ export class ProfileComponent implements OnInit {
       this.unmountCardElement();
     }
   }
+  
+  toggleEditMode(): void {
+    this.editMode = !this.editMode;
+    if (!this.editMode) {
+      // Reset form to original values
+      this.profileForm.patchValue({
+        firstName: this.user.FirstName,
+        lastName: this.user.LastName,
+        email: this.user.Email,
+        phone: this.user.Phone,
+        country: this.user.Country
+      });
+    }
+  }
+  
+  cancelEdit(): void {
+    this.editMode = false;
+    this.profileForm.patchValue({
+      firstName: this.user.FirstName,
+      lastName: this.user.LastName,
+      email: this.user.Email,
+      phone: this.user.Phone,
+      country: this.user.Country
+    });
+  }
 
   mountCardElement(): void {
     if (this.stripe && this.cardElementRef && !this.cardElement) {
       const elements = this.stripe.elements();
-      this.cardElement = elements.create('card', { /* style */ });
+      this.cardElement = elements.create('card', {
+        style: {
+          base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+              color: '#aab7c4'
+            }
+          },
+          invalid: {
+            color: '#e53e3e',
+            iconColor: '#e53e3e'
+          }
+        }
+      });
       this.cardElement.mount(this.cardElementRef.nativeElement);
 
       this.cardElement.on('change', (event) => {
@@ -285,6 +384,63 @@ export class ProfileComponent implements OnInit {
       this.cardElement.unmount();
       this.cardElement.destroy();
       this.cardElement = null;
+    }
+  }
+  
+  getCardIcon(cardType: string): string {
+    const type = cardType.toLowerCase();
+    
+    if (type.includes('visa')) {
+      return 'fab fa-cc-visa';
+    } else if (type.includes('master')) {
+      return 'fab fa-cc-mastercard';
+    } else if (type.includes('amex') || type.includes('american')) {
+      return 'fab fa-cc-amex';
+    } else if (type.includes('discover')) {
+      return 'fab fa-cc-discover';
+    } else if (type.includes('diners')) {
+      return 'fab fa-cc-diners-club';
+    } else if (type.includes('jcb')) {
+      return 'fab fa-cc-jcb';
+    } else {
+      return 'far fa-credit-card';
+    }
+  }
+  
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadPurchaseHistory(this.user.Id, this.currentPage);
+    }
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadPurchaseHistory(this.user.Id, this.currentPage);
+    }
+  }
+  
+  createWishList(): void {
+    // Implement the create wishlist functionality
+    // This could navigate to a new page or open a modal dialog
+    console.log('Create wishlist');
+  }
+  
+  viewWishList(wishListId: number): void {
+    // Navigate to the wishlist detail page
+    console.log('View wishlist', wishListId);
+  }
+  
+  deleteWishList(wishListId: number): void {
+    if (confirm('Are you sure you want to delete this wish list?')) {
+      this.wishListService.deleteWishList(wishListId).subscribe(
+        (success: boolean) => {
+          if (success) {
+            this.loadWishLists(this.user.Id);
+          }
+        }
+      );
     }
   }
 } 

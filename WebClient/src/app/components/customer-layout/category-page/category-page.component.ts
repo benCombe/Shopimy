@@ -6,11 +6,14 @@ import { StoreDetails } from '../../../models/store-details';
 import { CategoryService } from '../../../services/category.service';
 import { ItemCardComponent } from "../../item-card/item-card.component";
 import { NgFor, NgIf } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map } from 'rxjs';
+import { ItemService } from '../../../services/item.service';
+import { BasicItem } from '../../../models/basic-item';
 
 @Component({
   selector: 'app-category-page',
+  standalone: true,
   imports: [ItemCardComponent, NgFor, NgIf],
   templateUrl: './category-page.component.html',
   styleUrl: './category-page.component.css'
@@ -20,17 +23,20 @@ export class CategoryPageComponent implements OnInit {
   @Input() category: Category | null = null;
   @Input() storeDetails: StoreDetails | null = null;
 
-  categoryName: string | null = "";
+  categoryName: string = '';
 
   /* @Input() store: StoreDetails | null = null; */
 
   itemIds: number[] = [];
+  items: BasicItem[] = [];
 
   constructor(
     private catService: CategoryService,
     private storeService: StoreService,
     private storeNavService: StoreNavService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
+    private itemService: ItemService
   )
   {
 
@@ -96,6 +102,39 @@ export class CategoryPageComponent implements OnInit {
         this.itemIds = this.catService.getItemsInCategory(this.category.categoryId, this.category.storeId);
       }
     }); */
+
+    this.route.params.subscribe(params => {
+      const categoryId = params['id'];
+      this.loadCategoryItems(categoryId);
+    });
+  }
+
+  private loadCategoryItems(categoryId: string): void {
+    this.catService.getItemsInCategory(Number(categoryId), 1).subscribe({
+      next: (itemIds: number[]) => {
+        this.items = [];
+        itemIds.forEach(id => {
+          this.itemService.getItemById(id).subscribe({
+            next: (item: BasicItem) => {
+              this.items.push(item);
+              if (this.items.length === 1) {
+                this.categoryName = item.name;
+              }
+            },
+            error: (error: any) => {
+              console.error('Error loading item:', error);
+            }
+          });
+        });
+      },
+      error: (error: any) => {
+        console.error('Error loading category items:', error);
+      }
+    });
+  }
+
+  navigateToItem(itemId: number): void {
+    this.router.navigate(['/item', itemId]);
   }
 
   onPageOpen(): void {

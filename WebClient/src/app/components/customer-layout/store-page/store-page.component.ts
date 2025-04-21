@@ -1,5 +1,5 @@
 import { NgFor, NgIf, NgStyle } from '@angular/common';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { ThemeService } from '../../../services/theme.service';
 import { StoreService } from '../../../services/store.service';
@@ -30,7 +30,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   itemIds: number[] = [];
   displayCount: number = 9;
   storePageHeight: number = 175;
-
+  isMobile: boolean = false;
   initialLoad: boolean = true;
 
   currentBannerUrl: string = '';
@@ -52,7 +52,20 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   ){}
 
 
+  @HostListener('window:resize', [])
+  checkScreenSize() {
+    if(window.innerWidth < 900){
+      this.storePageHeight = 400;
+      this.isMobile = true;
+    }
+    else{
+      this.storePageHeight = 400;
+      this.isMobile = false;
+    }
+  }
+
   ngOnInit(): void {
+    this.checkScreenSize();
     const fullUrl = this.router.url;
     const urlext = fullUrl.split("/");
     console.log(urlext);
@@ -155,7 +168,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   loadMore(){
     if (this.displayCount < this.itemIds.length){
       this.displayCount = Math.min(this.displayCount + 9, this.itemIds.length);
-      this.storePageHeight += 100;
+      this.storePageHeight += this.isMobile ? 300 : 100;
     }
   }
 
