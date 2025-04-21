@@ -96,7 +96,10 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
   setActive(item: string, event?: Event) {
     this.activeNav = item;
-    this.pageChange.emit(item);
+    // Only emit pageChange event on user-triggered interaction
+    if (event) {
+      this.pageChange.emit(item);
+    }
     
     // Close mobile sidebar when a navigation item is selected
     if (this.isMobile) {
