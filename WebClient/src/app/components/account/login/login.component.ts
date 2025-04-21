@@ -43,8 +43,8 @@ export class LoginComponent {
     const creds = new LoginDetails(this.email, this.password);
     this.userService.login(creds).subscribe({
       next: () => {
-        console.log("Login successful, navigating to dashboard...");
-        this.router.navigate(['/dashboard']);
+        console.log("Login successful, navigating to dashboard overview...");
+        this.router.navigate(['/dashboard'], { queryParams: { page: 'Overview' } });
         this.isLoading = false;
       },
       error: (err) => {

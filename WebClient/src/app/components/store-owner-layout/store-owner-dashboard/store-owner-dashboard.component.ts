@@ -14,7 +14,7 @@ import { AnalyticsComponent } from '../analytics/analytics.component';
 import { ThemesComponent } from '../themes/themes.component';
 import { StoreEditorComponent } from '../store-editor/store-editor.component';
 import { CategoryListComponent } from '../../category-list/category-list.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StoreService } from '../../../services/store.service';
 import { LoadingService } from '../../../services/loading.service';
 import { StoreDetails } from '../../../models/store-details';
@@ -53,11 +53,18 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     private storeService: StoreService,
     private route: ActivatedRoute,
+    private router: Router,
     private loadingService: LoadingService
   ) {}
 
   ngOnInit() {
     this.loadingService.setIsLoading(true);
+    
+    // Make sure user is logged in
+    if (!this.userService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
     
     // Subscribe to user
     this.userService.activeUser$.subscribe(u => {
@@ -75,6 +82,14 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
       } else {
         // Explicitly set to false if the user *does* have a store
         this.showCreateStorePrompt = false; 
+        
+        // Set current page to Overview by default
+        if (!this.route.snapshot.queryParams['page']) {
+          this.currentPage = "Overview";
+          if (this.sideNav) {
+            this.sideNav.setActive("Overview");
+          }
+        }
       }
       
       this.loadingService.setIsLoading(false);
@@ -102,5 +117,12 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
     if (this.sideNav) {
       this.sideNav.setActive(newPage);
     }
+    
+    // Update URL query params to reflect current page
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page: newPage },
+      queryParamsHandling: 'merge'
+    });
   }
 }
