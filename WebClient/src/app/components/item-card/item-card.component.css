@@ -6,17 +6,25 @@
   border-radius: 6px;
   overflow: hidden; /* Ensures the border radius applies to child elements */
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 300px;
+  min-width: 300px;
 
-  .item-image,
+  }
+
+  .item-image{
+    width: 100%;
+    height: 200px; /* Fixed height or use aspect-ratio for dynamic sizing */
+    overflow: hidden;
+  }
+  .item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Crops the image nicely */
+  }
   .item-image-placeholder {
     width: 100%;
     height: 200px; /* Fixed height or use aspect-ratio for dynamic sizing */
     overflow: hidden;
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* Crops the image nicely */
-    }
   }
 
   .item-details {
@@ -24,42 +32,52 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+  }
 
-    .item-name {
-      margin: 0 0 0.5rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
+  .item-name {
+    width: 100%;
+    height: 75px;
+    text-align: center;
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
 
-    .item-price {
-      margin-bottom: 1rem;
-      font-weight: 600;
-      .sale-price {
-        color: #d00; /* Red text for sale price */
-        margin-right: 0.5rem;
-      }
-      .strikethrough {
-        text-decoration: line-through;
-        color: #888;
-      }
-    }
+  .item-price {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+  .sale-price {
+    color: #d00; /* Red text for sale price */
+    margin-right: 0.5rem;
+  }
+  .strikethrough {
+    text-decoration: line-through;
+    color: #888;
+  }
 
-    .item-description {
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-      color: #555;
-    }
+  .item-description {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #555;
+  }
 
-    .item-info {
-      margin-bottom: 1rem;
-      font-size: 0.85rem;
-      color: #666;
-      line-height: 1.4;
-    }
+  .item-info {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+  }
 
     .item-actions {
-      margin-top: auto; /* Pushes the buttons to the bottom if there's extra space */
-      .btn {
+      margin-top: auto;
+      width: 100%;
+    }/* Pushes the buttons to the bottom if there's extra space */
+
+    .add-to-basket {
         background-color: #ccc;
         border: none;
         padding: 0.5rem 1.5rem;
@@ -67,10 +85,9 @@
         font-size: 0.9rem;
         cursor: pointer;
         transition: background-color 0.2s ease;
-        &:hover {
-          background-color: #bbb;
-        }
-      }
     }
-  }
-}
+
+    .add-to-basket:hover {
+        background-color: #bbb;
+    }
+

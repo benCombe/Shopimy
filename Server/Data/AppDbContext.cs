@@ -27,6 +27,7 @@ namespace Server.Data
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<StoreBanner> StoreBanners { get; set; }
         public DbSet<StoreLogo> StoreLogos { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         // Ensure table names match conventions  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -82,7 +83,8 @@ namespace Server.Data
             modelBuilder.Entity<DetailItem>().HasNoKey();
             modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
             modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
-            modelBuilder.Entity<TestItem>().ToTable("TestTable");  
+            modelBuilder.Entity<TestItem>().ToTable("TestTable");
+            modelBuilder.Entity<Review>().ToTable("Reviews");
         }
     }
 }

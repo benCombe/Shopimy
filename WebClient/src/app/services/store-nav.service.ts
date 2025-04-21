@@ -1,7 +1,11 @@
+
+//DO NOT MODIFY THIS PAGE!!!
+
+
 import { StoreService } from './store.service';
 import { Injectable } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
-import { BehaviorSubject, filter, map } from 'rxjs';
+import { BehaviorSubject, filter, map, Subject } from 'rxjs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -14,6 +18,9 @@ export class StoreNavService {
 
   private currentUrlSubject = new BehaviorSubject<string>('');
   currentUrl$ = this.currentUrlSubject.asObservable();
+
+  private viewChangedSource = new Subject<string>();
+  viewChanged$ = this.viewChangedSource.asObservable();
 
   constructor(
     private storeService: StoreService,
@@ -30,27 +37,33 @@ export class StoreNavService {
   }
 
 
-  // Initialize method to set the initial state
   initialize(): void {
-    const storeUrl = this.router.url.split('/')[1]; // Get the store URL segment
-    this.currentUrlSubject.next(storeUrl); // Set initial URL to store-url
+    // Set the initial URL when the service is initialized
+    const initialUrl = this.router.url.replace(/^\//, ''); // Remove leading slash
+    this.currentUrlSubject.next(initialUrl);
+    console.log("STORENAV: Initial URL: " + initialUrl);
 
-    // Listen for router navigation changes and update currentUrl
+    // Listen for router navigation changes (including back/forward)
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
         map((event: any) => event.urlAfterRedirects.replace(/^\//, '')) // Remove leading slash
       )
       .subscribe(newUrl => {
-        console.log("STORENAV: " + newUrl);
+        console.log("STORENAV: Navigation change detected: " + newUrl);
         this.currentUrlSubject.next(newUrl);
       });
 
-    // Handle browser back/forward navigation
+    // Handle browser back/forward navigation manually
     window.addEventListener('popstate', () => {
-      const newUrl = this.router.url.split('/')[1]; // Get the store URL segment
+      const newUrl = this.router.url.replace(/^\//, ''); // Get the new URL after popstate
+      console.log("STORENAV: Popstate event detected: " + newUrl);
       this.currentUrlSubject.next(newUrl);
     });
+  }
+
+  triggerViewChange(view: string): void {
+    this.viewChangedSource.next(view);
   }
 
 
@@ -58,6 +71,7 @@ export class StoreNavService {
   changeView(view: string): void {
     const baseUrl = this.router.url.split('/')[1]; // Get store URL segment
     const newUrl = `${baseUrl}/${view}`;
+    this.triggerViewChange(view); //for StorePage subcomponents
     this.router.navigateByUrl(newUrl);
   }
 

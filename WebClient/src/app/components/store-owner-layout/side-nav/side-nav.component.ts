@@ -1,4 +1,4 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { RouterLink, Router } from '@angular/router';
@@ -7,7 +7,8 @@ import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-side-nav',
-  imports: [NgIf, NgFor, NgClass, RouterLink],
+  standalone: true,
+  imports: [NgFor, RouterLink],
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css'
 })
