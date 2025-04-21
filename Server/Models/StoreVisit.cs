@@ -22,9 +22,9 @@ namespace Server.Models
 
         // Navigation properties if needed
         [ForeignKey("StoreId")]
-        public virtual Store Store { get; set; }
+        public virtual Store? Store { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public virtual User? User { get; set; }
     }
 } 
