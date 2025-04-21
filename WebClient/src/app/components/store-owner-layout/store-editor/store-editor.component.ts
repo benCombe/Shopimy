@@ -150,6 +150,9 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     if (tab === 'components') {
       this.updateComponentSelectionFromStore();
     }
+    
+    // Always update the preview when switching tabs
+    this.updatePreview();
   }
 
   toggleComponent(component: any) {
