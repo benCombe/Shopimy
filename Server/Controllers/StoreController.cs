@@ -284,7 +284,7 @@ namespace Server.Controllers
             // Fallback to using the Sub claim if needed
             if (string.IsNullOrEmpty(userEmail))
             {
-                userEmail = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+                userEmail = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? string.Empty;
             }
             
             if (string.IsNullOrEmpty(userEmail) || !userEmail.Contains('@'))
@@ -450,7 +450,7 @@ namespace Server.Controllers
             {
                 // Create an execution strategy
                 var strategy = _context.Database.CreateExecutionStrategy();
-                StoreDetails result = null;
+                StoreDetails? result = null; // Declare as nullable
                 
                 await strategy.ExecuteAsync(async () =>
                 {

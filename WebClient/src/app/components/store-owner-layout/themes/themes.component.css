@@ -1,12 +1,12 @@
 .themes-container {
-  padding: 20px;
+  padding: var(--spacing-xl);
   max-width: 1600px;
   margin: 0 auto;
   font-family: var(--main-font-fam);
 }
 
 .themes-header {
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .themes-header h2 {
@@ -24,15 +24,15 @@
 
 .tabs {
   display: flex;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color-light);
+  margin-bottom: var(--spacing-lg);
 }
 
 .tab {
-  padding: 8px 16px;
+  padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
   color: var(--main-color);
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
   border-bottom: 2px solid transparent;
 }
 
@@ -44,12 +44,12 @@
 .theme-swatches {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
 }
 
 .theme-swatch {
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   overflow: hidden;
   border: 2px solid transparent;
   cursor: pointer;
@@ -58,7 +58,7 @@
 
 .theme-swatch:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .theme-swatch.selected {
@@ -66,9 +66,9 @@
 }
 
 .swatch-header {
-  padding: 8px 12px;
+  padding: var(--spacing-sm) var(--spacing-md);
   color: white;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
   font-weight: 500;
 }
 
@@ -88,10 +88,10 @@
 .color-section,
 .font-section {
   margin-bottom: 24px;
-  background-color: white;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background-color: var(--third-color);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
 }
 
 h3 {
@@ -127,8 +127,8 @@ h3 {
   width: 100%;
   height: 36px;
   padding: 2px;
-  border: 2px solid var(--third-color);
-  border-radius: 6px;
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius);
   cursor: pointer;
   background-color: white;
 }
@@ -165,9 +165,9 @@ h3 {
 
 .font-select {
   width: 100%;
-  padding: 8px 10px;
-  border: 2px solid var(--third-color);
-  border-radius: 6px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius);
   font-size: 0.95rem;
   color: var(--main-color);
   background-color: white;
@@ -177,7 +177,7 @@ h3 {
 }
 
 .actions {
-  margin-top: 24px;
+  margin-top: var(--spacing-xl);
   display: flex;
   justify-content: flex-end;
 }

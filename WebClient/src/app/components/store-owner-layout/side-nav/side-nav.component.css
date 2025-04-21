@@ -5,7 +5,7 @@
   background-color: var(--main-color);
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-md, 2px 0 10px rgba(0, 0, 0, 0.1));
+  box-shadow: var(--shadow-md);
   z-index: 1000;
   font-family: var(--main-font-fam);
   color: var(--third-color);
@@ -20,7 +20,7 @@
 
 /* Chrome, Edge, Safari scrollbar styling */
 #sidebar::-webkit-scrollbar {
-  width: var(--scrollbar-width, 6px);
+  width: var(--scrollbar-width);
 }
 
 #sidebar::-webkit-scrollbar-track {
@@ -29,7 +29,7 @@
 
 #sidebar::-webkit-scrollbar-thumb {
   background-color: rgba(211, 206, 187, 0.3);
-  border-radius: var(--scrollbar-border-radius, 6px);
+  border-radius: var(--scrollbar-border-radius);
 }
 
 #sidebar::-webkit-scrollbar-thumb:hover {
@@ -38,7 +38,7 @@
 
 /* Sidebar header with logo */
 .sidebar-header {
-  padding: var(--spacing-md, 20px);
+  padding: var(--spacing-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -68,7 +68,7 @@
   color: var(--third-color);
   font-size: 1.5rem;
   cursor: pointer;
-  padding: var(--spacing-xs, 5px);
+  padding: var(--spacing-xs);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +85,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-md, 20px) 0;
+  padding: var(--spacing-md) 0;
   overflow-y: auto;
 }
 
@@ -93,13 +93,13 @@
 .nav-item {
   display: flex;
   align-items: center;
-  padding: var(--spacing-sm, 12px) var(--spacing-md, 20px);
+  padding: var(--spacing-sm) var(--spacing-md);
   color: var(--third-color);
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 1rem;
   border-left: 4px solid transparent;
-  gap: var(--spacing-sm, 12px);
+  gap: var(--spacing-sm);
 }
 
 .nav-item i {
@@ -131,7 +131,7 @@
 .nav-item-content {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm, 12px);
+  gap: var(--spacing-sm);
 }
 
 .dropdown-icon {
@@ -146,12 +146,12 @@
 }
 
 .dropdown-trigger.open {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--alt-color);
 }
 
 /* Section with dropdown */
 .nav-section {
-  margin-bottom: var(--spacing-sm, 8px);
+  margin-bottom: var(--spacing-sm);
 }
 
 /* Subnav container (dropdown content) */
@@ -168,7 +168,7 @@
 
 /* Subnav items styling */
 .subnav-item {
-  padding: var(--spacing-sm, 10px) var(--spacing-md, 20px) var(--spacing-sm, 10px) 52px;
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 52px;
   color: var(--third-color);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -191,12 +191,12 @@
 /* Logout button */
 .logout-button {
   margin-top: auto;
-  padding: var(--spacing-md, 16px) var(--spacing-md, 20px);
+  padding: var(--spacing-md) var(--spacing-md);
   color: var(--third-color);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm, 12px);
+  gap: var(--spacing-sm);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
 }
@@ -216,17 +216,17 @@
 .mobile-sidebar-toggle {
   display: none;
   position: fixed;
-  top: var(--spacing-md, 20px);
-  left: var(--spacing-md, 20px);
+  top: var(--spacing-md);
+  left: var(--spacing-md);
   z-index: 1001;
   background-color: var(--main-color);
   color: var(--third-color);
   border: none;
   width: 44px;
   height: 44px;
-  border-radius: var(--border-radius-round, 50%);
+  border-radius: var(--border-radius-round);
   font-size: 1.5rem;
-  box-shadow: var(--shadow-md, 0 2px 5px rgba(0, 0, 0, 0.2));
+  box-shadow: var(--shadow-md);
   cursor: pointer;
   transition: all 0.2s ease;
   align-items: center;
@@ -235,7 +235,7 @@
 
 .mobile-sidebar-toggle:active {
   transform: scale(0.95);
-  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.2));
+  box-shadow: var(--shadow-sm);
 }
 
 .mobile-sidebar-toggle:hover, 
@@ -250,38 +250,37 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
   opacity: 0;
   transition: opacity 0.3s ease;
-  cursor: pointer;
 }
 
 .sidebar-overlay.active {
-  opacity: 1;
   display: block;
+  opacity: 1;
 }
 
 /* Responsive adjustments */
 @media (max-width: 991px) {
   #sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    left: -290px;
+    transition: left 0.3s ease;
   }
 }
 
 @media (max-width: 768px) {
   #sidebar {
-    width: 80%;
-    max-width: 300px;
-    box-shadow: var(--shadow-lg, 2px 0 15px rgba(0, 0, 0, 0.3));
+    width: 260px;
+    left: -270px;
+    z-index: 1001;
   }
   
   #sidebar.mobile-visible {
-    transform: translateX(0);
-    box-shadow: var(--shadow-lg, 5px 0 25px rgba(0, 0, 0, 0.3));
+    left: 0;
+    box-shadow: var(--shadow-lg);
   }
   
   .mobile-sidebar-toggle {
@@ -289,12 +288,12 @@
   }
   
   #shopimy-logo {
-    font-size: 1.75rem;
+    font-size: 1.8rem;
   }
   
   .nav-item, .subnav-item {
-    padding-top: var(--spacing-sm, 10px);
-    padding-bottom: var(--spacing-sm, 10px);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.95rem;
   }
   
   .subnav-item {
@@ -304,21 +303,23 @@
 
 @media (max-width: 480px) {
   #sidebar {
-    width: 85%;
-    max-width: 280px;
+    width: 245px;
+    left: -255px;
   }
   
   #sidebar.mobile-visible {
-    transform: translateX(0);
+    left: 0;
   }
   
   #shopimy-logo {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
   
   .mobile-sidebar-toggle {
     width: 40px;
     height: 40px;
     font-size: 1.3rem;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
   }
 }

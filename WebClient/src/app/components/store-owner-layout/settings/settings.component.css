@@ -1,53 +1,54 @@
 #main {
   max-width: 100%;
   height: auto;
-  padding: var(--spacing-xl, 24px);
+  padding: var(--spacing-xl);
   display: grid;
   align-content: start;
-  gap: var(--spacing-xl, 24px);
+  gap: var(--spacing-xl);
   font-family: var(--main-font-fam);
 }
 
 .section {
   width: 100%;
-  padding: var(--spacing-xl, 24px);
-  border-radius: var(--border-radius, 8px);
-  box-shadow: var(--shadow-md, 0 2px 4px rgba(0, 0, 0, 0.2));
-  background-color: white;
+  padding: var(--spacing-xl);
+  background-color: var(--third-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
   display: grid;
   align-content: start;
-  gap: var(--spacing-md, 16px);
-  margin-bottom: var(--spacing-xl, 24px);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
   transition: all 0.3s ease;
 }
 
 .section:hover,
 .section:focus-within {
-  box-shadow: var(--shadow-lg, 0 4px 8px rgba(0, 0, 0, 0.3));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .section h2 {
   font-size: 1.5rem;
   color: var(--main-color);
-  margin: 0 0 var(--spacing-md, 16px) 0;
+  margin: 0 0 var(--spacing-md) 0;
   font-weight: 600;
 }
 
 .section h3 {
   font-size: 1.3rem;
   color: var(--main-color);
-  margin: 0 0 var(--spacing-sm, 12px) 0;
+  margin: 0 0 var(--spacing-sm) 0;
   font-weight: 600;
 }
 
 .section fieldset {
-  border: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
-  border-radius: var(--border-radius, 8px);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius);
   display: grid;
   align-content: start;
   margin: 0;
-  padding: var(--spacing-md, 16px);
-  gap: var(--spacing-md, 16px);
+  padding: var(--spacing-md);
+  gap: var(--spacing-md);
 }
 
 .section form {
@@ -55,12 +56,12 @@
   align-content: start;
   margin: 0;
   padding: 0;
-  gap: var(--spacing-md, 16px);
+  gap: var(--spacing-md);
 }
 
 .section legend {
   color: var(--main-color);
-  padding: 0 var(--spacing-sm, 8px);
+  padding: 0 var(--spacing-sm);
   font-weight: 600;
   font-size: 1.1rem;
 }
@@ -76,25 +77,25 @@
 .section input {
   width: 100%;
   max-width: 400px;
-  padding: var(--spacing-sm, 8px) var(--spacing-sm, 12px);
-  border: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
-  border-radius: var(--border-radius, 4px);
+  padding: var(--spacing-sm) var(--spacing-sm);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius);
   font-size: 0.95rem;
   transition: border-color 0.3s ease;
 }
 
 .section input:focus {
   outline: none;
-  border-color: var(--main-color);
-  box-shadow: var(--shadow-focus, 0 0 0 2px rgba(57, 55, 39, 0.1));
+  border-color: var(--second-color);
+  box-shadow: var(--shadow-focus);
 }
 
 #title {
   width: 100%;
-  padding: 0 0 var(--spacing-xl, 24px) 0;
+  padding: 0 0 var(--spacing-xl) 0;
   display: grid;
   align-content: start;
-  gap: var(--spacing-md, 16px);
+  gap: var(--spacing-md);
 }
 
 .title h2 {
@@ -106,7 +107,7 @@
 
 /* Save Button Section */
 .save-section {
-  margin-top: var(--spacing-xl, 32px);
+  margin-top: var(--spacing-xl);
   text-align: right;
 }
 
@@ -116,9 +117,9 @@ input[type="date"],
 input[type="email"] {
   width: 100%;
   max-width: 400px;
-  padding: var(--spacing-sm, 8px) var(--spacing-sm, 12px);
-  border: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
-  border-radius: var(--border-radius, 4px);
+  padding: var(--spacing-sm) var(--spacing-sm);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius);
   font-size: 0.95rem;
   transition: border-color 0.3s ease;
 }
@@ -127,13 +128,13 @@ input[type="text"]:focus,
 input[type="date"]:focus,
 input[type="email"]:focus {
   outline: none;
-  border-color: var(--main-color);
-  box-shadow: var(--shadow-focus, 0 0 0 2px rgba(57, 55, 39, 0.1));
+  border-color: var(--second-color);
+  box-shadow: var(--shadow-focus);
 }
 
 label h2 {
   font-size: 1rem;
-  margin: 0 0 4px 0;
+  margin: 0 0 var(--spacing-xs) 0;
   color: var(--main-color);
   font-weight: 500;
 }
@@ -141,13 +142,13 @@ label h2 {
 /* Responsive Adjustments */
 @media (max-width: 991px) {
   #main {
-    padding: var(--spacing-md, 16px);
-    gap: var(--spacing-md, 16px);
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
   }
   
   .section {
-    padding: var(--spacing-md, 16px);
-    gap: var(--spacing-sm, 12px);
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
   }
   
   .section h2 {
@@ -165,15 +166,15 @@ label h2 {
 
 @media (max-width: 768px) {
   #main {
-    padding: var(--spacing-sm, 12px);
+    padding: var(--spacing-sm);
   }
   
   .section {
-    padding: var(--spacing-sm, 12px);
+    padding: var(--spacing-sm);
   }
   
   .section fieldset {
-    padding: var(--spacing-sm, 12px);
+    padding: var(--spacing-sm);
   }
   
   .title h2 {
@@ -183,12 +184,12 @@ label h2 {
 
 @media (max-width: 480px) {
   #main {
-    padding: var(--spacing-xs, 8px);
+    padding: var(--spacing-xs);
   }
   
   .section {
-    padding: var(--spacing-sm, 12px);
-    gap: var(--spacing-sm, 12px);
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
   }
   
   .section h2 {
@@ -202,6 +203,46 @@ label h2 {
   .title h2 {
     font-size: 1.4rem;
   }
+}
+
+/* Standard button class - use if no global class is being applied */
+.standard-button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--text-md);
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  background-color: var(--main-color);
+  color: var(--color-text-on-primary);
+  border: none;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  text-align: center;
+  white-space: nowrap;
+  min-height: 40px;
+}
+
+.standard-button:hover {
+  background-color: var(--second-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.standard-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.standard-button:disabled {
+  background-color: var(--border-color-light);
+  color: var(--color-text-light);
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
 }
 
 @media (prefers-reduced-motion: reduce) {
