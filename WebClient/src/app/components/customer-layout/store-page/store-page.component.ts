@@ -15,6 +15,7 @@ import { ItemCardComponent } from "../../item-card/item-card.component";
 
 @Component({
   selector: 'app-store-page',
+  standalone: true,
   imports: [NgFor, NgIf, NgStyle, StoreNavComponent, ShoppingCartComponent, CheckoutComponent, CategoryPageComponent, ItemCardComponent],
   templateUrl: './store-page.component.html',
   styleUrl: './store-page.component.css'
@@ -31,6 +32,15 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   storePageHeight: number = 175;
   isMobile: boolean = false;
   initialLoad: boolean = true;
+
+  currentBannerUrl: string = '';
+  bannerImages: string[] = [
+    'https://picsum.photos/1200/300?random=1',
+  'https://picsum.photos/1200/300?random=2',
+  'https://picsum.photos/1200/300?random=3'
+  ];
+  private bannerIndex: number = 0;
+  private bannerIntervalId: any;
 
   constructor(
     private route:ActivatedRoute,
@@ -76,6 +86,13 @@ export class StorePageComponent implements AfterViewInit, OnInit{
         this.storeService.getStoreDetails(storeUrl).subscribe({
           next: (data) => {
             this.storeData = data;
+            // DEBUG: What's in storeData?
+            console.log('StoreData:', this.storeData);
+            if (this.storeData?.bannerURL) {
+              this.bannerImages.unshift(this.storeData.bannerURL);
+            }
+        
+            this.startBannerRotation();
             this.storeNavService.initialize();
             
             // Apply theme from store data
@@ -102,7 +119,18 @@ export class StorePageComponent implements AfterViewInit, OnInit{
     this.initialLoad = false;
     this.loadingService.setIsLoading(false);
   }
-
+  startBannerRotation(): void {
+    if (this.bannerImages.length === 0) return;
+  
+    this.currentBannerUrl = this.bannerImages[0];
+    console.log('Initial banner:', this.currentBannerUrl); // ✅
+  
+    this.bannerIntervalId = setInterval(() => {
+      this.bannerIndex = (this.bannerIndex + 1) % this.bannerImages.length;
+      this.currentBannerUrl = this.bannerImages[this.bannerIndex];
+      console.log('Rotating banner to:', this.currentBannerUrl); // ✅
+    }, 3000);
+  }
 
   ngAfterViewInit(): void {
     // Apply theme on after view init as well to ensure components have loaded
