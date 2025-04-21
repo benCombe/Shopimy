@@ -55,7 +55,25 @@ export class ProfileComponent implements OnInit {
     private purchaseService: PurchaseService,
     private wishListService: WishListService,
     private fb: FormBuilder
-  ) { }
+  ) {
+    this.profileForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', Validators.required],
+      country: ['']
+    });
+
+    this.deliveryForm = this.fb.group({
+      address: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      country: ['', Validators.required],
+      postalCode: ['', Validators.required],
+      phone: ['', Validators.required],
+      isDefault: [false]
+    });
+  }
 
   ngOnInit(): void {
     this.initializeForms();
