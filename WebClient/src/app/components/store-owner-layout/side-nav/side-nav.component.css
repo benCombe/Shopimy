@@ -146,7 +146,7 @@
 }
 
 .dropdown-trigger.open {
-  background-color: var(--alt-color);
+  background-color: var(--second-color);
 }
 
 /* Section with dropdown */
@@ -250,8 +250,8 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
   opacity: 0;
@@ -266,21 +266,19 @@
 /* Responsive adjustments */
 @media (max-width: 991px) {
   #sidebar {
-    left: -290px;
-    transition: left 0.3s ease;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
 }
 
 @media (max-width: 768px) {
   #sidebar {
     width: 260px;
-    left: -270px;
-    z-index: 1001;
+    z-index: 1010;
   }
   
   #sidebar.mobile-visible {
-    left: 0;
-    box-shadow: var(--shadow-lg);
+    transform: translateX(0);
   }
   
   .mobile-sidebar-toggle {
@@ -292,23 +290,21 @@
   }
   
   .nav-item, .subnav-item {
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: 0.95rem;
+    padding: var(--spacing-sm) var(--spacing-sm);
   }
   
   .subnav-item {
-    padding-left: 48px;
+    padding-left: 42px;
   }
 }
 
 @media (max-width: 480px) {
   #sidebar {
-    width: 245px;
-    left: -255px;
+    width: 240px;
   }
   
   #sidebar.mobile-visible {
-    left: 0;
+    width: 240px;
   }
   
   #shopimy-logo {
@@ -318,8 +314,6 @@
   .mobile-sidebar-toggle {
     width: 40px;
     height: 40px;
-    font-size: 1.3rem;
-    top: var(--spacing-sm);
-    left: var(--spacing-sm);
+    font-size: 1.2rem;
   }
 }

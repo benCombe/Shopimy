@@ -1,6 +1,6 @@
 main{
     max-width: 100%;
-    max-height: auto;
+    height: auto;
     padding: var(--spacing-xl);
     display: grid;
     align-content: center;
@@ -21,17 +21,28 @@ main{
     align-content: center;
     column-gap: var(--spacing-md);
     row-gap: var(--spacing-md);
+    transition: all 0.3s ease;
 }
+
+.section:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
 .section h2{
-    font-size: 2.5rem;
-    margin-bottom: 15px;
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--main-color);
     text-align: left;
+    font-weight: 600;
 }
 
 .section h3{
     font-size: 1.5rem;
-    margin-bottom: 15px;
+    margin-bottom: var(--spacing-md);
+    color: var(--main-color);
     text-align: left;
+    font-weight: 600;
 }
 
 .section form{
@@ -39,19 +50,34 @@ main{
     padding: var(--spacing-md);
     margin: var(--spacing-sm) 0;
     box-sizing: border-box;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-color-light);
+    border-radius: var(--border-radius);
 }
 
 .section form label{
-    font-size: var(--text-lg);
+    font-size: 1.125rem;
     margin-bottom: var(--spacing-xs);
     text-align: left;
+    color: var(--main-color);
+    font-weight: 500;
+    display: block;
 }
 
 .section form input{
-    font-size: var(--text-md);
-    margin-bottom: var(--spacing-xs);
+    font-size: 1rem;
+    margin-bottom: var(--spacing-sm);
     text-align: left;
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--border-color-light);
+    border-radius: var(--border-radius);
+    transition: border-color 0.3s ease;
+}
+
+.section form input:focus {
+    outline: none;
+    border-color: var(--second-color);
+    box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2);
 }
 
 .section form textarea {
@@ -61,11 +87,18 @@ main{
     box-sizing: border-box;
     border: 1px solid var(--border-color-light);
     border-radius: var(--border-radius);
-    background-color: var(--alt-color);
+    background-color: white;
     font-family: var(--main-font-fam);
-    font-size: var(--text-md);
+    font-size: 1rem;
     resize: none;
-  }
+    transition: border-color 0.3s ease;
+}
+
+.section form textarea:focus {
+    outline: none;
+    border-color: var(--second-color);
+    box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2);
+}
 
 #promotion-wrapper{
     display: grid;
@@ -79,4 +112,34 @@ main{
     padding: var(--spacing-md);
     margin: var(--spacing-sm) 0;
     box-sizing: border-box; 
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: var(--spacing-md);
+    }
+    
+    .section {
+        width: 100%;
+        margin: var(--spacing-md) 0;
+        padding: var(--spacing-md);
+    }
+    
+    .section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .section h3 {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: var(--spacing-sm);
+    }
+    
+    .section {
+        padding: var(--spacing-sm);
+    }
 }

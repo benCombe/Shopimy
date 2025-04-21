@@ -17,6 +17,7 @@ export class CategoryListComponent implements OnInit {
   loading: boolean = false;
   error: string | null = null;
   isDashboard: boolean = false;
+  viewMode: 'table' | 'grid' = 'table';
 
   constructor(
     private categoryService: CategoryService, 

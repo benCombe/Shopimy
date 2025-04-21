@@ -12,7 +12,7 @@
 .themes-header h2 {
   font-size: 1.75rem;
   color: var(--main-color);
-  margin: 0 0 6px 0;
+  margin: 0 0 var(--spacing-xs) 0;
   font-family: var(--main-font-fam);
 }
 
@@ -32,8 +32,9 @@
   padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
   color: var(--main-color);
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
   border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
 }
 
 .tab.active {
@@ -54,6 +55,7 @@
   border: 2px solid transparent;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
 }
 
 .theme-swatch:hover {
@@ -68,7 +70,7 @@
 .swatch-header {
   padding: var(--spacing-sm) var(--spacing-md);
   color: white;
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
   font-weight: 500;
 }
 
@@ -82,12 +84,12 @@
 }
 
 .theme-editor {
-  margin-top: 24px;
+  margin-top: var(--spacing-lg);
 }
 
 .color-section,
 .font-section {
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-lg);
   background-color: var(--third-color);
   padding: var(--spacing-lg);
   border-radius: var(--border-radius);
@@ -97,20 +99,20 @@
 h3 {
   font-size: 1.1rem;
   color: var(--main-color);
-  margin: 0 0 12px 0;
+  margin: 0 0 var(--spacing-sm) 0;
   font-family: var(--main-font-fam);
 }
 
 .color-inputs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 20px;
+  gap: var(--spacing-md);
 }
 
 .color-input {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--spacing-xs);
   min-width: 0;
 }
 
@@ -139,8 +141,8 @@ h3 {
   opacity: 0.7;
   font-size: 0.85rem;
   background-color: var(--third-color);
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius);
   display: block;
   word-break: break-all;
   max-width: 100%;
@@ -152,12 +154,12 @@ h3 {
 .font-input {
   max-width: 100%;
   padding: 0;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
 }
 
 .font-input label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: var(--spacing-xs);
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--main-color);
@@ -180,6 +182,7 @@ h3 {
   margin-top: var(--spacing-xl);
   display: flex;
   justify-content: flex-end;
+  gap: var(--spacing-md);
 }
 
 app-store-preview {
@@ -204,7 +207,7 @@ app-store-preview {
 
 @media (min-width: 1440px) {
   .themes-container {
-    padding: 32px;
+    padding: var(--spacing-xl);
   }
   
   .color-inputs {
@@ -214,7 +217,7 @@ app-store-preview {
 
 @media (max-width: 768px) {
   .themes-container {
-    padding: 16px;
+    padding: var(--spacing-md);
   }
   
   .theme-swatches {
