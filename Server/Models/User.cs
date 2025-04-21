@@ -18,6 +18,12 @@ namespace Server.Models
         public string? Phone { get; set; }
         [Column("address")]
         public string? Address { get; set; }
+        [Column("city")]
+        public string? City { get; set; }
+        [Column("state")]
+        public string? State { get; set; }
+        [Column("postal_code")]
+        public string? PostalCode { get; set; }
         [Column("country")]
         public string? Country { get; set; }
         [Column("password")]

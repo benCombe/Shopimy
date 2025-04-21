@@ -240,6 +240,23 @@ namespace Server.Controllers
                 user.Phone = profileUpdate.Phone;
                 user.Address = profileUpdate.Address;
                 user.Country = profileUpdate.Country;
+                
+                // Additional fields
+                if (!string.IsNullOrEmpty(profileUpdate.City))
+                    user.City = profileUpdate.City;
+                
+                if (!string.IsNullOrEmpty(profileUpdate.State))
+                    user.State = profileUpdate.State;
+                
+                if (!string.IsNullOrEmpty(profileUpdate.PostalCode))
+                    user.PostalCode = profileUpdate.PostalCode;
+                
+                if (profileUpdate.DOB.HasValue)
+                    user.DOB = profileUpdate.DOB.Value;
+                
+                // Update subscription status if provided
+                if (profileUpdate.Subscribed.HasValue)
+                    user.Subscribed = profileUpdate.Subscribed.Value;
 
                 // Save the changes to the database
                 await _context.SaveChangesAsync();
@@ -289,6 +306,13 @@ namespace Server.Controllers
             public required string Phone { get; set; }
             public required string Address { get; set; }
             public required string Country { get; set; }
+            
+            // Additional fields
+            public string? City { get; set; }
+            public string? State { get; set; }
+            public string? PostalCode { get; set; }
+            public DateTime? DOB { get; set; }
+            public bool? Subscribed { get; set; }
         }
     }
 }
