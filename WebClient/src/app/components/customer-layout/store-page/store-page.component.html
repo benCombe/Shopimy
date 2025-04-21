@@ -1,10 +1,10 @@
 <div id="container">
   <app-store-nav  (ViewChanged)="changeView($event)"></app-store-nav>
-  <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="currentView === 'store-page'" [ngStyle]="{ 'height': storePageHeight + 'vh' }">
+  <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="isStorePageView()" [ngStyle]="{ 'height': storePageHeight + 'vh' }">
 
       <div id="banner" class="theme2" [style.background-image]="'url(' + storeData?.bannerURL + ')'" *ngIf="storeData?.componentVisibility?.hero">
 
-      <div id="banner" class="theme2" [style.background-image]="'url(' + currentBannerUrl + ')'">
+<!--       <div id="banner" class="theme2" [style.background-image]="'url(' + currentBannerUrl + ')'"> -->
 
         <div id="banner-text" class="center theme1 fc" [style.background-color]="storeData?.theme_1">
           <span [style.color]="storeData?.fontColor">{{storeData?.bannerText}}</span>
@@ -25,7 +25,7 @@
       </div>
       <div id="load-more-wrapper" class="center" *ngIf="displayCount < itemIds.length && storeData?.componentVisibility?.featured"><span id="load-more-btn" class="center" (click)="loadMore()">Load More</span></div>
 
-      <div id="testimonials-section" *ngIf="storeData?.componentVisibility?.testimonials" 
+      <div id="testimonials-section" *ngIf="storeData?.componentVisibility?.testimonials"
            [style.background-color]="storeData?.theme_3">
         <h3>Testimonials</h3>
         <div class="testimonial">
@@ -50,9 +50,9 @@
         </p>
       </div>
   </div>
-  <app-shopping-cart *ngIf="currentView === 'cart'" [storeDetails]="storeData"></app-shopping-cart>
-  <app-checkout *ngIf="currentView === 'checkout'"></app-checkout>
+  <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData"></app-shopping-cart>
+  <app-checkout *ngIf="isCheckoutView()"></app-checkout>
   <ng-container *ngFor="let c of storeData?.categories">
-    <app-category-page *ngIf="currentView === c.name && storeData?.componentVisibility?.categories" [category]="c" [storeDetails]="storeData"></app-category-page>
+    <app-category-page *ngIf="isCategoryView(c.name) && storeData?.componentVisibility?.categories" [category]="c" [storeDetails]="storeData"></app-category-page>
   </ng-container>
 </div>

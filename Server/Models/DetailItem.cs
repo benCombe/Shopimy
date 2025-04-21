@@ -13,7 +13,7 @@ namespace Server.Models
         //[Column("item_id")]
         public int ItemId {get; set;}
         //[Column("name")]
-        public string Name {get; set;}
+        public required string Name {get; set;}
         //[Column("price")]
         public decimal Price {get; set;}
         //[Column("sale_price")]
@@ -25,7 +25,7 @@ namespace Server.Models
          //[Column("availTo")]
         public string? AvailTo {get; set;}
          //[Column("blob")]
-        public string Blob {get; set;}
+        public required string Blob {get; set;}
         //[Column("category")]
         public int CategoryId {get; set;}
         //[Column("colour")]

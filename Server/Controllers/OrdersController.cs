@@ -36,7 +36,7 @@ namespace Server.Controllers
             }
 
             // Use raw SQL to join Orders with OrderItems and get customer info
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
                 return StatusCode(500, "Database connection not configured");
@@ -112,9 +112,10 @@ namespace Server.Controllers
                                 item.name = itemsReader.GetString(itemsReader.GetOrdinal("name"));
                                 item.quantity = itemsReader.GetInt32(itemsReader.GetOrdinal("quantity"));
                                 item.price = itemsReader.GetDecimal(itemsReader.GetOrdinal("price_paid"));
-                                item.imageUrl = !itemsReader.IsDBNull(itemsReader.GetOrdinal("image_url")) 
-                                    ? itemsReader.GetString(itemsReader.GetOrdinal("image_url")) 
-                                    : null;
+                                
+                                // Handle potentially null imageUrl
+                                int imageUrlOrdinal = itemsReader.GetOrdinal("image_url");
+                                item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : null;
                                     
                                 orderItems.Add(item);
                             }
@@ -139,7 +140,7 @@ namespace Server.Controllers
                 return Unauthorized("Store ID not found in claims or invalid");
             }
 
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
                 return StatusCode(500, "Database connection not configured");
@@ -213,9 +214,10 @@ namespace Server.Controllers
                                     item.name = itemsReader.GetString(itemsReader.GetOrdinal("name"));
                                     item.quantity = itemsReader.GetInt32(itemsReader.GetOrdinal("quantity"));
                                     item.price = itemsReader.GetDecimal(itemsReader.GetOrdinal("price_paid"));
-                                    item.imageUrl = !itemsReader.IsDBNull(itemsReader.GetOrdinal("image_url")) 
-                                        ? itemsReader.GetString(itemsReader.GetOrdinal("image_url")) 
-                                        : null;
+                                    
+                                    // Handle potentially null imageUrl
+                                    int imageUrlOrdinal = itemsReader.GetOrdinal("image_url");
+                                    item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : null;
                                         
                                     items.Add(item);
                                 }
@@ -246,7 +248,7 @@ namespace Server.Controllers
                 return BadRequest($"Status must be one of: {string.Join(", ", validStatuses)}");
             }
 
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
                 return StatusCode(500, "Database connection not configured");
@@ -287,14 +289,24 @@ namespace Server.Controllers
         private int GetCurrentStoreId()
         {
             // This retrieves the current store's ID from the authenticated user's claims
-            var storeIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("storeId");
-            int.TryParse(storeIdClaim?.Value, out int storeId);
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null) return 0;
+
+            var user = httpContext.User;
+            if (user == null) return 0;
+
+            var storeIdClaim = user.FindFirst("storeId");
+            if (storeIdClaim == null || !int.TryParse(storeIdClaim.Value, out int storeId))
+            {
+                return 0;
+            }
+
             return storeId;
         }
     }
 
     public class UpdateOrderStatusRequest
     {
-        public string Status { get; set; }
+        public required string Status { get; set; }
     }
 } 
