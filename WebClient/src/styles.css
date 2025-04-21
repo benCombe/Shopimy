@@ -486,6 +486,7 @@ img {
   width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Global Main Content Area */
@@ -500,6 +501,7 @@ img {
   flex-grow: 1;  /* allow main to expand and center content vertically */
   min-height: calc(100vh - 70px);  /* maintain height minus header */
   background-color: var(--main-color);  /* match landing, login, register backgrounds */
+  overflow-x: hidden;
 }
 
 /* Global Card Style */
@@ -510,6 +512,11 @@ img {
   padding: 2rem;
   margin: 0 auto;
   box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Global Button Style */
@@ -538,6 +545,125 @@ img {
 .global-btn.full-width {
   width: 100%;
   max-width: 100%;
+}
+
+/* Content wrapper to prevent overflow in all components */
+.content-wrapper {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Ensure all buttons and text elements don't overflow */
+button, a, h1, h2, h3, h4, h5, h6, p, span, div {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+
+/* Ensure form inputs don't overflow */
+input, select, textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive mobile styles */
+@media (max-width: 768px) {
+  .global-main {
+    padding: 1rem 0.75rem;
+  }
+  
+  .global-card {
+    padding: 1.5rem 1rem;
+    border-radius: 8px;
+  }
+  
+  /* Ensure all dashboard cards have proper padding */
+  .dashboard-card, 
+  .section-container, 
+  .content-section,
+  .data-card {
+    padding: 1rem !important;
+    margin-right: 0 !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Fix for any tables or horizontal scrolling elements */
+  .table-responsive,
+  .scroll-container,
+  .overflow-container {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 480px) {
+  .global-main {
+    padding: 1rem 0.5rem;
+  }
+  
+  .global-card {
+    padding: 1rem 0.75rem;
+  }
+  
+  /* Smaller padding for any container at very small screens */
+  .dashboard-card, 
+  .section-container, 
+  .content-section,
+  .data-card {
+    padding: 0.75rem !important;
+  }
+}
+
+/* Full width container utility class */
+.full-width-container {
+  width: 100%;
+  max-width: 100%; 
+  box-sizing: border-box;
+  overflow-x: hidden;
+  padding-right: env(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
+}
+
+/* Text truncation utility classes */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-break {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* Card container with proper padding and overflow control */
+.safe-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: var(--border-radius, 8px);
+  background-color: white;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+  padding: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .safe-card {
+    padding: 1rem;
+    border-radius: var(--border-radius, 6px);
+  }
 }
 
 

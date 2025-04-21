@@ -7,6 +7,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  overflow-x: hidden;
 }
 
 /* Add margin-left for desktop views to account for sidebar */
@@ -27,6 +28,8 @@
   box-sizing: border-box;
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
+  overflow-x: hidden;
+  padding: 0;
 }
 
 @keyframes fadeIn {
