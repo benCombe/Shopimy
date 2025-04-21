@@ -141,7 +141,7 @@ export class ShoppingService {
 
     if (existingItemIndex !== -1) {
       if (cart[existingItemIndex].quantity > 1) {
-        cart[existingItemIndex].quantity -= 1; // Decrease quantity
+        cart.splice(existingItemIndex, 1); // Decrease quantity
       } else {
         cart.splice(existingItemIndex, 1); // Remove item if quantity reaches 0
       }
