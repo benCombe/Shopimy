@@ -28,8 +28,19 @@
      <!--  <strong>Rating:</strong> {{ item.CurrentRating }} / 5 -->
     </p>
     <div class="item-actions center">
-      <button class="btn add-to-basket" (click)="addToBasket(item)">Add to Bag</button>
+      <ng-container *ngIf="getQuantity(item) === 0; else quantityControls">
+        <button class="btn add-to-basket" (click)="increaseQuantity(item)">Add to Cart</button>
+      </ng-container>
+
+      <ng-template #quantityControls>
+        <div class="quantity-controls">
+          <button (click)="decreaseQuantity(item)">−</button>
+          <span class="quantity">{{ getQuantity(item) }}</span>
+          <button (click)="increaseQuantity(item)">+</button>
+        </div>
+      </ng-template>
     </div>
+
   </div>
   <!-- <a [routerLink]="['/items', item.listId]" class="details-link">View Details</a> -->
 </div>

@@ -1,96 +1,91 @@
+<div class="page-header">
+  <h1>Manage Orders</h1>
+  <p>View and manage all your store orders</p>
+</div>
 
-<div id="main">
+<!-- Loading State -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-spinner"></div>
+  <p>Loading orders...</p>
+</div>
 
-    <div class="section">
-        <div id="Total-info">
-            <h3> Total Order(s)</h3>
-            <table  id ="Total-list">
-                <thead>
-                    <tr>
-                        <th>Total Sales</th>
-                        <th>Orders</th>
-                        <th>Customers</th>
-                        <th>Fulfilled Orders</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>$1500</td>
-                        <td>16</td>
-                        <td>5</td>
-                        <td>1</td>
-                    </tr>
-                </tbody>
+<!-- Error State -->
+<div *ngIf="error && !isLoading" class="error-message">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+  <p>{{ error }}</p>
+  <button class="standard-button" (click)="loadOrders()">Try Again</button>
+</div>
 
-            </table>
-        </div>
+<!-- Content (only show when not loading and no error) -->
+<div *ngIf="!isLoading && !error" class="orders-content">
+  <!-- Order Stats -->
+  <div class="dashboard-card order-stats">
+    <div class="card-header">
+      <h2>Order Statistics</h2>
     </div>
-
-    <div class="section">
-        
-
-        <div id="Order-info">
-            <h3>Order Details</h3>
-            <div id = "Order-list-wrapper">
-                <table id ="Order-list">
-                    <thead>
-                        <tr>
-                            <th>Order:</th>
-                            <th>Customer:</th>
-                            <th>Total:</th>
-                            <th>Item(s):</th>
-                            <th>Payment:</th>
-                            <th>Fulfilled:</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                        <tr>
-                            <td>123456</td>
-                            <td>First Last</td>
-                            <td>50</td>
-                            <td>1</td>
-                            <td>Paid</td>
-                            <td>Fulfilled</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>    
+    <div class="card-content">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">{{ formatCurrency(totalSales) }}</div>
+          <div class="stat-label">Total Sales</div>
         </div>
-
-
+        <div class="stat-item">
+          <div class="stat-value">{{ totalOrders }}</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{ uniqueCustomers }}</div>
+          <div class="stat-label">Customers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{ completedOrders }}</div>
+          <div class="stat-label">Fulfilled Orders</div>
+        </div>
+      </div>
     </div>
-    
+  </div>
+
+  <!-- Orders Table -->
+  <div class="dashboard-card">
+    <div class="card-header">
+      <h2>Order List</h2>
+    </div>
+    <div class="card-content">
+      <!-- Empty State -->
+      <div *ngIf="orders.length === 0" class="empty-state">
+        <i class="fa-solid fa-inbox"></i>
+        <p>No orders found</p>
+        <p class="empty-state-sub">Your store hasn't received any orders yet.</p>
+      </div>
+
+      <!-- Orders Table -->
+      <div *ngIf="orders.length > 0" class="table-container">
+        <table class="standard-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orders">
+              <td>{{ order.orderId }}</td>
+              <td>{{ order.orderDate | date:'MMM d, y, h:mm a' }}</td>
+              <td>{{ order.customerName }}</td>
+              <td>{{ formatCurrency(order.totalAmount) }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusBadgeClass(order.status)">
+                  {{ order.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 

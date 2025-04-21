@@ -1,39 +1,60 @@
 <div id="container">
   <app-side-nav (pageChange)="onPageChange($event)"></app-side-nav>
-  <div id="main">
+  <div id="main" #main>
+    <!-- Create Store Prompt -->
+    <!-- 
+    <div *ngIf="showCreateStorePrompt && currentPage === 'Overview'" class="dashboard-card create-store-prompt">
+      <div class="card-header">
+        <h2>Welcome to Shopimy</h2>
+      </div>
+      <div class="card-content">
+        <p>You don't have a store yet. Let's create one now!</p>
+        <div class="prompt-actions">
+          <button class="standard-button primary" (click)="onPageChange('Store Editor')">Create Your Store</button>
+        </div>
+      </div>
+    </div>
+    -->
+    
     <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
-      Overview
-      <app-overview></app-overview>
+      <app-overview (pageNavigate)="onPageChange($event)"></app-overview>
     </div>
     <div *ngIf="currentPage === 'Profile'" id="profile" class="page">
       <app-profile [user]="user"></app-profile>
     </div>
     <div *ngIf="currentPage === 'Settings'" id="settings" class="page">
-      Settings
       <app-settings></app-settings>
     </div>
     <div *ngIf="currentPage === 'Products'" id="products" class="page">
-      Products
       <app-product-management></app-product-management>
     </div>
+    <div *ngIf="currentPage === 'Categories'" id="categories" class="page">
+      <app-category-list></app-category-list>
+    </div>
     <div *ngIf="currentPage === 'Orders'" id="orders" class="page">
-      Orders
       <app-orders></app-orders>
     </div>
     <div *ngIf="currentPage === 'Themes & Logos'" id="themes" class="page">
-      Themes & Logos
       <app-themes></app-themes>
     </div>
+    <div *ngIf="currentPage === 'Store Editor'" id="store-editor" class="page">
+      <app-store-editor></app-store-editor>
+    </div>
     <div *ngIf="currentPage === 'Promotions'" id="promos" class="page">
-      Promotions
       <app-promotions></app-promotions>
     </div>
     <div *ngIf="currentPage === 'Traffic'" id="traffic" class="page">
-      Traffic
       <app-analytics></app-analytics>
     </div>
     <div *ngIf="currentPage === 'Sales'" id="sales" class="page">
-      Sales
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h2>Sales Analytics</h2>
+        </div>
+        <div class="card-content">
+          <p>Sales analytics will be available soon.</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

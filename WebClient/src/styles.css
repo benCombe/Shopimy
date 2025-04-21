@@ -1,3 +1,7 @@
+/* Global Style Definitions Extracted from Landing, Login, and Registration Pages */
+/* These styles define the unified visual language as seen on the landing, login, and registration pages. */
+/* Please consolidate common CSS rules here (e.g., colors, fonts, spacing, buttons, tables) according to README-STYLES.md. */
+
 /* You can add global styles to this file, and also import other style files */
 
 /* *{
@@ -10,6 +14,19 @@
   --third-color: #D3CEBB;
   --alt-color: #d5d5d5;
   --main-font-fam: "Inria Serif", serif;
+  /* Mobile-first breakpoints */
+  --breakpoint-sm: 576px;  /* Small devices (landscape phones) */
+  --breakpoint-md: 768px;  /* Medium devices (tablets) */
+  --breakpoint-lg: 992px;  /* Large devices (desktops) */
+  --breakpoint-xl: 1200px; /* Extra large devices (large desktops) */
+  --breakpoint-xxl: 1400px;/* Extra extra large devices */
+  
+  /* Standard scrollbar styles */
+  --scrollbar-width: 8px;
+  --scrollbar-height: 8px;
+  --scrollbar-track-color: rgba(0, 0, 0, 0.05);
+  --scrollbar-thumb-color: var(--main-color);
+  --scrollbar-border-radius: 4px;
 }
 
 html, body {
@@ -20,12 +37,210 @@ html, body {
   overflow-y: auto;
   color: var(--main-color);
   background-color: var(--alt-color);
-  font-family: var(--main-font-fam)
+  font-family: var(--main-font-fam);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-height);
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color);
+  border-radius: var(--scrollbar-border-radius);
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: var(--scrollbar-border-radius);
 }
 
 .btn{
   background-color: var(--main-color);
   border-color: var(--main-color);
+}
+
+/* Standardized Button Styles */
+.standard-button {
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 25px;
+  background-color: var(--main-color);
+  color: white;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  white-space: nowrap;
+  min-height: 40px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.standard-button:hover {
+  background-color: var(--second-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.standard-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.standard-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.standard-button.primary {
+  background-color: var(--main-color);
+}
+
+.standard-button.secondary {
+  background-color: var(--second-color);
+  color: var(--main-color);
+}
+
+.standard-button.small {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  min-height: 32px;
+}
+
+.standard-button.large {
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  min-height: 48px;
+}
+
+.standard-button.full-width {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Standardized Table Container Styles */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.03);
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+  max-height: calc(100vh - 200px);
+  padding: 0;
+  margin-bottom: 16px;
+}
+
+.table-container::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-height);
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color);
+  border-radius: var(--scrollbar-border-radius);
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: var(--scrollbar-border-radius);
+}
+
+/* Standardized Table Styles */
+.standard-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 650px; /* Ensure minimum width for content */
+}
+
+.standard-table th {
+  padding: 16px;
+  text-align: left;
+  font-size: 1rem;
+  color: var(--main-color);
+  border-bottom: 2px solid var(--main-color);
+  position: sticky;
+  top: 0;
+  background-color: white;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.standard-table td {
+  padding: 16px;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+.standard-table tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.standard-table tr:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.standard-table tr:last-child {
+  border-bottom: none;
+}
+
+/* Status Badge Styles */
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.status-shipped {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-delivered {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-pending {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-cancelled {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.status-processing {
+  background-color: #ede7f6;
+  color: #4527a0;
 }
 
 .center{
@@ -45,6 +260,284 @@ html, body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+
+/* Empty State Styling */
+.empty-state {
+  padding: 30px 24px;
+  text-align: center;
+  color: #777;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-height: 150px;
+  justify-content: center;
+}
+
+.empty-state i {
+  font-size: 2rem;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Responsive Utility Classes */
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+  
+  .standard-table td,
+  .standard-table th {
+    padding: 12px;
+  }
+  
+  .table-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .standard-button.small {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    min-height: 30px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+/* Responsive Typography */
+html {
+  font-size: 16px;
+}
+
+@media (min-width: 576px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+/* Responsive Spacing */
+:root {
+  --spacing-unit: 1rem;
+  --spacing-xs: calc(var(--spacing-unit) * 0.25);
+  --spacing-sm: calc(var(--spacing-unit) * 0.5);
+  --spacing-md: var(--spacing-unit);
+  --spacing-lg: calc(var(--spacing-unit) * 1.5);
+  --spacing-xl: calc(var(--spacing-unit) * 2);
+}
+
+/* Responsive Grid System */
+.grid {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.grid-1 { grid-template-columns: repeat(1, 1fr); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (min-width: 576px) {
+  .grid-sm-1 { grid-template-columns: repeat(1, 1fr); }
+  .grid-sm-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-sm-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-sm-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 768px) {
+  .grid-md-1 { grid-template-columns: repeat(1, 1fr); }
+  .grid-md-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-md-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-md-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 992px) {
+  .grid-lg-1 { grid-template-columns: repeat(1, 1fr); }
+  .grid-lg-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-lg-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-lg-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Responsive Images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive Text */
+.text-sm { font-size: 0.875rem; }
+.text-md { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+
+@media (min-width: 768px) {
+  .text-md { font-size: 1.125rem; }
+  .text-lg { font-size: 1.25rem; }
+  .text-xl { font-size: 1.5rem; }
+}
+
+/* Responsive Visibility */
+.hide-sm { display: none; }
+.hide-md { display: none; }
+.hide-lg { display: none; }
+
+@media (min-width: 576px) {
+  .hide-sm { display: block; }
+  .show-sm { display: none; }
+}
+
+@media (min-width: 768px) {
+  .hide-md { display: block; }
+  .show-md { display: none; }
+}
+
+@media (min-width: 992px) {
+  .hide-lg { display: block; }
+  .show-lg { display: none; }
+}
+
+/* Landscape mode optimization */
+@media (orientation: landscape) and (max-height: 500px) {
+  .standard-button {
+    padding: 6px 12px;
+    min-height: 32px;
+    font-size: 0.85rem;
+  }
+  
+  .standard-button.large {
+    padding: 8px 16px;
+    min-height: 38px;
+    font-size: 0.9rem;
+  }
+  
+  .table-container {
+    max-height: calc(100vh - 120px);
+  }
+  
+  .standard-table th,
+  .standard-table td {
+    padding: 10px;
+  }
+  
+  .standard-table {
+    min-width: 600px;
+  }
+  
+  .status-badge {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Global Container */
+.global-container {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Global Main Content Area */
+.global-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  flex-grow: 1;  /* allow main to expand and center content vertically */
+  min-height: calc(100vh - 70px);  /* maintain height minus header */
+  background-color: var(--main-color);  /* match landing, login, register backgrounds */
+}
+
+/* Global Card Style */
+.global-card {
+  background-color: var(--third-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Global Button Style */
+.global-btn {
+  padding: 0.75rem;
+  background-color: var(--main-color);
+  color: var(--second-color);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.global-btn:hover:not(:disabled) {
+  background-color: var(--second-color);
+  color: white;
+}
+
+.global-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.global-btn.full-width {
+  width: 100%;
+  max-width: 100%;
 }
 
 

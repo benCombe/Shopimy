@@ -68,4 +68,16 @@ export class ItemCardComponent implements OnInit {
    // console.log('Bookmarking item:', item);
     // Implement your bookmark logic here
   }
+
+  increaseQuantity(item: BasicItem): void {
+    this.shoppingService.addToCart(item); // This should handle incrementing quantity
+  }
+
+  decreaseQuantity(item: BasicItem): void {
+    this.shoppingService.removeFromCart(item); // You should implement this in your ShoppingService
+  }
+
+  getQuantity(item: BasicItem): number{
+    return this.shoppingService.getQuantity(item);
+  }
 }

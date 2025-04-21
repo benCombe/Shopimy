@@ -1,6 +1,7 @@
 import { StoreService } from './store.service';
 import { Injectable, Renderer2, RendererFactory2, OnInit } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
+import { StoreTheme } from '../models/store-theme.model';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available throughout the app
@@ -22,16 +23,26 @@ export class ThemeService {
    * @param theme - The complete theme object.
    * @param containerSelector - A CSS selector for the container to update.
    */
-  /* applyThemeToContainer(theme: StoreDetails, containerSelector: string): void {
+  applyThemeToContainer(theme: StoreTheme, containerSelector: string): void {
     const container = document.querySelector(containerSelector);
     if (container) {
-      this.renderer.setStyle(container, '--main-color', theme.theme_1);
-      this.renderer.setStyle(container, '--second-color', theme.theme_2);
-      this.renderer.setStyle(container, '--third-color', theme.theme_3);
-      this.renderer.setStyle(container, '--alt-color', theme.fontColor);
-      this.renderer.setStyle(container, '--main-font-fam', theme.fontFamily);
+      this.renderer.setStyle(container, '--main-color', theme.mainColor);
+      this.renderer.setStyle(container, '--second-color', theme.secondColor);
+      this.renderer.setStyle(container, '--third-color', theme.thirdColor);
+      this.renderer.setStyle(container, '--alt-color', theme.altColor);
+      this.renderer.setStyle(container, '--main-font-fam', theme.mainFontFam);
+
+      // Update store details
+      this.storeDetails.theme_1 = theme.mainColor;
+      this.storeDetails.theme_2 = theme.secondColor;
+      this.storeDetails.theme_3 = theme.thirdColor;
+      this.storeDetails.fontColor = theme.altColor;
+      this.storeDetails.fontFamily = theme.mainFontFam;
+
+      // Update store via service
+      this.storeService.updateStore(this.storeDetails).subscribe();
     }
-  } */
+  }
 
   setThemeOne(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);

@@ -1,34 +1,87 @@
 <div id="container">
   <app-top-nav></app-top-nav>
   <div id="main" class="center">
-    <div id="login">
+    <div id="login-card">
       <h1>Login</h1>
-      <form id="login-form" class="center-col">
-        <span *ngIf="loginFalied" id="login-fail">Email or Password is incorrect</span>
-        <div class="form-entry">
-          <label id="email-lbl" for="email" class="form-lbl">Email</label><br>
-          <input type="text" id="email" required name="email" [(ngModel)]="email">
+      <form id="login-form" (ngSubmit)="login()" #loginForm="ngForm">
+        <div class="alert alert-danger" *ngIf="loginFalied">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          Email or password is incorrect
         </div>
-        <div class="form-entry">
-          <label id="password-lbl" for="password" class="form-lbl">Password</label><br>
-          <input type="password" id="password" required name="password" [(ngModel)]="password">
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email"
+            [(ngModel)]="email"
+            required
+            email
+            #emailInput="ngModel"
+            [class.is-invalid]="emailInput.invalid && emailInput.touched"
+            placeholder="Enter your email">
+          <div class="invalid-feedback" *ngIf="emailInput.invalid && emailInput.touched">
+            Please enter a valid email address
+          </div>
         </div>
-        <span id="forgot-pw"><a>I forgot my password</a></span>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-input-group">
+            <input 
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              required
+              #passwordInput="ngModel"
+              [class.is-invalid]="passwordInput.invalid && passwordInput.touched"
+              placeholder="Enter your password">
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+              <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="passwordInput.invalid && passwordInput.touched">
+            Password is required
+          </div>
+        </div>
+
+        <div class="form-options">
+          <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember" [(ngModel)]="rememberMe">
+            <label for="remember">Remember me</label>
+          </div>
+          <a routerLink="/forgot-password" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" id="login-btn" [disabled]="loginForm.invalid || isLoading">
+          <span *ngIf="!isLoading">Login</span>
+          <i *ngIf="isLoading" class="fa-solid fa-spinner fa-spin"></i>
+        </button>
+
+        <div class="social-login">
+          <div class="divider">
+            <span>or continue with</span>
+          </div>
+          
+          <div class="social-buttons">
+            <button type="button" class="social-btn google" (click)="loginWithGoogle()">
+              <i class="fa-brands fa-google"></i>
+              <span>Google</span>
+            </button>
+            
+            <button type="button" class="social-btn facebook" (click)="loginWithFacebook()">
+              <i class="fa-brands fa-facebook"></i>
+              <span>Facebook</span>
+            </button>
+          </div>
+        </div>
       </form>
-      <div id="alt-logins" class="center-col">
-        <div id="login-btn" class="center" (click)="login()">
-          <span>Login</span>
-        </div>
-        <div id="google-btn" class="sm-login center-spaced">
-          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
-          <span>Sign In with Google</span>
-        </div>
-        <div id="facebook-btn" class="sm-login center-spaced">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook logo">
-          <span>Sign In with Facebook</span>
-        </div>
+
+      <div class="signup-prompt">
+        Don't have an account? <a routerLink="/register">Sign up</a>
       </div>
-      <span id="no-account">Don't Have an Account? Sign up <span id="register-link" routerLink="/register" routerLinkActive="router-link-active" >Here</span></span>
     </div>
   </div>
 </div>
