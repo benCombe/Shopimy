@@ -2,7 +2,8 @@
   <app-side-nav (pageChange)="onPageChange($event)"></app-side-nav>
   <div id="main" #main>
     <!-- Create Store Prompt -->
-    <div *ngIf="showCreateStorePrompt && currentPage !== 'Store Editor'" class="dashboard-card create-store-prompt">
+    <!-- 
+    <div *ngIf="showCreateStorePrompt && currentPage === 'Overview'" class="dashboard-card create-store-prompt">
       <div class="card-header">
         <h2>Welcome to Shopimy</h2>
       </div>
@@ -13,6 +14,7 @@
         </div>
       </div>
     </div>
+    -->
     
     <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
       <app-overview (pageNavigate)="onPageChange($event)"></app-overview>
@@ -53,15 +55,6 @@
           <p>Sales analytics will be available soon.</p>
         </div>
       </div>
-    </div>
-    
-    <!-- Scroll to top button -->
-    <div 
-      class="scroll-top-button" 
-      [class.visible]="showScrollButton" 
-      (click)="scrollToTop()"
-    >
-      <i class="fa-solid fa-arrow-up"></i>
     </div>
   </div>
 </div>

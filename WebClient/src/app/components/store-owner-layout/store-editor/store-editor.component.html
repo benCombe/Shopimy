@@ -69,7 +69,6 @@
               name="bannerText" 
               class="standard-form-control" 
               [(ngModel)]="store!.bannerText"
-              (ngModelChange)="updatePreview()"
             >
           </div>
           
@@ -81,7 +80,6 @@
               name="logoText" 
               class="standard-form-control" 
               [(ngModel)]="store!.logoText"
-              (ngModelChange)="updatePreview()"
             >
           </div>
         </form>
@@ -109,7 +107,7 @@
             <div class="component-info">
               <span class="component-name">{{ component.name }}</span>
               <label class="switch">
-                <input type="checkbox" [(ngModel)]="component.isSelected" (change)="updatePreview()">
+                <input type="checkbox" [(ngModel)]="component.isSelected" (click)="toggleComponent(component)">
                 <span class="slider round"></span>
               </label>
             </div>
@@ -117,7 +115,7 @@
         </div>
       </div>
       
-      <!-- Products Tab (only for existing stores) -->
+      <!-- Products Tab -->
       <div *ngIf="activeTab === 'products' && !isInitialSetup" class="tab-content">
         <h3>Products Management</h3>
         <p class="panel-description">Add and manage your store's products.</p>
@@ -132,7 +130,9 @@
         <div *ngIf="saveError" class="alert alert-danger error-message">
           {{ saveError }}
         </div>
-        <button class="standard-button secondary" *ngIf="!isInitialSetup" (click)="viewStore()">View Store</button>
+        <button class="standard-button secondary" *ngIf="!isInitialSetup" (click)="viewStore()">
+          <i class="fa fa-eye"></i> View Store
+        </button>
         <button class="standard-button primary" (click)="saveChanges()">
           {{ isInitialSetup ? 'Create Store' : 'Save Changes' }}
         </button>
@@ -141,9 +141,14 @@
 
     <!-- Right Column: Preview -->
     <div class="preview-panel">
-      <h3>Live Preview</h3>
-      <p class="panel-description">See your changes reflected live below.</p>
-      <div class="preview-frame-wrapper">
+      <div class="preview-header">
+        <h3>Live Store Preview</h3>
+        <p *ngIf="!isInitialSetup" class="panel-description">
+          Preview of your store at: <a [href]="'/' + store?.url" target="_blank">/{{ store?.url }}</a>
+        </p>
+        <p *ngIf="isInitialSetup" class="panel-description">See your changes reflected live below.</p>
+      </div>
+      <div class="preview-frame-wrapper live-store-preview-wrapper">
         <app-store-preview 
           [selectedComponents]="getSelectedComponentIds()" 
           [storeData]="store"

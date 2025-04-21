@@ -15,12 +15,7 @@ using System.Text.Json;
 
 namespace Server.Controllers
 {
-/* 
-    public class StoreResponse
-    {
-        public StoreDetails Store { get; set; }
-        public List<Category> Categories { get; set; }
-    } */
+
 
     [Route("api/[controller]")]
     [ApiController]
@@ -65,12 +60,13 @@ namespace Server.Controllers
             return Ok(item);
         }
 
+
         // GET: api/item/bystore/{storeId}
         [HttpGet("bystore/{storeId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetItemsByStore(int storeId)
         {
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
                 return StatusCode(500, "Database connection not configured");
@@ -139,7 +135,7 @@ namespace Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetItemById(int id)
         {
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
                 return StatusCode(500, "Database connection not configured");
@@ -275,7 +271,7 @@ namespace Server.Controllers
                 return Unauthorized("Not authorized to create products for this store");
             }
 
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
                 return StatusCode(500, "Database connection not configured");
@@ -397,7 +393,7 @@ namespace Server.Controllers
                 return Unauthorized("Store ID not found in claims or invalid");
             }
 
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
                 return StatusCode(500, "Database connection not configured");
@@ -632,7 +628,7 @@ namespace Server.Controllers
                 return Unauthorized("Store ID not found in claims or invalid");
             }
 
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string? connectionString = _configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
             {
                 return StatusCode(500, "Database connection not configured");
@@ -708,43 +704,98 @@ namespace Server.Controllers
             }
         }
 
+        [HttpPost("DetailItem")]
+        [AllowAnonymous]
+        public async Task<IActionResult> DetailItem(int id)
+        {
+            var item = await _context.DetailItem.FromSqlRaw(@"SELECT
+                                                        l.list_id as ListId,
+                                                        i.item_id as ItemId,
+                                                        l.store_id as StoreId,
+                                                        l.category as CategoryId,
+                                                        l.name as Name,
+                                                        i.price as Price,
+                                                        i.colour as Colour,
+                                                        i.size as Size,
+                                                        i.type as Type,
+                                                        i.sale_price as SalePrice,
+                                                        i.quantity as Quantity,
+                                                        l.availFrom as AvailFrom,
+                                                        l.availTo as AvailTo,
+                                                        l.description as Description,
+                                                        l.currentRating as CurrentRating,
+                                                        img.blob as Blob
+                                                        FROM Items AS i
+                                                        JOIN Listing AS l ON l.list_id = i.list_id
+                                                        JOIN ItemImages AS img ON img.item_id= i.item_id
+                                                        where l.list_id ={0}
+                                                        order by i.price;",id).ToListAsync();
+            return Ok(item);
+        }
+
+
+
         private int GetCurrentStoreId()
         {
             // This retrieves the current store's ID from the authenticated user's claims
-            var storeIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("storeId");
-            int.TryParse(storeIdClaim?.Value, out int storeId);
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null) return 0;
+
+            var user = httpContext.User;
+            if (user == null) return 0;
+
+            var storeIdClaim = user.FindFirst("storeId");
+            if (storeIdClaim == null || !int.TryParse(storeIdClaim.Value, out int storeId))
+            {
+                return 0;
+            }
+
             return storeId;
         }
 
         private int GetCurrentUserId()
         {
             // This retrieves the current user's ID from the authenticated user's claims
-            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
-            int.TryParse(userIdClaim?.Value, out int userId);
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null) return 0;
+
+            var user = httpContext.User;
+            if (user == null) return 0;
+
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return 0;
+            }
+
             return userId;
         }
+
+
     }
 
     public class ProductCreateRequest
     {
         public int StoreId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int CategoryId { get; set; }
         public DateTime? AvailFrom { get; set; }
         public DateTime? AvailTo { get; set; }
-        public List<ProductVariantRequest> Variants { get; set; }
+        public required List<ProductVariantRequest> Variants { get; set; }
     }
 
     public class ProductUpdateRequest
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int CategoryId { get; set; }
         public DateTime? AvailFrom { get; set; }
         public DateTime? AvailTo { get; set; }
         public List<ProductVariantRequest> Variants { get; set; }
         public List<int> DeletedVariantIds { get; set; }
+        public required List<ProductVariantRequest> Variants { get; set; }
+        public required List<int> DeletedVariantIds { get; set; }
     }
 
     public class ProductVariantRequest
@@ -752,10 +803,10 @@ namespace Server.Controllers
         public int ItemId { get; set; } // 0 for new variants, > 0 for existing variants
         public decimal Price { get; set; }
         public decimal SalePrice { get; set; }
-        public string Type { get; set; }
-        public string Size { get; set; }
-        public string Colour { get; set; }
+        public required string Type { get; set; }
+        public required string Size { get; set; }
+        public required string Colour { get; set; }
         public int Quantity { get; set; }
-        public List<string> Images { get; set; }
+        public required List<string> Images { get; set; }
     }
 }

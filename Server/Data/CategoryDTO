@@ -1,0 +1,22 @@
+namespace Shopimy.Data
+{
+    public class CategoryDTO
+    {
+        public int CategoryId { get; set; }
+        public int StoreId { get; set; }
+        public string Name { get; set; }
+        public int? ParentCategory { get; set; }
+    }
+    
+    public class CreateCategoryDTO
+    {
+        public string Name { get; set; }
+        public int? ParentCategory { get; set; }
+    }
+    
+    public class UpdateCategoryDTO
+    {
+        public string Name { get; set; }
+        public int? ParentCategory { get; set; }
+    }
+}

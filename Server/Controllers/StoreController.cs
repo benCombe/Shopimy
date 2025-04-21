@@ -53,28 +53,31 @@ namespace Server.Controllers
                 .Where(s => s.StoreId == store.StoreId)
                 .FirstOrDefaultAsync();
 
-            if (themes == null)
+            // Don't return NotFound if themes are missing, use defaults later
+            /* if (themes == null)
             {
                 return NotFound("Themes not found.");
-            }
+            } */
 
             var banner = await _context.StoreBanners
                 .Where(s => s.StoreID == store.StoreId)
                 .FirstOrDefaultAsync();
 
-            if (banner == null)
+            // Don't return NotFound if banner is missing, use defaults later
+            /* if (banner == null)
             {
                 return NotFound("Banner not found.");
-            }
+            } */
             
             var logo = await _context.StoreLogos
                 .Where(s => s.StoreID == store.StoreId)
                 .FirstOrDefaultAsync();
 
-            if (logo == null)
+            // Don't return NotFound if logo is missing, use defaults later
+            /* if (logo == null)
             {
                 return NotFound("Logo not found.");
-            }
+            } */
         
 
             // 🔹 Fetch categories linked to this store
@@ -82,22 +85,56 @@ namespace Server.Controllers
                 .Where(c => c.StoreId == store.StoreId)
                 .ToListAsync();
             
+            // Construct StoreDetails, using defaults for missing optional data
             StoreDetails storeDetails = new StoreDetails(
                 store.StoreId,
                 store.StoreUrl,
                 store.Name,
-                themes.Theme_1,
-                themes.Theme_2,
-                themes.Theme_3,
-                themes.FontColor,
-                themes.FontFamily,
-                themes.BannerText,
-                themes.LogoText,
-                string.IsNullOrEmpty(banner?.BannerURL) ? "" : banner.BannerURL,
-                string.IsNullOrEmpty(logo?.LogoURL) ? "" : logo.LogoURL,
-                categories,
-                themes.ComponentVisibility
+                themes?.Theme_1 ?? "#393727", // Default Theme 1
+                themes?.Theme_2 ?? "#D0933D", // Default Theme 2
+                themes?.Theme_3 ?? "#D3CEBB", // Default Theme 3
+                themes?.FontColor ?? "#333333", // Default Font Color
+                themes?.FontFamily ?? "sans-serif", // Default Font Family
+                themes?.BannerText ?? "", // Default Banner Text
+                themes?.LogoText ?? store.Name, // Default Logo Text (use store name)
+                banner?.BannerURL ?? "", // Default Banner URL
+                logo?.LogoURL ?? "", // Default Logo URL
+                categories, // Categories can be empty list if none
+                themes?.ComponentVisibility ?? "{}" // Default Component Visibility (empty JSON)
             );
+
+            // Log this visit asynchronously
+            try
+            {
+                int? userId = null;
+                // Check if the user is authenticated
+                if (User?.Identity?.IsAuthenticated == true)
+                {
+                    // Try to get the user ID from the claims
+                    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                    if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int parsedUserId))
+                    {
+                        userId = parsedUserId;
+                    }
+                }
+
+                // Create the visit record
+                var storeVisit = new StoreVisit
+                {
+                    StoreId = store.StoreId,
+                    UserId = userId,
+                    VisitTimestamp = DateTime.UtcNow
+                };
+
+                // Add and save asynchronously
+                _context.StoreVisits.Add(storeVisit);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't fail the main request
+                Console.WriteLine($"Error logging store visit: {ex.Message}");
+            }
 
             // ✅ Return both store details and categories
             return Ok(storeDetails);
@@ -110,6 +147,11 @@ namespace Server.Controllers
         {
             // Get the user ID from the token - look for numeric claim
             int userId = 0;
+            if (User == null)
+            {
+                Console.WriteLine("ERROR: User is null");
+                return Unauthorized("Invalid user authentication token.");
+            }
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
             
             // Try to find the claim with numeric value (user ID)
@@ -157,17 +199,21 @@ namespace Server.Controllers
                 .Where(c => c.StoreId == store.StoreId)
                 .ToListAsync();
             
+            // Use actual URL/name rather than defaults if they exist
+            string storeName = string.IsNullOrEmpty(store.Name) ? "My Store" : store.Name;
+            string storeUrl = string.IsNullOrEmpty(store.StoreUrl) ? "my-store" : store.StoreUrl;
+            
             StoreDetails storeDetails = new StoreDetails(
                 store.StoreId,
-                store.StoreUrl,
-                store.Name,
+                storeUrl,
+                storeName,
                 themes?.Theme_1 ?? "#393727",
                 themes?.Theme_2 ?? "#D0933D",
                 themes?.Theme_3 ?? "#D3CEBB",
                 themes?.FontColor ?? "#333333",
                 themes?.FontFamily ?? "sans-serif",
                 themes?.BannerText ?? "Welcome to our store",
-                themes?.LogoText ?? store.Name,
+                themes?.LogoText ?? storeName,
                 banner?.BannerURL ?? "",
                 logo?.LogoURL ?? "",
                 categories,
@@ -200,6 +246,11 @@ namespace Server.Controllers
 
             // Get the user ID from the token - look for numeric claim
             int userId = 0;
+            if (User == null)
+            {
+                Console.WriteLine("ERROR: User is null");
+                return Unauthorized("Invalid user authentication token.");
+            }
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
             
             // Try to find the claim with numeric value (user ID)
@@ -349,8 +400,34 @@ namespace Server.Controllers
         [Authorize]
         public async Task<ActionResult<StoreDetails>> UpdateStore([FromBody] StoreDetails storeDetails)
         {
+            // Additional validation and logging
+            Console.WriteLine($"UpdateStore received: ID={storeDetails.Id}, URL={storeDetails.URL}, Name={storeDetails.Name}");
+            
+            if (storeDetails.Id <= 0)
+            {
+                Console.WriteLine("ERROR: Store ID is missing or invalid");
+                return BadRequest("Store ID is required");
+            }
+            
+            if (string.IsNullOrEmpty(storeDetails.URL))
+            {
+                Console.WriteLine("ERROR: Store URL is missing");
+                return BadRequest("Store URL is required");
+            }
+            
+            if (string.IsNullOrEmpty(storeDetails.Name))
+            {
+                Console.WriteLine("ERROR: Store Name is missing");
+                return BadRequest("Store Name is required");
+            }
+            
             // Get the user ID from the token - look for numeric claim
             int userId = 0;
+            if (User == null)
+            {
+                Console.WriteLine("ERROR: User is null");
+                return Unauthorized("Invalid user authentication token.");
+            }
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
             
             // Try to find the claim with numeric value (user ID)
@@ -369,116 +446,141 @@ namespace Server.Controllers
                 return Unauthorized("Invalid user authentication token.");
             }
 
-            // Start Transaction
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            try 
             {
-                try
+                // Create an execution strategy
+                var strategy = _context.Database.CreateExecutionStrategy();
+                StoreDetails result = null;
+                
+                await strategy.ExecuteAsync(async () =>
                 {
-                    // Check if this is the user's store
-                    var store = await _context.Stores
-                        .Where(s => s.StoreId == storeDetails.Id)
-                        .FirstOrDefaultAsync();
-
-                    if (store == null)
+                    // All database operations will now be part of the execution strategy
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
                     {
-                        return NotFound("Store not found");
-                    }
-
-                    if (store.StoreOwnerId != userId)
-                    {
-                        return Forbid("You don't have permission to update this store");
-                    }
-
-                    // If changing URL, check if it's unique
-                    if (store.StoreUrl != storeDetails.URL)
-                    {
-                        var storeWithSameUrl = await _context.Stores
-                            .AsNoTracking()
-                            .Where(s => s.StoreUrl == storeDetails.URL && s.StoreId != storeDetails.Id)
-                            .FirstOrDefaultAsync();
-
-                        if (storeWithSameUrl != null)
+                        try
                         {
-                            return BadRequest("Store URL already exists");
+                            // Check if this is the user's store
+                            var store = await _context.Stores
+                                .Where(s => s.StoreId == storeDetails.Id)
+                                .FirstOrDefaultAsync();
+
+                            if (store == null)
+                            {
+                                throw new InvalidOperationException("Store not found");
+                            }
+
+                            if (store.StoreOwnerId != userId)
+                            {
+                                throw new UnauthorizedAccessException("You don't have permission to update this store");
+                            }
+
+                            // If changing URL, check if it's unique
+                            if (store.StoreUrl != storeDetails.URL)
+                            {
+                                var storeWithSameUrl = await _context.Stores
+                                    .AsNoTracking()
+                                    .Where(s => s.StoreUrl == storeDetails.URL && s.StoreId != storeDetails.Id)
+                                    .FirstOrDefaultAsync();
+
+                                if (storeWithSameUrl != null)
+                                {
+                                    throw new InvalidOperationException("Store URL already exists");
+                                }
+                            }
+
+                            // Update store
+                            store.Name = storeDetails.Name;
+                            store.StoreUrl = storeDetails.URL;
+                            _context.Stores.Update(store);
+
+                            // Update themes
+                            var theme = await _context.StoreThemes
+                                .Where(s => s.StoreId == store.StoreId)
+                                .FirstOrDefaultAsync();
+
+                            if (theme == null)
+                            {
+                                theme = new StoreTheme
+                                {
+                                    StoreId = store.StoreId
+                                };
+                                _context.StoreThemes.Add(theme);
+                            }
+
+                            theme.Theme_1 = storeDetails.Theme_1;
+                            theme.Theme_2 = storeDetails.Theme_2;
+                            theme.Theme_3 = storeDetails.Theme_3;
+                            theme.FontColor = storeDetails.FontColor;
+                            theme.FontFamily = storeDetails.FontFamily;
+                            theme.BannerText = storeDetails.BannerText;
+                            theme.LogoText = storeDetails.LogoText;
+                            theme.ComponentVisibility = storeDetails.ComponentVisibility;
+
+                            // Update banner
+                            var banner = await _context.StoreBanners
+                                .Where(s => s.StoreID == store.StoreId)
+                                .FirstOrDefaultAsync();
+
+                            if (banner == null)
+                            {
+                                banner = new StoreBanner
+                                {
+                                    StoreID = store.StoreId
+                                };
+                                _context.StoreBanners.Add(banner);
+                            }
+
+                            banner.BannerURL = storeDetails.BannerURL;
+
+                            // Update logo
+                            var logo = await _context.StoreLogos
+                                .Where(s => s.StoreID == store.StoreId)
+                                .FirstOrDefaultAsync();
+
+                            if (logo == null)
+                            {
+                                logo = new StoreLogo
+                                {
+                                    StoreID = store.StoreId
+                                };
+                                _context.StoreLogos.Add(logo);
+                            }
+
+                            logo.LogoURL = storeDetails.LogoURL;
+
+                            // Save changes
+                            await _context.SaveChangesAsync();
+
+                            // Commit transaction
+                            await transaction.CommitAsync();
+
+                            // Store the result
+                            result = storeDetails;
+                        }
+                        catch (Exception ex)
+                        {
+                            // Rollback transaction in case of error
+                            await transaction.RollbackAsync();
+                            Console.WriteLine($"Error in update transaction: {ex.Message}");
+                            throw; // Re-throw to be caught by outer catch
                         }
                     }
+                });
 
-                    // Update store
-                    store.Name = storeDetails.Name;
-                    store.StoreUrl = storeDetails.URL;
-                    _context.Stores.Update(store);
-
-                    // Update themes
-                    var theme = await _context.StoreThemes
-                        .Where(s => s.StoreId == store.StoreId)
-                        .FirstOrDefaultAsync();
-
-                    if (theme == null)
-                    {
-                        theme = new StoreTheme
-                        {
-                            StoreId = store.StoreId
-                        };
-                        _context.StoreThemes.Add(theme);
-                    }
-
-                    theme.Theme_1 = storeDetails.Theme_1;
-                    theme.Theme_2 = storeDetails.Theme_2;
-                    theme.Theme_3 = storeDetails.Theme_3;
-                    theme.FontColor = storeDetails.FontColor;
-                    theme.FontFamily = storeDetails.FontFamily;
-                    theme.BannerText = storeDetails.BannerText;
-                    theme.LogoText = storeDetails.LogoText;
-                    theme.ComponentVisibility = storeDetails.ComponentVisibility;
-
-                    // Update banner
-                    var banner = await _context.StoreBanners
-                        .Where(s => s.StoreID == store.StoreId)
-                        .FirstOrDefaultAsync();
-
-                    if (banner == null)
-                    {
-                        banner = new StoreBanner
-                        {
-                            StoreID = store.StoreId
-                        };
-                        _context.StoreBanners.Add(banner);
-                    }
-
-                    banner.BannerURL = storeDetails.BannerURL;
-
-                    // Update logo
-                    var logo = await _context.StoreLogos
-                        .Where(s => s.StoreID == store.StoreId)
-                        .FirstOrDefaultAsync();
-
-                    if (logo == null)
-                    {
-                        logo = new StoreLogo
-                        {
-                            StoreID = store.StoreId
-                        };
-                        _context.StoreLogos.Add(logo);
-                    }
-
-                    logo.LogoURL = storeDetails.LogoURL;
-
-                    // Save changes
-                    await _context.SaveChangesAsync();
-
-                    // Commit transaction
-                    await transaction.CommitAsync();
-
-                    // Return the updated store details
-                    return Ok(storeDetails);
-                }
-                catch (Exception ex)
+                // Return the result after execution strategy completes
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = ex switch
                 {
-                    // Rollback transaction in case of error
-                    await transaction.RollbackAsync();
-                    Console.WriteLine($"Error updating store: {ex.Message}"); // Log the error
-                    return StatusCode(500, "An error occurred while updating the store.");
-                }
+                    UnauthorizedAccessException _ => ex.Message,
+                    InvalidOperationException _ => ex.Message,
+                    _ => "An error occurred while updating the store."
+                };
+                
+                Console.WriteLine($"Error updating store: {ex.Message}");
+                return StatusCode(500, errorMessage);
             }
         }
     }

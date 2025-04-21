@@ -109,6 +109,85 @@
           color: white;
         }
 
+        #testimonials-section {
+          width: 60%;
+          padding: 30px;
+          margin: 20px 0;
+          border-radius: 10px;
+          text-align: center;
+        }
+
+        #testimonials-section h3 {
+          margin-bottom: 20px;
+          font-size: 1.8rem;
+          color: var(--main-color);
+        }
+
+        .testimonial {
+          padding: 20px;
+          background-color: rgba(255, 255, 255, 0.8);
+          border-radius: 8px;
+          margin: 0 auto;
+          max-width: 600px;
+        }
+
+        .testimonial-text {
+          font-style: italic;
+          font-size: 1.2rem;
+          margin-bottom: 10px;
+        }
+
+        .testimonial-author {
+          font-weight: bold;
+          text-align: right;
+        }
+
+        #newsletter-section {
+          width: 100%;
+          padding: 30px;
+          text-align: center;
+          margin-top: 20px;
+        }
+
+        #newsletter-section h3 {
+          margin-bottom: 20px;
+          font-size: 1.8rem;
+        }
+
+        .newsletter-form {
+          display: flex;
+          justify-content: center;
+          max-width: 500px;
+          margin: 0 auto;
+        }
+
+        .newsletter-form input {
+          flex: 1;
+          padding: 10px 15px;
+          border: none;
+          border-radius: 4px 0 0 4px;
+          font-size: 1rem;
+        }
+
+        .newsletter-form button {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 0 4px 4px 0;
+          color: white;
+          font-size: 1rem;
+          cursor: pointer;
+        }
+
+        #footer-section {
+          width: 100%;
+          padding: 20px;
+          text-align: center;
+          margin-top: 20px;
+        }
+
+        #footer-section p {
+          font-size: 1rem;
+        }
 #store-page{
   height: 175vh;
 
@@ -273,6 +352,23 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
+  }
+
+  #testimonials-section,
+  #newsletter-section {
+    width: 90%;
+  }
+  
+  .newsletter-form {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .newsletter-form input,
+  .newsletter-form button {
+    width: 100%;
+    margin: 5px 0;
+    border-radius: 4px;
   }
 }
 

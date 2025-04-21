@@ -46,8 +46,6 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
 
   user: User | null | undefined;
   currentPage: string = "Overview"; // default page
-  showScrollButton: boolean = false;
-  scrollThreshold: number = 300; // Show button after scrolling this many pixels
   hasStore: boolean = false;
   showCreateStorePrompt: boolean = false;
 
@@ -95,41 +93,14 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
   }
   
   ngAfterViewInit() {
-    // Add scroll event listener to the main content
-    if (this.mainContent && this.mainContent.nativeElement) {
-      this.mainContent.nativeElement.addEventListener('scroll', () => {
-        this.checkScroll();
-      });
-      
-      // Initial check
-      this.checkScroll();
-    }
-  }
-
-  checkScroll() {
-    if (this.mainContent && this.mainContent.nativeElement) {
-      const scrollPosition = this.mainContent.nativeElement.scrollTop;
-      this.showScrollButton = scrollPosition > this.scrollThreshold;
-    }
-  }
-
-  scrollToTop() {
-    if (this.mainContent && this.mainContent.nativeElement) {
-      this.mainContent.nativeElement.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
+    // No scroll event listener needed anymore
   }
 
   onPageChange(newPage: string) {
     this.currentPage = newPage;
-    
-    // Reset scroll position when changing pages
-    if (this.mainContent && this.mainContent.nativeElement) {
-      this.mainContent.nativeElement.scrollTop = 0;
+    // Update side nav selection
+    if (this.sideNav) {
+      this.sideNav.setActive(newPage);
     }
-    
-    console.log("Navigating To: ", newPage);
   }
 }

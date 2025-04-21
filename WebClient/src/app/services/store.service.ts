@@ -35,7 +35,7 @@ export class StoreService {
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private router: Router,
     private cookieService: CookieService // Inject CookieService
   ) { }
@@ -45,7 +45,6 @@ export class StoreService {
   private currentThemeSubject = new BehaviorSubject<string>('light');
   currentTheme$ = this.currentThemeSubject.asObservable();
 
-  // TODO: Potentially load initial theme from a persistent source (e.g., backend, localStorage)
 
   // Method to create a new store.
   createStore(storeData: StoreDetails): Observable<StoreDetails> {
@@ -80,9 +79,29 @@ export class StoreService {
     }
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Create headers
 
+    console.log("Fetching current user store with auth token:", token.substring(0, 10) + "...");
     return this.http.get<StoreDetails>(this.apiUrl, { headers }).pipe( // Add headers to request
-      map(store => this.deserializeStore(store)),
+      map(store => {
+        console.log("Raw store response from API:", store);
+        if (store && typeof store === 'object') {
+          // Ensure store has an ID and isn't empty
+          if (!store.id || store.id === 0) {
+            console.warn("Store returned from API has no ID or ID=0:", store);
+          }
+          if (store.name === 'DEFAULT' || !store.name) {
+            console.warn("Store has default or empty name:", store.name);
+          }
+          if (store.url === 'DEFAULT' || !store.url) {
+            console.warn("Store has default or empty URL:", store.url);
+          }
+          return this.deserializeStore(store);
+        } else {
+          console.error("Invalid store data returned from API:", store);
+          return new StoreDetails(0, '', '', '#393727', '#D0933D', '#D3CEBB', '#333333', 'sans-serif', '', '', '', '', [], DEFAULT_VISIBILITY);
+        }
+      }),
       tap(store => {
+        console.log("Setting active store after deserialization:", store);
         this.activeStoreSubject.next(store);
       }),
       catchError(error => {
@@ -114,12 +133,62 @@ export class StoreService {
   private prepareStoreDataForApi(store: StoreDetails): StoreDetailsForApi {
     // Create a copy of the store object
     const storeDataCopy = { ...store } as any;
-    
+
+    // Ensure all required fields have valid values
+    if (!storeDataCopy.name || storeDataCopy.name === 'DEFAULT') {
+      storeDataCopy.name = "My Store";
+    }
+
+    if (!storeDataCopy.url || storeDataCopy.url === 'DEFAULT') {
+      storeDataCopy.url = "my-store";
+    }
+
+    // Validate color formats - ensure they start with #
+    if (!storeDataCopy.theme_1 || !storeDataCopy.theme_1.startsWith('#')) {
+      storeDataCopy.theme_1 = "#393727";
+    }
+    if (!storeDataCopy.theme_2 || !storeDataCopy.theme_2.startsWith('#')) {
+      storeDataCopy.theme_2 = "#D0933D";
+    }
+    if (!storeDataCopy.theme_3 || !storeDataCopy.theme_3.startsWith('#')) {
+      storeDataCopy.theme_3 = "#D3CEBB";
+    }
+    if (!storeDataCopy.fontColor || !storeDataCopy.fontColor.startsWith('#')) {
+      storeDataCopy.fontColor = "#333333";
+    }
+
+    // Ensure font family is set
+    if (!storeDataCopy.fontFamily) {
+      storeDataCopy.fontFamily = "sans-serif";
+    }
+
+    // Validate and format URLs
+    if (storeDataCopy.logoURL && storeDataCopy.logoURL.trim() !== '') {
+      // If URL doesn't start with http:// or https://, prepend https://
+      if (!storeDataCopy.logoURL.match(/^https?:\/\//)) {
+        storeDataCopy.logoURL = `https://${storeDataCopy.logoURL}`;
+      }
+    } else {
+      storeDataCopy.logoURL = ''; // Empty string if no URL
+    }
+
+    if (storeDataCopy.bannerURL && storeDataCopy.bannerURL.trim() !== '') {
+      // If URL doesn't start with http:// or https://, prepend https://
+      if (!storeDataCopy.bannerURL.match(/^https?:\/\//)) {
+        storeDataCopy.bannerURL = `https://${storeDataCopy.bannerURL}`;
+      }
+    } else {
+      storeDataCopy.bannerURL = ''; // Empty string if no URL
+    }
+
     // Serialize componentVisibility if it exists
-    if (storeDataCopy.componentVisibility) {
+    if (!storeDataCopy.componentVisibility || Object.keys(storeDataCopy.componentVisibility).length === 0) {
+      // Set default component visibility if missing
+      storeDataCopy.componentVisibility = JSON.stringify(DEFAULT_VISIBILITY);
+    } else if (typeof storeDataCopy.componentVisibility !== 'string') {
       storeDataCopy.componentVisibility = JSON.stringify(storeDataCopy.componentVisibility);
     }
-    
+
     return storeDataCopy as StoreDetailsForApi;
   }
 
@@ -141,9 +210,9 @@ export class StoreService {
     } else {
       componentVisibility = DEFAULT_VISIBILITY;
     }
-    
+
     return new StoreDetails(
-      store.id, 
+      store.id,
       store.url,
       store.name,
       store.theme_1,
@@ -202,15 +271,16 @@ export class StoreService {
   }
 
   updateStore(store: StoreDetails): Observable<StoreDetails> {
-    // Convert to API format (serialize componentVisibility)
-    const storeDataForApi = this.prepareStoreDataForApi(store);
-    const token = this.cookieService.get('auth_token'); // Get token from CookieService
-    if (!token) {
+    // Update the local BehaviorSubject
+    this.activeStoreSubject.next(store);
+    var storeDataForApi = store; //TODO FIX
+
+    var headers: HttpHeaders | { [header: string]: string | string[]; } | undefined = undefined; //TODO this.cookieService.get('auth_token'); // Get token from CookieService
+    /*if (!headers) {
       console.error('Authentication token not found. Cannot update store.');
       return throwError(() => new Error('Authentication required.'));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Create headers
-    
+    }*/
+
     // Send update to backend
     return this.http.put<StoreDetails>(`${this.apiUrl}/update`, storeDataForApi, { headers }).pipe( // Add headers to request
       map(response => this.deserializeStore(response)),
@@ -220,6 +290,10 @@ export class StoreService {
       }),
       catchError(error => {
         console.error('Error updating store', error);
+        // Show the actual backend error message
+        if (error.error) {
+          console.error('Backend Error Details:', error.error);
+        }
         return throwError(() => new Error('Failed to update store configuration.'));
       })
     );
@@ -228,11 +302,11 @@ export class StoreService {
   // Update component visibility
   updateComponentVisibility(visibility: ComponentVisibility): Observable<StoreDetails> {
     const currentStore = this.activeStoreSubject.value;
-    const updatedStore = { 
-      ...currentStore, 
-      componentVisibility: visibility 
+    const updatedStore = {
+      ...currentStore,
+      componentVisibility: visibility
     };
-    
+
     return this.updateStore(updatedStore);
   }
 
