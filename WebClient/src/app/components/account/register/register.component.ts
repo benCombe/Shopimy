@@ -1,24 +1,21 @@
 import { UserService } from './../../../services/user.service';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TopNavComponent } from "../../top-nav/top-nav.component";
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RegistrationDetails } from '../../../models/registration-details';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LoadingService } from '../../../services/loading.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [TopNavComponent, NgIf, NgFor, FormsModule, NgClass],
+  imports: [TopNavComponent, NgIf, NgFor, FormsModule, RouterLink],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent {
-
-  imgURL: string = "resources/images/workfromhome.jpg"
-
-  //form variables
+export class RegisterComponent implements OnInit {
+  // Form variables
   firstname: string = "";
   lastname: string = "";
   email: string = "";
@@ -30,12 +27,16 @@ export class RegisterComponent {
   selectedCountry: string = "";
 
   password: string = "";
-  confirmPassword: string = ""
+  confirmPassword: string = "";
+  
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
+  isLoading: boolean = false;
 
   subscribed: boolean = false;
   acceptTAC: boolean = false;
 
-  //password check
+  // Password check
   hasValidLength: boolean = false;
   hasUpperLower: boolean = false;
   pwMatch: boolean = false;
@@ -49,30 +50,39 @@ export class RegisterComponent {
   isPasswordValid: boolean = true;
   isConfirmPasswordValid: boolean = true;
 
-
-  dataValid: boolean = false;
-
   countries = [
     { value: 'US', label: 'United States' },
     { value: 'CA', label: 'Canada' }
   ];
 
-  constructor(private userService: UserService, private router: Router, private loadingService: LoadingService){}
+  constructor(
+    private userService: UserService, 
+    private router: Router, 
+    private loadingService: LoadingService
+  ) {}
 
   ngOnInit() {
-    //this.selectedCountry = this.countries[0].value;
-   /*  this.cd.detectChanges(); // Force Angular to detect changes on load */
-    //this.checkStength();
+    // Initialize with default country
+    if (this.countries.length > 0) {
+      this.selectedCountry = this.countries[0].value;
+    }
   }
 
-  concatAddr(): string{
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  concatAddr(): string {
     return this.address + ", " + this.provState + ", " + this.zip;
   }
 
-  // ✅ First Name & Last Name Validation: 1-50 characters, letters only
+  // First Name & Last Name Validation: 1-50 characters, letters only
   validateFirstName(): boolean {
     this.isFirstNameValid = /^[a-zA-Z]{1,50}$/.test(this.firstname);
-    console.log("Valid Firstname: " + this.isFirstNameValid);
     return this.isFirstNameValid;
   }
 
@@ -81,21 +91,21 @@ export class RegisterComponent {
     return this.isLastNameValid;
   }
 
-  // ✅ Email Validation: Must be in valid email format
+  // Email Validation: Must be in valid email format
   validateEmail(): boolean {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     this.isEmailValid = emailPattern.test(this.email);
     return this.isEmailValid;
   }
 
-  // ✅ Phone Validation: Must match (###) - ### - #### format
+  // Phone Validation: Must match ###-###-#### format
   validatePhone(): boolean {
     const phonePattern = /^(\d{3}-\d{3}-\d{4}|\d{10})$/;
     this.isPhoneValid = phonePattern.test(this.phone);
     return this.isPhoneValid;
   }
 
-  // ✅ Date of Birth Validation: Must be at least 18 years old
+  // Date of Birth Validation: Must be at least 18 years old
   validateDOB(): boolean {
     if (!this.dob) {
       this.isDobValid = false;
@@ -109,7 +119,7 @@ export class RegisterComponent {
     return this.isDobValid;
   }
 
-  // ✅ Password Strength Check
+  // Password Strength Check
   validatePassword(): boolean {
     this.hasValidLength = this.password.length >= 8 && this.password.length <= 20;
     const hasUpper = /[A-Z]/.test(this.password);
@@ -117,18 +127,20 @@ export class RegisterComponent {
     const hasNumber = /\d/.test(this.password);
     const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(this.password);
 
-    this.hasUpperLower = hasUpper && hasLower && hasNumber && hasSymbol
+    this.hasUpperLower = hasUpper && hasLower && hasNumber && hasSymbol;
     this.isPasswordValid = this.hasValidLength && this.hasUpperLower;
+    this.validateConfirmPassword(); // Update password match when password changes
     return this.isPasswordValid;
   }
 
-  // ✅ Confirm Password Check
+  // Confirm Password Check
   validateConfirmPassword(): boolean {
-    this.pwMatch = this.isConfirmPasswordValid = this.password === this.confirmPassword;
+    this.pwMatch = this.password === this.confirmPassword;
+    this.isConfirmPasswordValid = this.pwMatch;
     return this.isConfirmPasswordValid;
   }
 
-  // ✅ Overall Form Validation
+  // Overall Form Validation
   isFormValid(): boolean {
     return (
       this.validateFirstName() &&
@@ -138,28 +150,41 @@ export class RegisterComponent {
       this.validateDOB() &&
       this.validatePassword() &&
       this.validateConfirmPassword() &&
+      !!this.selectedCountry &&
+      !!this.address &&
+      !!this.provState &&
+      !!this.zip &&
       this.acceptTAC
     );
   }
 
-
-  register(): void{
-    if(this.isFormValid()){
-      this.loadingService.setIsLoading(true);
-      const user = new RegistrationDetails(this.firstname, this.lastname,
-                                           this.email, this.phone,
-                                           this.concatAddr(), this.selectedCountry.toUpperCase(),
-                                           this.dob, this.password, this.subscribed);
+  register(): void {
+    if (this.isFormValid()) {
+      this.isLoading = true;
+      
+      const user = new RegistrationDetails(
+        this.firstname, 
+        this.lastname,
+        this.email, 
+        this.phone,
+        this.concatAddr(), 
+        this.selectedCountry.toUpperCase(),
+        this.dob, 
+        this.password, 
+        this.subscribed
+      );
 
       this.userService.register(user).subscribe({
         next: () => {
-          console.log('Registration Successful, Logging in...'),
+          console.log('Registration Successful, Logging in...');
           this.router.navigate(['/dashboard']);
-          this.loadingService.setIsLoading(false);
+          this.isLoading = false;
         },
-        error: err => console.error("Registartion Failed", err)
+        error: err => {
+          console.error("Registration Failed", err);
+          this.isLoading = false;
+        }
       });
     }
   }
-
 }

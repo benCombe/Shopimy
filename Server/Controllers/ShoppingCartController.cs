@@ -21,6 +21,44 @@ public class ShoppingCartController : ControllerBase
         _context = context;
     }
 
+
+    [HttpGet("cart")]
+    public async Task<IActionResult> GetShoppingCartItems([FromHeader] string authorization)
+    {
+        if (string.IsNullOrEmpty(authorization))
+        {
+            return Unauthorized("No token provided.");
+        }
+
+        // Extract token from "Bearer <token>"
+        string token = authorization.StartsWith("Bearer ") ? authorization.Substring(7) : authorization;
+
+        try
+        {
+            // Find the user_id associated with the token
+            var activeUser = await _context.ActiveUsers
+                .FirstOrDefaultAsync(a => a.Token == token);
+
+            if (activeUser == null)
+            {
+                return Unauthorized("Invalid or expired token.");
+            }
+
+            int userId = activeUser.UserId;
+
+            // Fetch shopping cart items for the user
+            var cartItems = await _context.ShoppingCarts
+                .Where(cart => cart.UserId == userId)
+                .ToListAsync();
+
+            return Ok(cartItems);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
     // POST: api/shoppingcart/add
     [HttpPost("add")]
     public async Task<IActionResult> AddOrUpdateItem([FromBody] ShoppingCartItem cartItem)
@@ -73,5 +111,22 @@ public class ShoppingCartController : ControllerBase
         _context.ShoppingCarts.Remove(existingCartItem);
         await _context.SaveChangesAsync();
         return Ok("Item removed from cart.");
+    }
+
+
+    [HttpPost("place_order")]
+    public async Task<IActionResult> PlaceOrder([FromBody] Order order){
+        
+        if (order == null || order.OrderItems == null || order.OrderItems.Count <= 0){
+            return BadRequest("Invalid Request: Order or OrderItems missing or empty.");
+        }
+
+        OrderLogEntry entry = new(order);
+        _context.OrderLog.Add(entry);
+        await _context.SaveChangesAsync();
+
+        int logEntryId = entry.OrderId;
+
+        return Ok(logEntryId);
     }
 }

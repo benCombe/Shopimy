@@ -18,8 +18,25 @@ import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 export class ProfileComponent implements OnInit {
   @Input() user: User | null | undefined;
 
+  // Tab navigation
+  activeTab: string = 'account';
+  tabs = [
+    { id: 'account', name: 'Account Info' },
+    { id: 'payments', name: 'Payment Methods' },
+    { id: 'addresses', name: 'Delivery Addresses' },
+    { id: 'history', name: 'Purchase History' }
+  ];
+
+  // Profile edit variables
+  editMode: boolean = false;
+  profileForm!: FormGroup;
+  isSavingProfile: boolean = false;
+  profileError: string | null = null;
+
+  // Existing variables
   deliveryAddresses: DeliveryDetails[] = [];
   paymentMethods: any[] = [];
+  wishlists: any[] = [];
   deliveryForm!: FormGroup;
   showAddDelivery: boolean = false;
   showAddPayment: boolean = false;
@@ -46,16 +63,27 @@ export class ProfileComponent implements OnInit {
     this.loadStripe();
 
     this.userService.activeUser$.subscribe(u => {
-      if (u && (!this.user || u.Id !== this.user.Id)) {
-        this.user = u;
-        this.initializeForms();
-        this.loadDeliveryAddresses(this.user.Id);
-        this.loadPaymentMethods(this.user.Id);
-      }
+      this.user = u;
+      this.initializeForms();
+      this.loadDeliveryAddresses(this.user.Id);
+      this.loadPaymentMethods(this.user.Id);
+      console.log('User updated:', this.user);
+//       if (u && (!this.user || u.Id !== this.user.Id)) {...
+
     });
   }
 
   initializeForms(): void {
+    // Initialize profile form
+    this.profileForm = this.fb.group({
+      FirstName: [this.user?.FirstName || '', Validators.required],
+      LastName: [this.user?.LastName || '', Validators.required],
+      Phone: [this.user?.Phone || '', Validators.required],
+      Address: [this.user?.Address || '', Validators.required],
+      Country: [this.user?.Country || '', Validators.required]
+    });
+
+    // Initialize delivery form (existing code)
     this.deliveryForm = this.fb.group({
       address: ['', Validators.required],
       city: ['', Validators.required],
@@ -64,6 +92,91 @@ export class ProfileComponent implements OnInit {
       postalCode: ['', Validators.required],
       phone: ['', Validators.required],
       isDefault: [false]
+    });
+  }
+
+  // Tab navigation methods
+  setActiveTab(tabId: string): void {
+    this.activeTab = tabId;
+
+    // Reset edit mode when changing tabs
+    if (this.editMode) {
+      this.cancelEdit();
+    }
+
+    // Reset forms when changing tabs
+    if (tabId === 'payments') {
+      this.showAddPayment = false;
+      this.unmountCardElement();
+    } else if (tabId === 'addresses') {
+      this.showAddDelivery = false;
+    }
+  }
+
+  isTabActive(tabId: string): boolean {
+    return this.activeTab === tabId;
+  }
+
+  // Profile editing methods
+  toggleEditMode(): void {
+    this.editMode = !this.editMode;
+    if (this.editMode) {
+      this.profileForm.setValue({
+        FirstName: this.user?.FirstName || '',
+        LastName: this.user?.LastName || '',
+        Phone: this.user?.Phone || '',
+        Address: this.user?.Address || '',
+        Country: this.user?.Country || ''
+      });
+    } else {
+      this.profileError = null;
+    }
+  }
+
+  saveProfile(): void {
+    if (this.profileForm.valid && this.user) {
+      this.isSavingProfile = true;
+      this.profileError = null;
+
+      // Create updated user object
+      const updatedUser: User = {
+        ...this.user,
+        FirstName: this.profileForm.value.FirstName,
+        LastName: this.profileForm.value.LastName,
+        Phone: this.profileForm.value.Phone,
+        Address: this.profileForm.value.Address,
+        Country: this.profileForm.value.Country
+      };
+
+      this.userService.updateUserProfile(updatedUser).subscribe({
+        next: (success) => {
+          if (success) {
+            this.user = updatedUser;
+            this.editMode = false;
+          } else {
+            this.profileError = 'Failed to update profile. Please try again.';
+          }
+          this.isSavingProfile = false;
+        },
+        error: (err) => {
+          console.error('Error updating profile:', err);
+          this.profileError = 'An error occurred while updating your profile. Please try again.';
+          this.isSavingProfile = false;
+        }
+      });
+    }
+  }
+
+  cancelEdit(): void {
+    this.editMode = false;
+    this.profileError = null;
+    // Reset form to original values
+    this.profileForm.reset({
+      FirstName: this.user?.FirstName || '',
+      LastName: this.user?.LastName || '',
+      Phone: this.user?.Phone || '',
+      Address: this.user?.Address || '',
+      Country: this.user?.Country || ''
     });
   }
 
@@ -91,7 +204,7 @@ export class ProfileComponent implements OnInit {
   }
 
   loadPaymentMethods(userId: number): void {
-    this.paymentService.getPaymentMethods(userId).subscribe(methods => {
+    this.paymentService.getPaymentMethods().subscribe(methods => {
       this.paymentMethods = methods;
     });
   }
@@ -208,7 +321,7 @@ export class ProfileComponent implements OnInit {
 
   setDefaultPaymentMethod(paymentMethodId: string): void {
     if (this.user && this.user.Id > 0) {
-        this.paymentService.setDefaultPaymentMethod(this.user.Id, paymentMethodId).subscribe(success => {
+        this.paymentService.setDefaultPaymentMethod(paymentMethodId).subscribe(success => {
         if (success) {
             this.loadPaymentMethods(this.user!.Id);
         }

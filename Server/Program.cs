@@ -6,6 +6,11 @@ using Microsoft.OpenApi.Models;
 using Server.Data;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+
+// Clear default claim mappings
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +35,7 @@ builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+//builder.Services.AddScoped<IEmailService, EmailService>();
 
 
 // Register Swagger (Swashbuckle)
@@ -71,7 +77,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured"))
             )
         };
     });
@@ -92,6 +98,8 @@ var app = builder.Build();
 
 // Apply the CORS policy
 app.UseCors("AllowAngularApp");
+
+app.UseStaticFiles(); // Add this line to serve static files from wwwroot
 
 app.Use(async (context, next) =>
 {

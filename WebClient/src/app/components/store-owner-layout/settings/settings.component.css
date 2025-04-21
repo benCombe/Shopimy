@@ -1,103 +1,218 @@
-#main{
+#main {
   max-width: 100%;
-  max-height: auto;
-  padding: 5px;
+  height: auto;
+  padding: var(--spacing-xl, 24px);
   display: grid;
-  align-content: center;
-  column-gap: 5px;
-  row-gap: 5px;
+  align-content: start;
+  gap: var(--spacing-xl, 24px);
   font-family: var(--main-font-fam);
 }
 
-.section{
-  max-width: 100vw;
-  padding: 5px;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: var(--main-color);
+.section {
+  width: 100%;
+  padding: var(--spacing-xl, 24px);
+  border-radius: var(--border-radius, 8px);
+  box-shadow: var(--shadow-md, 0 2px 4px rgba(0, 0, 0, 0.2));
+  background-color: white;
   display: grid;
-  align-content: center;
-  column-gap: 5px;
-  row-gap: 5px;
+  align-content: start;
+  gap: var(--spacing-md, 16px);
+  margin-bottom: var(--spacing-xl, 24px);
+  transition: all 0.3s ease;
 }
 
-.section h2{
+.section:hover,
+.section:focus-within {
+  box-shadow: var(--shadow-lg, 0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.section h2 {
   font-size: 1.5rem;
-  font-family: var(--main-font-fam);
-  text-align: left;
+  color: var(--main-color);
+  margin: 0 0 var(--spacing-md, 16px) 0;
+  font-weight: 600;
 }
 
-.section h3{
-  font-size: 1.5rem;
-  margin-bottom: 5px;
-  text-align: left;
+.section h3 {
+  font-size: 1.3rem;
+  color: var(--main-color);
+  margin: 0 0 var(--spacing-sm, 12px) 0;
+  font-weight: 600;
 }
 
-.section fieldset{
-  border: 1px solid white;
-  border-radius: 5px;
+.section fieldset {
+  border: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
+  border-radius: var(--border-radius, 8px);
   display: grid;
-  align-content: center;
-  margin: 5px;
-  column-gap: 2px;
+  align-content: start;
+  margin: 0;
+  padding: var(--spacing-md, 16px);
+  gap: var(--spacing-md, 16px);
 }
 
-.section form{
+.section form {
   display: grid;
-  align-content: center;
+  align-content: start;
   margin: 0;
   padding: 0;
-  border: 1px solid white;
+  gap: var(--spacing-md, 16px);
 }
 
 .section legend {
-  color: white;
-  padding: 5px;
-  margin: 5px;
-  border: 1px solid white;
-
-}
-
-.section label{
-  color: white;
-  font-size: 1.2rem;
-  margin: 2px;
-  border: 1px solid white;
-
-}
-
-.section input {
-  width: 50vh;
-  margin: 2px;
-  padding: 2px;
-  border: 1px solid white;
-
-}
-
-.section input {
-  width: 50vh;
-  margin: 2px;
-  padding: 2px;
-  border: 1px solid white;
-
-}
-
-
-
-#title{
-  max-width: 100%;
-  max-height: auto;
-  padding: 25px;
-  display: grid;
-  align-content: center;
-  column-gap: 25px;
-  row-gap: 25px;
-}
-.title h2{
-  font-size: 2.5rem;
   color: var(--main-color);
-  margin-bottom: 15px;
-  text-align: left;
+  padding: 0 var(--spacing-sm, 8px);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.section label {
+  color: var(--main-color);
+  font-size: 1rem;
+  margin: 0;
+  display: block;
+  font-weight: 500;
+}
+
+.section input {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--spacing-sm, 8px) var(--spacing-sm, 12px);
+  border: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
+  border-radius: var(--border-radius, 4px);
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+}
+
+.section input:focus {
+  outline: none;
+  border-color: var(--main-color);
+  box-shadow: var(--shadow-focus, 0 0 0 2px rgba(57, 55, 39, 0.1));
+}
+
+#title {
+  width: 100%;
+  padding: 0 0 var(--spacing-xl, 24px) 0;
+  display: grid;
+  align-content: start;
+  gap: var(--spacing-md, 16px);
+}
+
+.title h2 {
+  font-size: 2rem;
+  color: var(--main-color);
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Save Button Section */
+.save-section {
+  margin-top: var(--spacing-xl, 32px);
+  text-align: right;
+}
+
+/* Form Input Styling */
+input[type="text"],
+input[type="date"],
+input[type="email"] {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--spacing-sm, 8px) var(--spacing-sm, 12px);
+  border: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
+  border-radius: var(--border-radius, 4px);
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus {
+  outline: none;
+  border-color: var(--main-color);
+  box-shadow: var(--shadow-focus, 0 0 0 2px rgba(57, 55, 39, 0.1));
+}
+
+label h2 {
+  font-size: 1rem;
+  margin: 0 0 4px 0;
+  color: var(--main-color);
+  font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+  #main {
+    padding: var(--spacing-md, 16px);
+    gap: var(--spacing-md, 16px);
+  }
+  
+  .section {
+    padding: var(--spacing-md, 16px);
+    gap: var(--spacing-sm, 12px);
+  }
+  
+  .section h2 {
+    font-size: 1.3rem;
+  }
+  
+  .section h3 {
+    font-size: 1.2rem;
+  }
+  
+  .title h2 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #main {
+    padding: var(--spacing-sm, 12px);
+  }
+  
+  .section {
+    padding: var(--spacing-sm, 12px);
+  }
+  
+  .section fieldset {
+    padding: var(--spacing-sm, 12px);
+  }
+  
+  .title h2 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #main {
+    padding: var(--spacing-xs, 8px);
+  }
+  
+  .section {
+    padding: var(--spacing-sm, 12px);
+    gap: var(--spacing-sm, 12px);
+  }
+  
+  .section h2 {
+    font-size: 1.2rem;
+  }
+  
+  .section h3 {
+    font-size: 1.1rem;
+  }
+  
+  .title h2 {
+    font-size: 1.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 

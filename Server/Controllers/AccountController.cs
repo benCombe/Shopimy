@@ -90,7 +90,17 @@ namespace Server.Controllers
             // Generate JWT token
             string token = GenerateJwtToken(user);
 
-            // Insert into ActiveUsers table
+            // Check if user already has an active session and remove it
+            var existingActiveUser = await _context.ActiveUsers.FirstOrDefaultAsync(au => au.UserId == user.Id);
+            if (existingActiveUser != null)
+            {
+                _context.ActiveUsers.Remove(existingActiveUser);
+                // Save changes immediately after removal to avoid potential conflicts
+                // if SaveChangesAsync below fails for other reasons.
+                await _context.SaveChangesAsync(); 
+            }
+
+            // Insert new record into ActiveUsers table
             var activeUser = new ActiveUser
             {
                 UserId = user.Id,
@@ -190,16 +200,70 @@ namespace Server.Controllers
             }
         }
 
+        // 🔐 Protected Endpoint: Update User Profile
+        [HttpPut("profile")]
+        [Authorize]  // Requires JWT authentication
+        public async Task<ActionResult<bool>> UpdateUserProfile([FromBody] ProfileUpdateDTO profileUpdate)
+        {
+            try
+            {
+                // Extract user ID from JWT token claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userIdClaim == null)
+                {
+                    return Unauthorized("Invalid token. User ID not found.");
+                }
+
+                // Try to parse as integer, if not, try to find by email
+                if (!int.TryParse(userIdClaim, out int userId))
+                {
+                    // If userIdClaim is not a valid integer, it might be an email
+                    var userByEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == userIdClaim);
+                    if (userByEmail == null)
+                    {
+                        return NotFound("User not found.");
+                    }
+                    userId = userByEmail.Id;
+                }
+
+                // Find the user in the database
+                var user = await _context.Users.FindAsync(userId);
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                // Update the user's profile information
+                // Note: Email and Password are NOT updated through this endpoint
+                user.FirstName = profileUpdate.FirstName;
+                user.LastName = profileUpdate.LastName;
+                user.Phone = profileUpdate.Phone;
+                user.Address = profileUpdate.Address;
+                user.Country = profileUpdate.Country;
+
+                // Save the changes to the database
+                await _context.SaveChangesAsync();
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         private string GenerateJwtToken(User user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured")));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            // Make sure we're using the correct claim types and values
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), // Use ID as subject
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? throw new InvalidOperationException("User email is null")), // Store email in a different claim
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) // Ensure this is the user ID as string
             };
 
             var token = new JwtSecurityToken(
@@ -215,7 +279,16 @@ namespace Server.Controllers
 
         public class TokenRequest
         {
-            public string Token { get; set; }
+            public required string Token { get; set; }
+        }
+        
+        public class ProfileUpdateDTO
+        {
+            public required string FirstName { get; set; }
+            public required string LastName { get; set; }
+            public required string Phone { get; set; }
+            public required string Address { get; set; }
+            public required string Country { get; set; }
         }
     }
 }
