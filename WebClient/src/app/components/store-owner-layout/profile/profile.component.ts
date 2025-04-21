@@ -63,12 +63,13 @@ export class ProfileComponent implements OnInit {
     this.loadStripe();
 
     this.userService.activeUser$.subscribe(u => {
-      if (u && (!this.user || u.Id !== this.user.Id)) {
-        this.user = u;
-        this.initializeForms();
-        this.loadDeliveryAddresses(this.user.Id);
-        this.loadPaymentMethods(this.user.Id);
-      }
+      this.user = u;
+      this.initializeForms();
+      this.loadDeliveryAddresses(this.user.Id);
+      this.loadPaymentMethods(this.user.Id);
+      console.log('User updated:', this.user);
+//       if (u && (!this.user || u.Id !== this.user.Id)) {...
+
     });
   }
 
@@ -81,7 +82,7 @@ export class ProfileComponent implements OnInit {
       Address: [this.user?.Address || '', Validators.required],
       Country: [this.user?.Country || '', Validators.required]
     });
-    
+
     // Initialize delivery form (existing code)
     this.deliveryForm = this.fb.group({
       address: ['', Validators.required],
@@ -97,12 +98,12 @@ export class ProfileComponent implements OnInit {
   // Tab navigation methods
   setActiveTab(tabId: string): void {
     this.activeTab = tabId;
-    
+
     // Reset edit mode when changing tabs
     if (this.editMode) {
       this.cancelEdit();
     }
-    
+
     // Reset forms when changing tabs
     if (tabId === 'payments') {
       this.showAddPayment = false;
@@ -136,7 +137,7 @@ export class ProfileComponent implements OnInit {
     if (this.profileForm.valid && this.user) {
       this.isSavingProfile = true;
       this.profileError = null;
-      
+
       // Create updated user object
       const updatedUser: User = {
         ...this.user,
@@ -146,7 +147,7 @@ export class ProfileComponent implements OnInit {
         Address: this.profileForm.value.Address,
         Country: this.profileForm.value.Country
       };
-      
+
       this.userService.updateUserProfile(updatedUser).subscribe({
         next: (success) => {
           if (success) {

@@ -704,45 +704,7 @@ namespace Server.Controllers
             }
         }
 
-        private int GetCurrentStoreId()
-        {
-            // This retrieves the current store's ID from the authenticated user's claims
-            var storeIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("storeId");
-            int.TryParse(storeIdClaim?.Value, out int storeId);
-            return storeId;
-        }
-
-        private int GetCurrentUserId()
-        {
-            // This retrieves the current user's ID from the authenticated user's claims
-            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
-            int.TryParse(userIdClaim?.Value, out int userId);
-            return userId;
-        }
-    }
-
-    public class ProductCreateRequest
-    {
-        public int StoreId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int CategoryId { get; set; }
-        public DateTime? AvailFrom { get; set; }
-        public DateTime? AvailTo { get; set; }
-        public List<ProductVariantRequest> Variants { get; set; }
-    }
-
-    public class ProductUpdateRequest
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int CategoryId { get; set; }
-        public DateTime? AvailFrom { get; set; }
-        public DateTime? AvailTo { get; set; }
-        public List<ProductVariantRequest> Variants { get; set; }
-        public List<int> DeletedVariantIds { get; set; }
-
-         [HttpPost("DetailItem")]
+        [HttpPost("DetailItem")]
         [AllowAnonymous]
         public async Task<IActionResult> DetailItem(int id)
         {
@@ -770,6 +732,51 @@ namespace Server.Controllers
                                                         order by i.price;",id).ToListAsync();
             return Ok(item);
         }
+
+
+        private int GetCurrentStoreId()
+        {
+            // This retrieves the current store's ID from the authenticated user's claims
+            var storeIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("storeId");
+            int.TryParse(storeIdClaim?.Value, out int storeId);
+            return storeId;
+        }
+
+        private int GetCurrentUserId()
+        {
+            // This retrieves the current user's ID from the authenticated user's claims
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
+            int.TryParse(userIdClaim?.Value, out int userId);
+            return userId;
+        }
+
+
+
+
+    }
+
+    public class ProductCreateRequest
+    {
+        public int StoreId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int CategoryId { get; set; }
+        public DateTime? AvailFrom { get; set; }
+        public DateTime? AvailTo { get; set; }
+        public List<ProductVariantRequest> Variants { get; set; }
+    }
+
+    public class ProductUpdateRequest
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int CategoryId { get; set; }
+        public DateTime? AvailFrom { get; set; }
+        public DateTime? AvailTo { get; set; }
+        public List<ProductVariantRequest> Variants { get; set; }
+        public List<int> DeletedVariantIds { get; set; }
+
+        
     }
 
     public class ProductVariantRequest

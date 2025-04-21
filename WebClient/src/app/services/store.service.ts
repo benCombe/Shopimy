@@ -273,6 +273,13 @@ export class StoreService {
   updateStore(store: StoreDetails): Observable<StoreDetails> {
     // Update the local BehaviorSubject
     this.activeStoreSubject.next(store);
+    var storeDataForApi = store; //TODO FIX
+
+    var headers: HttpHeaders | { [header: string]: string | string[]; } | undefined = undefined; //TODO this.cookieService.get('auth_token'); // Get token from CookieService
+    /*if (!headers) {
+      console.error('Authentication token not found. Cannot update store.');
+      return throwError(() => new Error('Authentication required.'));
+    }*/
 
     // Send update to backend
     return this.http.put<StoreDetails>(`${this.apiUrl}/update`, storeDataForApi, { headers }).pipe( // Add headers to request

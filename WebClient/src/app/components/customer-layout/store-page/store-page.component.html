@@ -4,7 +4,7 @@
 
       <div id="banner" class="theme2" [style.background-image]="'url(' + storeData?.bannerURL + ')'" *ngIf="storeData?.componentVisibility?.hero">
 
-      <div id="banner" class="theme2" [style.background-image]="'url(' + currentBannerUrl + ')'">
+<!--       <div id="banner" class="theme2" [style.background-image]="'url(' + currentBannerUrl + ')'"> -->
 
         <div id="banner-text" class="center theme1 fc" [style.background-color]="storeData?.theme_1">
           <span [style.color]="storeData?.fontColor">{{storeData?.bannerText}}</span>
@@ -25,7 +25,7 @@
       </div>
       <div id="load-more-wrapper" class="center" *ngIf="displayCount < itemIds.length && storeData?.componentVisibility?.featured"><span id="load-more-btn" class="center" (click)="loadMore()">Load More</span></div>
 
-      <div id="testimonials-section" *ngIf="storeData?.componentVisibility?.testimonials" 
+      <div id="testimonials-section" *ngIf="storeData?.componentVisibility?.testimonials"
            [style.background-color]="storeData?.theme_3">
         <h3>Testimonials</h3>
         <div class="testimonial">
