@@ -1,37 +1,154 @@
 <div class="editor-container">
   <div class="editor-header">
     <h2>Store Editor</h2>
-    <p class="description">Select the components to display on your store page and preview the changes in real-time.</p>
+    <p class="description" *ngIf="isInitialSetup">Welcome to store setup! Complete the following steps to create your store.</p>
+    <p class="description" *ngIf="!isInitialSetup">Customize your store's appearance and features.</p>
   </div>
 
-  <div class="editor-content">
-    <!-- Left Column: Component Controls -->
+  <div *ngIf="isLoading" class="loading-container">
+    <p>Loading store information...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="editor-content">
+    <!-- Left Column: Store Configuration Panels -->
     <div class="component-panel">
-      <h3>Store Components</h3>
-      <p class="panel-description">Toggle components to customize your store's layout.</p>
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab" [class.active]="activeTab === 'basic'" (click)="setActiveTab('basic')">Basic Info</div>
+        <div class="tab" [class.active]="activeTab === 'theme'" (click)="setActiveTab('theme')">Theme</div>
+        <div class="tab" [class.active]="activeTab === 'components'" (click)="setActiveTab('components')">Components</div>
+        <div class="tab" *ngIf="!isInitialSetup" [class.active]="activeTab === 'products'" (click)="setActiveTab('products')">Products</div>
+      </div>
       
-      <div class="component-list">
-        <div *ngFor="let component of availableComponents" class="component-item">
-          <div class="component-info">
-            <span class="component-name">{{ component.name }}</span>
-            <label class="switch">
-              <input type="checkbox" [(ngModel)]="component.isSelected" (change)="updatePreview()">
-              <span class="slider round"></span>
-            </label>
+      <!-- Basic Info Tab -->
+      <div *ngIf="activeTab === 'basic'" class="tab-content">
+        <h3>Store Details</h3>
+        <p class="panel-description">Set your store's name and URL.</p>
+        
+        <form #storeForm="ngForm">
+          <div class="standard-form-group">
+            <label for="storeName">Store Name</label>
+            <input 
+              type="text" 
+              id="storeName" 
+              name="storeName" 
+              class="standard-form-control" 
+              [(ngModel)]="store!.name"
+              required
+            >
+            <div *ngIf="formErrors['name']" class="text-danger">
+              {{ formErrors['name'] }}
+            </div>
+          </div>
+          
+          <div class="standard-form-group">
+            <label for="storeUrl">Store URL</label>
+            <div class="url-input-group">
+              <input 
+                type="text" 
+                id="storeUrl" 
+                name="storeUrl" 
+                class="standard-form-control" 
+                [(ngModel)]="store!.url"
+                required
+                pattern="[a-z0-9-]+"
+                placeholder="my-store"
+              >
+            </div>
+            <small>Your store will be accessible at: yoursite.com/{{ store!.url || 'my-store' }}</small>
+            <div *ngIf="formErrors['url']" class="text-danger">
+              {{ formErrors['url'] }}
+            </div>
+          </div>
+          
+          <div class="standard-form-group">
+            <label for="bannerText">Banner Text</label>
+            <input 
+              type="text" 
+              id="bannerText" 
+              name="bannerText" 
+              class="standard-form-control" 
+              [(ngModel)]="store!.bannerText"
+            >
+          </div>
+          
+          <div class="standard-form-group">
+            <label for="logoText">Logo Text</label>
+            <input 
+              type="text" 
+              id="logoText" 
+              name="logoText" 
+              class="standard-form-control" 
+              [(ngModel)]="store!.logoText"
+            >
+          </div>
+        </form>
+      </div>
+      
+      <!-- Theme Tab -->
+      <div *ngIf="activeTab === 'theme'" class="tab-content">
+        <h3>Theme Settings</h3>
+        <p class="panel-description">Customize your store's colors and appearance.</p>
+        
+        <app-themes 
+          [currentStore]="store" 
+          (themeUpdated)="updateTheme($event)"
+          [inlineMode]="true">
+        </app-themes>
+      </div>
+      
+      <!-- Components Tab -->
+      <div *ngIf="activeTab === 'components'" class="tab-content">
+        <h3>Store Components</h3>
+        <p class="panel-description">Toggle components to customize your store's layout.</p>
+        
+        <div class="component-list">
+          <div *ngFor="let component of availableComponents" class="component-item">
+            <div class="component-info">
+              <span class="component-name">{{ component.name }}</span>
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="component.isSelected" (click)="toggleComponent(component)">
+                <span class="slider round"></span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
-
+      
+      <!-- Products Tab -->
+      <div *ngIf="activeTab === 'products' && !isInitialSetup" class="tab-content">
+        <h3>Products Management</h3>
+        <p class="panel-description">Add and manage your store's products.</p>
+        
+        <a class="standard-button primary" routerLink="/dashboard" [queryParams]="{page: 'Products'}">
+          Go to Product Management
+        </a>
+      </div>
+      
+      <!-- Action Buttons -->
       <div class="actions">
-        <button class="save-btn" (click)="saveChanges()">Save Changes</button>
+        <div *ngIf="saveError" class="alert alert-danger error-message">
+          {{ saveError }}
+        </div>
+        <button class="standard-button secondary" *ngIf="!isInitialSetup" (click)="viewStore()">
+          <i class="fa fa-eye"></i> View Store
+        </button>
+        <button class="standard-button primary" (click)="saveChanges()">
+          {{ isInitialSetup ? 'Create Store' : 'Save Changes' }}
+        </button>
       </div>
     </div>
 
     <!-- Right Column: Preview -->
     <div class="preview-panel">
-      <h3>Live Preview</h3>
-      <p class="panel-description">See your changes reflected live below.</p>
-      <div class="preview-frame-wrapper">
+      <div class="preview-header">
+        <h3>Live Store Preview</h3>
+        <p *ngIf="!isInitialSetup" class="panel-description">
+          Preview of your store at: <a [href]="'/' + store?.url" target="_blank">/{{ store?.url }}</a>
+        </p>
+        <p *ngIf="isInitialSetup" class="panel-description">See your changes reflected live below.</p>
+      </div>
+      <div class="preview-frame-wrapper live-store-preview-wrapper">
         <app-store-preview 
           [selectedComponents]="getSelectedComponentIds()" 
           [storeData]="store"
