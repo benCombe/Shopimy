@@ -64,6 +64,20 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
       this.user = u;
     });
     
+    // Default to "Overview" page
+    this.currentPage = "Overview";
+    
+    // First check for page in query params
+    this.route.queryParams.subscribe(params => {
+      if (params['page']) {
+        this.currentPage = params['page'];
+        // Update side nav selection if it's already initialized
+        if (this.sideNav) {
+          this.sideNav.setActive(params['page']);
+        }
+      }
+    });
+    
     // Check if the user has a store
     this.storeService.activeStore$.subscribe((store: StoreDetails) => {
       this.hasStore = !!store.id;
@@ -71,24 +85,20 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
       // If user has no store, show create store prompt
       if (!this.hasStore) {
         this.showCreateStorePrompt = true;
-        this.currentPage = "Store Editor";
+        // Only redirect to Store Editor if no specific page was requested in the URL
+        if (this.currentPage === "Overview") {
+          this.currentPage = "Store Editor";
+          // Update side nav selection if it's already initialized
+          if (this.sideNav) {
+            this.sideNav.setActive("Store Editor");
+          }
+        }
       } else {
         // Explicitly set to false if the user *does* have a store
         this.showCreateStorePrompt = false; 
       }
       
       this.loadingService.setIsLoading(false);
-      
-      // Check for page in query params
-      this.route.queryParams.subscribe(params => {
-        if (params['page']) {
-          this.currentPage = params['page'];
-          // Update side nav selection if it's already initialized
-          if (this.sideNav) {
-            this.sideNav.setActive(params['page']);
-          }
-        }
-      });
     });
   }
   

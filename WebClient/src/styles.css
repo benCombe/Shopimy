@@ -80,6 +80,43 @@ html, body {
   margin-right: 0 !important;
 }
 
+/* Add these rules to fix grid item overflow issues */
+.grid-item {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+app-product-management,
+app-overview,
+app-profile,
+app-settings,
+app-category-list,
+app-orders,
+app-themes,
+app-store-editor,
+app-promotions,
+app-analytics {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Additional style to fix table overflow */
+@media (max-width: 768px) {
+  .standard-table {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   width: var(--scrollbar-width);
