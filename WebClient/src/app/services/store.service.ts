@@ -25,11 +25,12 @@ interface Response {
   providedIn: 'root'
 })
 export class StoreService {
-  private apiUrl = `${environment.apiUrl}/store`;
+  private apiUrl = `${environment.apiUrl}/api/store`;
 
   // Base URLs for items and categories endpoints.
-  private itemBaseUrl = '/api/items';
-  private categoryBaseUrl = '/api/categories';
+  // These seem unused, potentially remove later if confirmed.
+  // private itemBaseUrl = '/api/items';
+  // private categoryBaseUrl = '/api/categories';
 
   activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "", []));
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
@@ -237,11 +238,17 @@ export class StoreService {
 
   // Retrieves categories from the API.
   getCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/categories`);
+    // Use the base apiUrl for the store controller, assuming categories are related or use a dedicated category service URL if available.
+    // If categories are under a different controller (e.g., /api/category), adjust accordingly.
+    // For now, assuming they are under /api/store/categories or similar - needs verification with backend routes.
+    // Using environment.apiUrl directly to ensure /api/ prefix:
+    return this.http.get<any[]>(`${environment.apiUrl}/api/categories`); // Ensure correct controller path
   }
 
   getRandomItemIdsByStore(storeId: number): Observable<number[]> {
-    return this.http.post<number[]>('http://localhost:5000/api/Categories/GetItemIdsByStore', storeId, {
+    // Use environment.apiUrl instead of hardcoding
+    const url = `${environment.apiUrl}/api/Categories/GetItemIdsByStore`; // Construct URL with environment variable
+    return this.http.post<number[]>(url, storeId, {
       headers: { 'Content-Type': 'application/json' }
     });
   }

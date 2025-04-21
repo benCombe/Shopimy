@@ -15,7 +15,7 @@ export interface Category {
 })
 
 export class CategoryService {
-  private baseUrl = `${environment.apiUrl}/categories`; // Updated to match backend URL
+  private baseUrl = `${environment.apiUrl}/api/categories`; // Add /api/ prefix
 
   constructor(private http: HttpClient) { }
 

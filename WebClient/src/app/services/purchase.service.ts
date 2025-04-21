@@ -12,7 +12,7 @@ export interface PurchaseHistoryResponse {
   providedIn: 'root'
 })
 export class PurchaseService {
-  private apiUrl = `${environment.apiUrl}/purchases`;
+  private apiUrl = `${environment.apiUrl}/api/purchases`;
 
   constructor(private http: HttpClient) { }
 

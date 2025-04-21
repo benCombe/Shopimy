@@ -15,7 +15,7 @@ export interface WishList {
   providedIn: 'root'
 })
 export class WishListService {
-  private apiUrl = `${environment.apiUrl}/wishlists`;
+  private apiUrl = `${environment.apiUrl}/api/wishlists`;
 
   constructor(private http: HttpClient) { }
 

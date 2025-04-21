@@ -12,7 +12,7 @@ import { User } from '../models/user';
 })
 export class UserService {
 
-  private apiUrl = `${environment.apiUrl}/account`;
+  private apiUrl = `${environment.apiUrl}/api/account`;
 
   private defaultUser: User = new User(
     0, 
