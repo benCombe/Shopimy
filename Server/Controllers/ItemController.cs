@@ -15,12 +15,7 @@ using System.Text.Json;
 
 namespace Server.Controllers
 {
-/* 
-    public class StoreResponse
-    {
-        public StoreDetails Store { get; set; }
-        public List<Category> Categories { get; set; }
-    } */
+
 
     [Route("api/[controller]")]
     [ApiController]
@@ -64,6 +59,7 @@ namespace Server.Controllers
             if (item == null || item.Count == 0) return NotFound();
             return Ok(item);
         }
+
 
         // GET: api/item/bystore/{storeId}
         [HttpGet("bystore/{storeId}")]
@@ -745,6 +741,35 @@ namespace Server.Controllers
         public DateTime? AvailTo { get; set; }
         public List<ProductVariantRequest> Variants { get; set; }
         public List<int> DeletedVariantIds { get; set; }
+
+         [HttpPost("DetailItem")]
+        [AllowAnonymous]
+        public async Task<IActionResult> DetailItem(int id)
+        {
+            var item = await _context.DetailItem.FromSqlRaw(@"SELECT
+                                                        l.list_id as ListId,
+                                                        i.item_id as ItemId,
+                                                        l.store_id as StoreId,
+                                                        l.category as CategoryId,
+                                                        l.name as Name,
+                                                        i.price as Price,
+                                                        i.colour as Colour,
+                                                        i.size as Size,
+                                                        i.type as Type,
+                                                        i.sale_price as SalePrice,
+                                                        i.quantity as Quantity,
+                                                        l.availFrom as AvailFrom,
+                                                        l.availTo as AvailTo,
+                                                        l.description as Description,
+                                                        l.currentRating as CurrentRating,
+                                                        img.blob as Blob
+                                                        FROM Items AS i
+                                                        JOIN Listing AS l ON l.list_id = i.list_id
+                                                        JOIN ItemImages AS img ON img.item_id= i.item_id
+                                                        where l.list_id ={0}
+                                                        order by i.price;",id).ToListAsync();
+            return Ok(item);
+        }
     }
 
     public class ProductVariantRequest

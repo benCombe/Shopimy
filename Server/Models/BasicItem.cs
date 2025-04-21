@@ -11,6 +11,8 @@ namespace Server.Models
         public int ListId {get; set;}
         [Column("store_id")]
         public int StoreId {get; set;}
+        [Column("item_id")]
+        public int ItemId {get; set;}
         [Column("name")]
         public string Name {get; set;} = string.Empty;
         [Column("price")]
