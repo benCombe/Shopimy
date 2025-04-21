@@ -1,7 +1,12 @@
 <div id="main">
     <div class="section">
         <div class="section-header">
-            <h2>Product Management</h2>
+            <div class="header-actions">
+                <button class="standard-button secondary" (click)="navigateToStoreEditor()">
+                    <i class="fa fa-arrow-left"></i> Back to Store Editor
+                </button>
+                <h2>Product Management</h2>
+            </div>
             <p class="section-description">Manage your products and inventory</p>
             <button class="standard-button" (click)="showAddProductForm()" aria-label="Add new product" *ngIf="currentListId === null">+ Add New Product</button>
         </div>

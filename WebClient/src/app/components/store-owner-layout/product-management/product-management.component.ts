@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -13,6 +13,7 @@ import {
 } from '../../../services/item.service';
 import { CategoryService, Category } from '../../../services/category.service';
 import { StoreService } from '../../../services/store.service';
+import { Router } from '@angular/router';
 
 // Interface for the variant form group structure (includes local state for file/preview)
 interface ProductVariantFormValue {
@@ -66,7 +67,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private itemService: ItemService,
     private categoryService: CategoryService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private router: Router
   ) {
     this.productForm = this.createProductForm();
   }
@@ -443,5 +445,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   getTotalStock(product: ProductListItem): number {
     return product.totalQuantity;
+  }
+
+  navigateToStoreEditor(): void {
+    this.router.navigate(['/dashboard'], { queryParams: { page: 'Store Editor' } });
   }
 }

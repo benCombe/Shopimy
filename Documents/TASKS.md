@@ -22,6 +22,19 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] ⚠️ **Refine User Profile Update:** Ensure all relevant user fields can be updated securely via the profile page and backend. (`ProfileComponent` - Store Owner, `AccountController`)
 
 ### Store & Product Management (Seller)
+-   [ ] 🔥 **Ensure Store Creation/Editing Saves All Config & Handles User State:**
+    -   **Description:** Verify and implement the necessary changes to ensure that when a store is created or updated via the `StoreEditorComponent`, all relevant theme data (colors, fonts) and component visibility settings are correctly persisted to the database (`StoreThemes` table). Additionally, ensure the `StoreOwnerDashboardComponent` correctly handles the user experience: showing a "Create Store" prompt/flow only if the user has no store registered, and providing an "Edit Store" option otherwise.
+    -   **Acceptance Criteria:**
+        *   The `StoreThemes` table in `Database/TableCreation.sql` includes a `component_visibility` column (e.g., `NVARCHAR(MAX)`).
+        *   Backend models (`StoreTheme.cs`, `StoreDetails.cs`) correctly handle the `ComponentVisibility` data (likely as a serialized string).
+        *   `StoreController.cs` (`CreateStore`, `UpdateStore`) correctly saves/updates the `theme_colour1`-`3`, `font_colour`, `font_family`, `banner_text`, `logo_text`, and `component_visibility` fields in the `StoreThemes` table within a database transaction.
+        *   Frontend models (`StoreDetails.ts`, `ComponentVisibility.model.ts`) correctly represent this data.
+        *   `StoreEditorComponent.ts` correctly gathers theme data (from `ThemesComponent` output or internal state) and component visibility data (from `availableComponents` state) and includes it in the payload sent via `StoreService`.
+        *   `StoreService.ts` correctly serializes/deserializes `componentVisibility` when interacting with the backend.
+        *   `StoreOwnerDashboardComponent.ts` correctly uses the `hasStore` flag (derived from `StoreService.activeStore$`) to conditionally display either a "Create Store" prompt (if `!hasStore`) or allow navigation to the editor for an existing store (if `hasStore`).
+        *   The "Create Store" prompt correctly directs the user to the `StoreEditorComponent` (or the appropriate starting point for creation).
+    -   **Files:** `Database/TableCreation.sql`, `Server/Models/StoreTheme.cs`, `Server/Models/StoreDetails.cs`, `Server/Controllers/StoreController.cs`, `WebClient/src/app/models/store-details.ts`, `WebClient/src/app/models/component-visibility.model.ts`, `WebClient/src/app/components/store-editor/store-editor.component.ts`, `WebClient/src/app/services/store.service.ts`, `WebClient/src/app/components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component.ts`, `WebClient/src/app/components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component.html`
+    -   **Priority:** 🔥 High
 -   [X] 🔥 **Implement Full Product Management Lifecycle:** Refactored UI and backend logic for adding, editing (including variants and image URLs per variant), and deleting products. Implemented Draft/Publish functionality using `availFrom` date. (`ProductManagementComponent.ts`, `ItemService.ts`, `ItemController.cs`, `ImageController.cs`)
 -   [X] 🔥 **Implement Category Management UI:** Create forms and logic for adding, editing (including parent), and deleting categories. (`CategoryListComponent`, `CategoryFormComponent` - needs creation/integration, `CategoriesController`)
 -   [ ] ⚠️ **Implement Theme/Logo/Banner Saving:** Connect the frontend theme/logo/banner selectors to backend endpoints to persist customization changes. (`ThemesComponent`, `LogoSelectorComponent`, `StoreController` needs update endpoints)

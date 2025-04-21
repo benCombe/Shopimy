@@ -95,7 +95,37 @@ export class UserService {
 
   // Update user profile
   updateUserProfile(user: User): Observable<boolean> {
-    return this.http.put<boolean>(`${this.apiUrl}/profile`, user);
+    const token = this.cookieService.get('auth_token');
+    if (!token) return new Observable(observer => observer.error('No token found'));
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    // Create profile update object - excluding Email and Password
+    const profileUpdate = {
+      FirstName: user.FirstName,
+      LastName: user.LastName,
+      Phone: user.Phone,
+      Address: user.Address,
+      Country: user.Country
+    };
+    
+    return this.http.put<boolean>(`${this.apiUrl}/profile`, profileUpdate, { headers }).pipe(
+      tap(success => {
+        if (success) {
+          // Update the activeUser$ BehaviorSubject
+          const currentUser = this.activeUserSubject.getValue();
+          const updatedUser = {
+            ...currentUser,
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            Phone: user.Phone,
+            Address: user.Address,
+            Country: user.Country
+          };
+          this.activeUserSubject.next(updatedUser as User);
+        }
+      })
+    );
   }
 
   // Logout User

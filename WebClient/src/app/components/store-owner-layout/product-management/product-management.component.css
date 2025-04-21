@@ -385,5 +385,16 @@
   }
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.header-actions button {
+    margin-right: 10px;
+}
+
 
 
