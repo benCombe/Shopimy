@@ -728,11 +728,12 @@ namespace Server.Controllers
                                                         FROM Items AS i
                                                         JOIN Listing AS l ON l.list_id = i.list_id
                                                         JOIN ItemImages AS img ON img.item_id= i.item_id
-                                                        where l.list_id = @listId
-                                                        order by i.price;", 
-                                                        new SqlParameter("@listId", id)).ToListAsync();
+                                                        where l.list_id ={0}
+                                                        order by i.price;",id).ToListAsync();
             return Ok(item);
         }
+
+
 
         private int GetCurrentStoreId()
         {
@@ -769,6 +770,8 @@ namespace Server.Controllers
 
             return userId;
         }
+
+
     }
 
     public class ProductCreateRequest
@@ -789,6 +792,8 @@ namespace Server.Controllers
         public int CategoryId { get; set; }
         public DateTime? AvailFrom { get; set; }
         public DateTime? AvailTo { get; set; }
+        public List<ProductVariantRequest> Variants { get; set; }
+        public List<int> DeletedVariantIds { get; set; }
         public required List<ProductVariantRequest> Variants { get; set; }
         public required List<int> DeletedVariantIds { get; set; }
     }

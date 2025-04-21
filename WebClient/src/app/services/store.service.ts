@@ -35,7 +35,7 @@ export class StoreService {
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private router: Router,
     private cookieService: CookieService // Inject CookieService
   ) { }
@@ -45,7 +45,6 @@ export class StoreService {
   private currentThemeSubject = new BehaviorSubject<string>('light');
   currentTheme$ = this.currentThemeSubject.asObservable();
 
-  // TODO: Potentially load initial theme from a persistent source (e.g., backend, localStorage)
 
   // Method to create a new store.
   createStore(storeData: StoreDetails): Observable<StoreDetails> {
@@ -134,16 +133,16 @@ export class StoreService {
   private prepareStoreDataForApi(store: StoreDetails): StoreDetailsForApi {
     // Create a copy of the store object
     const storeDataCopy = { ...store } as any;
-    
+
     // Ensure all required fields have valid values
     if (!storeDataCopy.name || storeDataCopy.name === 'DEFAULT') {
       storeDataCopy.name = "My Store";
     }
-    
+
     if (!storeDataCopy.url || storeDataCopy.url === 'DEFAULT') {
       storeDataCopy.url = "my-store";
     }
-    
+
     // Validate color formats - ensure they start with #
     if (!storeDataCopy.theme_1 || !storeDataCopy.theme_1.startsWith('#')) {
       storeDataCopy.theme_1 = "#393727";
@@ -157,7 +156,7 @@ export class StoreService {
     if (!storeDataCopy.fontColor || !storeDataCopy.fontColor.startsWith('#')) {
       storeDataCopy.fontColor = "#333333";
     }
-    
+
     // Ensure font family is set
     if (!storeDataCopy.fontFamily) {
       storeDataCopy.fontFamily = "sans-serif";
@@ -181,7 +180,7 @@ export class StoreService {
     } else {
       storeDataCopy.bannerURL = ''; // Empty string if no URL
     }
-    
+
     // Serialize componentVisibility if it exists
     if (!storeDataCopy.componentVisibility || Object.keys(storeDataCopy.componentVisibility).length === 0) {
       // Set default component visibility if missing
@@ -189,7 +188,7 @@ export class StoreService {
     } else if (typeof storeDataCopy.componentVisibility !== 'string') {
       storeDataCopy.componentVisibility = JSON.stringify(storeDataCopy.componentVisibility);
     }
-    
+
     return storeDataCopy as StoreDetailsForApi;
   }
 
@@ -211,9 +210,9 @@ export class StoreService {
     } else {
       componentVisibility = DEFAULT_VISIBILITY;
     }
-    
+
     return new StoreDetails(
-      store.id, 
+      store.id,
       store.url,
       store.name,
       store.theme_1,
@@ -272,17 +271,16 @@ export class StoreService {
   }
 
   updateStore(store: StoreDetails): Observable<StoreDetails> {
-    // Convert to API format (serialize componentVisibility)
-    const storeDataForApi = this.prepareStoreDataForApi(store);
-    console.log("Updating store with data:", JSON.stringify(storeDataForApi, null, 2));
-    
-    const token = this.cookieService.get('auth_token'); // Get token from CookieService
-    if (!token) {
+    // Update the local BehaviorSubject
+    this.activeStoreSubject.next(store);
+    var storeDataForApi = store; //TODO FIX
+
+    var headers: HttpHeaders | { [header: string]: string | string[]; } | undefined = undefined; //TODO this.cookieService.get('auth_token'); // Get token from CookieService
+    /*if (!headers) {
       console.error('Authentication token not found. Cannot update store.');
       return throwError(() => new Error('Authentication required.'));
-    }
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // Create headers
-    
+    }*/
+
     // Send update to backend
     return this.http.put<StoreDetails>(`${this.apiUrl}/update`, storeDataForApi, { headers }).pipe( // Add headers to request
       map(response => this.deserializeStore(response)),
@@ -304,11 +302,11 @@ export class StoreService {
   // Update component visibility
   updateComponentVisibility(visibility: ComponentVisibility): Observable<StoreDetails> {
     const currentStore = this.activeStoreSubject.value;
-    const updatedStore = { 
-      ...currentStore, 
-      componentVisibility: visibility 
+    const updatedStore = {
+      ...currentStore,
+      componentVisibility: visibility
     };
-    
+
     return this.updateStore(updatedStore);
   }
 

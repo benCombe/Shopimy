@@ -15,7 +15,7 @@ export interface Category {
 })
 
 export class CategoryService {
-  private baseUrl = `${environment.apiUrl}/api/categories`; // Updated to match backend URL
+  private baseUrl = `${environment.apiUrl}/categories`; // Updated to match backend URL
 
   constructor(private http: HttpClient) { }
 
@@ -86,7 +86,7 @@ export class CategoryService {
 
   getItemIdsByStore(storeId: number): Observable<number[]> {
     const url = `${this.baseUrl}/GetItemIdsByStore`;
-    
+
     return this.http.post<number[]>(url, storeId).pipe(
       catchError(error => {
         console.error(`Error fetching items for store ${storeId}:`, error);
