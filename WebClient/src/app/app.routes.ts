@@ -18,7 +18,6 @@ import { SuccessComponent } from './components/SuccessComponent';
 import { CancelComponent } from './components/CancelComponent';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { OrdersComponent } from './components/store-owner-layout/orders/orders.component';
-import { AuthGuard } from './guards/auth.guard';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
@@ -27,32 +26,12 @@ export const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent},
   { path: 'login', component: LoginComponent },
   { path: 'profile', redirectTo: 'dashboard', pathMatch: 'full' },
-  { 
-    path: 'dashboard', 
-    component: StoreOwnerDashboardComponent,
-    canActivate: [AuthGuard]
-  },
+  { path: 'dashboard', component: StoreOwnerDashboardComponent },
   { path: '404', component: PageNotFoundComponent },
-  { 
-    path: 'dashboard/categories', 
-    component: CategoryListComponent,
-    canActivate: [AuthGuard]
-  },
-  { 
-    path: 'dashboard/categories/new', 
-    component: CategoryFormComponent,
-    canActivate: [AuthGuard]
-  },
-  { 
-    path: 'dashboard/categories/edit/:id', 
-    component: CategoryFormComponent,
-    canActivate: [AuthGuard]
-  },
-  { 
-    path: 'dashboard/orders', 
-    component: OrdersComponent,
-    canActivate: [AuthGuard]
-  },
+  { path: 'dashboard/categories', component: CategoryListComponent },
+  { path: 'dashboard/categories/new', component: CategoryFormComponent },
+  { path: 'dashboard/categories/edit/:id', component: CategoryFormComponent },
+  { path: 'dashboard/orders', component: OrdersComponent },
   { path: 'items', component: ItemListComponent },
   { path: 'items/:id', component: ItemDetailComponent },
   { path: 'categories', component: CategoryListComponent},

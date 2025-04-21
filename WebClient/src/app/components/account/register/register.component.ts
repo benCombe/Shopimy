@@ -177,7 +177,7 @@ export class RegisterComponent implements OnInit {
       this.userService.register(user).subscribe({
         next: () => {
           console.log('Registration Successful, Logging in...');
-          this.router.navigate(['/dashboard'], { queryParams: { page: 'Overview' } });
+          this.router.navigate(['/dashboard']);
           this.isLoading = false;
         },
         error: err => {

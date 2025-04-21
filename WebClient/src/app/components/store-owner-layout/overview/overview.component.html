@@ -59,7 +59,23 @@
       </div>
       <div class="card-content">
         <div class="graph-container">
-          <img class="analytics-img" src="resources/images/tempGraph.jpg" alt="Store Visits Graph">
+          <div *ngIf="visitChartLoading" class="loading-container">
+            <div class="loading-spinner"></div>
+            <p>Loading visit data...</p>
+          </div>
+          
+          <div *ngIf="visitChartError" class="error-message">
+            <p>{{ visitChartError }}</p>
+            <button class="standard-button" (click)="retryLoadVisitData()">Retry</button>
+          </div>
+          
+          <div *ngIf="!visitChartLoading && !visitChartError" class="chart-wrapper">
+            <canvas #visitsChart></canvas>
+            <div class="chart-summary">
+              <span class="total-count">{{ totalVisits }}</span>
+              <span class="total-label">total visits</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

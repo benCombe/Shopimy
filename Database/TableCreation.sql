@@ -174,3 +174,13 @@ CREATE TABLE OrderItems (
     FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
     FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION -- Assuming item_id refers to Items table PK
 );
+
+-- New Store Visits table for tracking store visit analytics
+CREATE TABLE StoreVisits (
+    visit_id INT IDENTITY(1,1) PRIMARY KEY,
+    store_id INT NOT NULL,
+    user_id INT NULL, -- NULL for guest/unauthenticated visits
+    visit_timestamp DATETIME2 DEFAULT SYSUTCDATETIME(),
+    FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION
+);

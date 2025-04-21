@@ -103,6 +103,39 @@ namespace Server.Controllers
                 themes?.ComponentVisibility ?? "{}" // Default Component Visibility (empty JSON)
             );
 
+            // Log this visit asynchronously
+            try
+            {
+                int? userId = null;
+                // Check if the user is authenticated
+                if (User?.Identity?.IsAuthenticated == true)
+                {
+                    // Try to get the user ID from the claims
+                    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                    if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int parsedUserId))
+                    {
+                        userId = parsedUserId;
+                    }
+                }
+
+                // Create the visit record
+                var storeVisit = new StoreVisit
+                {
+                    StoreId = store.StoreId,
+                    UserId = userId,
+                    VisitTimestamp = DateTime.UtcNow
+                };
+
+                // Add and save asynchronously
+                _context.StoreVisits.Add(storeVisit);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't fail the main request
+                Console.WriteLine($"Error logging store visit: {ex.Message}");
+            }
+
             // ✅ Return both store details and categories
             return Ok(storeDetails);
         }

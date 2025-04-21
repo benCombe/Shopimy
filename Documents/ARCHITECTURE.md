@@ -30,6 +30,7 @@ The frontend is built using Angular and is responsible for rendering the user in
     *   `StoreService`: Manages active store data and theme information.
     *   `ShoppingService`: Manages the user's shopping cart state.
     *   `PaymentService`: Interacts with the backend for payment setup and processing.
+    *   `AnalyticsService`: Fetches store analytic data such as visitor statistics.
 *   **API Communication:** Uses Angular's `HttpClient` (`app.config.ts`) to interact with the backend REST API. API endpoint defined in `environments/environment.ts`.
 *   **Payment Integration:** Uses `@stripe/stripe-js` (`package.json`) for client-side tokenization and interaction with Stripe Elements (likely within payment-related components).
 
@@ -48,6 +49,7 @@ The backend is built using .NET and exposes a RESTful API.
     *   `ShoppingCartController`: Manages shopping cart persistence for logged-in users.
     *   `ReviewsController`: Handles product reviews.
     *   `OrdersController`: Manages fetching and potentially updating order details for store owners.
+    *   `AnalyticsController`: Provides store performance analytics data, including visitor statistics.
 *   **Authentication & Authorization:** Uses JWT Bearer tokens (`Program.cs`, `AccountController.cs`). Tokens are generated upon login and validated for protected endpoints. User identity is extracted from claims.
 *   **Data Access:** Uses Entity Framework Core (`Data/AppDbContext.cs`) to interact with the SQL Server database. Repositories (`Repositories/`) abstract data access logic (e.g., `CategoryRepository`). Some raw SQL is used for complex queries.
 *   **Service Layer:** Encapsulates business logic (`Services/`). Examples: `CategoryService`, `ReviewService`.
@@ -72,6 +74,7 @@ The database stores all persistent application data.
     *   `Reviews`: Customer reviews and ratings for products.
     *   `Orders`: Stores main order details (user, store, date, total, status, address).
     *   `OrderItems`: Links orders to specific items purchased (item ID, quantity, price paid).
+    *   `StoreVisits`: Tracks visits to store pages (store_id, user_id, visit_timestamp).
 *   **Data Initialization:** Sample data is provided in `Database/SampleData.sql`.
 
 ## 6. External Services Integration
@@ -124,6 +127,14 @@ The database stores all persistent application data.
     4.  `OrdersController` fetches orders for that store from the `Orders` and `OrderItems` tables, joining with `Users` and `Listing`/`ItemImages` for details.
     5.  Backend returns the list of `Order` objects.
     6.  `OrdersComponent` displays the orders.
+*   **Store Analytics View:**
+    1.  Store owner navigates to the dashboard overview page (`OverviewComponent`).
+    2.  `AnalyticsService` calls Backend `/api/analytics/store-visits` (with authentication token).
+    3.  `AnalyticsController` verifies the token and retrieves the store ID from claims.
+    4.  `AnalyticsController` queries the `StoreVisits` table, aggregating visit data by day or month for the specified time period.
+    5.  Backend returns the visit data as labels (dates) and data points (visit counts).
+    6.  `OverviewComponent` displays the visit data in a Chart.js line chart.
+    7.  When a user visits a store page, the `StoreController.GetStoreDetails` method logs a new record in the `StoreVisits` table.
 
 ## 8. Deployment Overview (Conceptual)
 
