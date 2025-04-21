@@ -28,271 +28,7 @@ import { Router } from '@angular/router';
     RouterLink
   ],
   templateUrl: './store-editor.component.html',
-  styles: [`
-    .editor-container {
-      padding: 20px;
-      max-width: 1600px;
-      margin: 0 auto;
-      font-family: var(--main-font-fam);
-    }
-    
-    .editor-header {
-      margin-bottom: 24px;
-    }
-    
-    .editor-header h2 {
-      font-size: 1.75rem;
-      color: var(--main-color);
-      margin: 0 0 6px 0;
-      font-family: var(--main-font-fam);
-    }
-    
-    .description {
-      color: var(--main-color);
-      font-size: 0.95rem;
-      opacity: 0.8;
-    }
-    
-    .editor-content {
-      display: flex;
-      gap: 32px;
-      overflow: hidden;
-    }
-    
-    .component-panel {
-      width: 35%;
-      min-width: 360px;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      background-color: white;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-    
-    .component-panel h3 {
-      font-size: 1.1rem;
-      color: var(--main-color);
-      margin: 0 0 12px 0;
-    }
-    
-    .panel-description {
-      color: var(--main-color);
-      font-size: 0.9rem;
-      opacity: 0.7;
-      margin-bottom: 16px;
-    }
-    
-    .component-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    
-    .component-item {
-      background-color: var(--third-color);
-      border-radius: 6px;
-      padding: 12px 16px;
-      transition: all 0.2s;
-    }
-    
-    .component-item:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    
-    .component-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .component-name {
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--main-color);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 40px;
-      height: 22px;
-      flex-shrink: 0;
-    }
-    
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-    }
-    
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .4s;
-    }
-    
-    input:checked + .slider {
-      background-color: var(--second-color);
-    }
-    
-    input:focus + .slider {
-      box-shadow: 0 0 1px var(--second-color);
-    }
-    
-    input:checked + .slider:before {
-      transform: translateX(18px);
-    }
-    
-    .slider.round {
-      border-radius: 34px;
-    }
-    
-    .slider.round:before {
-      border-radius: 50%;
-    }
-    
-    .preview-panel {
-      flex: 1;
-      min-width: 0;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 600px;
-    }
-    
-    .preview-panel h3 {
-      font-size: 1.1rem;
-      color: var(--main-color);
-      margin: 0 0 8px 0;
-      padding: 16px 16px 0 16px;
-    }
-    
-    .preview-panel .panel-description {
-      padding: 0 16px;
-    }
-    
-    .preview-frame-wrapper {
-      flex: 1;
-      background-color: var(--third-color);
-      border-radius: 0 0 8px 8px;
-      overflow: hidden;
-      position: relative;
-      min-height: 500px;
-    }
-    
-    app-store-preview {
-      display: block;
-      width: 100%;
-      height: 100%;
-      min-height: 500px;
-    }
-    
-    .actions {
-      margin-top: auto;
-      padding-top: 24px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-    
-    .standard-form-group {
-      margin-bottom: 16px;
-    }
-    
-    .standard-form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 0.9rem;
-      color: var(--main-color);
-    }
-    
-    .standard-form-control {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      font-family: var(--main-font-fam);
-    }
-    
-    .text-danger {
-      color: #dc3545;
-      font-size: 0.8rem;
-      margin-top: 4px;
-    }
-    
-    .tabs {
-      display: flex;
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 16px;
-    }
-    
-    .tab {
-      padding: 8px 16px;
-      cursor: pointer;
-      color: var(--main-color);
-      font-size: 0.9rem;
-      border-bottom: 2px solid transparent;
-    }
-    
-    .tab.active {
-      border-bottom-color: var(--second-color);
-      font-weight: 500;
-    }
-    
-    .tab-content {
-      min-height: 300px;
-    }
-    
-    .theme-preview {
-      margin-top: 20px;
-    }
-    
-    @media (min-width: 1440px) {
-      .themes-container {
-        padding: 32px;
-      }
-      
-      .component-panel {
-        gap: 32px;
-      }
-      
-      .preview-panel {
-        min-height: 700px;
-      }
-      
-      .preview-frame-wrapper {
-        min-height: 600px;
-      }
-    }
-  `]
+  styleUrls: ['./store-editor.component.css']
 })
 export class StoreEditorComponent implements OnInit, OnDestroy {
   @ViewChild('storeForm') storeForm!: NgForm;
@@ -437,8 +173,13 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
   }
 
   updatePreview() {
-    // This will be automatically handled by Angular's change detection
-    // as the inputs to the StorePreviewComponent will be updated
+    // Force change detection by creating a new reference for store
+    if (this.store) {
+      this.store = { ...this.store };
+    }
+    
+    // The change detection will automatically update the preview component
+    console.log("Preview updated with components:", this.getSelectedComponentIds());
   }
 
   getSelectedComponentIds(): string[] {
@@ -559,9 +300,21 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
   
   // Method to navigate to the store's public page
   viewStore() {
-    if (this.store && this.store.url) {
-      window.open(`/${this.store.url}`, '_blank');
+    if (!this.store || !this.store.url) {
+      this.saveError = 'Please save your store first to view it.';
+      return;
     }
+    
+    // Ensure we have a valid URL
+    const storeUrl = this.store.url.trim();
+    if (!storeUrl) {
+      this.saveError = 'Your store URL is empty. Please set a valid URL and save your store.';
+      this.activeTab = 'basic';
+      return;
+    }
+    
+    // Open in a new tab
+    window.open(`/${storeUrl}`, '_blank');
   }
 
   // Set correct URL for your store in the preview component
