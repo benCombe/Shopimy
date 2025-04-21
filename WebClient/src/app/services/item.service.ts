@@ -11,8 +11,8 @@ export interface ProductCreatePayload {
   name: string;
   description: string;
   categoryId: number;
-  availFrom?: Date;
-  availTo?: Date;
+  availFrom?: Date | null;
+  availTo?: Date | null;
   variants: ProductVariantPayload[];
 }
 
@@ -20,8 +20,8 @@ export interface ProductUpdatePayload {
   name: string;
   description: string;
   categoryId: number;
-  availFrom?: Date;
-  availTo?: Date;
+  availFrom?: Date | null;
+  availTo?: Date | null;
   variants: ProductVariantPayload[];
   deletedVariantIds?: number[];
 }
@@ -57,6 +57,9 @@ export interface ProductListItem {
   maxPrice: number;
   totalQuantity: number;
   imageUrl?: string;
+  availFrom?: Date | null;
+  availTo?: Date | null;
+  status?: 'Draft' | 'Published' | 'Scheduled' | 'Expired';
 }
 
 // Interface for detailed product with variants
@@ -161,8 +164,8 @@ export class ItemService {
   // Upload a product image (base64)
   uploadProductImage(imageData: string): Observable<ImageUploadResponse> {
     const payload: ImageUploadRequest = { imageData };
-    
-    return this.http.post<ImageUploadResponse>(`${this.apiUrl}/upload-image`, payload).pipe(
+    // Point to the new ImageController endpoint
+    return this.http.post<ImageUploadResponse>(`${environment.apiUrl}/api/image/upload`, payload).pipe(
       catchError(error => {
         console.error('Error uploading image:', error);
         throw error;

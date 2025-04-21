@@ -95,6 +95,127 @@ namespace Server.Migrations
                     b.ToTable("Listing", (string)null);
                 });
 
+            modelBuilder.Entity("Server.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StripePaymentIntentId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StripeSessionId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderItems", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.OrderLogEntry", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("order_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+
+                    b.Property<string>("DeliveryAddress")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("delivery_address");
+
+                    b.Property<DateTime?>("LogTimestamp")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("log_timestamp");
+
+                    b.Property<DateTime?>("OrderDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("order_date");
+
+                    b.Property<string>("OrderStatus")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("order_status");
+
+                    b.Property<string>("PurchaserEmail")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("purchaser_email");
+
+                    b.Property<int>("PurchaserId")
+                        .HasColumnType("int")
+                        .HasColumnName("purchaser_id");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int")
+                        .HasColumnName("store_id");
+
+                    b.Property<string>("StripeToken")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("stripe_token");
+
+                    b.Property<decimal?>("TotalAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total_amount");
+
+                    b.HasKey("OrderId");
+
+                    b.ToTable("OrderLog", (string)null);
+                });
+
             modelBuilder.Entity("Server.Models.Review", b =>
                 {
                     b.Property<int>("Id")
@@ -204,6 +325,11 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("banner_text");
+
+                    b.Property<string>("ComponentVisibility")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("component_visibility");
 
                     b.Property<string>("FontColor")
                         .IsRequired()
@@ -315,7 +441,7 @@ namespace Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Shopimy.Server.Models.Category", b =>
@@ -377,6 +503,33 @@ namespace Server.Migrations
                         .HasForeignKey("Server.Models.ActiveUser", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Server.Models.Order", b =>
+                {
+                    b.HasOne("Server.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Server.Models.OrderItem", b =>
+                {
+                    b.HasOne("Server.Models.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Server.Models.Order", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

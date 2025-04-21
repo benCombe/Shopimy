@@ -1,23 +1,30 @@
 <div id="main">
     <div class="section">
         <div class="section-header">
-            <h2>Product Management</h2>
+            <div class="header-actions">
+                <button class="standard-button secondary" (click)="navigateToStoreEditor()">
+                    <i class="fa fa-arrow-left"></i> Back to Store Editor
+                </button>
+                <h2>Product Management</h2>
+            </div>
             <p class="section-description">Manage your products and inventory</p>
-            <button class="standard-button" (click)="showAddProductForm()" aria-label="Add new product">+ Add New Product</button>
+            <button class="standard-button" (click)="showAddProductForm()" aria-label="Add new product" *ngIf="currentListId === null">+ Add New Product</button>
         </div>
 
         <!-- Product Form (Add/Edit) -->
-        <div class="product-form-container" *ngIf="isEditMode || currentProductId === null && productForm.dirty">
+        <!-- Show form if adding new OR if in edit mode -->
+        <div class="product-form-container" *ngIf="!isEditMode || currentListId !== null">
             <h3>{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h3>
-            <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+            <form [formGroup]="productForm">
+
                 <!-- Basic Product Info -->
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name">Product Name *</label>
-                        <input 
-                            id="name" 
-                            type="text" 
-                            formControlName="name" 
+                        <input
+                            id="name"
+                            type="text"
+                            formControlName="name"
                             placeholder="Enter product name"
                             [class.error]="productForm.get('name')?.invalid && productForm.get('name')?.touched"
                             aria-required="true">
@@ -28,8 +35,8 @@
 
                     <div class="form-group">
                         <label for="categoryId">Category *</label>
-                        <select 
-                            id="categoryId" 
+                        <select
+                            id="categoryId"
                             formControlName="categoryId"
                             [class.error]="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched"
                             aria-required="true">
@@ -46,114 +53,143 @@
 
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea 
-                        id="description" 
-                        formControlName="description" 
-                        rows="4" 
+                    <textarea
+                        id="description"
+                        formControlName="description"
+                        rows="4"
                         placeholder="Enter product description"
                         [class.error]="productForm.get('description')?.invalid && productForm.get('description')?.touched">
                     </textarea>
-                    <div class="error-message" *ngIf="productForm.get('description')?.invalid && productForm.get('description')?.touched">
+                    <div class="error-message" *ngIf="productForm.get('description')?.errors?.['maxlength'] && productForm.get('description')?.touched">
                         Description too long (max 1000 characters)
                     </div>
                 </div>
-                
-                <!-- Product Image Section -->
-                <div class="image-section">
-                    <label>Product Image</label>
-                    
-                    <div class="image-upload-container">
-                        <div class="image-preview-container" *ngIf="imagePreview; else noImage">
-                            <img [src]="imagePreview" alt="Product preview" class="image-preview">
-                            <button type="button" class="remove-image-btn" (click)="removeSelectedImage()" aria-label="Remove image">✕</button>
-                        </div>
-                        
-                        <ng-template #noImage>
-                            <div class="no-image-placeholder">
-                                <i class="fa fa-image"></i>
-                                <span>No image selected</span>
-                            </div>
-                        </ng-template>
-                        
-                        <div class="upload-controls">
-                            <input 
-                                type="file" 
-                                id="product-image" 
-                                accept="image/*" 
-                                (change)="onFileSelected($event)" 
-                                style="display: none"
-                                aria-label="Upload product image">
-                            <button 
-                                type="button" 
-                                class="standard-button small" 
-                                (click)="openFileInput()">
-                                {{ imagePreview ? 'Change Image' : 'Upload Image' }}
-                            </button>
-                            <small class="image-hint">Recommended size: 800x600px, max 2MB</small>
-                        </div>
+
+                 <!-- Availability Dates -->
+                 <div class="form-row">
+                    <div class="form-group">
+                        <label for="availFrom">Available From (Optional)</label>
+                        <input
+                            id="availFrom"
+                            type="date"
+                            formControlName="availFrom"
+                            [class.error]="productForm.get('availFrom')?.invalid && productForm.get('availFrom')?.touched">
+                        <small class="form-hint">Leave blank to keep product as Draft</small>
                     </div>
-                    
-                    <!-- Hidden field to store the image URL -->
-                    <input type="hidden" formControlName="imageUrl">
+                    <div class="form-group">
+                        <label for="availTo">Available Until (Optional)</label>
+                        <input
+                            id="availTo"
+                            type="date"
+                            formControlName="availTo"
+                            [class.error]="productForm.get('availTo')?.invalid && productForm.get('availTo')?.touched">
+                         <small class="form-hint">Leave blank for no end date</small>
+                    </div>
                 </div>
 
                 <!-- Variants Section -->
                 <div class="variants-section">
                     <div class="section-header">
                         <h4>Product Variants</h4>
-                        <button type="button" class="standard-button small" (click)="addVariant()" aria-label="Add variant">+ Add Variant</button>
+                        <button type="button" class="standard-button small" (click)="addVariant()" aria-label="Add variant" [disabled]="isSaving">+ Add Variant</button>
                     </div>
 
                     <div formArrayName="variants">
-                        <div class="variant-container" *ngFor="let variant of variants.controls; let i = index">
+                        <!-- Loop through variant FormGroups -->
+                        <div class="variant-container" *ngFor="let variantGroup of variants.controls; let i = index">
                             <div [formGroupName]="i" class="variant-form">
                                 <div class="variant-header">
                                     <h5>Variant #{{ i + 1 }}</h5>
-                                    <button type="button" class="remove-variant" (click)="removeVariant(i)" *ngIf="variants.length > 1" aria-label="Remove variant">✕</button>
+                                    <!-- Remove button -->
+                                    <button type="button" class="remove-variant" (click)="removeVariant(i)" *ngIf="variants.length > 1" aria-label="Remove variant" [disabled]="isSaving">✕</button>
                                 </div>
-                                
+
+                                <!-- Variant Image Section -->
+                                <div class="image-section variant-image-section">
+                                    <label for="variant-image-{{i}}">Variant Image</label>
+                                    <div class="image-upload-container">
+                                        <!-- Preview -->
+                                        <div class="image-preview-container" *ngIf="variantGroup.get('imagePreview')?.value as previewUrl; else noImageVariant">
+                                            <img [src]="previewUrl" alt="Variant preview" class="image-preview">
+                                            <button type="button" class="remove-image-btn" (click)="removeSelectedImage(i)" aria-label="Remove variant image" [disabled]="isSaving">✕</button>
+                                        </div>
+                                        <ng-template #noImageVariant>
+                                            <div class="no-image-placeholder">
+                                                <i class="fa fa-image"></i>
+                                                <span>No image</span>
+                                            </div>
+                                        </ng-template>
+                                        <!-- Upload Controls -->
+                                        <div class="upload-controls">
+                                            <input
+                                                type="file"
+                                                id="variant-image-{{i}}"
+                                                accept="image/png, image/jpeg, image/gif"
+                                                (change)="onFileSelected($event, i)"
+                                                style="display: none"
+                                                aria-label="Upload variant image"
+                                                #variantFileInput>
+                                            <button
+                                                type="button"
+                                                class="standard-button small"
+                                                (click)="variantFileInput.click()"
+                                                [disabled]="isSaving">
+                                                {{ variantGroup.get('imageUrl')?.value ? 'Change Image' : 'Upload Image' }}
+                                            </button>
+                                            <small class="image-hint">Max 2MB</small>
+                                            <!-- Optional: Show uploading indicator -->
+                                            <!-- <div *ngIf="variantGroup.get('isUploadingImage')?.value" class="spinner-small"></div> -->
+                                        </div>
+                                    </div>
+                                    <!-- Hidden field might not be needed if we use getRawValue() -->
+                                    <!-- <input type="hidden" formControlName="imageUrl"> -->
+                                </div>
+
+
+                                <!-- Variant Fields -->
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="price-{{i}}">Price *</label>
-                                        <input 
-                                            id="price-{{i}}" 
-                                            type="number" 
-                                            formControlName="price" 
+                                        <input
+                                            id="price-{{i}}"
+                                            type="number"
+                                            formControlName="price"
                                             placeholder="0.00"
-                                            min="0"
+                                            min="0.01"
                                             step="0.01"
-                                            [class.error]="variant.get('price')?.invalid && variant.get('price')?.touched"
+                                            [class.error]="variantGroup.get('price')?.invalid && variantGroup.get('price')?.touched"
                                             aria-required="true">
-                                        <div class="error-message" *ngIf="variant.get('price')?.invalid && variant.get('price')?.touched">
-                                            Valid price is required
+                                        <div class="error-message" *ngIf="variantGroup.get('price')?.invalid && variantGroup.get('price')?.touched">
+                                            Price (>0) required
                                         </div>
                                     </div>
-
                                     <div class="form-group">
                                         <label for="salePrice-{{i}}">Sale Price</label>
-                                        <input 
-                                            id="salePrice-{{i}}" 
-                                            type="number" 
-                                            formControlName="salePrice" 
+                                        <input
+                                            id="salePrice-{{i}}"
+                                            type="number"
+                                            formControlName="salePrice"
                                             placeholder="Optional"
                                             min="0"
                                             step="0.01"
-                                            [class.error]="variant.get('salePrice')?.invalid && variant.get('salePrice')?.touched">
+                                            [class.error]="variantGroup.get('salePrice')?.invalid && variantGroup.get('salePrice')?.touched">
+                                        <div class="error-message" *ngIf="variantGroup.get('salePrice')?.errors?.['min'] && variantGroup.get('salePrice')?.touched">
+                                            Must be >= 0
+                                        </div>
                                     </div>
-
                                     <div class="form-group">
                                         <label for="quantity-{{i}}">Quantity *</label>
-                                        <input 
-                                            id="quantity-{{i}}" 
-                                            type="number" 
-                                            formControlName="quantity" 
+                                        <input
+                                            id="quantity-{{i}}"
+                                            type="number"
+                                            formControlName="quantity"
                                             placeholder="0"
                                             min="0"
                                             step="1"
-                                            [class.error]="variant.get('quantity')?.invalid && variant.get('quantity')?.touched"
+                                            [class.error]="variantGroup.get('quantity')?.invalid && variantGroup.get('quantity')?.touched"
                                             aria-required="true">
-                                        <div class="error-message" *ngIf="variant.get('quantity')?.invalid && variant.get('quantity')?.touched">
-                                            Valid quantity is required
+                                        <div class="error-message" *ngIf="variantGroup.get('quantity')?.invalid && variantGroup.get('quantity')?.touched">
+                                            Quantity (>=0) required
                                         </div>
                                     </div>
                                 </div>
@@ -161,31 +197,38 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="type-{{i}}">Type</label>
-                                        <input id="type-{{i}}" type="text" formControlName="type" placeholder="Optional">
+                                        <input id="type-{{i}}" type="text" formControlName="type" placeholder="e.g., T-Shirt, Mug">
                                     </div>
-
                                     <div class="form-group">
                                         <label for="size-{{i}}">Size</label>
-                                        <input id="size-{{i}}" type="text" formControlName="size" placeholder="Optional">
+                                        <input id="size-{{i}}" type="text" formControlName="size" placeholder="e.g., Large, 11oz">
                                     </div>
-
                                     <div class="form-group">
-                                        <label for="color-{{i}}">Color</label>
-                                        <input id="color-{{i}}" type="text" formControlName="color" placeholder="Optional">
+                                        <label for="colour-{{i}}">Colour</label>
+                                        <input id="colour-{{i}}" type="text" formControlName="colour" placeholder="e.g., Red, Black">
                                     </div>
                                 </div>
-                                
+
                                 <!-- Hidden field for variant ID (for existing variants) -->
-                                <input type="hidden" formControlName="id">
+                                <input type="hidden" formControlName="itemId">
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Form Actions -->
                 <div class="form-actions">
                     <button type="button" class="standard-button secondary" (click)="cancelEdit()" [disabled]="isSaving">Cancel</button>
-                    <button type="submit" class="standard-button primary" [disabled]="productForm.invalid || isSaving">
-                        <span *ngIf="!isSaving">Save Product</span>
+                    <!-- Save Draft Button -->
+                     <button type="button" class="standard-button secondary" (click)="saveProduct(false)" [disabled]="isSaving || productForm.invalid">
+                        <span *ngIf="!isSaving">Save Draft</span>
+                        <span *ngIf="isSaving" class="saving-indicator">
+                            <div class="spinner-small"></div> Saving...
+                        </span>
+                    </button>
+                    <!-- Publish/Update Button -->
+                    <button type="button" class="standard-button primary" (click)="saveProduct(true)" [disabled]="isSaving || productForm.invalid">
+                        <span *ngIf="!isSaving">{{ isEditMode ? 'Update Product' : 'Publish Product' }}</span>
                         <span *ngIf="isSaving" class="saving-indicator">
                             <div class="spinner-small"></div> Saving...
                         </span>
@@ -204,24 +247,38 @@
                             <th>Image</th>
                             <th>Product Name</th>
                             <th>Category</th>
+                            <th>Status</th>
                             <th>Price Range</th>
                             <th>Total Stock</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngIf="products.length === 0">
-                            <td colspan="6" class="no-products">No products available. Add your first product!</td>
+                        <tr *ngIf="products.length === 0 && !isLoading">
+                            <td colspan="7" class="empty-state">
+                                <i class="fa fa-box-open"></i>
+                                <p>No products found. Add your first product!</p>
+                            </td>
                         </tr>
                         <tr *ngFor="let product of products">
                             <td class="product-image-cell">
-                                <img 
-                                    [src]="product.imageUrl || 'assets/images/default.png'" 
+                                <img
+                                    [src]="product.imageUrl || 'assets/images/default.png'"
                                     alt="Product thumbnail"
                                     class="product-thumbnail">
                             </td>
                             <td>{{ product.name }}</td>
                             <td>{{ getCategoryName(product.categoryId) }}</td>
+                            <td>
+                                <span class="status-badge" [ngClass]="{
+                                    'status-draft': product.status === 'Draft',
+                                    'status-published': product.status === 'Published',
+                                    'status-scheduled': product.status === 'Scheduled',
+                                    'status-expired': product.status === 'Expired'
+                                }">
+                                    {{ product.status }}
+                                </span>
+                            </td>
                             <td>{{ getPriceRange(product) }}</td>
                             <td>{{ getTotalStock(product) }}</td>
                             <td class="actions-cell">

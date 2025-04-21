@@ -1,70 +1,55 @@
 <div class="profile-container">
-  <div class="profile-tabs">
-    <div class="tab" [class.active]="activeTab === 'profile'" (click)="setActiveTab('profile')">
+  <!-- Tab Navigation -->
+  <div class="editor-header">
+    <h1 class="editor-title">
+      <i class="fas fa-user-circle store-icon"></i>
+      Profile Editor
+    </h1>
+    <span class="store-url">Customize your personal information and contact details.</span>
+  </div>
+
+  <div class="editor-tabs">
+    <div class="tab-item" [class.active]="activeTab === 'profile'" (click)="setActiveTab('profile')">
       <i class="fas fa-user"></i>
       <span>Account Info</span>
     </div>
-    <div class="tab" [class.active]="activeTab === 'purchase'" (click)="setActiveTab('purchase')">
-      <i class="fas fa-shopping-bag"></i>
-      <span>Purchase History</span>
-    </div>
-    <div class="tab" [class.active]="activeTab === 'delivery'" (click)="setActiveTab('delivery')">
-      <i class="fas fa-truck"></i>
-      <span>Delivery Addresses</span>
-    </div>
-    <div class="tab" [class.active]="activeTab === 'payment'" (click)="setActiveTab('payment')">
+    <div class="tab-item" [class.active]="activeTab === 'payment'" (click)="setActiveTab('payment')">
       <i class="fas fa-credit-card"></i>
       <span>Payment Methods</span>
     </div>
-    <div class="tab" [class.active]="activeTab === 'wishlist'" (click)="setActiveTab('wishlist')">
-      <i class="fas fa-heart"></i>
-      <span>Wish Lists</span>
+    <div class="tab-item" [class.active]="activeTab === 'delivery'" (click)="setActiveTab('delivery')">
+      <i class="fas fa-truck"></i>
+      <span>Delivery</span>
     </div>
   </div>
 
   <!-- Profile Information -->
   <div class="tab-content" *ngIf="activeTab === 'profile'">
-    <div class="header-actions">
-      <h2>
-        <i class="fas fa-user-circle section-icon"></i>
-        Account Information
-      </h2>
-      <button class="edit-button" *ngIf="!editMode" (click)="toggleEditMode()">
-        <i class="fas fa-edit"></i>
-        <span>Edit Profile</span>
-      </button>
-    </div>
-
     <div class="section-container">
+      <h2>Account Info</h2>
+      <p>Manage your personal information and contact details.</p>
+      
+      <button *ngIf="!editMode" class="add-button" (click)="toggleEditMode()">
+        <i class="fas fa-edit"></i> Edit Profile
+      </button>
+
       <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input 
-              type="text" 
-              id="firstName" 
-              formControlName="firstName" 
-              [readonly]="!editMode"
-              [class.error]="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
-            <div class="error" *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
-              <i class="fas fa-exclamation-circle"></i>
-              First name is required
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input 
-              type="text" 
-              id="lastName" 
-              formControlName="lastName" 
-              [readonly]="!editMode"
-              [class.error]="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
-            <div class="error" *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
-              <i class="fas fa-exclamation-circle"></i>
-              Last name is required
-            </div>
-          </div>
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input 
+            type="text" 
+            id="firstName" 
+            formControlName="firstName" 
+            [readonly]="!editMode">
+        </div>
+        
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input 
+            type="text" 
+            id="lastName" 
+            formControlName="lastName" 
+            [readonly]="!editMode">
         </div>
 
         <div class="form-group">
@@ -73,38 +58,25 @@
             type="email" 
             id="email" 
             formControlName="email" 
-            [readonly]="!editMode"
-            [class.error]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
-          <div class="error" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
-            <i class="fas fa-exclamation-circle"></i>
-            Valid email is required
-          </div>
+            [readonly]="!editMode">
         </div>
         
-        <div class="form-row">
-          <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input 
-              type="tel" 
-              id="phone" 
-              formControlName="phone" 
-              [readonly]="!editMode"
-              [class.error]="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
-            <div class="error" *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
-              <i class="fas fa-exclamation-circle"></i>
-              Phone number is required
-            </div>
-          </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input 
+            type="tel" 
+            id="phone" 
+            formControlName="phone" 
+            [readonly]="!editMode">
+        </div>
 
-          <div class="form-group">
-            <label for="country">Country</label>
-            <input 
-              type="text" 
-              id="country" 
-              formControlName="country" 
-              [readonly]="!editMode"
-              [class.error]="profileForm.get('country')?.invalid && profileForm.get('country')?.touched">
-          </div>
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input 
+            type="text" 
+            id="country" 
+            formControlName="country" 
+            [readonly]="!editMode">
         </div>
         
         <div class="form-actions" *ngIf="editMode">
@@ -112,7 +84,7 @@
             <i class="fas fa-times"></i>
             Cancel
           </button>
-          <button type="submit" [disabled]="profileForm.invalid || !profileForm.dirty">
+          <button type="submit" class="save-button" [disabled]="profileForm.invalid || !profileForm.dirty">
             <i class="fas fa-save" *ngIf="!isSavingProfile"></i>
             <span class="loading-spinner" *ngIf="isSavingProfile"></span>
             Save Changes
@@ -122,332 +94,37 @@
     </div>
   </div>
 
-  <!-- Purchase History -->
-  <div class="tab-content" *ngIf="activeTab === 'purchase'">
-    <div class="header-actions">
-      <h2>
-        <i class="fas fa-history section-icon"></i>
-        Purchase History
-      </h2>
-    </div>
-    
-    <div class="purchase-history-section">
-      <div class="purchase-table-container" *ngIf="purchaseHistory.length > 0">
-        <table class="purchase-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Store</th>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let purchase of purchaseHistory">
-              <td>{{ purchase.date | date:'MMM d, yyyy' }}</td>
-              <td>{{ purchase.store }}</td>
-              <td>{{ purchase.product }}</td>
-              <td>${{ purchase.price.toFixed(2) }}</td>
-              <td>
-                <span class="status-badge">Completed</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  <!-- Payment Methods -->
+  <div class="tab-content" *ngIf="activeTab === 'payment'">
+    <div class="section-container">
+      <h2>Payment Methods</h2>
+      <p>Manage your saved payment methods for faster checkout.</p>
+      
+      <button class="add-button" (click)="toggleAddPayment()">
+        <i class="fas fa-plus"></i> Add New Payment Method
+      </button>
 
-      <div class="pagination-controls" *ngIf="purchaseHistory.length > 0 && totalPages > 1">
-        <button [disabled]="currentPage === 1" (click)="previousPage()">
-          <i class="fas fa-chevron-left"></i>
-          Previous
-        </button>
-        <span>Page {{ currentPage }} of {{ totalPages }}</span>
-        <button [disabled]="currentPage === totalPages" (click)="nextPage()">
-          Next
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-
-      <div class="empty-state" *ngIf="purchaseHistory.length === 0">
-        <i class="fas fa-shopping-cart"></i>
-        <p>No purchase history available</p>
-        <button class="add-button" routerLink="/shop">
-          <i class="fas fa-store"></i>
-          Start Shopping
-        </button>
+      <!-- Payment content placeholder -->
+      <div class="empty-message" *ngIf="!showAddPayment">
+        No payment methods saved. Add your first payment method.
       </div>
     </div>
   </div>
 
   <!-- Delivery Addresses -->
   <div class="tab-content" *ngIf="activeTab === 'delivery'">
-    <div class="header-actions">
-      <h2>
-        <i class="fas fa-map-marker-alt section-icon"></i>
-        Delivery Addresses
-      </h2>
-      <button class="add-button" (click)="toggleAddDelivery()">
-        <i class="fas fa-plus"></i>
-        {{ showAddDelivery ? 'Cancel' : 'Add New Address' }}
-      </button>
-    </div>
-
     <div class="section-container">
-      <!-- Add new address form -->
-      <form *ngIf="showAddDelivery" [formGroup]="deliveryForm" (ngSubmit)="saveDeliveryAddress()" class="address-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="address">Street Address</label>
-            <input 
-              type="text" 
-              id="address" 
-              formControlName="address"
-              [class.error]="deliveryForm.get('address')?.invalid && deliveryForm.get('address')?.touched">
-            <div class="error" *ngIf="deliveryForm.get('address')?.invalid && deliveryForm.get('address')?.touched">
-              <i class="fas fa-exclamation-circle"></i>
-              Address is required
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="city">City</label>
-            <input 
-              type="text" 
-              id="city" 
-              formControlName="city"
-              [class.error]="deliveryForm.get('city')?.invalid && deliveryForm.get('city')?.touched">
-            <div class="error" *ngIf="deliveryForm.get('city')?.invalid && deliveryForm.get('city')?.touched">
-              <i class="fas fa-exclamation-circle"></i>
-              City is required
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="state">State/Province</label>
-            <input 
-              type="text" 
-              id="state" 
-              formControlName="state"
-              [class.error]="deliveryForm.get('state')?.invalid && deliveryForm.get('state')?.touched">
-            <div class="error" *ngIf="deliveryForm.get('state')?.invalid && deliveryForm.get('state')?.touched">
-              <i class="fas fa-exclamation-circle"></i>
-              State/Province is required
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="postalCode">Postal Code</label>
-            <input 
-              type="text" 
-              id="postalCode" 
-              formControlName="postalCode"
-              [class.error]="deliveryForm.get('postalCode')?.invalid && deliveryForm.get('postalCode')?.touched">
-            <div class="error" *ngIf="deliveryForm.get('postalCode')?.invalid && deliveryForm.get('postalCode')?.touched">
-              <i class="fas fa-exclamation-circle"></i>
-              Postal Code is required
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="deliveryCountry">Country</label>
-            <input 
-              type="text" 
-              id="deliveryCountry" 
-              formControlName="country"
-              [class.error]="deliveryForm.get('country')?.invalid && deliveryForm.get('country')?.touched">
-            <div class="error" *ngIf="deliveryForm.get('country')?.invalid && deliveryForm.get('country')?.touched">
-              <i class="fas fa-exclamation-circle"></i>
-              Country is required
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="deliveryPhone">Phone</label>
-            <input 
-              type="tel" 
-              id="deliveryPhone" 
-              formControlName="phone"
-              [class.error]="deliveryForm.get('phone')?.invalid && deliveryForm.get('phone')?.touched">
-            <div class="error" *ngIf="deliveryForm.get('phone')?.invalid && deliveryForm.get('phone')?.touched">
-              <i class="fas fa-exclamation-circle"></i>
-              Phone is required
-            </div>
-          </div>
-        </div>
-        
-        <div class="checkbox">
-          <input type="checkbox" id="isDefault" formControlName="isDefault">
-          <label for="isDefault">Set as default address</label>
-        </div>
-        
-        <div class="form-actions">
-          <button type="button" class="cancel-button" (click)="toggleAddDelivery()">
-            <i class="fas fa-times"></i>
-            Cancel
-          </button>
-          <button type="submit" [disabled]="deliveryForm.invalid">
-            <i class="fas fa-save" *ngIf="!isSavingDelivery"></i>
-            <span class="loading-spinner" *ngIf="isSavingDelivery"></span>
-            Save Address
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Display existing addresses -->
-    <div class="address-list" *ngIf="deliveryAddresses && deliveryAddresses.length > 0">
-      <div *ngFor="let address of deliveryAddresses" class="address-card">
-        <div class="default-badge" *ngIf="address.isDefault">Default</div>
-        <div class="address-details">
-          <p><strong>{{ address.address }}</strong></p>
-          <p>{{ address.city }}, {{ address.state }} {{ address.postalCode }}</p>
-          <p>{{ address.country }}</p>
-          <p><i class="fas fa-phone"></i> {{ address.phone }}</p>
-        </div>
-        <div class="address-actions">
-          <button *ngIf="!address.isDefault" (click)="setDefaultAddress(address.id!)">
-            <i class="fas fa-check-circle"></i>
-            Set as Default
-          </button>
-          <button class="delete" (click)="deleteAddress(address.id!)">
-            <i class="fas fa-trash"></i>
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="empty-state" *ngIf="!showAddDelivery && (!deliveryAddresses || deliveryAddresses.length === 0)">
-      <i class="fas fa-map-marker-alt"></i>
-      <p>No delivery addresses saved yet</p>
+      <h2>Delivery Addresses</h2>
+      <p>Manage your saved delivery addresses for faster checkout.</p>
+      
       <button class="add-button" (click)="toggleAddDelivery()">
-        <i class="fas fa-plus"></i>
-        Add Your First Address
+        <i class="fas fa-plus"></i> Add New Address
       </button>
-    </div>
-  </div>
 
-  <!-- Payment Methods -->
-  <div class="tab-content" *ngIf="activeTab === 'payment'">
-    <div class="header-actions">
-      <h2>
-        <i class="fas fa-credit-card section-icon"></i>
-        Payment Methods
-      </h2>
-      <button class="add-button" (click)="toggleAddPayment()">
-        <i class="fas fa-plus"></i>
-        {{ showAddPayment ? 'Cancel' : 'Add New Payment Method' }}
-      </button>
-    </div>
-
-    <div class="section-container">
-      <!-- Add new payment method form -->
-      <form *ngIf="showAddPayment" (ngSubmit)="savePaymentMethod()" class="payment-form">
-        <div class="form-group">
-          <label for="card-element">Card Details</label>
-          <div id="card-element" #cardElement class="card-element-container"></div>
-          <div id="card-errors" class="error" role="alert" *ngIf="cardError">
-            <i class="fas fa-exclamation-circle"></i>
-            {{ cardError }}
-          </div>
-        </div>
-        
-        <div class="checkbox">
-          <input type="checkbox" id="paymentDefault" [(ngModel)]="newPaymentIsDefault" name="paymentDefault">
-          <label for="paymentDefault">Set as default payment method</label>
-        </div>
-        
-        <div class="form-actions">
-          <button type="button" class="cancel-button" (click)="toggleAddPayment()">
-            <i class="fas fa-times"></i>
-            Cancel
-          </button>
-          <button type="button" (click)="savePaymentMethod()" [disabled]="isSavingPaymentMethod || !stripe || !cardElement">
-            <i class="fas fa-save" *ngIf="!isSavingPaymentMethod"></i>
-            <span class="loading-spinner" *ngIf="isSavingPaymentMethod"></span>
-            {{ isSavingPaymentMethod ? 'Processing...' : 'Save Payment Method' }}
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Display existing payment methods -->
-    <div class="payment-list" *ngIf="paymentMethods && paymentMethods.length > 0">
-      <div *ngFor="let method of paymentMethods" class="payment-card">
-        <div class="default-badge" *ngIf="method.isDefault">Default</div>
-        <div class="payment-details">
-          <p class="card-type">
-            <i [class]="getCardIcon(method.cardType)"></i> {{ method.cardType | titlecase }}
-          </p>
-          <p>**** **** **** {{ method.lastFourDigits }}</p>
-          <p>Expires: {{ method.expiryMonth }}/{{ method.expiryYear }}</p>
-        </div>
-        <div class="payment-actions">
-          <button *ngIf="!method.isDefault" (click)="setDefaultPaymentMethod(method.id)">
-            <i class="fas fa-check-circle"></i>
-            Set as Default
-          </button>
-          <button class="delete" (click)="deletePaymentMethod(method.id)">
-            <i class="fas fa-trash"></i>
-            Delete
-          </button>
-        </div>
+      <!-- Delivery content placeholder -->
+      <div class="empty-message" *ngIf="!showAddDelivery">
+        No delivery addresses saved. Add your first address.
       </div>
-    </div>
-
-    <div class="empty-state" *ngIf="!showAddPayment && (!paymentMethods || paymentMethods.length === 0)">
-      <i class="fas fa-credit-card"></i>
-      <p>No payment methods saved yet</p>
-      <button class="add-button" (click)="toggleAddPayment()">
-        <i class="fas fa-plus"></i>
-        Add Your First Payment Method
-      </button>
-    </div>
-  </div>
-
-  <!-- Wish Lists -->
-  <div class="tab-content" *ngIf="activeTab === 'wishlist'">
-    <div class="header-actions">
-      <h2>
-        <i class="fas fa-heart section-icon"></i>
-        Wish Lists
-      </h2>
-      <button class="add-button" (click)="createWishList()">
-        <i class="fas fa-plus"></i>
-        Create New List
-      </button>
-    </div>
-
-    <!-- Display existing wish lists -->
-    <div class="wishlist-grid" *ngIf="wishLists && wishLists.length > 0">
-      <div *ngFor="let list of wishLists" class="wishlist-card">
-        <h3>{{ list.name }}</h3>
-        <p>{{ list.itemCount || 0 }} items</p>
-        <div class="wishlist-actions">
-          <button (click)="viewWishList(list.id)">
-            <i class="fas fa-eye"></i>
-            View List
-          </button>
-          <button class="delete" (click)="deleteWishList(list.id)">
-            <i class="fas fa-trash"></i>
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="empty-state" *ngIf="!wishLists || wishLists.length === 0">
-      <i class="fas fa-heart"></i>
-      <p>You don't have any wish lists yet</p>
-      <button class="add-button" (click)="createWishList()">
-        <i class="fas fa-plus"></i>
-        Create Your First List
-      </button>
     </div>
   </div>
 </div> 
