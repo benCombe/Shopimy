@@ -132,3 +132,14 @@ create table ItemImages(
 	FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE NO ACTION,
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
+
+CREATE TRIGGER Quantity ON dbo.Items 
+AFTER INSERT, UPDATE
+AS 
+	BEGIN
+		DECLARE @total int;
+		DECLARE @LId int;
+		SELECT @LId= list_id FROM INSERTED;
+		SELECT @total=SUM(i.quantity) FROM Items i WHERE i.list_id = @LId;
+		UPDATE Listing SET quantity=@total WHERE Listing.list_id =@LId;
+	END;
