@@ -58,6 +58,26 @@ html, body {
   font-family: var(--main-font-fam);
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+  max-width: 100vw;
+}
+
+/* Add this to fix mobile overflow issues */
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+/* Add this for any absolute mobile containers */
+.mobile-container {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 html::-webkit-scrollbar,
