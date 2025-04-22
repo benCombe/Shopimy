@@ -34,6 +34,8 @@ namespace Server.Data
         public DbSet<Server.Models.Order> Orders { get; set; }
         public DbSet<StoreVisit> StoreVisits { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<Quantity> Quantity{get; set;}
+
 
         // Ensure table names match conventions  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -89,6 +91,7 @@ namespace Server.Data
             modelBuilder.Entity<Category>().ToTable("Categories");
             modelBuilder.Entity<BasicItem>().HasNoKey();
             modelBuilder.Entity<DetailItem>().HasNoKey();
+            modelBuilder.Entity<Quantity>().HasNoKey();
             modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
             modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
             modelBuilder.Entity<TestItem>().ToTable("TestTable");
