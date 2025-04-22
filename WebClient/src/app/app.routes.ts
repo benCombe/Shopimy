@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
@@ -35,8 +36,8 @@ export const appRoutes: Routes = [
     children: [
       { path: 'cart', component: ShoppingCartComponent },
       { path: 'checkout', component: CheckoutComponent },
+      { path: 'item/:id', component: ItemDetailComponent},
       { path: ':category', component: CategoryPageComponent },
-      { path: ':category/:itemId', component: ItemPageComponent }
     ]
   },
   { path: '**', redirectTo: '/' } // Handle unknown routes

@@ -8,7 +8,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   max-width: 300px;
   min-width: 300px;
-
+  cursor: pointer;
   }
 
   .item-image{
