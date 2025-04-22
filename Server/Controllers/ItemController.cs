@@ -794,8 +794,8 @@ namespace Server.Controllers
         public DateTime? AvailTo { get; set; }
         public List<ProductVariantRequest> Variants { get; set; }
         public List<int> DeletedVariantIds { get; set; }
-        public required List<ProductVariantRequest> Variants { get; set; }
-        public required List<int> DeletedVariantIds { get; set; }
+        //public required List<ProductVariantRequest> Variants { get; set; }
+        //public required List<int> DeletedVariantIds { get; set; }
     }
 
     public class ProductVariantRequest

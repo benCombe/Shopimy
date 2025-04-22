@@ -135,5 +135,36 @@ namespace Server.Controllers
                 return StatusCode(500, "An error occurred while retrieving visit analytics.");
             }
         }
+
+        [HttpGet("item-quantity")]
+        [AllowAnonymous]
+        public async Task<ActionResult<VisitAnalyticsResponse>> GetStoreVisits(int storeid)
+        {
+            // Get user ID from the token claims
+            int userId = 0;
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out userId))
+            {
+                return Unauthorized("Invalid authentication token.");
+            }
+
+            // Get the store ID for this user
+            var store = await _context.Stores
+                .Where(s => s.StoreOwnerId == userId)
+                .FirstOrDefaultAsync();
+
+            if (store == null)
+            {
+                return NotFound("Store not found for this user.");
+            }
+            storeid=1000005;
+            var quality= await _context.Quantity.FromSqlRaw(@"select l.name as Name ,SUM(pl.quantity) AS TotalQuantity 
+                                                        from PurchaseLog pl
+                                                        join Items i on i.item_id =pl.item_id
+                                                        join Listing l on l.list_id = i.list_id
+                                                        where pl.store_id ={0}
+                                                        group by l.name ;",store.StoreId).ToListAsync();
+            return Ok(quality);
+        }
     }
 } 
