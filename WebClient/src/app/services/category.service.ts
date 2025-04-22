@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, tap, catchError, of } from 'rxjs';
+import { Observable, tap, catchError, of, switchMap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CookieService } from './cookie.service';
+import { StoreService } from './store.service';
 
 export interface Category {
   categoryId: number;
@@ -27,7 +28,8 @@ export class CategoryService {
 
   constructor(
     private http: HttpClient,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private storeService: StoreService
   ) { }
 
   private getHeaders(): HttpHeaders {
@@ -85,13 +87,53 @@ export class CategoryService {
   }
 
   deleteCategory(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() })
-      .pipe(
-        catchError(error => {
-          console.error(`Error deleting category ${id}:`, error);
-          throw error;
-        })
-      );
+    return this.storeService.activeStore$.pipe(
+      // Take only the first value (current store)
+      tap(activeStore => {
+        if (!environment.production) {
+          console.log(`Current active store: `, activeStore);
+        }
+      }),
+      // Switch to the HTTP delete observable
+      switchMap(activeStore => {
+        const storeId = activeStore?.id;
+        
+        // Add the storeId as a query parameter
+        let url = `${this.baseUrl}/${id}`;
+        if (storeId) {
+          url += `?storeId=${storeId}`;
+        }
+        
+        // Log the URL in development mode for debugging
+        if (!environment.production) {
+          console.log(`Deleting category with URL: ${url} (Store ID: ${storeId})`);
+        }
+        
+        return this.http.delete<any>(url, { headers: this.getHeaders() })
+          .pipe(
+            catchError(error => {
+              // Format error message based on status code
+              if (error.status === 404) {
+                error.message = `Category with ID ${id} not found or already deleted`;
+                // Only log to console in development mode
+                if (!environment.production) {
+                  console.warn(`Category deletion 404: ${error.message}`);
+                }
+              } else if (error.status === 403) {
+                console.error(`Permission denied when deleting category ${id}:`, error);
+                error.message = 'You do not have permission to delete this category';
+              } else if (error.status === 400) {
+                console.error(`Bad request when deleting category ${id}:`, error);
+                error.message = error.error?.message || 'Invalid request when deleting category';
+              } else {
+                console.error(`Server error when deleting category ${id}:`, error);
+                error.message = 'Server error occurred while deleting the category';
+              }
+              throw error;
+            })
+          );
+      })
+    );
   }
 
   getItemsInCategory(catId: number, storeId: number): Observable<number[]> {

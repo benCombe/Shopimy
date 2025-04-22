@@ -169,13 +169,22 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCategory(int id)
+    public async Task<IActionResult> DeleteCategory(int id, [FromQuery] int? storeId = null)
     {
-        int storeId = GetCurrentStoreId();
-        var category = await _categoryService.GetCategoryByIdAsync(storeId, id);
+        // Priority 1: Use the storeId from query parameter if provided
+        // Priority 2: Retrieve from claims if available
+        int effectiveStoreId = storeId ?? GetCurrentStoreId();
+        
+        // If we still don't have a valid storeId, return an error
+        if (effectiveStoreId <= 0)
+        {
+            return BadRequest(new { error = "Store ID is required but was not provided in the request or found in the user context." });
+        }
+
+        var category = await _categoryService.GetCategoryByIdAsync(effectiveStoreId, id);
         if (category == null) return NotFound();
 
-        await _categoryService.DeleteCategoryAsync(storeId, id);
+        await _categoryService.DeleteCategoryAsync(effectiveStoreId, id);
         return Ok(category);
     }
 

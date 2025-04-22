@@ -6,6 +6,7 @@ import { LoadingService } from '../../services/loading.service';
 import { UserService } from '../../services/user.service';
 import { CategoryFormComponent } from '../category-form/category-form.component';
 import { StoreService } from '../../services/store.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-category-list',
@@ -67,16 +68,39 @@ export class CategoryListComponent implements OnInit {
   }
 
   deleteCategory(id: number) {
-    if (confirm('Are you sure you want to delete this category?')) {
+    // Find the category to show its name in the confirmation message
+    const categoryToDelete = this.categories.find(c => c.categoryId === id);
+    if (!categoryToDelete) {
+      this.error = 'Cannot find the category to delete. Please refresh the page.';
+      return;
+    }
+    
+    if (confirm(`Are you sure you want to delete the category "${categoryToDelete.name}"? This action cannot be undone.`)) {
       this.loadingService.setIsLoading(true);
+      
+      // Pass the current store ID to ensure we're deleting from the correct store
       this.categoryService.deleteCategory(id).subscribe({
         next: () => {
           this.loadCategories();
+          // Clear any previous errors
+          this.error = null;
         },
         error: (err) => {
-          console.error('Error deleting category:', err);
-          this.error = 'Failed to delete category. Please try again.';
-          this.loadingService.setIsLoading(false);
+          // For 404 errors, just refresh the list without showing an error
+          if (err.status === 404) {
+            // Only log to console if we're in development mode
+            if (!environment.production) {
+              console.warn(`Category ID ${id} not found during deletion - refreshing list`);
+            }
+            // Silently refresh the category list
+            this.error = null;
+            this.loadCategories();
+          } else {
+            // For other errors, show the error message
+            console.error('Error deleting category:', err);
+            this.error = err.message || 'Failed to delete category. Please try again.';
+            this.loadingService.setIsLoading(false);
+          }
         }
       });
     }
