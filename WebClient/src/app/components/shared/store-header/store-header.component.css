@@ -1,0 +1,105 @@
+.logo-section {
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+  width: 100%;
+  margin-top: 0;
+}
+
+/* Add negative margin only when it follows a banner */
+:host-context(app-hero-banner + app-store-header) .logo-section,
+:host-context(.hero-banner + *) .logo-section {
+  margin-top: -25px;
+}
+
+.logo-container {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  z-index: 10;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+  bottom: 0;
+  margin: 0 auto;
+  padding-left: 10%;
+  box-sizing: border-box;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xs) var(--spacing-md);
+  min-width: 180px;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--header-bg-color, var(--main-color));
+}
+
+.logo-container:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--spacing-sm);
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: var(--border-radius-round);
+}
+
+.default-logo {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--second-color);
+  border-radius: var(--border-radius-round);
+  font-size: 1.25rem;
+  font-weight: bold;
+  box-shadow: var(--shadow-sm);
+  color: var(--third-color);
+}
+
+.logo-text-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-text {
+  margin: 0;
+  font-size: 1rem;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  color: var(--header-text-color, var(--alt-color));
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+  .logo-container {
+    min-width: 150px;
+    padding: var(--spacing-xs);
+  }
+  
+  .logo, .default-logo {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .logo-text {
+    font-size: 0.875rem;
+  }
+
+  /* Remove negative margin on small screens if needed */
+  :host-context(app-hero-banner + app-store-header) .logo-section,
+  :host-context(.hero-banner + *) .logo-section {
+    margin-top: -15px; /* Adjust overlap for smaller screens */
+  }
+} 

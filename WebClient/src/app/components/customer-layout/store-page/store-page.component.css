@@ -1,8 +1,7 @@
-/* Standardized Store Page Component */
-/* Container styling */
+/* Store Layout Component */
 #container {
   width: 100%;
-  font-family: var(--main-font-fam);
+  font-family: var(--main-font-fam, sans-serif);
   overflow-x: hidden;
 }
 
@@ -12,8 +11,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  font-family: var(--main-font-fam);
-  background-color: var(--third-color);
+  font-family: var(--main-font-fam, sans-serif);
+  background-color: var(--third-color, #D3CEBB);
+  padding-bottom: var(--spacing-xl, 3rem);
+  gap: var(--spacing-lg, 2rem);
+  width: 100%;
+}
+
+/* Each component should take up to 95% width on larger screens */
+#store-page > * {
+  width: 90%;
+  max-width: 1200px;
 }
 
 /* Banner styling */
@@ -70,6 +78,8 @@
   justify-content: center;
   box-shadow: var(--shadow-sm);
   background-color: var(--third-color);
+  position: relative;
+  z-index: 10;
 }
 
 #logo-wrapper {
@@ -255,6 +265,7 @@
   color: white;
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Footer section styling */
@@ -262,7 +273,11 @@
   width: 60%;
   padding: var(--spacing-md);
   margin-top: auto;
+  width: 60%;
+  padding: var(--spacing-md);
+  margin-top: auto;
   text-align: center;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
@@ -271,131 +286,23 @@
   margin: 0;
 }
 
-/* Media queries for responsiveness */
-@media only screen and (max-width: 1200px) {
-  #banner-text {
-    font-size: 2rem;
-    max-width: 30%;
-    padding: var(--spacing-sm);
-  }
-
-  #logo-container {
-    width: 70%;
-  }
-
-  #logo-text {
-    font-size: 1.5rem;
-  }
-
-  #product-container {
-    width: 80%;
-  }
-
-  #testimonials-section,
-  #newsletter-section,
-  #footer-section {
-    width: 80%;
-  }
-}
-
+/* Responsive styles */
 @media only screen and (max-width: 768px) {
-  #banner-text {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 60%;
-    height: auto;
-    padding: var(--spacing-md);
+  #store-page {
+    gap: var(--spacing-sm, 0.5rem);
+    padding-bottom: var(--spacing-md, 1rem);
   }
-
-  #logo-container {
-    width: 90%;
-    height: auto;
-    padding: var(--spacing-sm);
-    flex-direction: column;
-  }
-
-  #logo-wrapper {
-    width: 50%;
-    margin-left: 0;
-    margin-bottom: var(--spacing-sm);
-  }
-
-  #logo-text-wrapper {
-    width: 100%;
-  }
-
-  #logo-text {
-    font-size: 1.25rem;
-  }
-
-  #product-container {
-    width: 90%;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  #testimonials-section,
-  #newsletter-section,
-  #footer-section {
-    width: 90%;
-  }
-
-  .newsletter-form {
-    flex-direction: column;
-  }
-
-  .newsletter-form input,
-  .newsletter-form button {
-    width: 100%;
-    border-radius: var(--border-radius);
-    margin-bottom: var(--spacing-sm);
+  #store-page > * {
+    width: 95%;
   }
 }
 
 @media only screen and (max-width: 480px) {
   #store-page {
-    padding-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md, 1rem);
   }
-
-  #banner {
-    height: 20vh;
-  }
-
-  #banner-text {
-    font-size: 1.5rem;
-    max-width: 80%;
-    padding: var(--spacing-sm);
-  }
-
-  #logo-section {
-    height: auto;
-    padding: var(--spacing-md) 0;
-  }
-
-  #logo-container {
-    padding: var(--spacing-sm);
-  }
-
-  #logo-wrapper {
-    width: 70%;
-  }
-
-  #logo-text {
-    font-size: 1.1rem;
-  }
-
-  #testimonials-section h3,
-  #newsletter-section h3 {
-    font-size: 1.5rem;
-  }
-
-  .testimonial-text {
-    font-size: 1rem;
-  }
-
-  #product-container {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
+  #store-page > * {
+    width: 100%;
   }
 }
 

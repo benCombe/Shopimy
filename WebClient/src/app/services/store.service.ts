@@ -355,4 +355,12 @@ export class StoreService {
   }
 
   // TODO: Add methods for saving/loading other store settings as needed
+
+  getStoreById(id: string) {
+    return this.getCurrentUserStore();
+  }
+  
+  getAvailableComponents() {
+    return this.http.get<any[]>(`${this.apiUrl}/components`);
+  }
 }

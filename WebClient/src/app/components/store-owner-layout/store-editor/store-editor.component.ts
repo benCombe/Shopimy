@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgClass } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
   imports: [
     NgFor,
     NgIf,
+    NgClass,
     FormsModule,
     ReactiveFormsModule,
     StorePreviewComponent,
@@ -44,6 +45,7 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
   isLoading: boolean = true;
   formErrors: { [key: string]: string } = {};
   saveError: string | null = null;
+  saveStatus: string = ''; // '', 'saving', 'saved', 'error'
   
   availableComponents = [
     { id: 'header', name: 'Header & Navigation', isSelected: true },
@@ -54,6 +56,18 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     { id: 'newsletter', name: 'Newsletter Signup', isSelected: true },
     { id: 'footer', name: 'Footer', isSelected: true }
   ];
+  
+  // Additional properties for component selection enhancements
+  autoPreview: boolean = true;
+  previewDevice: string = 'desktop'; // desktop, tablet, mobile
+  
+  get allComponentsSelected(): boolean {
+    return this.availableComponents.every(c => c.isSelected);
+  }
+  
+  get anyComponentSelected(): boolean {
+    return this.availableComponents.some(c => c.isSelected);
+  }
 
   constructor(
     private userService: UserService,
@@ -158,7 +172,19 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
   toggleComponent(component: any) {
     component.isSelected = !component.isSelected;
     this.updateComponentVisibility();
-    this.updatePreview();
+    if (this.autoPreview) {
+      this.updatePreview();
+    }
+  }
+  
+  toggleAllComponents(selected: boolean) {
+    this.availableComponents.forEach(component => {
+      component.isSelected = selected;
+    });
+    this.updateComponentVisibility();
+    if (this.autoPreview) {
+      this.updatePreview();
+    }
   }
   
   updateComponentVisibility() {
@@ -240,11 +266,14 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
 
   saveChanges() {
     this.saveError = null;
+    this.saveStatus = 'saving';
+    
     if (!this.validateForm()) {
       // Show appropriate tab with errors
       if (this.formErrors['name'] || this.formErrors['url']) {
         this.activeTab = 'basic';
       }
+      this.saveStatus = 'error';
       return;
     }
     
@@ -263,6 +292,12 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
           this.store = createdStore;
           this.isInitialSetup = false;
           this.loadingService.setIsLoading(false);
+          this.saveStatus = 'saved';
+          
+          // Clear save status after a few seconds
+          setTimeout(() => {
+            this.saveStatus = '';
+          }, 3000);
           
           // Navigate to products page for further setup
           this.router.navigate(['/dashboard'], { queryParams: { page: 'Products' } });
@@ -271,6 +306,7 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
           console.error('Error creating store:', error);
           this.loadingService.setIsLoading(false);
           this.saveError = error.error?.message || error.message || 'Failed to create store. Please check inputs.';
+          this.saveStatus = 'error';
           
           if (error.error?.message?.includes('URL already exists') || error.message?.includes('URL already exists')) {
             this.formErrors['url'] = 'This URL is already taken. Please choose another one.';
@@ -285,11 +321,18 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
         next: (updatedStore) => {
           this.store = updatedStore;
           this.loadingService.setIsLoading(false);
+          this.saveStatus = 'saved';
+          
+          // Clear save status after a few seconds
+          setTimeout(() => {
+            this.saveStatus = '';
+          }, 3000);
         },
         error: (error) => {
           console.error('Error updating store:', error);
           this.loadingService.setIsLoading(false);
           this.saveError = error.error?.message || error.message || 'Failed to update store. Please check inputs.';
+          this.saveStatus = 'error';
           
           if (error.error?.message?.includes('URL already exists') || error.message?.includes('URL already exists')) {
             this.formErrors['url'] = 'This URL is already taken. Please choose another one.';
@@ -375,5 +418,10 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     }
     
     console.log("Sanitized store data:", this.store);
+  }
+
+  // Set preview device (desktop, tablet, mobile)
+  setPreviewDevice(device: string) {
+    this.previewDevice = device;
   }
 } 

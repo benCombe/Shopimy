@@ -22,7 +22,7 @@ The frontend is built using Angular and is responsible for rendering the user in
     *   `account/`: User registration, login, profile management.
     *   `customer-layout/`: Components for viewing stores, categories, items, shopping cart, and checkout.
     *   `store-owner-layout/`: Dashboard, store editor, product management, analytics, etc.
-    *   `shared/`: Reusable components (e.g., Store Preview).
+    *   `shared/`: Reusable components (e.g., `StorePreviewComponent`). Recently added shared components for individual store sections (`StoreHeaderComponent`, `HeroBannerComponent`, `FeaturedProductsComponent`, `TestimonialsComponent`, `NewsletterComponent`, `StoreFooterComponent`) to ensure consistency between the live store (`StorePageComponent`) and the preview.
     *   `utilities/`: Helper components like loading indicators, popups.
 *   **Routing:** Managed by Angular Router (`app.routes.ts`) defining paths for different views.
 *   **State Management:** Primarily managed through Angular Services (`app/services/`). Key services include:
@@ -144,15 +144,3 @@ The database stores all persistent application data.
 *   **Database (SQL Server):** Hosted on a dedicated database server or using a cloud database service (e.g., Azure SQL Database, AWS RDS).
 
 Configuration (API URLs, keys) should be managed via environment variables or configuration files specific to each deployment environment.
-```
-
-**Reasoning:**
-
-1.  **Structure:** Followed the standard sections for an architecture document (Introduction, High-Level, Components, Data Flow, Deployment).
-2.  **High-Level:** Included a Mermaid diagram for a quick visual understanding of the main parts and their connections.
-3.  **Component Breakdown:** Detailed the Frontend (Angular) and Backend (.NET) separately, listing key technologies, structural patterns (components, controllers, services, repositories), and specific responsibilities based on the provided code files (`package.json`, `*.csproj`, `Program.cs`, controller/service/repository names, `app.routes.ts`, etc.).
-4.  **Database:** Summarized the database technology (SQL Server) and key tables identified in `TableCreation.sql`.
-5.  **External Services:** Focused on Stripe, explaining both client-side (Stripe.js) and server-side (Stripe API, Webhooks) roles based on `PaymentController.cs`, `UserPaymentController.cs`, and the frontend `package.json`.
-6.  **Data Flow:** Provided concrete examples (Login, Store View, Checkout) to illustrate how components interact during common user actions. These flows are inferred from the controller actions and service interactions.
-7.  **Deployment:** Added a conceptual overview of how such an application is typically deployed.
-8.  **Referencing Files:** Used information from `README.md`, `REQUIREMENTS.md`, `Program.cs`, `AppDbContext.cs`, controller/service/repository names, `package.json`, `angular.json`, and SQL files to ensure the architecture description aligns with the project's reality.

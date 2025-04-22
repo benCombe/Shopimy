@@ -1,0 +1,62 @@
+// Core Theme Variables from README-STYLES.md
+// Prefer using CSS variables (defined in :root) directly in CSS/component styles when possible,
+// but these SCSS variables can be used within SCSS logic (mixins, functions, etc.)
+
+// Primary Color Palette (Dark Olive/Mustard/Tan)
+$main-color: #393727;        // Dark olive
+$second-color: #D0933D;       // Mustard
+$third-color: #D3CEBB;        // Light tan
+$alt-color: #d5d5d5;          // Light gray
+
+// Text Colors
+$color-text-on-primary: #FFFFFF; // White text for use on $main-color backgrounds
+$color-text-on-surface: #393727; // Dark text for use on $third-color or light backgrounds
+$color-text-light: #6b7280;     // Lighter text for hints, placeholders
+
+// Feedback Colors
+$color-error: #e02424;          // Red for errors/invalid states
+$color-error-light: #fde8e8;    // Light red background for error messages
+$color-success: #059669;        // Green for success states
+$color-success-light: #e8f5e9;  // Light green background
+$color-warning: #e65100;        // Orange for warnings
+$color-warning-light: #fff3e0;  // Light orange background
+$color-info: #1565c0;           // Blue for informational messages
+$color-info-light: #e3f2fd;     // Light blue background
+$color-pending: #4527a0;        // Purple for pending states
+$color-pending-light: #ede7f6;  // Light purple background
+
+// Typography
+$main-font-fam: "Inria Serif", serif; // Primary font
+
+// Borders & Spacing
+$border-radius: 8px;            // Standard border radius
+$border-radius-lg: 12px;         // Larger border radius
+$border-radius-round: 50%;       // Fully rounded
+$border-color: #d1d5db;         // Standard border color
+
+// Spacing units
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+
+// Shadows
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+$shadow-focus: 0 0 0 2px rgba(208, 147, 61, 0.2); // Focus ring
+
+// Scrollbars
+$scrollbar-width: 8px;
+$scrollbar-height: 8px;
+$scrollbar-track-color: rgba(0, 0, 0, 0.05);
+$scrollbar-thumb-color: $main-color;
+$scrollbar-border-radius: 4px;
+
+// Breakpoints
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px; 

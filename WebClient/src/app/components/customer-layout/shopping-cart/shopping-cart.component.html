@@ -1,10 +1,10 @@
 <div class="container">
   <!-- <app-store-nav></app-store-nav> -->
-  <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3">
-    <h2>Your Basket</h2>
-    <div id="basket">
-      <div id="cart-items-container" class="theme2" [style.background-color]="storeDetails?.theme_2">
-        <div *ngFor="let i of cartItems" class="cart-item">
+  <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3" role="main">
+    <h2 id="cart-heading">Your Basket</h2>
+    <div id="basket" aria-labelledby="cart-heading">
+      <div id="cart-items-container" class="theme2" [style.background-color]="storeDetails?.theme_2" role="region" [attr.aria-label]="'Cart items'">
+        <div *ngFor="let i of cartItems" class="cart-item" role="listitem">
           <div class="item-img-container">
             <img [src]="i.item.blob" class="item-img" [alt]="i.item.name">
           </div>
@@ -22,27 +22,27 @@
             </div>
           </div>
           <div class="quantity-container">
-            <div class="quantity center">
-              <button class="less center" (click)="decreaseQuantity(i.item)" aria-label="Decrease quantity">-</button>
-              <div class="amount center" aria-live="polite">{{i.quantity}}</div>
-              <button class="more center" (click)="increaseQuantity(i.item)" aria-label="Increase quantity">+</button>
+            <div class="quantity center" role="group" [attr.aria-label]="'Item quantity controls'">
+              <button class="less center" (click)="decreaseQuantity(i.item)" [attr.aria-label]="'Decrease quantity for ' + i.item.name">-</button>
+              <div class="amount center" aria-live="polite" [attr.aria-label]="'Quantity: ' + i.quantity">{{i.quantity}}</div>
+              <button class="more center" (click)="increaseQuantity(i.item)" [attr.aria-label]="'Increase quantity for ' + i.item.name">+</button>
             </div>
           </div>
-          <button class="remove-item center" (click)="removeFromCart(i.item)" aria-label="Remove item">
-            <i class="fa-solid fa-x"></i>
+          <button class="remove-item center" (click)="removeFromCart(i.item)" [attr.aria-label]="'Remove ' + i.item.name + ' from cart'">
+            <i class="fa-solid fa-x" aria-hidden="true"></i>
           </button>
         </div>
-        <div *ngIf="cartItems.length === 0" class="empty-state center-col">
-          <i class="fa-solid fa-cart-shopping fa-3x"></i>
+        <div *ngIf="cartItems.length === 0" class="empty-state center-col" role="status" aria-live="polite">
+          <i class="fa-solid fa-cart-shopping fa-3x" aria-hidden="true"></i>
           <p>Your cart is empty</p>
         </div>
       </div>
 
-      <div id="order-summary-container">
+      <div id="order-summary-container" role="complementary" [attr.aria-label]="'Order summary'">
         <app-order-summary [storeDetails]="storeDetails"></app-order-summary>
         <div class="promo-code">
           <label for="promo">Apply Promo Code:</label>
-          <input type="text" name="promo" id="promo" placeholder="Enter code">
+          <input type="text" name="promo" id="promo" placeholder="Enter code" [attr.aria-label]="'Promo code'">
         </div>
       </div>
     </div>
