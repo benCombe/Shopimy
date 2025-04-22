@@ -40,7 +40,7 @@ The backend is built using .NET and exposes a RESTful API.
 
 *   **Technology:** .NET (`Server.csproj`, `Program.cs`)
 *   **Structure:** Follows an API Controller pattern (`Controllers/`).
-    *   `AccountController`: Handles user registration, login, logout, profile retrieval.
+    *   `AccountController`: Handles user registration, login, logout, profile retrieval, and access to purchase history.
     *   `StoreController`: Fetches store details and related data.
     *   `CategoriesController`: Manages product categories.
     *   `ItemController`/`ItemsController`: Handles product/listing data.
@@ -56,6 +56,7 @@ The backend is built using .NET and exposes a RESTful API.
 *   **Payment Integration:** Uses the `Stripe.net` library (`Server.csproj`) to interact with the Stripe API for creating checkout sessions, handling webhooks, managing customers, and payment methods (`PaymentController.cs`, `UserPaymentController.cs`).
 *   **Configuration:** Managed via `appsettings.json`, `appsettings.Development.json`, and `appsettings.secrets.json`. Includes database connection strings and Stripe API keys/secrets.
 *   **CORS:** Configured in `Program.cs` to allow requests from the Angular frontend (`http://localhost:4200`).
+*   **User Data Access:** Provides endpoints for users to access their own data, including profile information (`/api/account/profile`) and purchase history (`/api/account/purchase-history`). Purchase history provides a paginated list of a user's orders across all stores.
 
 ## 5. Database Architecture (SQL Server)
 

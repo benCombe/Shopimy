@@ -830,3 +830,63 @@ form {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.page-info {
+  font-size: 0.9rem;
+  color: var(--main-color);
+  padding: var(--spacing-xs);
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  color: var(--main-color);
+}
+
+.loading-state i {
+  margin-right: var(--spacing-xs);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-lg);
+  color: var(--main-color);
+  background-color: var(--third-color-lighter);
+  border-radius: var(--border-radius-md);
+  margin: var(--spacing-md) 0;
+}
+
+/* Status badge colors for different order statuses */
+.status-badge.status-pending {
+  background-color: #FFC107;
+  color: #212121;
+}
+
+.status-badge.status-processing {
+  background-color: #2196F3;
+  color: white;
+}
+
+.status-badge.status-shipped {
+  background-color: #9C27B0;
+  color: white;
+}
+
+.status-badge.status-delivered {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status-badge.status-cancelled {
+  background-color: #F44336;
+  color: white;
+}

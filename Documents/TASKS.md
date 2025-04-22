@@ -20,6 +20,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] ⚠️ **Implement Password Reset Flow:** Create UI, backend logic, and email sending for password resets. (`AccountController`, `UserService`, `REQUIREMENTS.md FR4.1.6`)
 -   [ ] 🧊 **Implement Social Logins:** Add Google/Facebook OAuth login functionality. (`LoginComponent`, `AccountController`)
 -   [ ] ⚠️ **Refine User Profile Update:** Ensure all relevant user fields can be updated securely via the profile page and backend. (`ProfileComponent` - Store Owner, `AccountController`)
+-   [X] 🔥 **Implement Purchase History:** Add live purchase history display to the profile page, replacing dummy data. Implement backend endpoint to fetch user's order history. Enable pagination for multiple pages of orders. (`ProfileComponent` - Store Owner, `AccountController`, `PurchaseService`)
 
 ### Store & Product Management (Seller)
 -   [ ] 🔥 **Ensure Store Creation/Editing Saves All Config & Handles User State:**
@@ -230,36 +231,4 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] 🧊 **Refine UI based on Figma:** Conduct a review against the Figma designs and implement necessary adjustments for visual consistency and usability.
 -   [ ] 🧊 **Improve Mobile Responsiveness:** Test thoroughly on various mobile devices and refine styles where needed.
 -   [x] ⚠️ **Standardize Dashboard Component Styles:**
-    -   **Description:** Refactor the CSS/SCSS for components within the `StoreOwnerDashboardComponent` layout (`Overview`, `Profile`, `Settings`, `ProductManagement`, `CategoryList`, `Orders`, `Themes`, `StoreEditor`, `Promotions`, `Analytics`, `SideNav`) to ensure they consistently use the global CSS variables and standard classes defined in `styles.css` and documented in `README-STYLES.md`. The goal is to make these components visually match the style established by the `LoginComponent` and `RegisterComponent` (which should also be using the global styles). Address inconsistencies in colors, fonts, spacing, button styles, table layouts, card layouts, form elements, etc.
-    -   **Files:**
-        -   `WebClient/src/styles.css` (Reference - Source of Truth)
-        -   `WebClient/src/README-STYLES.md` (Reference - Documentation)
-        -   `WebClient/src/app/components/account/login/login.component.css` (Reference - Visual Target)
-        -   `WebClient/src/app/components/account/register/register.component.css` (Reference - Visual Target)
-        -   `WebClient/src/app/components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component.css`
-        -   `WebClient/src/app/components/store-owner-layout/overview/overview.component.css`
-        -   `WebClient/src/app/components/store-owner-layout/profile/profile.component.css`
-        -   `WebClient/src/app/components/store-owner-layout/settings/settings.component.css`
-    - [ ] ⚠️ **Style Audit based on README-STYLES.md**
-    - **Goal:** Perform a comprehensive style audit of the frontend codebase (`WebClient/src/`) against the guidelines defined in `WebClient/src/README-STYLES.md`.
-    - **Context:** The `README-STYLES.md` file defines the core theme (CSS variables), global styles, and component styling patterns (like buttons, forms, cards) intended for use across the application, particularly demonstrated in the Landing Page, Login, and Register components.
-    - **Acceptance Criteria:**
-        - All relevant frontend styling files (`.css`, `.scss`) within `WebClient/src/` are reviewed.
-        - A list of deviations from `README-STYLES.md` is generated, including:
-            - File path and line number of the deviation.
-            - Description of the deviation (e.g., "Hardcoded color `#FFFFFF` used instead of `var(--color-text-on-primary)`").
-            - Reference to the specific variable or rule in `README-STYLES.md` that should have been used.
-            - A suggested correction based on the guidelines.
-        - Audit focuses on:
-            - Consistent use of defined CSS variables (colors, fonts, spacing, radii, shadows).
-            - Adherence to defined spacing units/patterns.
-            - Correct usage of the primary font (`--main-font-fam`).
-            - Consistent application of standard button styles (`.standard-button`) and component-specific styles where appropriate (e.g., `#login-btn`).
-            - Consistent application of form element styles (inputs, labels, error messages).
-            - Consistent application of card styles (where applicable).
-            - Identification of styles that deviate significantly or use hardcoded values where variables exist.
-            - Identification of styles used in components *not* covered by variables/classes in `README-STYLES.md` (flag for potential addition to the guide).
-    - **Files:**
-        - **Input:** `WebClient/src/README-STYLES.md`
-        - **Target Scope:** `WebClient/src/**/*.css`, `WebClient/src/**/*.scss` (Primary focus), `WebClient/src/**/*.html` (Secondary check for class usage consistency)
-    - **Notes:** Focus purely on style adherence as defined in the guide. Do not suggest functional changes or major refactoring beyond style correction.
+    -   **Description:** Refactor the CSS/SCSS for components within the `StoreOwnerDashboardComponent`

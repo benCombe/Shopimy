@@ -559,4 +559,163 @@
   .store-url {
     font-size: 0.95rem;
   }
+}
+
+/* Loading, Error, Empty States */
+.loading-container,
+.empty-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--main-color);
+  opacity: 0.7;
+  min-height: 150px; /* Ensure some space */
+}
+
+.loading-container i,
+.empty-message i {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--second-color);
+}
+
+.error-message {
+  padding: var(--spacing-md);
+  background-color: var(--color-error-light, #fde8e8);
+  color: var(--color-error, #e02424);
+  border-radius: var(--border-radius);
+  margin: var(--spacing-md) 0;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.error-message i {
+  font-size: 1.1rem;
+}
+
+/* Status Badge Styles (copied from store-owner profile for consistency) */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px; /* Slightly smaller for general use */
+  border-radius: 20px;
+  font-size: 0.8rem;  /* Slightly smaller */
+  font-weight: 500;
+  text-transform: capitalize;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.status-badge.status-pending {
+  background-color: #FFC107;
+  color: #212121;
+}
+
+.status-badge.status-processing {
+  background-color: #2196F3;
+  color: white;
+}
+
+.status-badge.status-shipped {
+  background-color: #9C27B0;
+  color: white;
+}
+
+.status-badge.status-delivered {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status-badge.status-cancelled {
+  background-color: #F44336;
+  color: white;
+}
+
+.status-badge.status-paid { /* Added for potential future use */
+  background-color: #4CAF50; 
+  color: white;
+}
+
+.status-badge.status-failed { /* Added for potential future use */
+  background-color: #F44336;
+  color: white;
+}
+
+/* Table responsive wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: var(--spacing-md);
+}
+
+/* Standard Table Styles */
+.standard-table {
+  width: 100%;
+  border-collapse: separate; 
+  border-spacing: 0;
+  min-width: 600px; /* Ensure minimum width */
+}
+
+.standard-table th {
+  padding: var(--spacing-md);
+  text-align: left;
+  font-size: 0.9rem; /* Adjust as needed */
+  color: var(--main-color);
+  border-bottom: 2px solid var(--main-color);
+  background-color: var(--third-color); /* Match header background */
+  font-weight: 600;
+  position: sticky;
+  top: 0; /* Stick to top on scroll */
+  z-index: 1;
+}
+
+.standard-table td {
+  padding: var(--spacing-md);
+  text-align: left;
+  vertical-align: middle;
+  font-size: 0.9rem; /* Match header */
+  color: var(--main-color);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.standard-table tbody tr {
+  border-bottom: 1px solid var(--border-color-light);
+  transition: background-color 0.2s ease;
+}
+
+.standard-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.standard-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Pagination Styles */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md) 0;
+}
+
+.pagination-btn {
+  /* Using standard-button secondary, adjust if needed */
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.9rem;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  color: var(--main-color);
+  padding: var(--spacing-xs);
 } 

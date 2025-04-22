@@ -24,6 +24,10 @@
         <i class="fas fa-truck"></i>
         <span>Delivery</span>
       </div>
+      <div class="tab-item" [class.active]="activeTab === 'history'" (click)="setActiveTab('history')">
+        <i class="fas fa-history"></i>
+        <span>Purchase History</span>
+      </div>
     </div>
 
     <!-- Profile Information -->
@@ -152,6 +156,84 @@
         </div>
         
         <!-- Add address form would go here -->
+      </div>
+    </div>
+    
+    <!-- Purchase History -->
+    <div class="tab-content" *ngIf="activeTab === 'history'">
+      <div class="section-container">
+        <h2>Purchase History</h2>
+        <p>View your past orders and purchases across all stores.</p>
+        
+        <!-- Loading State -->
+        <div *ngIf="isPurchaseHistoryLoading" class="loading-container">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Loading your purchase history...</p>
+        </div>
+        
+        <!-- Error State -->
+        <div *ngIf="purchaseHistoryError" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <p>{{ purchaseHistoryError }}</p>
+        </div>
+        
+        <!-- Empty State -->
+        <div *ngIf="!isPurchaseHistoryLoading && !purchaseHistoryError && purchaseHistory.length === 0" class="empty-message">
+          <i class="fas fa-shopping-bag"></i>
+          <p>You haven't made any purchases yet.</p>
+        </div>
+        
+        <!-- Purchase History Table & Pagination Wrapper -->
+        <div *ngIf="!isPurchaseHistoryLoading && !purchaseHistoryError && purchaseHistory.length > 0">
+          <div class="purchase-history-list table-responsive">
+            <table class="data-table standard-table">
+              <thead>
+                <tr>
+                  <!-- <th>Order #</th> -->
+                  <th>Date</th>
+                  <th>Store</th>
+                  <th>Products</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let purchase of purchaseHistory">
+                  <!-- <td>{{ purchase.orderId }}</td> -->
+                  <td>{{ purchase.orderDate | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ purchase.storeName }}</td>
+                  <td>
+                    <span *ngIf="purchase.items.length === 1">{{ purchase.items[0].productName }}</span>
+                    <span *ngIf="purchase.items.length > 1">{{ purchase.items.length }} items</span>
+                  </td>
+                  <td>${{ purchase.totalAmount | number:'1.2-2' }}</td>
+                  <td>
+                    <span class="status-badge status-{{ purchase.status.toLowerCase() }}">
+                      {{ purchase.status }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="pagination-controls" *ngIf="totalPages > 1">
+            <button 
+              [disabled]="currentPage === 1 || isPurchaseHistoryLoading" 
+              (click)="previousPage()" 
+              class="standard-button secondary pagination-btn">
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span class="page-info">Page {{ currentPage }} of {{ totalPages || 1 }}</span>
+            <button 
+              [disabled]="currentPage === totalPages || isPurchaseHistoryLoading" 
+              (click)="nextPage()" 
+              class="standard-button secondary pagination-btn">
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

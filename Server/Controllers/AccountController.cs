@@ -8,6 +8,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Data;
+using Microsoft.Data.SqlClient;
+using System.Dynamic;
 
 namespace Server.Controllers
 {
@@ -269,6 +272,131 @@ namespace Server.Controllers
             }
         }
 
+        // 🔐 Protected Endpoint: Get User Purchase History
+        [HttpGet("purchase-history")]
+        [Authorize]
+        public async Task<ActionResult<PurchaseHistoryResponseDTO>> GetPurchaseHistory([FromQuery] int page = 1, [FromQuery] int itemsPerPage = 10)
+        {
+            try
+            {
+                // Extract user ID from JWT token
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userIdClaim == null)
+                {
+                    return Unauthorized("Invalid token. User ID not found.");
+                }
+
+                if (!int.TryParse(userIdClaim, out int userId))
+                {
+                    return BadRequest("Invalid user ID format.");
+                }
+
+                string? connectionString = _configuration.GetConnectionString("DefaultConnection");
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    return StatusCode(500, "Database connection not configured");
+                }
+
+                var purchases = new List<OrderHistoryItemDTO>();
+                int totalPurchases = 0;
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    // First, get the total count for pagination
+                    string countQuery = @"
+                        SELECT COUNT(*) 
+                        FROM Orders 
+                        WHERE user_id = @userId";
+
+                    using (SqlCommand countCommand = new SqlCommand(countQuery, connection))
+                    {
+                        countCommand.Parameters.AddWithValue("@userId", userId);
+                        totalPurchases = (int)await countCommand.ExecuteScalarAsync();
+                    }
+
+                    // Then get the paginated orders with their store names
+                    string ordersQuery = @"
+                        SELECT o.order_id, o.order_date, o.total_amount, o.status, 
+                               s.name AS store_name
+                        FROM Orders o
+                        JOIN Stores s ON o.store_id = s.store_id
+                        WHERE o.user_id = @userId
+                        ORDER BY o.order_date DESC
+                        OFFSET @offset ROWS
+                        FETCH NEXT @limit ROWS ONLY";
+
+                    using (SqlCommand ordersCommand = new SqlCommand(ordersQuery, connection))
+                    {
+                        ordersCommand.Parameters.AddWithValue("@userId", userId);
+                        ordersCommand.Parameters.AddWithValue("@offset", (page - 1) * itemsPerPage);
+                        ordersCommand.Parameters.AddWithValue("@limit", itemsPerPage);
+
+                        using (SqlDataReader ordersReader = await ordersCommand.ExecuteReaderAsync())
+                        {
+                            while (await ordersReader.ReadAsync())
+                            {
+                                int orderId = ordersReader.GetInt32(ordersReader.GetOrdinal("order_id"));
+                                var order = new OrderHistoryItemDTO
+                                {
+                                    OrderId = orderId,
+                                    OrderDate = ordersReader.GetDateTime(ordersReader.GetOrdinal("order_date")),
+                                    StoreName = ordersReader.GetString(ordersReader.GetOrdinal("store_name")),
+                                    TotalAmount = ordersReader.GetDecimal(ordersReader.GetOrdinal("total_amount")),
+                                    Status = ordersReader.GetString(ordersReader.GetOrdinal("status")),
+                                    Items = new List<OrderHistoryProductDTO>()
+                                };
+
+                                purchases.Add(order);
+                            }
+                        }
+                    }
+
+                    // Get items for each order
+                    foreach (var order in purchases)
+                    {
+                        string itemsQuery = @"
+                            SELECT oi.item_id, oi.product_name, oi.quantity, oi.price_paid
+                            FROM OrderItems oi
+                            WHERE oi.order_id = @orderId";
+
+                        using (SqlCommand itemsCommand = new SqlCommand(itemsQuery, connection))
+                        {
+                            itemsCommand.Parameters.AddWithValue("@orderId", order.OrderId);
+
+                            using (SqlDataReader itemsReader = await itemsCommand.ExecuteReaderAsync())
+                            {
+                                while (await itemsReader.ReadAsync())
+                                {
+                                    var item = new OrderHistoryProductDTO
+                                    {
+                                        ProductName = itemsReader.GetString(itemsReader.GetOrdinal("product_name")),
+                                        Quantity = itemsReader.GetInt32(itemsReader.GetOrdinal("quantity")),
+                                        PricePaid = itemsReader.GetDecimal(itemsReader.GetOrdinal("price_paid"))
+                                    };
+
+                                    order.Items.Add(item);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                var response = new PurchaseHistoryResponseDTO
+                {
+                    Purchases = purchases,
+                    Total = totalPurchases
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         private string GenerateJwtToken(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured")));
@@ -313,6 +441,29 @@ namespace Server.Controllers
             public string? PostalCode { get; set; }
             public DateTime? DOB { get; set; }
             public bool? Subscribed { get; set; }
+        }
+
+        public class PurchaseHistoryResponseDTO
+        {
+            public List<OrderHistoryItemDTO> Purchases { get; set; } = new List<OrderHistoryItemDTO>();
+            public int Total { get; set; }
+        }
+
+        public class OrderHistoryItemDTO
+        {
+            public int OrderId { get; set; }
+            public DateTime OrderDate { get; set; }
+            public string StoreName { get; set; } = string.Empty;
+            public decimal TotalAmount { get; set; }
+            public string Status { get; set; } = string.Empty;
+            public List<OrderHistoryProductDTO> Items { get; set; } = new List<OrderHistoryProductDTO>();
+        }
+
+        public class OrderHistoryProductDTO
+        {
+            public string ProductName { get; set; } = string.Empty;
+            public int Quantity { get; set; }
+            public decimal PricePaid { get; set; }
         }
     }
 }

@@ -5,6 +5,7 @@ import { User } from '../../../models/user';
 import { UserService } from '../../../services/user.service';
 import { DeliveryService } from '../../../services/delivery.service';
 import { PaymentService } from '../../../services/payment.service';
+import { PurchaseService, OrderHistoryItemDTO } from '../../../services/purchase.service';
 import { DeliveryDetails } from '../../../models/delivery-details';
 import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 
@@ -47,11 +48,20 @@ export class ProfileComponent implements OnInit {
   isSavingPaymentMethod = false;
   newPaymentIsDefault = false;
 
+  // Purchase history variables
+  purchaseHistory: OrderHistoryItemDTO[] = [];
+  isLoadingHistory: boolean = false;
+  historyError: string | null = null;
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalPages: number = 0;
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
     private deliveryService: DeliveryService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private purchaseService: PurchaseService
   ) { }
 
   ngOnInit(): void {
@@ -108,6 +118,9 @@ export class ProfileComponent implements OnInit {
       this.unmountCardElement();
     } else if (tabId === 'addresses') {
       this.showAddDelivery = false;
+    } else if (tabId === 'history') {
+      // Load purchase history when the tab is selected
+      this.loadPurchaseHistory(this.currentPage);
     }
   }
 
@@ -205,6 +218,38 @@ export class ProfileComponent implements OnInit {
     this.paymentService.getPaymentMethods().subscribe(methods => {
       this.paymentMethods = methods;
     });
+  }
+
+  loadPurchaseHistory(page: number): void {
+    this.isLoadingHistory = true;
+    this.historyError = null;
+
+    this.purchaseService.getPurchaseHistory(page, this.itemsPerPage).subscribe({
+      next: (response) => {
+        this.purchaseHistory = response.purchases;
+        this.totalPages = Math.ceil(response.total / this.itemsPerPage);
+        this.isLoadingHistory = false;
+      },
+      error: (err) => {
+        console.error('Error loading purchase history:', err);
+        this.historyError = 'Failed to load purchase history. Please try again.';
+        this.isLoadingHistory = false;
+      }
+    });
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1 && !this.isLoadingHistory) {
+      this.currentPage--;
+      this.loadPurchaseHistory(this.currentPage);
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages && !this.isLoadingHistory) {
+      this.currentPage++;
+      this.loadPurchaseHistory(this.currentPage);
+    }
   }
 
   saveDeliveryAddress(): void {
