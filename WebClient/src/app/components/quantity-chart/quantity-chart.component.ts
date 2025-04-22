@@ -13,13 +13,6 @@ import { QuantityService, VisitAnalytics } from '../../services/quantity.service
 
 
 export class QuantityChartComponent implements AfterViewInit {
-  data = [
-    { name: 'Apples', value: 30 },
-    { name: 'Bananas', value: 80 },
-    { name: 'Cherries', value: 45 },
-    { name: 'Dates', value: 60 },
-    { name: 'Elderberries', value: 20 }
-  ];
   items: VisitAnalytics[]= [];
   visitLabels: string="";
   visitData: number=0;
@@ -36,15 +29,10 @@ export class QuantityChartComponent implements AfterViewInit {
       },
       error: (err) => {
         console.error('Error fetching visit data:', err);
-        //this.visitChartError = 'Failed to load visit data. Please try again later.';
-        //this.visitChartLoading = false;
-        // Initialize chart with empty data anyway
-        //this.updateVisitsChart();
       }
     });
   }
   ngAfterViewInit(): void {
-    //this.createBarChart();
   }
 
   private createBarChart(data: VisitAnalytics[]): void {

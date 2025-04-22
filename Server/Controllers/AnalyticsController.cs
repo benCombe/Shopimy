@@ -140,8 +140,11 @@ namespace Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<VisitAnalyticsResponse>> GetStoreVisits(int storeid)
         {
+            var authHeader = Request.Headers["Authorization"].ToString();
+            
+            authHeader= authHeader.Remove(0,7);
             // Get user ID from the token claims
-            int userId = 0;
+            /*int userId = 0;
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out userId))
             {
@@ -156,8 +159,13 @@ namespace Server.Controllers
             if (store == null)
             {
                 return NotFound("Store not found for this user.");
-            }
-            storeid=1000005;
+            }*/
+            storeid=10000005;
+            var activeUser = await _context.ActiveUsers.FromSqlRaw(@"SELECT * from ActiveUsers au where au.token ={0}",authHeader).ToListAsync();
+            var store = await _context.Stores
+                .Where(s => s.StoreOwnerId == activeUser[0].UserId)
+                .FirstOrDefaultAsync();
+            
             var quality= await _context.Quantity.FromSqlRaw(@"select l.name as Name ,SUM(pl.quantity) AS TotalQuantity 
                                                         from PurchaseLog pl
                                                         join Items i on i.item_id =pl.item_id
@@ -167,4 +175,6 @@ namespace Server.Controllers
             return Ok(quality);
         }
     }
+
+    
 } 
