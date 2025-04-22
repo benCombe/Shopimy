@@ -1,4 +1,4 @@
-<div id="main" role="main" aria-label="User Profile">
+<div id="main" class="mobile-container" role="main" aria-label="User Profile">
   <!-- Tab Navigation similar to Store Editor -->
   <div class="tab-navigation">
     <div *ngFor="let tab of tabs" 
@@ -280,41 +280,63 @@
     <h2 id="purchase-history-heading">Purchase History</h2>
     <p class="section-description">View your past orders and transaction history.</p>
     
-    <div class="table-responsive">
+    <!-- Loading indicator -->
+    <div *ngIf="isLoadingHistory" class="loading-state">
+      <p><i class="fa-solid fa-spinner fa-spin"></i> Loading purchase history...</p>
+    </div>
+
+    <!-- Error message -->
+    <div *ngIf="historyError" class="error-message">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{ historyError }}
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!isLoadingHistory && !historyError && purchaseHistory.length === 0" class="empty-state">
+      <p>You haven't made any purchases yet.</p>
+    </div>
+
+    <!-- Purchase history table -->
+    <div *ngIf="!isLoadingHistory && !historyError && purchaseHistory.length > 0" class="table-responsive">
       <table class="standard-table">
         <thead>
           <tr>
             <th>Date</th>
             <th>Store</th>
-            <th>Product</th>
-            <th>Price</th>
+            <th>Products</th>
+            <th>Total</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>28/09/2024</td>
-            <td>Calvin's Collectibles</td>
-            <td>Replica Anduril - Sword</td>
-            <td>$229.99</td>
-            <td><span class="status-badge status-shipped">Shipped</span></td>
-          </tr>
-          <tr>
-            <td>27/09/2024</td>
-            <td>Bob's Burgers</td>
-            <td>Burger (Cheese)</td>
-            <td>$5.99</td>
-            <td><span class="status-badge status-delivered">Delivered</span></td>
-          </tr>
-          <tr>
-            <td>25/09/2024</td>
-            <td>Foxy Furniture</td>
-            <td>Space Lamp - Black</td>
-            <td>$29.99</td>
-            <td><span class="status-badge status-delivered">Delivered</span></td>
+          <tr *ngFor="let order of purchaseHistory">
+            <td>{{ order.orderDate | date:'dd/MM/yyyy' }}</td>
+            <td>{{ order.storeName }}</td>
+            <td>
+              <span *ngIf="order.items.length === 1">{{ order.items[0].productName }}</span>
+              <span *ngIf="order.items.length > 1">{{ order.items.length }} items</span>
+            </td>
+            <td>${{ order.totalAmount | number:'1.2-2' }}</td>
+            <td><span class="status-badge status-{{ order.status.toLowerCase() }}">{{ order.status }}</span></td>
           </tr>
         </tbody>
       </table>
+
+      <!-- Pagination controls -->
+      <div class="pagination-controls">
+        <button 
+          class="standard-button secondary" 
+          [disabled]="currentPage <= 1 || isLoadingHistory"
+          (click)="previousPage()">
+          <i class="fa-solid fa-chevron-left"></i> Previous
+        </button>
+        <span class="page-info">Page {{ currentPage }} of {{ totalPages || 1 }}</span>
+        <button 
+          class="standard-button secondary" 
+          [disabled]="currentPage >= totalPages || isLoadingHistory"
+          (click)="nextPage()">
+          Next <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
     </div>
   </div>
 </div>

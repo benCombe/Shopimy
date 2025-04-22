@@ -1,13 +1,12 @@
-<div id="container">
+<div class="container">
   <!-- <app-store-nav></app-store-nav> -->
   <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3">
     <h2>Your Basket</h2>
     <div id="basket">
       <div id="cart-items-container" class="theme2" [style.background-color]="storeDetails?.theme_2">
-
         <div *ngFor="let i of cartItems" class="cart-item">
           <div class="item-img-container">
-            <img [src]="i.item.blob" class="item-img">
+            <img [src]="i.item.blob" class="item-img" [alt]="i.item.name">
           </div>
           <div class="item-info-container center-spaced">
             <div class="item-info">
@@ -17,32 +16,35 @@
                 <span class="original-price strikethrough">${{ i.item.price }}</span>
               </ng-container>
               <ng-template #notOnSale>
-                ${{ i.item.price }}
+                <span>${{ i.item.price }}</span>
               </ng-template>
-              <br>
               <span class="item-details"></span>
             </div>
           </div>
           <div class="quantity-container">
             <div class="quantity center">
-              <div class="less center" (click)="decreaseQuantity(i.item)">-</div>
-              <div class="amount center">{{i.quantity}}</div>
-              <div class="more center" (click)="increaseQuantity(i.item)">+</div>
+              <button class="less center" (click)="decreaseQuantity(i.item)" aria-label="Decrease quantity">-</button>
+              <div class="amount center" aria-live="polite">{{i.quantity}}</div>
+              <button class="more center" (click)="increaseQuantity(i.item)" aria-label="Increase quantity">+</button>
             </div>
           </div>
-          <div id="remove-item" class="center" (click)="removeFromCart(i.item)"><i class="fa-solid fa-x"></i></div>
+          <button class="remove-item center" (click)="removeFromCart(i.item)" aria-label="Remove item">
+            <i class="fa-solid fa-x"></i>
+          </button>
+        </div>
+        <div *ngIf="cartItems.length === 0" class="empty-state center-col">
+          <i class="fa-solid fa-cart-shopping fa-3x"></i>
+          <p>Your cart is empty</p>
         </div>
       </div>
 
       <div id="order-summary-container">
         <app-order-summary [storeDetails]="storeDetails"></app-order-summary>
-        <div id="promo-code" class="center">
+        <div class="promo-code">
           <label for="promo">Apply Promo Code:</label>
-          <input type="text" name="promo" id="promo">
+          <input type="text" name="promo" id="promo" placeholder="Enter code">
         </div>
       </div>
-
     </div>
-
   </div>
 </div>

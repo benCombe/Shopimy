@@ -1,43 +1,47 @@
-<div id="main">
-        <div id="TopHalf"><!--Pics and desc-->
-            <div id="picsHolder"><!--Pics holder-->
-                <img id="smlPic" src="sweater.jpg" width="150px" height="152px">
-                <img id="smlPic" src="sweater.jpg" width="150px" height="152px">
-                <img id="smlPic" src="sweater.jpg" width="150px" height="152px">
-                <img id="smlPic" src="sweater.jpg" width="150px" height="152px">
+<main id="main" class="item-page-container" aria-label="Product details page">
+    <article id="product-details" class="product-details">
+        <div id="TopHalf" class="product-content">
+            <!-- Product images section -->
+            <aside id="picsHolder" class="thumbnail-container" aria-label="Product thumbnails">
+                <img *ngFor="let image of productImages; let i = index" 
+                     class="thumbnail-image"
+                     [src]="image" 
+                     [alt]="productName + ' thumbnail ' + (i+1)"
+                     (click)="selectImage(image)"
+                     tabindex="0"
+                     role="button"
+                     [attr.aria-label]="'View ' + productName + ' image ' + (i+1)">
+            </aside>
+            <div id="bigPicHolder" class="main-image-container">
+                <img id="bigPic" class="main-image" [src]="selectedImage || productImages[0]" [alt]="productName">
             </div>
-            <div id="bigPicHolder"><!--BigPic-->
-                <img id="bigPic" src="sweater.jpg" width="544px" height="622px">
-            </div>
-            <div id="textSection">
-                <p id="headerText">Joni Sweater</p>
-                <p id="priceText">$9.99</p>
-                <p id="descText">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas interdum diam vel vestibulum maximus. Praesent placerat in turpis quis ultricies. Nulla lacinia euismod urna, vitae lobortis felis interdum non. Cras gravida pretium luctus.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas interdum diam vel vestibulum maximus. Praesent placerat in turpis quis ultricies. Nulla lacinia euismod urna, vitae lobortis felis interdum non. Cras gravida pretium luctus.
-                </p>
-                <p id="options">Sizes XS (S) M (L) XL (2XL)</p>
-                <p id="options2"> Yarn - Aran Weight -539 (609) 742 (886) 984 (1123) 1239 (1351) 1484 yds 493 (557) 678 (810) 900 (1027) 1133 (1235) 1357 m300 (300) 300 (400) 400 (500) 500 (600) 600 g
-                    Yarn - Aran Weight -539 (609) 742 (886) 984 (1123) 1239 (1351) 1484 yds 493 (557) 678 (810) 900 (1027) 1133 (1235) 1357 m300 (300) 300 (400) 400 (500) 500 (600) 600 g
-                </p>
+            <div id="textSection" class="product-info">
+                <h1 id="headerText" class="product-title">{{ productName }}</h1>
+                <p id="priceText" class="product-price">{{ productPrice | currency }}</p>
+                <div id="descText" class="product-description">
+                    <p>{{ productDescription }}</p>
+                </div>
+                <p id="options" class="product-options" *ngIf="productSizes">Sizes: {{ productSizes }}</p>
+                <div id="options2" class="product-details-text" *ngIf="productDetails">
+                    <p>{{ productDetails }}</p>
+                </div>
     
-                <div id="btnHolder">
-                    <button id="btn">Add to basket</button>
-                    <button id="Heartbtn"><img id="heart" src="heart.svg" width="5vw" height="5vw"></button>
+                <div id="btnHolder" class="action-buttons">
+                    <button id="btn" class="standard-button primary" (click)="addToCart()" aria-label="Add to basket">Add to basket</button>
+                    <button id="Heartbtn" class="favorite-button" (click)="toggleFavorite()" aria-label="Add to favorites">
+                        <i class="fa-{{isFavorite ? 'solid' : 'regular'}} fa-heart" aria-hidden="true"></i>
+                    </button>
                 </div>
             </div>
         </div>
-        <div id="pageDivider"></div>
-        <div id="bottomHalf">
-            <div id="reviewLeft">
-                <p id="reviewLeftHeader">Ratings and Reviews</p>
-    
+        <hr id="pageDivider" class="section-divider" aria-hidden="true">
+        <section id="bottomHalf" class="reviews-section">
+            <div id="reviewLeft" class="reviews-header">
+                <h2 id="reviewLeftHeader" class="section-title">Ratings and Reviews</h2>
             </div>
-            <div id="reviewRight">
-               
-                <p id="reviewItemHeader">Super easy to read and well structured</p>
-                
+            <div id="reviewRight" class="reviews-content">
+                <app-item-reviews [itemId]="itemId"></app-item-reviews>
             </div>
-        </div>
-
-        
-    </div>
+        </section>
+    </article>
+</main>

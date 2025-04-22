@@ -58,6 +58,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   currentListId: number | null = null;
   isSaving = false;
   storeId: number | null = null;
+  private currentStoreId: number = 0;
 
   private subscriptions: Subscription[] = [];
 
@@ -77,6 +78,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     const storeSub = this.storeService.activeStore$.subscribe(store => {
       if (store) {
         this.storeId = store.id;
+        this.currentStoreId = store.id;
         this.loadProducts();
         this.loadCategories();
       } else {
@@ -185,7 +187,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   loadCategories(): void {
     if (!this.storeId) return;
-    const categorySub = this.categoryService.getCategories().subscribe({
+    const categorySub = this.categoryService.getCategories(this.currentStoreId).subscribe({
       next: (categories: Category[]) => {
         this.categories = categories.filter(c => c.storeId === this.storeId);
       },

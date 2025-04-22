@@ -92,7 +92,7 @@ export interface ProductVariant {
 })
 export class ItemService {
   // Base URL for the items endpoint
-  private apiUrl = `${environment.apiUrl}/Item`;
+  private apiUrl = `${environment.apiUrl}/api/Item`;
 
   constructor(private http: HttpClient) {}
 
