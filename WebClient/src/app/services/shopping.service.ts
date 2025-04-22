@@ -82,6 +82,7 @@ export class ShoppingService {
         if (user.Id !== 0) {
           this.fetchUserCart(user); // Load user cart for new store
           this.storeToDB = true;
+
         } else {
           this.loadGuestCart(); // Load guest cart for new store
         }
@@ -141,12 +142,11 @@ export class ShoppingService {
 
     if (existingItemIndex !== -1) {
       if (cart[existingItemIndex].quantity > 1) {
-        cart[existingItemIndex].quantity -= 1; // Decrease quantity
-      } else {
-        cart.splice(existingItemIndex, 1); // Remove item if quantity reaches 0
+        cart[existingItemIndex].quantity = 0;
       }
     }
 
+    cart.splice(existingItemIndex, 1);
     this.CartSubject.next([...cart]);
     this.updateTotal();
 

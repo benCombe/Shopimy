@@ -340,11 +340,11 @@
   #newsletter-section {
     width: 90%;
   }
-  
+
   .newsletter-form {
     flex-direction: column;
   }
-  
+
   .newsletter-form input,
   .newsletter-form button {
     width: 100%;

@@ -83,6 +83,8 @@
   <!-- Other Views -->
   <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData"></app-shopping-cart>
   <app-checkout *ngIf="isCheckoutView()"></app-checkout>
+  <app-item-detail *ngIf="isItemView()" [storeDetails]="storeData" [itemId]="currentItemView"></app-item-detail>
+  <!-- The category page is loaded if the url is "shopimy.com/[storeurl]/[category-name]" -->
   <ng-container *ngFor="let c of storeData?.categories">
     <app-category-page *ngIf="isCategoryView(c.name) && storeData?.componentVisibility?.categories" 
                       [category]="c" 

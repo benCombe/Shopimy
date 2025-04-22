@@ -301,4 +301,23 @@
   .store-title {
     font-size: 1.5rem;
   }
+
+
+}
+
+
+@media only screen and (max-width: 1500px) {
+
+  .cat {
+    margin-right: 55px; /* Moves elements leftward instead of rightward */
+    font-size: 1rem;
+  }
+
+/*   #categories{
+    margin-bottom: 10px;
+  }
+
+  .dropdown{
+    left: -25px;
+  } */
 }

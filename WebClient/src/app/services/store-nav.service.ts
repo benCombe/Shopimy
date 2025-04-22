@@ -19,6 +19,9 @@ export class StoreNavService {
   private currentUrlSubject = new BehaviorSubject<string>('');
   currentUrl$ = this.currentUrlSubject.asObservable();
 
+  private currentViewSubject = new BehaviorSubject<string>('store-page');
+  currentView$ = this.currentViewSubject.asObservable();
+
   private viewChangedSource = new Subject<string>();
   viewChanged$ = this.viewChangedSource.asObservable();
 
@@ -55,9 +58,10 @@ export class StoreNavService {
       });
 
     // Handle browser back/forward navigation manually
-    window.addEventListener('popstate', () => {
+    window.addEventListener('popstate', (event) => {
       const newUrl = this.router.url.replace(/^\//, ''); // Get the new URL after popstate
       console.log("STORENAV: Popstate event detected: " + newUrl);
+      this.handlePopState(event);
       this.currentUrlSubject.next(newUrl);
     });
   }
@@ -73,6 +77,26 @@ export class StoreNavService {
     const newUrl = `${baseUrl}/${view}`;
     this.triggerViewChange(view); //for StorePage subcomponents
     this.router.navigateByUrl(newUrl);
+  }
+
+
+  // Update the current view
+  setCurrentView(view: string): void {
+    this.currentViewSubject.next(view);
+    this.updateUrl(view);
+  }
+
+  // Update the browser URL
+  private updateUrl(view: string): void {
+    const url = `/${view}`;
+    this.location.replaceState(url); // This updates the URL without reloading the page
+  }
+
+  // Handle browser popstate (back/forward navigation)
+  private handlePopState(event: PopStateEvent): void {
+    // When the URL changes via popstate, update the current view accordingly
+    const path = window.location.pathname.split('/')[1];
+    this.setCurrentView(path);
   }
 
   // Method to navigate to the store home page (store-url)

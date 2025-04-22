@@ -41,6 +41,10 @@ export class TopNavComponent implements OnInit {
     //{ label: 'Store', link: '/store' }
   ];
 
+  get filteredOptions() {
+    return this.isLoggedIn ? this.options.slice(1) : this.options;  // Remove first option if logged in
+  }
+
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {

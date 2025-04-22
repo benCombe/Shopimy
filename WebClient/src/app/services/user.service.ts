@@ -15,14 +15,14 @@ export class UserService {
   private apiUrl = `${environment.apiUrl}/api/account`;
 
   private defaultUser: User = new User(
-    0, 
-    "Guest", 
-    "User", 
-    "example@gmail.com", 
-    "555-555-5555", 
-    "123 Nowhere Lane, Someplace, NS", 
-    "Canada", 
-    null, 
+    0,
+    "Guest",
+    "User",
+    "example@gmail.com",
+    "555-555-5555",
+    "123 Nowhere Lane, Someplace, NS",
+    "Canada",
+    null,
     true,
     "Someplace",
     "NS",
@@ -38,7 +38,11 @@ export class UserService {
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   public loggedIn$ : Observable<boolean> = this.loggedInSubject.asObservable();
 
-  constructor(private http: HttpClient, private cookieService: CookieService) { }
+  constructor(private http: HttpClient, private cookieService: CookieService) {
+
+    // Check if user is logged in on service initialization
+    this.checkSession();
+  }
 
 
   //Register
@@ -99,7 +103,7 @@ export class UserService {
     if (!token) return new Observable(observer => observer.error('No token found'));
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
+
     // Create profile update object - excluding Email and Password
     const profileUpdate = {
       FirstName: user.FirstName,
@@ -113,7 +117,7 @@ export class UserService {
       DOB: (user as any).DOB,
       Subscribed: (user as any).Subscribed
     };
-    
+
     return this.http.put<boolean>(`${this.apiUrl}/profile`, profileUpdate, { headers }).pipe(
       tap(success => {
         if (success) {
@@ -164,6 +168,31 @@ export class UserService {
         this.clearSession(); // Ensure session is cleared even if API fails
       }
     });
+  }
+
+  checkSession(): void {
+    const token = this.cookieService.get('auth_token');
+   // console.log("Token Fetched: " + token);
+
+    if (token) {
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      this.http.get<User>(`${this.apiUrl}/profile`, { headers }).subscribe({
+        next: user => {
+          this.activeUserSubject.next(user);
+          this.loggedInSubject.next(true);
+          console.log("User session checked: ", user);
+        },
+        error: err => {
+          this.activeUserSubject.next(this.defaultUser);
+          this.loggedInSubject.next(false);
+          this.cookieService.delete('auth_token', '/');
+          console.error("Error checking user session", err);
+        }
+      });
+    } else {
+      this.activeUserSubject.next(this.defaultUser);
+      this.loggedInSubject.next(false);
+    }
   }
 
   private clearSession(): void {

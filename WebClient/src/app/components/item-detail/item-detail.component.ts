@@ -6,6 +6,7 @@ import { StoreService } from '../../services/store.service'; // or your item ser
 import { ItemService } from '../../services/item.service';
 import { BasicItem } from '../../models/basic-item';
 import { ProductReviewsComponent } from '../product-reviews/product-reviews.component';
+import { StoreDetails } from '../../models/store-details';
 
 @Component({
   selector: 'app-item-detail',
@@ -19,9 +20,10 @@ import { ProductReviewsComponent } from '../product-reviews/product-reviews.comp
   ]
 })
 export class ItemDetailComponent implements OnInit {
-
+  @Input() itemId!: number; // This will be set from the parent component or route
+  @Input() storeDetails: StoreDetails | null = null;
   item: BasicItem | null = null;
-  itemId!: number;
+
 
   constructor(
     private route: ActivatedRoute,
