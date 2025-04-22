@@ -58,6 +58,7 @@
 .item-img{
   width: 100%;
   height: auto;
+  max-height: 125px;
   display: block;
 }
 
@@ -145,7 +146,9 @@
 
 
 #order-summary-container{
-  width: calc(25% - 4rem);
+  margin-left: 25px;
+  position: relative;
+  width: 500px;
   height: 500px;
   display: flex;
   flex-direction: column;
@@ -153,8 +156,14 @@
   justify-content: flex-start;
 }
 
+/* #promo-code *{
+  border: 1px solid red;
+}
+ */
 #promo-code{
-  margin-top: 20px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
   width: 100%;
 }
 
@@ -167,7 +176,8 @@
 }
 
 #promo{
-  width: clamp(150px, 60%, 250px);
+  width: 60%;
+  min-width: 120px;
   height: 30px;
 }
 
@@ -178,16 +188,61 @@
     font-size: 1.2rem;
   }
 
-  #promo-code label{
+/*   #promo-code label{
     width: 50%;
     font-size: 1rem;
-  }
+  } */
+
 }
 
-@media only screen and (max-width: 715px){
+@media only screen and (max-width: 1200px){
+
   #basket{
+    height: 100%;
+    width: 100%;
+    display: flex;
     flex-direction: column;
   }
+  #cart-items-container{
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  #order-summary-container{
+    margin-left: 0px;
+    position: relative;
+    width: 100%;
+    height: 500px;
+    display: flex;
+  }
+
+  #promo-code{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #promo-code label{
+    width: 30%;
+    text-align: right;
+    margin-right: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  #promo{
+    max-width: 400px;
+    height: 30px;
+  }
+
+/*   #order-summary-container{
+    border: 1px solid red;
+  } */
 
   #cart-items-container{
     width: 100%;
@@ -204,8 +259,8 @@
   }
 
   .quantity{
-    width: 80px;
-    height: 20px;
+    width: 100px;
+    height: 30px;
   }
 
   .quantity div{
@@ -225,13 +280,14 @@
   }
 
 
-  #promo-code{
-    width: 63vw;
-  }
+}
 
+@media only screen and (max-width: 700px){
   #promo-code label{
-    width: 40%;
-    font-size: 1rem;
+    width: 30%;
+    text-align: right;
+    margin-right: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
   }
-
 }

@@ -27,14 +27,18 @@
 }
  */
 
-
+/*  *{
+  border: 1px solid red;
+ }
+ */
  #main {
   display: flex;
   align-items: center;
   justify-content: space-between; /* Ensures store name is on the left */
   position: relative;
   width: 100vw;
-  height: 5vh;
+  height: 8vh;
+  min-height: 100px;
   padding: 2rem;
 /*   overflow: hidden; */
   z-index: 1000;
@@ -118,7 +122,9 @@
 
 
 #cart-btn-wrapper{
-  position: relative;
+  position: absolute;
+  top: 30%;
+  right: 10px;
   height: 100%;
   display: flex;
   align-items: flex-start;
@@ -140,7 +146,7 @@
 #cart-btn{
   height: 50px;
   width: 50px;
-  font-size: 2.5rem;
+  font-size: 2rem;
 }
 
 #cart-btn:hover{
@@ -149,7 +155,42 @@
 
 /* MOBILE */
 
+#cart-btn-wrapper-mobile{
+  position: absolute;
+  top: 0;
+  right: 45px;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+#num-item-indicator{
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  background-color: black;
+  color: white;
+  border-radius: 50%;
+}
+
+#cart-btn{
+  height: 50px;
+  width: 50px;
+  font-size: 2rem;
+}
+
+#cart-btn:hover{
+  cursor: pointer;
+}
+
 #hamburger-menu {
+  position: absolute;
+  right: 10px;
+  top: 30%;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -164,8 +205,8 @@
 
 #mobile-dropdown {
   position: absolute;
-  top: 85px;
-  right: 85px;
+  top: 50px;
+  right: 5px;
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 10px;
@@ -181,6 +222,20 @@
   padding-left: 20px;
 }
 
+@media only screen and (max-width: 500px) {
+
+  #store-name{
+    font-size: 2rem;
+  }
+
+  #cart-btn{
+    top: -5px;
+    font-size: 1.7rem
+  }
+
+
+}
+
 @media (max-width: 900px) {
   #categories {
     display: none;
@@ -194,21 +249,14 @@
 }
 
 @media (min-width: 900px) {
+
   #hamburger-menu {
     display: none;
   }
-
-
 }
 
 
 @media only screen and (max-width: 1200px) {
-
-  .cat {
-    margin-right: 50px; /* Moves elements leftward instead of rightward */
-    font-size: 1rem;
-
-  }
 
   #categories{
     margin-bottom: 10px;
@@ -217,4 +265,23 @@
   .dropdown{
     left: -25px;
   }
+
+
+}
+
+
+@media only screen and (max-width: 1500px) {
+
+  .cat {
+    margin-right: 55px; /* Moves elements leftward instead of rightward */
+    font-size: 1rem;
+  }
+
+/*   #categories{
+    margin-bottom: 10px;
+  }
+
+  .dropdown{
+    left: -25px;
+  } */
 }
