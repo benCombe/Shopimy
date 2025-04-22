@@ -12,6 +12,7 @@ import { OrdersComponent } from '../orders/orders.component';
 import { SettingsComponent } from '../settings/settings.component';
 import { AnalyticsComponent } from '../analytics/analytics.component';
 import { ThemesComponent } from '../themes/themes.component';
+import { LogoSelectorComponent } from '../logo-selector/logo-selector.component';
 import { StoreEditorComponent } from '../store-editor/store-editor.component';
 import { CategoryListComponent } from '../../category-list/category-list.component';
 import { ActivatedRoute } from '@angular/router';
@@ -31,6 +32,7 @@ import { StoreDetails } from '../../../models/store-details';
     ProductManagementComponent,
     OrdersComponent,
     ThemesComponent,
+    LogoSelectorComponent,
     PromotionsComponent,
     AnalyticsComponent,
     StoreEditorComponent,

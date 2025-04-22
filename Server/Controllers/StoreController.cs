@@ -583,5 +583,83 @@ namespace Server.Controllers
                 return StatusCode(500, errorMessage);
             }
         }
+
+        // Save theme settings
+        [HttpPut("theme")]
+        [Authorize]
+        public async Task<ActionResult<StoreDetails>> SaveThemeSettings([FromBody] ThemeUpdateRequest request)
+        {
+            // Get the user ID from the token
+            int userId = 0;
+            if (User == null)
+            {
+                return Unauthorized("Invalid user authentication token.");
+            }
+
+            var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
+            
+            // Try to find the claim with numeric value (user ID)
+            foreach (var claim in nameIdentifierClaims)
+            {
+                if (int.TryParse(claim.Value, out int parsedId) && parsedId > 0)
+                {
+                    userId = parsedId;
+                    break;
+                }
+            }
+            
+            if (userId == 0)
+            {
+                return Unauthorized("Invalid user authentication token.");
+            }
+
+            // Find store for this user
+            var store = await _context.Stores
+                .Where(s => s.StoreOwnerId == userId)
+                .FirstOrDefaultAsync();
+
+            if (store == null)
+            {
+                return NotFound("Store not found.");
+            }
+
+            // Find or create theme settings for this store
+            var themeSettings = await _context.StoreThemes
+                .Where(t => t.StoreId == store.StoreId)
+                .FirstOrDefaultAsync();
+
+            bool isNewTheme = false;
+            if (themeSettings == null)
+            {
+                // Create new theme settings if they don't exist
+                themeSettings = new StoreTheme
+                {
+                    StoreId = store.StoreId
+                };
+                isNewTheme = true;
+            }
+
+            // Update theme settings with the new values
+            themeSettings.Theme_1 = request.Theme_1;
+            themeSettings.Theme_2 = request.Theme_2;
+            themeSettings.Theme_3 = request.Theme_3;
+            themeSettings.FontColor = request.FontColor;
+            themeSettings.FontFamily = request.FontFamily;
+
+            // Save changes to the database
+            if (isNewTheme)
+            {
+                _context.StoreThemes.Add(themeSettings);
+            }
+            else
+            {
+                _context.StoreThemes.Update(themeSettings);
+            }
+            
+            await _context.SaveChangesAsync();
+
+            // Return the updated store details
+            return await GetCurrentUserStore();
+        }
     }
 }

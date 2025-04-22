@@ -35,6 +35,7 @@ builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<Server.Services.LogoService>(); // Register LogoService
 //builder.Services.AddScoped<IEmailService, EmailService>();
 
 

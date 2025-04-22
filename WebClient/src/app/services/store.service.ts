@@ -306,6 +306,43 @@ export class StoreService {
     );
   }
 
+  // Save theme settings to the backend
+  saveThemeSettings(themeData: {
+    theme_1: string,
+    theme_2: string,
+    theme_3: string,
+    fontColor: string,
+    fontFamily: string
+  }): Observable<StoreDetails> {
+    const token = this.cookieService.get('auth_token');
+    if (!token) {
+      console.error('Authentication token not found. Cannot save theme settings.');
+      return throwError(() => new Error('Authentication required.'));
+    }
+    
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    return this.http.put<StoreDetails>(`${this.apiUrl}/theme`, themeData, { headers }).pipe(
+      tap(updatedStore => {
+        // Update the active store with the new theme settings
+        const currentStore = this.activeStoreSubject.value;
+        const updatedStoreDetails = {
+          ...currentStore,
+          theme_1: updatedStore.theme_1,
+          theme_2: updatedStore.theme_2,
+          theme_3: updatedStore.theme_3,
+          fontColor: updatedStore.fontColor,
+          fontFamily: updatedStore.fontFamily
+        };
+        this.activeStoreSubject.next(this.deserializeStore(updatedStoreDetails));
+      }),
+      catchError(error => {
+        console.error('Error saving theme settings:', error);
+        return throwError(() => new Error('Failed to save theme settings.'));
+      })
+    );
+  }
+
   // Update component visibility
   updateComponentVisibility(visibility: ComponentVisibility): Observable<StoreDetails> {
     const currentStore = this.activeStoreSubject.value;

@@ -1,7 +1,7 @@
 <div class="themes-container" [class.inline-mode]="inlineMode">
   <div *ngIf="!inlineMode" class="themes-header">
-    <h2>Theme Settings</h2>
-    <p class="description">Choose colors and fonts to match your brand identity.</p>
+    <h2>Store Appearance</h2>
+    <p class="description">Customize your store's visual identity with colors, fonts, and branding elements that reflect your unique style.</p>
   </div>
 
   <!-- Tabs -->
@@ -121,6 +121,24 @@
           <option value="'Lato', sans-serif">Lato</option>
         </select>
       </div>
+    </div>
+  </div>
+
+  <!-- Save Button and Feedback Section -->
+  <div *ngIf="!inlineMode" class="actions-container">
+    <button (click)="saveTheme()" [disabled]="isLoading" class="save-button">
+      <span *ngIf="!isLoading">Save Theme</span>
+      <span *ngIf="isLoading">Saving...</span>
+    </button>
+    
+    <!-- Success Message -->
+    <div *ngIf="saveSuccess" class="feedback-message success-message">
+      Theme settings saved successfully!
+    </div>
+    
+    <!-- Error Message -->
+    <div *ngIf="saveError" class="feedback-message error-message">
+      Error: {{ errorMessage }}
     </div>
   </div>
 </div>
