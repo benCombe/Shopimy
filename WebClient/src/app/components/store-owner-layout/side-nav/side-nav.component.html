@@ -5,13 +5,13 @@
       <i class="fa-solid fa-xmark"></i>
     </button>
   </div>
-  
+
   <div class="nav-container">
     <!-- Overview (No Dropdown) -->
     <div
       class="nav-item"
       [class.active]="activeNav === 'Overview'"
-      (click)="setActive('Overview')"
+      (click)="setActive('Overview', $event)"
     >
       <i class="fa-solid fa-chart-pie"></i>
       <span>Overview</span>
@@ -30,7 +30,7 @@
         </div>
         <i class="fa-solid dropdown-icon" [class.fa-angle-down]="!navItems[0].open" [class.fa-angle-up]="navItems[0].open"></i>
       </div>
-      
+
       <div class="subnav-container" [class.open]="navItems[0].open">
         <div
           *ngFor="let sub of navItems[0].subNav"
@@ -56,7 +56,7 @@
         </div>
         <i class="fa-solid dropdown-icon" [class.fa-angle-down]="!navItems[1].open" [class.fa-angle-up]="navItems[1].open"></i>
       </div>
-      
+
       <div class="subnav-container" [class.open]="navItems[1].open">
         <div
           *ngFor="let sub of navItems[1].subNav"
@@ -82,7 +82,7 @@
         </div>
         <i class="fa-solid dropdown-icon" [class.fa-angle-down]="!navItems[2].open" [class.fa-angle-up]="navItems[2].open"></i>
       </div>
-      
+
       <div class="subnav-container" [class.open]="navItems[2].open">
         <div
           *ngFor="let sub of navItems[2].subNav"
@@ -95,7 +95,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="logout-button" (click)="logout()">
     <i class="fa-solid fa-sign-out-alt"></i>
     <span>Logout</span>
@@ -103,9 +103,9 @@
 </div>
 
 <!-- Mobile toggle button - visible only on mobile -->
-<div *ngIf="isMobile" class="mobile-sidebar-toggle" 
-     (click)="toggleMobileSidebar()" 
-     [style.top.px]="hamburgerPosition.y" 
+<div *ngIf="isMobile" class="mobile-sidebar-toggle"
+     (click)="toggleMobileSidebar()"
+     [style.top.px]="hamburgerPosition.y"
      [style.right.px]="hamburgerPosition.right"
      (mousedown)="onDragStart($event)"
      (touchstart)="onTouchStart($event)">
@@ -113,9 +113,9 @@
 </div>
 
 <!-- Overlay for mobile when sidebar is open -->
-<div 
-  *ngIf="isMobile" 
-  class="sidebar-overlay" 
-  [class.active]="isMobileSidebarOpen" 
+<div
+  *ngIf="isMobile"
+  class="sidebar-overlay"
+  [class.active]="isMobileSidebarOpen"
   (click)="toggleMobileSidebar()"
 ></div>

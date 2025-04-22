@@ -1,5 +1,21 @@
 <div class="item-list">
-  <div *ngFor="let item of items" class="item-wrapper">
-    <app-item-card [itemId]="item.Id"></app-item-card>
-  </div>
+  <ng-container *ngIf="items && items.length > 0; else emptyState">
+    <div *ngFor="let item of items" class="item-wrapper">
+      <app-item-card [itemId]="item.listId"></app-item-card>
+    </div>
+  </ng-container>
+  
+  <ng-template #emptyState>
+    <div class="empty-state" *ngIf="!isLoading; else loadingTemplate">
+      <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+      <p>No items found</p>
+    </div>
+  </ng-template>
+  
+  <ng-template #loadingTemplate>
+    <div class="empty-state">
+      <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+      <p>Loading items...</p>
+    </div>
+  </ng-template>
 </div>

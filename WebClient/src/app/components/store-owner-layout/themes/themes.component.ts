@@ -79,6 +79,12 @@ export class ThemesComponent implements OnInit {
 
   selectedTheme = 'Earthy Tones';
   activeTab = 'select-theme';
+  
+  // Add feedback states
+  isLoading = false;
+  saveSuccess = false;
+  saveError = false;
+  errorMessage = '';
 
   // Add storeData property to store the active store details
   storeData: StoreDetails | null = null;
@@ -170,6 +176,52 @@ export class ThemesComponent implements OnInit {
       thirdColor: this.customTheme.thirdColor,
       altColor: this.customTheme.altColor,
       mainFontFam: this.customTheme.mainFontFam
+    });
+  }
+
+  // New method to save theme to backend
+  saveTheme() {
+    this.isLoading = true;
+    this.saveSuccess = false;
+    this.saveError = false;
+    
+    const themeData = {
+      theme_1: this.customTheme.mainColor,
+      theme_2: this.customTheme.secondColor,
+      theme_3: this.customTheme.thirdColor,
+      fontColor: this.customTheme.altColor,
+      fontFamily: this.customTheme.mainFontFam
+    };
+    
+    this.storeService.saveThemeSettings(themeData).subscribe({
+      next: (updatedStore) => {
+        this.isLoading = false;
+        this.saveSuccess = true;
+        
+        // Update current store with new theme
+        if (this.currentStore) {
+          this.currentStore.theme_1 = themeData.theme_1;
+          this.currentStore.theme_2 = themeData.theme_2;
+          this.currentStore.theme_3 = themeData.theme_3;
+          this.currentStore.fontColor = themeData.fontColor;
+          this.currentStore.fontFamily = themeData.fontFamily;
+        }
+        
+        // Auto-hide the success message after 3 seconds
+        setTimeout(() => {
+          this.saveSuccess = false;
+        }, 3000);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.saveError = true;
+        this.errorMessage = err.message || 'Failed to save theme settings';
+        
+        // Auto-hide the error message after 5 seconds
+        setTimeout(() => {
+          this.saveError = false;
+        }, 5000);
+      }
     });
   }
 }

@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Models;
+using Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Server.Controllers
 {
@@ -17,122 +19,122 @@ namespace Server.Controllers
     public class AnalyticsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IAnalyticsService _analyticsService;
+        private readonly ILogger<AnalyticsController> _logger;
 
-        public AnalyticsController(AppDbContext context)
+        public AnalyticsController(AppDbContext context, IAnalyticsService analyticsService, ILogger<AnalyticsController> logger)
         {
             _context = context;
+            _analyticsService = analyticsService;
+            _logger = logger;
         }
 
-        // Model for the analytics response
-        public class VisitAnalyticsResponse
+        // Helper method to get the store ID for the authenticated user
+        private async Task<int> GetStoreIdForUserAsync()
         {
-            public List<string> Labels { get; set; } = new List<string>();
-            public List<int> Data { get; set; } = new List<int>();
+            int userId = 0;
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out userId))
+            {
+                return -1; // Invalid user ID
+            }
+
+            // Get the store ID for this user
+            var store = await _context.Stores
+                .Where(s => s.StoreOwnerId == userId)
+                .FirstOrDefaultAsync();
+
+            return store?.StoreId ?? -1;
         }
 
         [HttpGet("store-visits")]
-        public async Task<ActionResult<VisitAnalyticsResponse>> GetStoreVisits(
+        public async Task<ActionResult<object>> GetStoreVisits(
             [FromQuery] string period = "daily", 
             [FromQuery] int range = 7)
         {
             try
             {
-                // Get user ID from the token claims
-                int userId = 0;
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out userId))
+                int storeId = await GetStoreIdForUserAsync();
+                if (storeId == -1)
                 {
-                    return Unauthorized("Invalid authentication token.");
+                    return Unauthorized("Invalid authentication token or store not found.");
                 }
 
-                // Get the store ID for this user
-                var store = await _context.Stores
-                    .Where(s => s.StoreOwnerId == userId)
-                    .FirstOrDefaultAsync();
-
-                if (store == null)
-                {
-                    return NotFound("Store not found for this user.");
-                }
-
-                // Create result object
-                var result = new VisitAnalyticsResponse();
-                
-                // Calculate the start date based on period and range
-                var endDate = DateTime.UtcNow;
-                var startDate = period.ToLower() switch
-                {
-                    "monthly" => endDate.AddMonths(-range),
-                    _ => endDate.AddDays(-range) // default is daily
-                };
-
-                // Format for dates
-                var dateFormat = period.ToLower() switch
-                {
-                    "monthly" => "MMM yyyy", // e.g. Jan 2023
-                    _ => "MMM dd" // e.g. Jan 01
-                };
-
-                if (period.ToLower() == "monthly")
-                {
-                    // Group by month
-                    var monthlyData = await _context.StoreVisits
-                        .Where(v => v.StoreId == store.StoreId && v.VisitTimestamp >= startDate)
-                        .GroupBy(v => new { 
-                            Year = v.VisitTimestamp.Year, 
-                            Month = v.VisitTimestamp.Month 
-                        })
-                        .Select(g => new {
-                            Date = new DateTime(g.Key.Year, g.Key.Month, 1),
-                            Count = g.Count()
-                        })
-                        .OrderBy(x => x.Date)
-                        .ToListAsync();
-
-                    // Fill in all months in the range
-                    var current = new DateTime(startDate.Year, startDate.Month, 1);
-                    while (current <= endDate)
-                    {
-                        var monthData = monthlyData.FirstOrDefault(d => d.Date.Year == current.Year && d.Date.Month == current.Month);
-                        result.Labels.Add(current.ToString(dateFormat));
-                        result.Data.Add(monthData?.Count ?? 0);
-                        current = current.AddMonths(1);
-                    }
-                }
-                else
-                {
-                    // Group by day (default)
-                    var dailyData = await _context.StoreVisits
-                        .Where(v => v.StoreId == store.StoreId && v.VisitTimestamp >= startDate)
-                        .GroupBy(v => new { 
-                            Year = v.VisitTimestamp.Year, 
-                            Month = v.VisitTimestamp.Month, 
-                            Day = v.VisitTimestamp.Day 
-                        })
-                        .Select(g => new {
-                            Date = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day),
-                            Count = g.Count()
-                        })
-                        .OrderBy(x => x.Date)
-                        .ToListAsync();
-
-                    // Fill in all days in the range
-                    var current = startDate.Date;
-                    while (current <= endDate)
-                    {
-                        var dayData = dailyData.FirstOrDefault(d => d.Date.Date == current.Date);
-                        result.Labels.Add(current.ToString(dateFormat));
-                        result.Data.Add(dayData?.Count ?? 0);
-                        current = current.AddDays(1);
-                    }
-                }
-
+                var result = await _analyticsService.GetStoreVisitsAsync(storeId, period, range);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error getting store visits: {ex.Message}");
+                _logger.LogError(ex, "Error getting store visits: {ErrorMessage}", ex.Message);
                 return StatusCode(500, "An error occurred while retrieving visit analytics.");
+            }
+        }
+
+        [HttpGet("sales-data")]
+        public async Task<ActionResult<object>> GetSalesData(
+            [FromQuery] string period = "daily", 
+            [FromQuery] int range = 30)
+        {
+            try
+            {
+                int storeId = await GetStoreIdForUserAsync();
+                if (storeId == -1)
+                {
+                    return Unauthorized("Invalid authentication token or store not found.");
+                }
+
+                var result = await _analyticsService.GetSalesDataAsync(storeId, period, range);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting sales data: {ErrorMessage}", ex.Message);
+                return StatusCode(500, "An error occurred while retrieving sales analytics.");
+            }
+        }
+
+        [HttpGet("top-products")]
+        public async Task<ActionResult<object>> GetTopProducts(
+            [FromQuery] int limit = 10,
+            [FromQuery] DateTime? startDate = null, 
+            [FromQuery] DateTime? endDate = null)
+        {
+            try
+            {
+                int storeId = await GetStoreIdForUserAsync();
+                if (storeId == -1)
+                {
+                    return Unauthorized("Invalid authentication token or store not found.");
+                }
+
+                var result = await _analyticsService.GetTopSellingProductsAsync(storeId, limit, startDate, endDate);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting top products: {ErrorMessage}", ex.Message);
+                return StatusCode(500, "An error occurred while retrieving top products analytics.");
+            }
+        }
+
+        [HttpGet("kpis")]
+        public async Task<ActionResult<object>> GetKeyPerformanceIndicators()
+        {
+            try
+            {
+                int storeId = await GetStoreIdForUserAsync();
+                if (storeId == -1)
+                {
+                    return Unauthorized("Invalid authentication token or store not found.");
+                }
+
+                var result = await _analyticsService.GetKeyPerformanceIndicatorsAsync(storeId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting KPIs: {ErrorMessage}", ex.Message);
+                return StatusCode(500, "An error occurred while retrieving key performance indicators.");
             }
         }
 

@@ -1,13 +1,14 @@
 #container {
   width: 100%;
-  min-height: calc(100vh - 70px);
+  min-height: 100vh;
   background-color: var(--third-color);
-  padding: var(--spacing-xl, 2rem) var(--spacing-md, 1rem);
+  padding: var(--spacing-xl) var(--spacing-md);
   box-sizing: border-box;
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
   overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* Add margin-left for desktop views to account for sidebar */
@@ -15,6 +16,7 @@
   #container {
     margin-left: 280px;
     width: calc(100% - 280px);
+    max-width: calc(100% - 280px);
   }
 }
 
@@ -24,7 +26,7 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-xl, 24px);
+  gap: var(--spacing-xl);
   box-sizing: border-box;
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
@@ -43,24 +45,32 @@
   }
 }
 
+.page {
+  width: 100%;
+  grid-column: 1 / -1;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
 .dashboard-card {
-  background-color: white;
-  border-radius: var(--border-radius-lg, 12px);
-  box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
-  padding: var(--spacing-xl, 2rem);
+  background-color: var(--third-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-xl);
   transition: all 0.3s ease;
 }
 
 .dashboard-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg, 0 6px 8px rgba(0, 0, 0, 0.2));
+  box-shadow: var(--shadow-lg);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg, 1.5rem);
+  margin-bottom: var(--spacing-lg);
 }
 
 .card-header h2 {
@@ -77,22 +87,22 @@
 .card-content {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md, 1rem);
+  gap: var(--spacing-md);
 }
 
 .stat-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md, 1rem);
+  padding: var(--spacing-md);
   background-color: var(--third-color);
-  border-radius: var(--border-radius, 8px);
+  border-radius: var(--border-radius);
   transition: all 0.2s ease;
 }
 
 .stat-item:hover {
   transform: translateX(4px);
-  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  box-shadow: var(--shadow-sm);
 }
 
 .stat-label {
@@ -111,26 +121,26 @@
 .chart-container {
   width: 100%;
   height: 300px;
-  margin-top: var(--spacing-md, 1rem);
+  margin-top: var(--spacing-md);
   background-color: white;
-  border-radius: var(--border-radius, 8px);
-  padding: var(--spacing-md, 1rem);
-  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.05));
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Table Container */
+/* Table Container - use the standard class from global styles */
 .table-container {
   width: 100%;
   overflow-x: auto;
   overflow-y: auto;
-  border-radius: var(--border-radius, 8px);
+  border-radius: var(--border-radius);
   background-color: rgba(0, 0, 0, 0.03);
   position: relative;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
   max-height: calc(100vh - 200px);
   padding: 0;
-  margin-bottom: var(--spacing-md, 16px);
+  margin-bottom: var(--spacing-md);
 }
 
 .table-container::-webkit-scrollbar {
@@ -148,7 +158,7 @@
   border-radius: var(--scrollbar-border-radius);
 }
 
-/* Standard Table */
+/* Standard Table - use the standard class from global styles */
 .standard-table {
   width: 100%;
   border-collapse: separate;
@@ -157,7 +167,7 @@
 }
 
 .standard-table th {
-  padding: var(--spacing-md, 16px);
+  padding: var(--spacing-md);
   text-align: left;
   font-size: 1rem;
   color: var(--main-color);
@@ -170,7 +180,7 @@
 }
 
 .standard-table td {
-  padding: var(--spacing-md, 16px);
+  padding: var(--spacing-md);
   text-align: left;
   vertical-align: middle;
   font-size: 0.95rem;
@@ -179,7 +189,7 @@
 }
 
 .standard-table tr {
-  border-bottom: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
+  border-bottom: 1px solid var(--border-color-light);
   transition: background-color 0.2s ease;
 }
 
@@ -195,10 +205,11 @@
 @media (max-width: 1200px) {
   #main {
     grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
   }
   
   .dashboard-card {
-    padding: var(--spacing-lg, 1.5rem);
+    padding: var(--spacing-lg);
   }
   
   .card-header h2 {
@@ -208,16 +219,28 @@
 
 @media (max-width: 768px) {
   #container {
-    padding: var(--spacing-md, 1rem);
+    padding: var(--spacing-md) var(--spacing-xs);
+    overflow-x: hidden;
   }
   
   #main {
     grid-template-columns: 1fr;
-    gap: var(--spacing-md, 16px);
+    gap: var(--spacing-md);
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .page {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
   
   .dashboard-card {
-    padding: var(--spacing-md, 1rem);
+    padding: var(--spacing-md);
+    max-width: 100%;
   }
   
   .card-header h2 {
@@ -225,7 +248,7 @@
   }
   
   .stat-item {
-    padding: var(--spacing-sm, 0.75rem);
+    padding: var(--spacing-sm);
   }
   
   .chart-container {
@@ -235,11 +258,30 @@
 
 @media (max-width: 480px) {
   #container {
-    padding: var(--spacing-sm, 0.75rem) var(--spacing-xs, 0.5rem);
+    padding: var(--spacing-xs);
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  #main {
+    max-width: 100%;
+    overflow-x: hidden;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  
+  .page {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    width: 100%;
   }
   
   .dashboard-card {
-    padding: var(--spacing-sm, 0.75rem);
+    padding: var(--spacing-sm);
+    max-width: 100%;
   }
   
   .card-header h2 {
@@ -247,8 +289,9 @@
   }
   
   .stat-item {
-    padding: var(--spacing-sm, 0.5rem);
-    font-size: 0.9rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
   }
   
   .stat-value {
@@ -257,17 +300,21 @@
   
   .chart-container {
     height: 200px;
-    padding: var(--spacing-sm, 0.5rem);
+  }
+  
+  .standard-table {
+    min-width: auto;
+    width: 100%;
   }
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
   #container {
-    padding: var(--spacing-sm, 0.75rem);
+    padding: var(--spacing-sm);
   }
   
   .dashboard-card {
-    padding: var(--spacing-sm, 0.75rem);
+    padding: var(--spacing-md);
   }
   
   .chart-container {
@@ -275,49 +322,62 @@
   }
 }
 
-/* Component-specific styles */
-
-/* Custom chart styles */
+/* Custom Chart Container */
 .custom-chart-container {
-  height: 250px;
-  overflow: hidden;
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  height: 300px;
 }
 
-/* Quick stats cards */
 .quick-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
 }
 
 .quick-stat-card {
   background-color: white;
-  padding: var(--spacing-md);
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-xs);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.quick-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .quick-stat-value {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--main-color);
-  margin-bottom: var(--spacing-xs);
+  font-family: var(--main-font-fam);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .quick-stat-label {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: var(--main-color);
+  opacity: 0.7;
+  font-family: var(--main-font-fam);
 }
 
 .quick-stat-trend {
-  margin-top: var(--spacing-xs);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  margin-top: var(--spacing-xs);
 }
 
 .trend-up {
@@ -328,13 +388,12 @@
   color: var(--color-error);
 }
 
-/* Recent activity */
+/* Activity Item Styling */
 .activity-item {
   display: flex;
-  padding: var(--spacing-sm);
-  border-bottom: 1px solid var(--border-color-light);
-  gap: var(--spacing-sm);
-  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
 }
 
 .activity-item:last-child {
@@ -342,31 +401,33 @@
 }
 
 .activity-icon {
-  background-color: rgba(0, 0, 0, 0.05);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: var(--border-radius-round);
+  background-color: var(--main-color);
+  color: var(--third-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  font-size: 1.2rem;
 }
 
 .activity-content {
-  flex-grow: 1;
+  flex: 1;
 }
 
 .activity-title {
-  font-weight: 500;
-  margin-bottom: 0.25rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
 }
 
 .activity-time {
-  font-size: 0.8rem;
-  color: var(--color-text-tertiary);
+  font-size: 0.85rem;
+  color: var(--main-color);
+  opacity: 0.7;
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
   .quick-stats {
     grid-template-columns: repeat(2, 1fr);
@@ -379,27 +440,26 @@
   }
   
   .custom-chart-container {
-    height: 200px;
+    height: 250px;
   }
 }
 
 @media (max-width: 480px) {
   .custom-chart-container {
-    height: 180px;
+    height: 200px;
   }
 }
 
-/* Create Store Prompt */
 .create-store-prompt {
-  margin: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
+  text-align: center;
+  padding: var(--spacing-xl);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .prompt-actions {
-  margin-top: 20px;
   display: flex;
-  justify-content: flex-start;
+  gap: var(--spacing-md);
+  justify-content: center;
+  margin-top: var(--spacing-xl);
 }
