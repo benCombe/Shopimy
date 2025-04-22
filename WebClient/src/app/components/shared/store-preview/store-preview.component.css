@@ -13,6 +13,7 @@
   box-sizing: border-box;
   max-width: 100%;
   font-family: var(--main-font-fam);
+  scroll-behavior: smooth;
 }
 
 .store-preview-content {
@@ -28,6 +29,7 @@
   scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
   display: block !important;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 .store-preview-content::-webkit-scrollbar {
@@ -534,12 +536,12 @@
   }
 }
 
-/* Responsive adjustments */
+/* Enhanced responsive styles for mobile */
 @media (max-width: 768px) {
   .store-preview-container {
     min-height: 400px;
-    border-radius: var(--border-radius);
-    margin-bottom: var(--spacing-md);
+    max-height: 600px;
+    overflow: auto;
   }
   
   .store-preview-content {
@@ -564,8 +566,8 @@
   .categories-section,
   .testimonials-section,
   .newsletter-section {
-    padding: var(--spacing-sm);
     margin: 0 var(--spacing-sm);
+    padding: var(--spacing-sm);
   }
   
   .product-container h3,
@@ -576,45 +578,47 @@
   }
   
   .testimonial {
-    padding: var(--spacing-xs);
+    padding: var(--spacing-sm);
   }
   
   .store-preview {
     gap: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
   }
 }
 
 @media (max-width: 480px) {
   .store-preview-container {
-    min-height: 300px;
-    margin-bottom: var(--spacing-sm);
+    min-height: 350px;
+    max-height: 500px;
   }
   
   .store-preview-content {
-    min-height: 300px;
+    min-height: 350px;
   }
   
   .product-grid,
   .categories-grid {
     grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: var(--spacing-xs);
   }
   
   .banner-section {
-    height: 90px;
+    height: 100px;
   }
   
   .banner-text {
-    font-size: 0.875rem;
-    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.9rem;
+    padding: var(--spacing-xxs) var(--spacing-xs);
   }
   
   .product-image {
-    height: 90px;
+    height: 100px;
   }
   
   .logo-container {
     min-width: 150px;
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-xxs) var(--spacing-sm);
   }
   
   .default-logo {
@@ -630,7 +634,7 @@
   .logo-text-wrapper {
     display: flex;
     align-items: center;
-    height: 30px;
+    max-width: 120px;
   }
   
   .store-preview {
@@ -643,11 +647,11 @@
   }
   
   .product-title {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
   
   .product-price {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
   
   .add-to-cart-btn {
@@ -655,30 +659,32 @@
   }
   
   .testimonial {
-    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs);
   }
   
   .testimonial-text {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
   
   .newsletter-form input {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-xs);
   }
   
   .newsletter-form button {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-xs);
   }
   
   .no-store-data {
-    min-height: 150px;
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
+    min-height: 100px;
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 360px) {
   .store-preview-container {
     min-height: 300px;
+    max-height: 450px;
   }
   
   .store-preview-content {
@@ -688,9 +694,10 @@
   .product-container,
   .categories-section,
   .testimonials-section,
-  .newsletter-section {
-    padding: var(--spacing-xs);
+  .newsletter-section,
+  .footer-section {
     margin: 0 var(--spacing-xs);
+    padding: var(--spacing-xs);
   }
   
   .banner-section {
@@ -709,15 +716,13 @@
 @media (min-width: 768px) and (max-width: 991px) {
   .store-preview-container {
     min-height: 450px;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
-    margin-bottom: var(--spacing-lg);
+    max-height: 700px;
+    scroll-behavior: smooth;
   }
   
   .store-preview-content {
     min-height: 450px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+    scroll-behavior: smooth;
   }
   
   .product-grid {
@@ -770,5 +775,120 @@
   
   .footer-section {
     padding: var(--spacing-sm);
+  }
+}
+
+.store-preview-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.store-preview-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.store-preview-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Additional mobile enhancements */
+@media (max-width: 480px) {
+  .store-preview {
+    padding: var(--spacing-xs);
+  }
+
+  .featured-products-container, 
+  .testimonials-section, 
+  .newsletter-section {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .newsletter-form {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .footer-section {
+    padding: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+  }
+}
+
+@media (max-height: 600px) {
+  .store-preview-container {
+    min-height: 400px;
+    max-height: 450px;
+  }
+  
+  .store-preview-content {
+    min-height: 400px;
+  }
+  
+  .product-image,
+  .category-image {
+    height: 80px;
+  }
+  
+  .banner-section {
+    height: 80px;
+  }
+}
+
+/* Ensure smoother scrolling on touch devices */
+@media (pointer: coarse) {
+  .store-preview-content {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 992px) {
+  .store-preview-container {
+    min-height: 600px;
+    max-height: 800px;
+  }
+  
+  .store-preview-content {
+    min-height: 600px;
+  }
+  
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+  
+  .product-image {
+    height: 140px;
+  }
+  
+  .banner-section {
+    height: 150px;
+  }
+}
+
+/* Tablet/medium screen optimizations */
+@media (min-width: 768px) and (max-width: 991px) {
+  .store-preview-container {
+    min-height: 450px;
+    max-height: 700px;
+    scroll-behavior: smooth;
+  }
+  
+  .store-preview-content {
+    min-height: 450px;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Additional screen height optimizations */
+@media (min-height: 900px) {
+  .store-preview-container {
+    min-height: 700px;
+    max-height: 900px;
+  }
+  
+  .store-preview-content {
+    min-height: 700px;
   }
 } 

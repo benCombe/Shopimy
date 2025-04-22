@@ -1,32 +1,11 @@
-.product-container {
-  padding: var(--spacing-md);
-  margin: 0 var(--spacing-md);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
-  box-sizing: border-box;
-  width: auto;
-  max-width: 100%;
-  background-color: var(--featured-bg, var(--third-color));
-}
-
-.product-container h3 {
-  margin-top: 0;
+.featured-products-container {
   margin-bottom: var(--spacing-md);
-  font-size: 1.125rem;
-  position: relative;
-  padding-bottom: var(--spacing-xs);
-  color: var(--featured-heading-color, var(--main-color));
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.product-container h3:after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 40px;
-  height: 2px;
-  background-color: var(--action-button-bg, var(--second-color));
-  border-radius: 1px;
+.section-heading {
+  margin-bottom: var(--spacing-md);
 }
 
 .product-grid {
@@ -174,18 +153,7 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
-}
-
-@media (max-width: 480px) {
-  .product-container {
-    margin: 0;
-    padding: var(--spacing-sm);
-  }
-  
-  .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     gap: var(--spacing-sm);
   }
   
@@ -195,5 +163,55 @@
   
   .product-details {
     padding: var(--spacing-xs);
+  }
+  
+  .section-heading {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: var(--spacing-xs);
+  }
+  
+  .product-image {
+    height: 90px;
+  }
+  
+  .product-title {
+    font-size: 0.8rem;
+  }
+  
+  .product-price {
+    font-size: 0.8rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .add-to-cart-btn {
+    font-size: 0.7rem;
+    padding: var(--spacing-xxs) var(--spacing-xs);
+  }
+  
+  .load-more-btn {
+    font-size: 0.8rem;
+    padding: var(--spacing-xxs) var(--spacing-sm);
+  }
+}
+
+@media (max-width: 360px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-xxs);
+  }
+  
+  .product-image {
+    height: 80px;
+  }
+  
+  .section-heading {
+    font-size: 0.95rem;
   }
 } 

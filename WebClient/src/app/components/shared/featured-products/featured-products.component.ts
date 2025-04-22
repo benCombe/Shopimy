@@ -76,6 +76,12 @@ export class FeaturedProductsComponent implements OnInit {
     return [1, 2, 3, 4, 5, 6];
   }
   
+  // Fixed method to get formatted price for sample items
+  getSamplePrice(id: number): string {
+    const basePrice = 19.99 + (id * 5);
+    return basePrice.toFixed(2);
+  }
+  
   shouldShowLoadMoreButton(): boolean {
     return !this.isPreview && this.displayCount < this.itemIds.length;
   }
