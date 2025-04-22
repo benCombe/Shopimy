@@ -21,7 +21,7 @@ type ViewType = 'store-page' | 'cart' | 'checkout' | string;
 @Component({
   selector: 'app-store-page',
   standalone: true,
-  imports: [CommonModule, StoreNavComponent, ShoppingCartComponent, CheckoutComponent, CategoryPageComponent, ItemCardComponent],
+  imports: [CommonModule, StoreNavComponent, ShoppingCartComponent, CheckoutComponent, CategoryPageComponent, ItemCardComponent, ItemDetailComponent],
   templateUrl: './store-page.component.html',
   styleUrl: './store-page.component.css'
 })
