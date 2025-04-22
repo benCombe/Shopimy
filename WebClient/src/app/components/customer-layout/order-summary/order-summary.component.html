@@ -1,34 +1,45 @@
-
-  <div id="order-summary" class="theme2" [style.background-color]="storeDetails?.theme_2">
-    <h2>Order Summary</h2>
-    <div id="summary-item-container" class="center-col">
-      <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
-        <span>Subtotal</span>
-        <span>${{subtotal}}</span>
-      </div>
-      <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
-        <span>Shipping Estimate</span>
-        <ng-container *ngIf="subtotal > 30; else shippingcost">
-          <span>FREE</span>
-        </ng-container>
-        <ng-template #shippingcost>
-         <span>${{shippingCost}}</span>
-        </ng-template>
-      </div>
-      <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
-        <span>Taxes estimate</span>
-        <span>${{ taxEstimate }}</span>
-      </div>
-      <div id="total" class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
-        <span>Total estimate</span>
-        <span>${{ totalEstimate }}</span>
-      </div>
+<div id="order-summary" class="theme2" [style.background-color]="storeDetails?.theme_2">
+  <h2>Order Summary</h2>
+  
+  <div class="summary-item-container">
+    <!-- Subtotal -->
+    <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+      <span>Subtotal</span>
+      <span>${{subtotal.toFixed(2)}}</span>
     </div>
-
-    <div id="checkout-opt" class="center-col">
-      <div id="checkout-btn" class="center theme1 fc hover"
-      [style.background-color]="storeDetails?.theme_1"
-      [style.color]="storeDetails?.fontColor"
-      (click)="nextStep()">{{submitMessage}}</div>
+    
+    <!-- Shipping estimate -->
+    <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+      <span>Shipping Estimate</span>
+      <ng-container *ngIf="subtotal > 30; else shippingcost">
+        <span>FREE</span>
+      </ng-container>
+      <ng-template #shippingcost>
+        <span>${{shippingCost.toFixed(2)}}</span>
+      </ng-template>
+    </div>
+    
+    <!-- Tax estimate -->
+    <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+      <span>Taxes Estimate</span>
+      <span>${{taxEstimate.toFixed(2)}}</span>
+    </div>
+    
+    <!-- Total -->
+    <div id="total" class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+      <span>Total Estimate</span>
+      <span>${{totalEstimate.toFixed(2)}}</span>
     </div>
   </div>
+
+  <!-- Checkout button -->
+  <div class="checkout-opt center-col">
+    <button 
+      class="checkout-btn center theme1 standard-button"
+      [style.background-color]="storeDetails?.theme_1"
+      [style.color]="storeDetails?.fontColor"
+      (click)="nextStep()">
+      {{submitMessage}}
+    </button>
+  </div>
+</div>

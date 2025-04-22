@@ -1,73 +1,73 @@
-<div id="main" class="center-spaced">
-  <div id="shopimy-logo" routerLink="">Shopimy</div>
+<nav id="main" class="center-spaced" aria-label="Main navigation">
+  <a id="shopimy-logo" routerLink="" aria-label="Shopimy homepage">Shopimy</a>
 
   <div id="nav-wrapper" class="center" [ngClass]="{ 'mobile-menu': isMobileMenuOpen }">
 
     <!-- Navigation Items -->
-<!--     <div id="dropdown" class="dropdown" *ngIf="!isMobile">
-      <div class="dropdown-header" (click)="toggleDropdown()">
-        Resources <i class="fa-solid fa-angle-down"></i>
-      </div>
-      <ul class="dropdown-options" [ngClass]="{ 'show': isDropdownOpen }">
-        <li *ngFor="let option of options" class="opt" [routerLink]="option.link" (click)="closeDropdown()">
-          {{ option.label }}
+    <div id="dropdown" class="dropdown" *ngIf="!isMobile">
+      <button class="dropdown-header" (click)="toggleDropdown()" aria-haspopup="true" [attr.aria-expanded]="isDropdownOpen">
+        Resources <i class="fa-solid fa-angle-down" aria-hidden="true"></i>
+      </button>
+      <ul class="dropdown-options" [ngClass]="{ 'show': isDropdownOpen }" role="menu" aria-label="Resource Options">
+        <li *ngFor="let option of options" role="menuitem">
+          <a class="opt" [routerLink]="option.link" (click)="closeDropdown()">
+            {{ option.label }}
+          </a>
         </li>
       </ul>
-    </div> -->
-    <div *ngIf="!isLoggedIn" id="register-btn" routerLink="/register">Register</div>
-    <div *ngIf="!isLoggedIn" id="login-btn" routerLink="/login">Log In</div>
+    </div>
 
+    <a *ngIf="!isLoggedIn" id="login-btn" routerLink="/login" class="standard-button primary small">Log In</a>
+    
     <!-- User Menu for logged in users -->
     <div *ngIf="isLoggedIn" id="user-menu" class="dropdown">
-      <div class="dropdown-header" (click)="toggleUserMenu()">
-        My Account <i class="fa-solid fa-angle-down"></i>
-      </div>
-      <ul class="dropdown-options" [ngClass]="{ 'show': isUserMenuOpen }">
-        <li class="opt" routerLink="/dashboard">Dashboard</li>
-        <li class="opt" routerLink="/profile">Profile</li>
-        <li class="opt" (click)="logout()">Logout</li>
+      <button class="dropdown-header" (click)="toggleUserMenu()" aria-haspopup="true" [attr.aria-expanded]="isUserMenuOpen">
+        My Account <i class="fa-solid fa-angle-down" aria-hidden="true"></i>
+      </button>
+      <ul class="dropdown-options" [ngClass]="{ 'show': isUserMenuOpen }" role="menu" aria-label="Account Options">
+        <li role="menuitem"><a class="opt" routerLink="/profile">Profile</a></li>
+        <li role="menuitem"><button class="opt" (click)="logout()">Logout</button></li>
       </ul>
     </div>
 
     <!-- Hamburger Menu Button -->
-    <div id="hamburger" (click)="toggleMobileMenu()" *ngIf="isMobile">
-      <i class="fa-solid" [ngClass]="{'fa-bars': !isMobileMenuOpen, 'fa-xmark': isMobileMenuOpen}"></i>
-    </div>
+    <button id="hamburger" (click)="toggleMobileMenu()" *ngIf="isMobile" aria-label="Toggle mobile menu" [attr.aria-expanded]="isMobileMenuOpen">
+      <i class="fa-solid" [ngClass]="{'fa-bars': !isMobileMenuOpen, 'fa-xmark': isMobileMenuOpen}" aria-hidden="true"></i>
+    </button>
   </div>
-</div>
+</nav>
 
 <!-- Mobile Menu Overlay -->
-<div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
+<div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()" aria-hidden="true"></div>
 
 <!-- Mobile Menu Dropdown -->
-<div id="mobile-menu" [class.show-mobile-menu]="isMobileMenuOpen">
+<nav id="mobile-menu" [class.show-mobile-menu]="isMobileMenuOpen" aria-label="Mobile navigation" *ngIf="isMobileMenuOpen">
   <div class="mobile-menu-header">Resources</div>
-  <ul>
-    <ng-container *ngIf="!isLoggedIn; else loggedIn" >
-      <li *ngFor="let option of options; let i = index"
-      class="opt" [routerLink]="option.link" (click)="navigateAndCloseMenu(option.link)">
-      {{ option.label }}
-      </li>
-    </ng-container>
-    <ng-template #loggedIn>
-      <li *ngFor="let option of filteredOptions; let i = index"
-      class="opt" [routerLink]="option.link" (click)="navigateAndCloseMenu(option.link)">
-      {{ option.label }}
-      </li>
-    </ng-template>
+  <ul role="menu" aria-label="Mobile Resources Menu">
+    <li *ngFor="let option of options" role="menuitem">
+      <a class="opt" [routerLink]="option.link" (click)="navigateAndCloseMenu(option.link)">
+        <i *ngIf="option.icon" class="fa-solid {{option.icon}}" aria-hidden="true"></i> {{ option.label }}
+      </a>
+    </li>
   </ul>
   <div class="mobile-menu-divider"></div>
-  <ul *ngIf="!isLoggedIn">
-    <li class="opt" routerLink="/login" (click)="navigateAndCloseMenu('/login')">
-      <i class="fa-solid fa-sign-in-alt"></i> Log In
+  <ul *ngIf="!isLoggedIn" role="menu" aria-label="Mobile Authentication Menu">
+    <li role="menuitem">
+      <a class="opt" routerLink="/login" (click)="navigateAndCloseMenu('/login')">
+        <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i> Log In
+      </a>
     </li>
   </ul>
-  <ul *ngIf="isLoggedIn">
-    <li class="opt" routerLink="/profile" (click)="navigateAndCloseMenu('/profile')">
-      <i class="fa-solid fa-user"></i> Profile
+  <ul *ngIf="isLoggedIn" role="menu" aria-label="Mobile Account Menu">
+    <li role="menuitem">
+      <a class="opt" routerLink="/profile" (click)="navigateAndCloseMenu('/profile')">
+        <i class="fa-solid fa-user" aria-hidden="true"></i> Profile
+      </a>
     </li>
-    <li class="opt" (click)="logout(); closeMobileMenu()">
-      <i class="fa-solid fa-sign-out-alt"></i> Logout
+    <li role="menuitem">
+      <button class="opt" (click)="logout(); closeMobileMenu()">
+        <i class="fa-solid fa-sign-out-alt" aria-hidden="true"></i> Logout
+      </button>
     </li>
   </ul>
-</div>
+</nav>

@@ -2,47 +2,57 @@
   border: 1px solid red;
 } */
 
-#main{
-  /* position: absolute; */
-  height: wrap-content;
-  width: 100%;
+/* Top Navigation Component */
+#main.center-spaced {
   height: auto;
+  width: 100%;
   min-height: 70px;
   background-color: var(--main-color);
-  padding: 10px 5%;
+  padding: var(--spacing-md) 5%;
   z-index: 1000;
   box-sizing: border-box;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  /* overflow-x: hidden; */
 }
 
-#shopimy-logo{
+#shopimy-logo {
   color: var(--second-color);
   font-family: var(--main-font-fam);
   font-weight: bold;
   font-size: 3rem;
   cursor: pointer;
-  padding: 5px 0;
+  padding: var(--spacing-xs) 0;
   margin: 0;
+  transition: transform 0.3s ease;
+  text-decoration: none;
 }
 
-#nav-wrapper{
+#shopimy-logo:hover,
+#shopimy-logo:focus {
+  transform: scale(1.05);
+  outline: none;
+}
+
+#shopimy-logo:focus-visible {
+  outline: 2px solid var(--second-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.center {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: var(--spacing-md);
   margin: 0;
 }
 
-.mobile-menu #login-btn{
+.mobile-menu #login-btn {
   margin-right: -15px;
 }
 
-#nav-wrapper div{
-  padding: 5px 8px;
+#nav-wrapper div {
+  padding: var(--spacing-xs) var(--spacing-sm);
   font-size: 1.2rem;
   font-family: var(--main-font-fam);
   font-weight: bold;
@@ -60,6 +70,10 @@
   margin-left: 0;
   width: auto;
   cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--third-color);
+  padding: var(--spacing-xs);
 }
 
 #hamburger i {
@@ -72,7 +86,7 @@
   color: var(--second-color);
 }
 
-#nav-wrapper div:hover{
+#nav-wrapper div:hover {
   transform: scale(1.1);
   color: var(--second-color);
 }
@@ -87,7 +101,7 @@
   height: 100vh;
   background-color: var(--main-color);
   z-index: 2002;
-  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
   transform: translateX(100%);
   transition: transform 0.3s ease-out;
   overflow-y: auto;
@@ -119,8 +133,8 @@
 }
 
 .mobile-menu-header {
-  padding: 15px;
-  margin-bottom: 10px;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
   color: var(--second-color);
   font-size: 1.5rem;
   font-weight: bold;
@@ -132,7 +146,7 @@
 .mobile-menu-divider {
   height: 1px;
   background-color: rgba(217, 217, 217, 0.3);
-  margin: 10px 0;
+  margin: var(--spacing-sm) 0;
 }
 
 #mobile-menu ul {
@@ -143,14 +157,14 @@
 }
 
 #mobile-menu .opt {
-  padding: 15px 20px;
+  padding: var(--spacing-md) var(--spacing-lg);
   color: var(--third-color);
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-md);
   border-bottom: 1px solid rgba(217, 217, 217, 0.1);
 }
 
@@ -175,6 +189,7 @@
   color: white;
 }
 
+/* Dropdown menu */
 .dropdown {
   position: relative;
   display: inline-block;
@@ -192,10 +207,13 @@
   transition: color 0.3s ease;
   position: relative;
   z-index: 2001;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: transparent;
+  border: none;
 }
 
 .dropdown-header i {
-  margin-left: 5px;
+  margin-left: var(--spacing-xs);
   transition: transform 0.3s ease;
 }
 
@@ -203,17 +221,27 @@
   color: var(--second-color);
 }
 
+.dropdown-header:focus {
+  outline: none;
+}
+
+.dropdown-header:focus-visible {
+  outline: 2px solid var(--second-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .dropdown-options {
   list-style: none;
   padding: 0;
-  margin: 5px 0 0;
+  margin: var(--spacing-xs) 0 0;
   background: var(--main-color);
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   position: absolute;
   top: 100%;
   left: 0;
   width: 200px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   opacity: 0;
   transform: translateY(-10px);
@@ -231,94 +259,91 @@
 }
 
 .opt {
-  padding: 12px 20px;
+  padding: var(--spacing-md) var(--spacing-lg);
   color: var(--third-color);
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
   font-size: 1rem;
   text-decoration: none;
   display: block;
+  border: none;
+  background: transparent;
+  text-align: left;
+  width: 100%;
 }
 
-.opt:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.opt:hover,
+.opt:focus {
+  background-color: rgba(208, 147, 61, 0.2);
   color: var(--second-color);
+  outline: none;
+}
+
+.opt:focus-visible {
+  outline: 2px solid var(--second-color);
+  outline-offset: -2px;
 }
 
 .opt:active {
   background-color: var(--second-color);
-  color: var(--main-color);
+  color: white;
 }
 
-@media only screen and (max-width: 1200px){
-  #shopimy-logo{
+/* Responsive adjustments */
+@media only screen and (max-width: 1200px) {
+  #shopimy-logo {
     font-size: 2.5rem;
   }
-
-  #nav-wrapper div{
-    font-size: 1.1rem;
+  
+  #nav-wrapper div {
+    font-size: 1rem;
   }
-
+  
   .dropdown-header {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 }
 
-@media only screen and (max-width: 768px){
-  #user-menu{
+@media only screen and (max-width: 715px) {
+  .center-spaced {
+    padding: var(--spacing-md) 20px;
+  }
+  
+  #shopimy-logo {
+    font-size: 2rem;
+  }
+  
+  #nav-wrapper {
+    gap: var(--spacing-sm);
+  }
+  
+  #nav-wrapper > div:not(#hamburger):not(#login-btn):not(#user-menu) {
     display: none;
   }
-
+  
+  #login-btn, #user-menu {
+    display: none;
+  }
+  
+  #hamburger {
+    display: flex;
+  }
+  
+  #mobile-menu {
+    display: block;
+  }
 }
 
-/* Mobile Adjustments */
-@media only screen and (max-width: 715px) {
-  #main {
-    min-height: 60px;
-    padding: 8px 5%;
-  }
-
+@media only screen and (max-width: 480px) {
   #shopimy-logo {
     font-size: 1.8rem;
   }
 
-  #nav-wrapper {
-    gap: 12px;
-  }
-
-
-  /* Hide desktop nav items */
-  #nav-wrapper > div:not(#hamburger):not(#login-btn):not(#user-menu) {
-    display: none;
-  }
-
-  #login-btn, #user-menu {
-    font-size: 1.1rem;
-  }
-
-  #hamburger {
-    font-size: 1.4rem;
-    margin-left: 0;
-    width: auto;
-    display: flex;
-  }
-
-  #mobile-menu {
-    top: 60px;
-  }
-}
-
-/* Tablet and medium screens */
-@media only screen and (max-width: 1024px) {
-  #shopimy-logo {
-    font-size: 2.2rem;
-  }
-
   #nav-wrapper div {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
   }
 
   .dropdown-header {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
   }
 }

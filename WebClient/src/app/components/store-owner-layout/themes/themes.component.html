@@ -5,22 +5,38 @@
   </div>
 
   <!-- Tabs -->
-  <div class="tabs">
-    <div class="tab" [class.active]="activeTab === 'select-theme'" (click)="setActiveTab('select-theme')">
+  <div class="tabs" role="tablist">
+    <div class="tab" 
+         role="tab" 
+         [attr.aria-selected]="activeTab === 'select-theme'" 
+         [class.active]="activeTab === 'select-theme'" 
+         (click)="setActiveTab('select-theme')"
+         tabindex="0"
+         aria-controls="select-theme-panel">
       Select Theme
     </div>
-    <div class="tab" [class.active]="activeTab === 'customize'" (click)="setActiveTab('customize')">
+    <div class="tab" 
+         role="tab" 
+         [attr.aria-selected]="activeTab === 'customize'" 
+         [class.active]="activeTab === 'customize'" 
+         (click)="setActiveTab('customize')"
+         tabindex="0"
+         aria-controls="customize-panel">
       Customize
     </div>
   </div>
   
   <!-- Select Theme Tab -->
-  <div *ngIf="activeTab === 'select-theme'">
+  <div id="select-theme-panel" *ngIf="activeTab === 'select-theme'" role="tabpanel" aria-labelledby="select-theme-tab">
     <div class="theme-swatches">
       <div *ngFor="let theme of themeSwatches" 
            class="theme-swatch" 
            [class.selected]="selectedTheme === theme.name"
-           (click)="selectTheme(theme)">
+           (click)="selectTheme(theme)"
+           tabindex="0"
+           role="button"
+           [attr.aria-pressed]="selectedTheme === theme.name"
+           [attr.aria-label]="'Select ' + theme.name + ' theme'">
         <div class="swatch-header" [style.background-color]="theme.mainColor">
           {{ theme.name }}
         </div>
@@ -34,7 +50,11 @@
       <!-- Custom Theme Option -->
       <div class="theme-swatch" 
            [class.selected]="selectedTheme === 'Custom Theme'"
-           (click)="selectTheme(customTheme)">
+           (click)="selectTheme(customTheme)"
+           tabindex="0"
+           role="button"
+           [attr.aria-pressed]="selectedTheme === 'Custom Theme'"
+           aria-label="Select Custom Theme">
         <div class="swatch-header" [style.background-color]="customTheme.mainColor">
           Custom Theme
         </div>
@@ -48,7 +68,7 @@
   </div>
 
   <!-- Customize Tab -->
-  <div *ngIf="activeTab === 'customize'" class="theme-editor">
+  <div id="customize-panel" *ngIf="activeTab === 'customize'" class="theme-editor" role="tabpanel" aria-labelledby="customize-tab">
     <div class="color-section">
       <h3>Color Palette</h3>
       <div class="color-inputs">
@@ -60,6 +80,7 @@
             name="mainColor" 
             [(ngModel)]="customTheme.mainColor" 
             (ngModelChange)="updateCustomTheme()"
+            aria-label="Select primary color"
           >
           <span class="color-value">{{ customTheme.mainColor }}</span>
         </div>
@@ -72,6 +93,7 @@
             name="secondColor" 
             [(ngModel)]="customTheme.secondColor" 
             (ngModelChange)="updateCustomTheme()"
+            aria-label="Select secondary color"
           >
           <span class="color-value">{{ customTheme.secondColor }}</span>
         </div>
@@ -84,6 +106,7 @@
             name="thirdColor" 
             [(ngModel)]="customTheme.thirdColor" 
             (ngModelChange)="updateCustomTheme()"
+            aria-label="Select background color"
           >
           <span class="color-value">{{ customTheme.thirdColor }}</span>
         </div>
@@ -96,6 +119,7 @@
             name="altColor" 
             [(ngModel)]="customTheme.altColor" 
             (ngModelChange)="updateCustomTheme()"
+            aria-label="Select text color"
           >
           <span class="color-value">{{ customTheme.altColor }}</span>
         </div>
@@ -112,6 +136,7 @@
           class="font-select" 
           [(ngModel)]="customTheme.mainFontFam"
           (ngModelChange)="updateCustomTheme()"
+          aria-label="Select font family"
         >
           <option value="sans-serif">Sans Serif</option>
           <option value="serif">Serif</option>
@@ -126,18 +151,18 @@
 
   <!-- Save Button and Feedback Section -->
   <div *ngIf="!inlineMode" class="actions-container">
-    <button (click)="saveTheme()" [disabled]="isLoading" class="save-button">
+    <button (click)="saveTheme()" [disabled]="isLoading" class="save-button" aria-label="Save theme settings">
       <span *ngIf="!isLoading">Save Theme</span>
       <span *ngIf="isLoading">Saving...</span>
     </button>
     
     <!-- Success Message -->
-    <div *ngIf="saveSuccess" class="feedback-message success-message">
+    <div *ngIf="saveSuccess" class="feedback-message success-message" role="alert">
       Theme settings saved successfully!
     </div>
     
     <!-- Error Message -->
-    <div *ngIf="saveError" class="feedback-message error-message">
+    <div *ngIf="saveError" class="feedback-message error-message" role="alert">
       Error: {{ errorMessage }}
     </div>
   </div>

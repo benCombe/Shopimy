@@ -1,11 +1,10 @@
-import { CategoryPageComponent } from './../category-page/category-page.component';
+import { Component, EventEmitter, HostListener, OnInit, Output, AfterViewInit } from '@angular/core';
+import { NgFor, NgIf, NgStyle } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../models/category';
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, Renderer2 } from '@angular/core';
 import { StoreDetails } from '../../../models/store-details';
 import { ThemeService } from '../../../services/theme.service';
-import { NgFor, NgIf, NgStyle } from '@angular/common';
 import { StoreService } from '../../../services/store.service';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { StoreNavService } from '../../../services/store-nav.service';
 import { ShoppingService } from '../../../services/shopping.service';
 
@@ -16,28 +15,18 @@ import { ShoppingService } from '../../../services/shopping.service';
   templateUrl: './store-nav.component.html',
   styleUrl: './store-nav.component.css'
 })
-
-export class StoreNavComponent implements AfterViewInit, OnInit{
-
+export class StoreNavComponent implements AfterViewInit, OnInit {
   @Output() ViewChanged = new EventEmitter<string>();
 
-  storeDetails: StoreDetails | null = null; //new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []); //Use  Store/Theme services here
-  categories: Category[] = [] //["Clothing", "Materials", "Other"].reverse();
-
+  storeDetails: StoreDetails | null = null;
+  categories: Category[] = [];
   hoverStates: { [key: number]: boolean } = {};
-
   storeUrl = "";
-
-  isMobile: boolean = false;
-  menuOpen: boolean = false;
-  numCartItems: number = 0;
-
-  setHover(categoryId: number, isHovered: boolean): void {
-    this.hoverStates = { ...this.hoverStates, [categoryId]: isHovered };
-  }
+  isMobile = false;
+  menuOpen = false;
+  numCartItems = 0;
 
   constructor(
-    private renderer: Renderer2,
     private themeService: ThemeService,
     private storeService: StoreService,
     private router: Router,
@@ -46,25 +35,29 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     private shoppingService: ShoppingService
   ) {}
 
-
+  /**
+   * Lifecycle hook that is called after data-bound properties are initialized
+   */
   ngOnInit(): void {
     this.checkScreenSize();
-    this.storeService.activeStore$.subscribe(s =>{
-      this.storeDetails = s;
-      this.categories = this.mapCategories(s.categories);
-      console.log("Store Details:", this.storeDetails);
+    
+    this.storeService.activeStore$.subscribe(store => {
+      this.storeDetails = store;
+      this.categories = this.mapCategories(store.categories);
     });
+    
     this.route.params.subscribe(params => {
       this.storeUrl = params['storeUrl'];
-      //this.storeService.getStoreDetails(storeUrl);
     });
 
-    this.shoppingService.Cart$.subscribe(c =>{
-      this.numCartItems = c.length;
+    this.shoppingService.Cart$.subscribe(cart => {
+      this.numCartItems = cart.length;
     });
   }
 
-
+  /**
+   * Lifecycle hook that is called after the component's view has been initialized
+   */
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.themeService.setThemeOne("theme1");
@@ -75,61 +68,75 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     });
   }
 
+  /**
+   * Set hover state for a category
+   * @param categoryId - ID of the category
+   * @param isHovered - Whether the category is being hovered over
+   */
+  setHover(categoryId: number, isHovered: boolean): void {
+    this.hoverStates = { ...this.hoverStates, [categoryId]: isHovered };
+  }
 
-  mapCategories(cats: Category[]): Category[]{
-    let categoryMap = new Map<number, Category>();
-    let rootCategories: Category[] = [];
+  /**
+   * Maps flat category list to hierarchical structure
+   * @param cats - List of categories to map
+   * @returns Array of top-level categories with subcategories nested
+   */
+  mapCategories(cats: Category[]): Category[] {
+    const categoryMap = new Map<number, Category>();
+    const rootCategories: Category[] = [];
 
     // Step 1: Create a map of categories
-    cats.forEach(c => {
-      categoryMap.set(c.categoryId, { ...c, subCategories: [] });
+    cats.forEach(category => {
+      categoryMap.set(category.categoryId, { ...category, subCategories: [] });
     });
 
     // Step 2: Assign subcategories to their parents
-    categoryMap.forEach(c => {
-      if (c.parentCategory !== null) {
-        let parent = categoryMap.get(c.parentCategory);
+    categoryMap.forEach(category => {
+      if (category.parentCategory !== null) {
+        const parent = categoryMap.get(category.parentCategory);
         if (parent) {
-          parent.subCategories.push(c);
+          parent.subCategories.push(category);
         }
       } else {
-        rootCategories.push(c); // Top-level categories
+        rootCategories.push(category); // Top-level categories
       }
     });
 
     return rootCategories.reverse(); // Reverse for proper order if needed
   }
 
-  /* addToUrl(categoryName: string): void {
-    const currentUrl = this.router.url;
-    const newUrl = `${currentUrl}/${categoryName}`;
-
-    this.router.navigateByUrl(newUrl);
-  } */
-
-  /* addToUrl(categoryName: string): void {
-    const currentSegments = this.router.url.split('/').filter(segment => segment); // Remove empty segments
-    const newSegments = [...currentSegments, categoryName]; // Append category
-
-    this.router.navigate(newSegments); // Navigate to new path
-  } */
-
-  addToUrl(segment: string): void {
-/*       this.router.navigate([segment], { relativeTo: this.route });
-      this.ViewChanged.emit(segment);
-      console.log(segment); */
-      this.storeNavService.changeView(segment);
+  /**
+   * Navigates to a specific category
+   * @param segment - URL segment for the category
+   */
+  navigateToCategory(segment: string): void {
+    this.storeNavService.changeView(segment);
   }
 
-  storeHome(): void{
+  /**
+   * Navigates to the store home page
+   */
+  navigateToHome(): void {
     this.storeNavService.toStoreHome();
   }
 
+  /**
+   * Navigates to the shopping cart
+   */
+  navigateToCart(): void {
+    this.router.navigate(['cart'], { relativeTo: this.route });
+  }
 
-  invertColor(origColor: string): string{
-      // Ensure the input is a valid hex color
+  /**
+   * Inverts a hex color
+   * @param origColor - Original hex color (format: #RRGGBB)
+   * @returns Inverted hex color
+   */
+  invertColor(origColor: string): string {
+    // Ensure the input is a valid hex color
     if (!/^#([0-9A-Fa-f]{6})$/.test(origColor)) {
-      throw new Error("Invalid hex color format. Use '#RRGGBB'.");
+      return origColor; // Return original if invalid format
     }
 
     // Remove the "#" and convert to an array of two-character hex values
@@ -141,13 +148,18 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     return `#${inverted}`;
   }
 
-
+  /**
+   * Checks screen size and updates isMobile flag
+   */
   @HostListener('window:resize', [])
-  checkScreenSize() {
+  checkScreenSize(): void {
     this.isMobile = window.innerWidth < 900;
   }
 
-  toggleMenu() {
+  /**
+   * Toggles the mobile menu open/closed state
+   */
+  toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
   }
 }

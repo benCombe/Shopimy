@@ -1,14 +1,60 @@
-
-
-#main{
-  padding: 10%;
+#container {
+  width: 100%;
+  min-height: 100vh;
+  font-family: var(--main-font-fam);
 }
 
-h1{
+#main {
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px); /* Accounting for the top-nav height */
+  background-color: var(--alt-color);
+}
+
+h1 {
   color: var(--second-color);
   font-size: 5rem;
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+  font-weight: bold;
+  font-family: var(--main-font-fam);
 }
 
-h3{
-  margin-left: 10px;
+h3 {
+  color: var(--main-color);
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  font-family: var(--main-font-fam);
+}
+
+@media only screen and (max-width: 768px) {
+  #main {
+    padding: var(--spacing-lg);
+  }
+  
+  h1 {
+    font-size: 3.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  #main {
+    padding: var(--spacing-md);
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h3 {
+    font-size: 1rem;
+  }
 }

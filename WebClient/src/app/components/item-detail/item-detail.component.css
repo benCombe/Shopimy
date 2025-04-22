@@ -1,99 +1,126 @@
+/* Standardized Item Detail Component */
 .item-detail {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 1rem;
-    display: flex;
+  max-width: 1200px;
+  margin: var(--spacing-xl) auto;
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  font-family: var(--main-font-fam);
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color, #dee2e6);
+}
+
+.item-header {
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
+.item-image {
+  width: 40%;
+  max-width: 400px;
+  align-self: flex-start;
+}
+
+.item-image img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  object-fit: cover;
+  box-shadow: var(--shadow-md);
+}
+
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-name {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--main-color);
+  font-weight: bold;
+}
+
+.item-price {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  color: var(--main-color);
+}
+
+.sale-price {
+  color: var(--color-error, #e02424);
+  margin-right: var(--spacing-sm);
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  color: rgba(57, 55, 39, 0.6);
+  font-size: 1.2rem;
+}
+
+.item-description {
+  margin-bottom: var(--spacing-md);
+  line-height: 1.6;
+  color: var(--main-color);
+}
+
+.item-sizes, 
+.item-yarn {
+  margin-bottom: var(--spacing-md);
+  color: var(--main-color);
+  font-size: 0.9rem;
+}
+
+.item-actions {
+  margin-top: auto;
+  padding-top: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.item-reviews {
+  border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  padding-top: var(--spacing-xl);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .item-header {
     flex-direction: column;
-    gap: 2rem;
-  
-    .item-header {
-      display: flex;
-      gap: 2rem;
-  
-      .item-image {
-        width: 300px;
-        img {
-          width: 100%;
-          border-radius: 4px;
-          object-fit: cover;
-        }
-      }
-  
-      .item-info {
-        flex: 1;
-  
-        .item-name {
-          font-size: 1.5rem;
-          margin-bottom: 0.5rem;
-        }
-  
-        .item-price {
-          font-weight: bold;
-          margin-bottom: 1rem;
-  
-          .sale-price {
-            color: #d00;
-            margin-right: 0.5rem;
-          }
-          .strikethrough {
-            text-decoration: line-through;
-            color: #888;
-          }
-        }
-  
-        .item-description {
-          margin-bottom: 1rem;
-          line-height: 1.5;
-        }
-  
-        .item-actions {
-          margin-top: 1rem;
-          display: flex;
-          gap: 1rem;
-  
-          .btn {
-            padding: 0.5rem 1.5rem;
-            border: none;
-            border-radius: 4px;
-            background-color: #ccc;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-  
-            &:hover {
-              background-color: #bbb;
-            }
-          }
-        }
-      }
-    }
-  
-    .item-reviews {
-      h3 {
-        margin-bottom: 0.5rem;
-      }
-  
-      .review {
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #eee;
-  
-        .review-header {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 0.5rem;
-          .review-rating {
-            font-weight: bold;
-          }
-          .review-date {
-            font-size: 0.9rem;
-            color: #666;
-          }
-        }
-  
-        .review-body {
-          font-size: 0.95rem;
-        }
-      }
-    }
   }
+  
+  .item-image {
+    width: 100%;
+    max-width: none;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .item-actions {
+    flex-direction: column;
+  }
+  
+  .standard-button {
+    width: 100%;
+    margin-bottom: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .item-detail {
+    padding: var(--spacing-md);
+  }
+  
+  .item-name {
+    font-size: 1.5rem;
+  }
+  
+  .item-price {
+    font-size: 1.25rem;
+  }
+}
   

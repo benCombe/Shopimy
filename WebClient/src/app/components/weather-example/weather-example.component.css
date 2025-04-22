@@ -1,3 +1,106 @@
 body{
   background-color: aqua;
 }
+
+.weather-example-container {
+  padding: var(--spacing-md);
+  background-color: var(--third-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--main-font-fam);
+}
+
+.weather-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--alt-color);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-md);
+}
+
+.weather-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: var(--spacing-sm);
+}
+
+.weather-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--main-color);
+}
+
+.weather-info {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.temperature {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--main-color);
+}
+
+.conditions {
+  color: var(--second-color);
+  font-weight: 500;
+}
+
+.weather-form {
+  margin-top: var(--spacing-md);
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: var(--spacing-sm);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+  color: var(--main-color);
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-family: var(--main-font-fam);
+}
+
+.form-control:focus {
+  border-color: var(--second-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2);
+}
+
+.btn-primary {
+  background-color: var(--main-color);
+  color: white;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--second-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+  .weather-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+}
