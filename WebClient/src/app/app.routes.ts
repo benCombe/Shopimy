@@ -13,8 +13,6 @@ import { ItemDetailComponent } from './components/item-detail/item-detail.compon
 import { StorePageComponent } from './components/customer-layout/store-page/store-page.component';
 import { CategoryPageComponent } from './components/customer-layout/category-page/category-page.component';
 import { ItemPageComponent } from './components/customer-layout/item-page/item-page.component';
-import { SuccessComponent } from './components/SuccessComponent';
-import { CancelComponent } from './components/CancelComponent';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { OrdersComponent } from './components/store-owner-layout/orders/orders.component';
 
@@ -22,18 +20,13 @@ export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
   { path: 'landing', component: LandingPageComponent },
   { path: 'home', component: LandingPageComponent },
+
   { path: 'register', component: RegisterComponent},
   { path: 'login', component: LoginComponent },
+
   { path: 'profile', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: StoreOwnerDashboardComponent },
   { path: '404', component: PageNotFoundComponent },
-  { path: 'dashboard/categories', component: CategoryListComponent },
-  { path: 'dashboard/orders', component: OrdersComponent },
-  { path: 'items', component: ItemListComponent },
-  { path: 'items/:id', component: ItemDetailComponent },
-  { path: 'categories', component: CategoryListComponent},
-  { path: 'success', component: SuccessComponent },
-  { path: 'cancel', component: CancelComponent },
 
   {
     path: ':storeUrl',

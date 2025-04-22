@@ -41,7 +41,7 @@ export class CookieService {
   // Delete a cookie by setting its expiration date in the past
   delete(name: string, path: string = '/', domain?: string) {
     let domainStr = domain ? `; domain=${domain}` : '';
-  document.cookie = `${encodeURIComponent(name)}=; path=${path}${domainStr}; expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+    document.cookie = `${encodeURIComponent(name)}=; path=${path}${domainStr}; expires=Thu, 01 Jan 1970 00:00:00 UTC`;
   }
 
 }
