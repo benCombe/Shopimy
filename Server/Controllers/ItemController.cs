@@ -792,8 +792,10 @@ namespace Server.Controllers
         public int CategoryId { get; set; }
         public DateTime? AvailFrom { get; set; }
         public DateTime? AvailTo { get; set; }
+
         public required List<ProductVariantRequest> Variants { get; set; }
         public required List<int> DeletedVariantIds { get; set; }
+
     }
 
     public class ProductVariantRequest
