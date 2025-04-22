@@ -264,6 +264,13 @@
   }
 }
 
+@media only screen and (max-width: 768px){
+  #user-menu{
+    display: none;
+  }
+
+}
+
 /* Mobile Adjustments */
 @media only screen and (max-width: 715px) {
   #main {
@@ -278,6 +285,7 @@
   #nav-wrapper {
     gap: 12px;
   }
+
 
   /* Hide desktop nav items */
   #nav-wrapper > div:not(#hamburger):not(#login-btn):not(#user-menu) {
@@ -305,11 +313,11 @@
   #shopimy-logo {
     font-size: 2.2rem;
   }
-  
+
   #nav-wrapper div {
     font-size: 1.1rem;
   }
-  
+
   .dropdown-header {
     font-size: 1.1rem;
   }

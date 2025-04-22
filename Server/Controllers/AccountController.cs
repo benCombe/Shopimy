@@ -158,47 +158,53 @@ namespace Server.Controllers
         [Authorize]  // Requires JWT authentication
         public async Task<ActionResult<object>> GetUserProfile()
         {
-            try
+
+            // 1. Get token from Authorization header
+            var authHeader = Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
             {
-                // 🔹 Extract user ID from JWT token
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (userIdClaim == null)
-                {
-                    return Unauthorized("Invalid token. User ID not found.");
-                }
-
-                int userId = int.Parse(userIdClaim);
-
-                // 🔹 Query database for user
-                var user = await _context.Users
-                    .Where(u => u.Id == userId)
-                    .Select(u => new
-                    {
-                        u.Id,
-                        u.FirstName,
-                        u.LastName,
-                        u.Email,
-                        u.Phone,
-                        u.Address,
-                        u.Country,
-                        u.Verified
-                    })
-                    .FirstOrDefaultAsync();
-
-                if (user == null)
-                {
-                    return NotFound("User not found.");
-                }
-
-                // ✅ Return user details (excluding password)
-                return Ok(user);
+                return Unauthorized("Invalid Authorization header.");
             }
-            catch (Exception ex)
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            // 2. Look up token in ActiveUsers table
+            var activeUser = await _context.ActiveUsers
+                .Where(a => a.Token == token)
+                .FirstOrDefaultAsync();
+
+            if (activeUser == null)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return Unauthorized("Session not active.");
             }
+
+            // 3. Fetch user info
+            var user = await _context.Users
+                .Where(u => u.Id == activeUser.UserId)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return Unauthorized("User not found.");
+            }
+
+            var profile = new
+            {
+                user.Id,
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                user.Phone,
+                user.Address,
+                user.Country,
+                user.DOB,
+                user.Verified,
+                user.Subscribed
+            };
+
+            return Ok(profile);
         }
+        
 
         // 🔐 Protected Endpoint: Update User Profile
         [HttpPut("profile")]

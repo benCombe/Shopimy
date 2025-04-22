@@ -21,12 +21,11 @@ export class TopNavComponent implements OnInit {
   options = [
     { label: 'Register', link: '/register' },
     { label: 'Dashboard', link: '/dashboard' },
-    { label: 'Items', link: '/items' },
-    { label: 'Categories', link: '/categories' },
-    {label: 'Cart', link: '/cart'},
-    {label: 'Checkout', link: '/checkout'},
-    {label: 'Store', link: '/store'}
   ];
+
+  get filteredOptions() {
+    return this.isLoggedIn ? this.options.slice(1) : this.options;  // Remove first option if logged in
+  }
 
   constructor(private userService: UserService) {}
 
@@ -51,12 +50,12 @@ export class TopNavComponent implements OnInit {
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
     console.log("Mobile menu toggled:", this.isMobileMenuOpen ? "Open" : "Closed");
-    
+
     // If opening mobile menu, close other menus
     if (this.isMobileMenuOpen) {
       this.isDropdownOpen = false;
       this.isUserMenuOpen = false;
-      
+
       // Prevent scrolling when mobile menu is open
       document.body.style.overflow = 'hidden';
     } else {
@@ -68,7 +67,7 @@ export class TopNavComponent implements OnInit {
   closeMobileMenu() {
     if (this.isMobileMenuOpen) {
       this.isMobileMenuOpen = false;
-      
+
       // Restore scrolling when mobile menu is closed
       document.body.style.overflow = '';
       console.log("Mobile menu closed");
