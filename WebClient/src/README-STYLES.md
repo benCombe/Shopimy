@@ -1,6 +1,6 @@
 # Shopimy Design System & Component Guide
 
-This guide defines the visual style, CSS variables, and common component styling patterns for the Shopimy application. It aims to ensure a cohesive look and feel, particularly across key user flows like the landing page, login, and registration.
+This guide defines the visual style, CSS variables, and common component styling patterns for the Shopimy application. It aims to ensure a cohesive look and feel across the entire application.
 
 ---
 
@@ -38,22 +38,23 @@ The foundation of the Shopimy visual style is defined in `src/styles.css` using 
   --main-font-fam: "Inria Serif", serif; /* Primary font */
 
   /* Borders & Spacing */
-  --border-radius: 6px;            /* Standard border radius for cards, inputs */
+  --border-radius: 8px;            /* Standard border radius for cards, inputs */
   --border-radius-lg: 12px;         /* Larger border radius */
   --border-radius-round: 50%;       /* Fully rounded */
   --border-color: #d1d5db;         /* Standard border color */
-  --border-color-light: rgba(0, 0, 0, 0.1); /* Lighter border */
-  --spacing-unit: 1rem;            /* Base spacing unit (16px default) */
-  --spacing-xs: calc(var(--spacing-unit) * 0.25);
-  --spacing-sm: calc(var(--spacing-unit) * 0.5);
-  --spacing-md: var(--spacing-unit);
-  --spacing-lg: calc(var(--spacing-unit) * 1.5);
-  --spacing-xl: calc(var(--spacing-unit) * 2);
+  
+  /* Spacing units are used for consistent padding and margins */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 6px 12px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
   --shadow-focus: 0 0 0 2px rgba(208, 147, 61, 0.2); /* Focus ring */
 
   /* Scrollbars */
@@ -62,177 +63,270 @@ The foundation of the Shopimy visual style is defined in `src/styles.css` using 
   --scrollbar-track-color: rgba(0, 0, 0, 0.05);
   --scrollbar-thumb-color: var(--main-color);
   --scrollbar-border-radius: 4px;
+  
+  /* Breakpoints */
+  --breakpoint-sm: 576px;  /* Small devices (landscape phones) */
+  --breakpoint-md: 768px;  /* Medium devices (tablets) */
+  --breakpoint-lg: 992px;  /* Large devices (desktops) */
+  --breakpoint-xl: 1200px; /* Extra large devices (large desktops) */
 }
+```
+
+When using these variables, always include fallback values for older browsers:
+
+```css
+/* Correct */
+color: var(--color-error, #e02424);
+
+/* Instead of */
+color: var(--color-error);
 ```
 
 ---
 
-## 2. Global Styles
+## 2. Global Styles & Utility Classes
 
-Defined in `src/styles.css`:
+Defined in `src/styles.css`, these styles provide the foundation for the entire application:
 
-*   **Body:** Sets default `background-color` (`--alt-color`), `color` (`--main-color`), and `font-family` (`--main-font-fam`). Enables custom scrollbars.
-*   **Layout Containers:**
-    *   `.global-container`: Basic full-width, min-height container.
-    *   `.global-main`: Flex container for centering content, uses `--main-color` background (like Landing/Login/Register).
-*   **Utility Classes:**
-    *   `.center`: `display: flex; align-items: center; justify-content: center;`
-    *   `.center-col`: Flex column version of `.center`.
-    *   `.center-spaced`: `display: flex; align-items: center; justify-content: space-between;`
+### 2.1 Base Styles
+
+* **HTML/Body:** Sets default `background-color` (`--alt-color`), `color` (`--main-color`), and `font-family` (`--main-font-fam`). Includes custom scrollbar styling.
+* **Typography:** Standard text sizes and responsive scaling.
+* **Box Model:** Default `box-sizing: border-box` for all elements.
+
+### 2.2 Layout Containers
+
+* **`.global-container`:** Full-width, min-height container for page-level content.
+* **`.global-main`:** Centered flex container with `--main-color` background.
+* **`.content-wrapper`:** Standard padding and max-width for content sections.
+* **`.full-width-container`:** Container that spans the entire viewport width.
+
+### 2.3 Utility Classes
+
+* **Flex Utilities:**
+  * **`.center`:** `display: flex; align-items: center; justify-content: center;`
+  * **`.center-col`:** Flex column version of `.center`.
+  * **`.center-spaced`:** `display: flex; align-items: center; justify-content: space-between;`
+
+* **Grid Utilities:**
+  * **`.grid`:** Base grid container.
+  * **`.grid-[1-4]`:** Grid with 1-4 columns.
+  * **`.grid-[sm|md|lg]-[1-4]`:** Responsive grid layouts.
+
+* **Text Utilities:**
+  * **`.text-[sm|md|lg|xl]`:** Text size variations.
+  * **`.text-truncate`:** Truncates text with ellipsis.
+  * **`.text-break`:** Allows text to break at any character.
+
+* **Visibility Utilities:**
+  * **`.hide-[sm|md|lg]`:** Hide at specific breakpoints.
+  * **`.show-[sm|md|lg]`:** Show at specific breakpoints.
+
+* **Empty State:**
+  * **`.empty-state`:** Styling for empty content states with icon and text.
 
 ---
 
 ## 3. Component Styles
 
-### 3.1 Buttons (`.standard-button`, Login/Register Buttons)
+### 3.1 Buttons
 
-*   **Base (`.standard-button`):** Defined in `styles.css`. Uses `--main-font-fam`, standard padding, `--border-radius`, transitions.
-*   **Primary (Default):** Background `var(--main-color)`, text `var(--second-color)`. Hover: Background `var(--second-color)`, text `white`. (e.g., `#login-btn`, `#register-btn`)
-*   **Secondary (`.standard-button.secondary`):** Background `var(--third-color)`, text `var(--main-color)`, border `var(--main-color)`. Hover: Background `var(--main-color)`, text `var(--third-color)`.
-*   **Social (`.social-btn` in `login.component.css`):** White background, gray border, specific icon colors (`google`, `facebook`). Hover adds light gray background and subtle shadow/transform.
-*   **Sizes (`.small`, `.large`):** Adjust padding and font-size.
-*   **Full Width (`.full-width`):** Sets `width: 100%`.
+* **Standard Button (`.standard-button`):** The base button class used across the application.
+  * **Primary (Default):** `background: var(--main-color); color: var(--second-color);`
+  * **Secondary (`.secondary`):** `background: var(--second-color); color: var(--main-color);`
+  * **Sizes:**
+    * **Default:** Default sizing (padding, height, font-size)
+    * **Small (`.small`):** Smaller version for compact UIs.
+    * **Large (`.large`):** Larger version for prominent actions.
+  * **Width:**
+    * **Default:** Auto width based on content.
+    * **Full Width (`.full-width`):** `width: 100%` for mobile or form actions.
+  * **States:**
+    * **Hover:** Scale and shadow changes.
+    * **Focus:** Outline styles for accessibility.
+    * **Disabled:** Grayed out appearance.
 
-**Example (Login Button):**
-
+**Example:**
 ```html
-<button type="submit" id="login-btn" [disabled]="loginForm.invalid || isLoading">
-  Login
-</button>
+<button class="standard-button">Default Button</button>
+<button class="standard-button secondary">Secondary Button</button>
+<button class="standard-button small">Small Button</button>
+<button class="standard-button large full-width">Large Full Width</button>
 ```
 
-```css
-/* login.component.css */
-#login-btn {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: var(--main-color);
-  color: var(--second-color);
-  border: none;
-  border-radius: 6px; /* Could use --border-radius */
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-#login-btn:hover:not(:disabled) {
-  background-color: var(--second-color);
-  color: white;
-}
-```
+### 3.2 Form Elements
 
-### 3.2 Forms (Login/Register)
+* **Form Containers:**
+  * **Card Containers:** Card-like containers (`.global-card`) with padding, border-radius, and shadows.
+  * **Form Groups:** Container for label and input with proper spacing.
 
-*   **Card Container (`#login-card`, `#register-card`):** Uses `--third-color` background, `--border-radius-lg`, padding, shadow. Centered within `#main`. Max-width is set.
-*   **Form Group (`.form-group`):** Flex column layout with standard gap.
-*   **Label (`label`):** Uses `--main-font-fam`, `--main-color`.
-*   **Input/Select (`input`, `select`):** Standard padding, border (`--border-color`), `--border-radius`, uses `#FFFBE6` background.
-    *   **Focus:** Border changes to `--second-color`, adds `--shadow-focus`.
-    *   **Invalid (`.is-invalid`, `.error`):** Border changes to `--color-error`.
-*   **Error Message (`.invalid-feedback`, `.error-message`):** Uses `--color-error` text.
-*   **Password Specific:**
-    *   `.password-input-group`: Relative positioning for the toggle button.
-    *   `.password-toggle`: Absolute positioning, icon styles.
-    *   `.password-requirements`: Styled container for requirement list (`register.component.css`).
-    *   `.requirement`: Individual requirement style, changes color when `.met`.
-*   **Checkboxes (`.checkbox-group` in `register.component.css`):** Flex layout for checkbox and label.
+* **Inputs:**
+  * **Default:** Standard styling with border, padding, and focus states.
+  * **States:**
+    * **Focus:** Border color changes and shadow appears.
+    * **Invalid:** Red border and error message.
+  * **Special Inputs:**
+    * **Password:** Toggle visibility button.
+    * **Dropdown:** Custom styling for select elements.
+    * **Checkbox/Radio:** Custom styled elements.
 
-**Example (Email Input - Login):**
+* **Error Messages:**
+  * **`.invalid-feedback`, `.error-message`:** Red text for validation errors.
 
-```html
-<div class="form-group">
-  <label for="email">Email</label>
-  <input
-    type="email"
-    id="email"
-    name="email"
-    [(ngModel)]="email"
-    required email #emailInput="ngModel"
-    [class.is-invalid]="emailInput.invalid && emailInput.touched"
-    placeholder="Enter your email">
-  <div class="invalid-feedback" *ngIf="emailInput.invalid && emailInput.touched">
-    Please enter a valid email address
-  </div>
-</div>
-```
+### 3.3 Cards & Containers
 
-```css
-/* login.component.css */
-.form-group input {
-  padding: 0.75rem;
-  border: 1px solid #d1d5db; /* Could use --border-color */
-  border-radius: 6px; /* Could use --border-radius */
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-.form-group input:focus {
-  outline: none;
-  border-color: var(--second-color);
-  box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2); /* Could use --shadow-focus */
-}
-.form-group input.is-invalid {
-  border-color: #e02424; /* Could use --color-error */
-}
-```
+* **Basic Cards:**
+  * **`.global-card`:** Standard card with padding, border-radius, background, and shadow.
+  * **`.dashboard-card`:** Similar to global card with specific dashboard styling.
+  * **`.safe-card`:** Card with additional safety features for important content.
 
-### 3.3 Cards (Landing Page)
+* **Product Cards:**
+  * **`.item-card`:** Used for displaying product items, with consistent image size, information display, and interaction states.
 
-*   **Hero Block (`#left-block`):** Semi-transparent black background, border-radius, padding, shadow, white text. Contains icon wrappers.
-*   **Icon Wrapper (`.icon-wrapper`):** Circular background (`--second-color`), large icon size.
-*   **Feature Card (`.feature-card`):** Dark background (`#2C2A1F`), large border-radius, padding, shadow. Contains title, divider (`--second-color`), body text. Hover effect increases scale and shadow.
-*   **Mid-Section Tab (`.tab`):** Dark background (`#2C2A1F`), border-radius, padding, bold text. Hover changes background to `--second-color`.
-*   **Demo Card (`.demo`):** Dark background (`#2C2A1F`), border-radius, padding, used for placeholders.
-*   **Step Card (`.step`):** Semi-transparent dark background, border-radius, padding. Contains heading (`--second-color`) and description box (`--main-color` background).
+* **Feature Cards:**
+  * **`.feature-card`:** Used for showcasing features with accent colors and hover effects.
 
-### 3.4 Navigation (TopNav)
+### 3.4 Navigation & Page Structure
 
-*   **Main Bar (`#main`):** Uses `--main-color` background, padding, flex layout (`space-between`).
-*   **Logo (`#shopimy-logo`):** Uses `--second-color`, `--main-font-fam`, large font size.
-*   **Nav Items (`#nav-wrapper div`, `.dropdown-header`):** Uses `--third-color` text, hover changes to `--second-color`.
-*   **Dropdown (`.dropdown-options`):** Uses `--main-color` background, border-radius, shadow. Hidden by default, shown on hover/click.
-*   **Dropdown Item (`.opt`):** Uses `--third-color` text, hover changes background and text color.
-*   **Hamburger (`#hamburger`):** Visible on mobile, uses `--third-color` for icon.
-*   **Mobile Menu (`#mobile-menu`):** Fixed position, slides in from right, uses `--main-color` background.
+* **Top Navigation:**
+  * **Main Bar:** Full-width bar with logo and navigation items.
+  * **Logo:** Prominent branding element.
+  * **Nav Items:** Consistent spacing and hover effects.
+  * **Dropdowns:** Standardized dropdown styling across the app.
+  * **Mobile Menu:** Collapsible menu for small screens.
+
+* **Footer:**
+  * **`.footer-container`:** Full-width footer with consistent spacing.
+  * **Sections:** Multiple columns for different content types.
+  * **Links:** Standard styling for footer links.
+  * **Social Icons:** Consistent styling for social media links.
+
+### 3.5 Status & Feedback Elements
+
+* **Status Badges (`.status-badge`):**
+  * **`.status-shipped`, `.status-delivered`, etc.:** Color-coded badges for different states.
+
+* **Alert Messages:**
+  * **`.alert`, `.alert-[type]`:** Contextual message styling (error, success, info, warning).
+
+* **Loading States:**
+  * **Loading spinners and placeholders with consistent styling.
 
 ---
 
-## 4. Responsiveness
+## 4. Component Patterns
 
-Media queries are used extensively in component-specific CSS files (`landing-page.component.css`, `login.component.css`, `register.component.css`, `top-nav.component.css`) to adjust:
+Based on our style audit, we've identified these common patterns that should be followed:
 
-*   Layouts (e.g., changing flex-direction, grid columns).
-*   Padding and margins.
-*   Font sizes.
-*   Visibility of elements (e.g., hiding desktop nav, showing hamburger).
+### 4.1 Component Structure
 
-Refer to individual component CSS files for specific breakpoint behavior. Standard breakpoints are defined in `:root`.
+* **Container → Header → Content → Footer:** Most components follow this general structure.
+* **Standalone Components:** Typically use `.global-container` as a wrapper.
+* **Card-based Components:** Use consistent card structure with proper padding and spacing.
+
+### 4.2 Interactive Element Patterns
+
+* **Hover Effects:** Scale transforms (`transform: translateY(-5px)`) and shadow enhancements.
+* **Focus States:** Visible outlines using `--shadow-focus` for accessibility.
+* **Active/Selected States:** Background color changes and subtle visual cues.
+
+### 4.3 Responsive Patterns
+
+* **Mobile-First Approach:** Start with mobile design and expand for larger screens.
+* **Breakpoint Usage:** Consistent use of breakpoint variables.
+* **Layout Changes:**
+  * Cards switch from multi-column to single column.
+  * Navigation collapses to hamburger menu.
+  * Font sizes adjust appropriately.
+  * Padding and margins scale down.
+
+### 4.4 Form Patterns
+
+* **Label → Input → Error Message:** Consistent vertical stacking.
+* **Validation Feedback:** Immediate visual feedback (colors, icons).
+* **Submit Buttons:** Full-width on mobile, auto-width on desktop.
 
 ---
 
-## 5. Usage Guide
+## 5. Responsiveness
 
-*   **Variables First:** Always use the defined CSS variables (e.g., `var(--main-color)`) for colors, fonts, and common spacing/radii.
-*   **Standard Classes:** Utilize standard classes like `.standard-button`, `.standard-table`, `.dashboard-card` where applicable for consistency, especially in the dashboard areas.
-*   **Component Scope:** Keep styles specific to a component within its own CSS file (`*.component.css`).
-*   **Global Styles:** Only add styles to `src/styles.css` if they truly apply globally or define new reusable variables/base styles.
-*   **Check Existing:** Before adding new styles, check if a suitable variable or utility class already exists.
+The application uses a mobile-first approach with standardized breakpoints:
+
+```css
+/* Mobile first - styles defined for smallest screens */
+
+@media (min-width: 576px) {
+  /* Small devices (landscape phones) */
+}
+
+@media (min-width: 768px) {
+  /* Medium devices (tablets) */
+}
+
+@media (min-width: 992px) {
+  /* Large devices (desktops) */
+}
+
+@media (min-width: 1200px) {
+  /* Extra large devices */
+}
+```
+
+Key responsive behaviors:
+* **Grids:** Change from single column to multi-column.
+* **Typography:** Scale font sizes up at larger breakpoints.
+* **Navigation:** Switch between mobile menu and desktop navigation.
+* **Containers:** Adjust max-width and padding.
+* **Forms:** Adjust layout (e.g., from stacked to side-by-side).
+
+---
+
+## 6. Accessibility
+
+Always consider accessibility when implementing styles:
+
+* **Color Contrast:** Maintain WCAG AA (minimum) contrast ratios.
+* **Focus States:** Make focus indicators clearly visible.
+* **Semantic HTML:** Use appropriate HTML elements for their intended purpose.
+* **Screen Reader Support:** Use proper ARIA attributes and ensure content is accessible.
+* **Keyboard Navigation:** Ensure all interactive elements can be accessed and used with keyboard.
+
+---
+
+## 7. Best Practices
+
+### 7.1 CSS Organization
+
+* **Component Scope:** Keep styles specific to a component within its component CSS file.
+* **Global Styles:** Only add styles to `src/styles.css` if they truly apply globally.
+* **Specificity:** Keep specificity low; prefer classes over IDs for styling.
+* **Naming:** Use descriptive class names that indicate the component's purpose.
+
+### 7.2 Implementation
+
+* **Variables First:** Always use defined CSS variables for colors, spacing, etc.
+* **Utility Classes:** Use the standard utility classes instead of redefining common patterns.
+* **Responsive Design:** Test components at all breakpoints.
+* **Cross-Browser:** Test in multiple browsers to ensure consistent appearance.
+
+### 7.3 Fallbacks
+
+* **CSS Variables:** Always include fallback values for older browsers: `var(--color, #fallback)`.
+* **Complex Properties:** Provide fallbacks for modern CSS features when necessary.
+
+---
+
+## 8. Common Components Reference
+
+| Component | Style Source | Example Usage |
+|-----------|--------------|--------------|
+| Standard Button | `styles.css` | `<button class="standard-button">Button</button>` |
+| Cards | `styles.css`, Component CSS | `<div class="global-card">Content</div>` |
+| Forms | Component CSS | See specific component implementations |
+| Navigation | `top-nav.component.css` | See `TopNavComponent` |
+| Footer | `footer.component.css` | See `FooterComponent` |
+| Status Badges | `styles.css` | `<span class="status-badge status-shipped">Shipped</span>` |
 
 ---
 
 By adhering to this guide, developers can ensure the Shopimy application maintains a consistent, professional, and maintainable user interface.
-```
-
-**Key Changes and Rationale:**
-
-1.  **Updated CSS Variables:** The variable list now accurately reflects the ones defined in `src/styles.css`, including the color palette (`--main-color`, `--second-color`, etc.), typography (`--main-font-fam`), borders, spacing, shadows, and scrollbar styles. Added descriptions for clarity.
-2.  **Global Styles Section:** Included details about `html, body` base styles and common utility classes found in `styles.css`. Added the scrollbar documentation.
-3.  **Component Styles Focus:**
-    *   **Buttons:** Described the `.standard-button` base and its variations, referencing the specific styles seen in Login/Register (`#login-btn`, `#register-btn`) and social buttons (`.social-btn`).
-    *   **Forms:** Detailed the common form structure (`.form-group`, `label`, `input`, `select`), including focus/error states and specific elements like password requirements and checkboxes, drawing examples directly from the Login and Register CSS.
-    *   **Cards:** Described the various card types seen on the Landing page (`#left-block`, `.feature-card`, `.tab`, `.step`) and the Login/Register pages (`#login-card`, `#register-card`), noting their backgrounds, borders, shadows, etc.
-    *   **Navigation:** Summarized the TopNav styling based on `top-nav.component.css`.
-4.  **Specificity:** Provided concrete examples of class names and IDs used in the relevant components (e.g., `#login-card`, `.feature-card`, `#login-btn`).
-5.  **Clarity and Structure:** Reorganized sections for better readability, using headings, code blocks, and tables.
-6.  **Usage Guide:** Added clearer instructions on *how* to use the defined styles and variables.
-7.  **Removed Outdated Info:** Removed references to styles or components not clearly present or relevant to the specified focus pages (Landing, Login, Register).
-8.  **Accessibility:** Kept the accessibility section as it's good practice.

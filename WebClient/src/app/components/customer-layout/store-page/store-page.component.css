@@ -254,90 +254,89 @@
   background-color: var(--second-color);
   color: white;
   transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Footer section styling */
 #footer-section {
-  width: 100%;
-  padding: var(--spacing-lg);
-  background-color: var(--main-color);
+  width: 60%;
+  padding: var(--spacing-md);
+  margin-top: auto;
   text-align: center;
-  margin-top: var(--spacing-xl);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 #footer-section p {
-  color: var(--third-color);
   font-size: 0.9rem;
   margin: 0;
 }
 
-.center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Responsive styles */
+/* Media queries for responsiveness */
 @media only screen and (max-width: 1200px) {
   #banner-text {
     font-size: 2rem;
-    max-width: 40%;
+    max-width: 30%;
+    padding: var(--spacing-sm);
   }
-  
+
   #logo-container {
     width: 70%;
   }
-  
+
   #logo-text {
     font-size: 1.5rem;
   }
-  
+
   #product-container {
     width: 80%;
   }
-  
+
   #testimonials-section,
-  #newsletter-section {
+  #newsletter-section,
+  #footer-section {
     width: 80%;
   }
 }
 
 @media only screen and (max-width: 768px) {
   #banner-text {
-    font-size: 1.5rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     max-width: 60%;
-    top: 20%;
-    left: 20%;
-    height: 60%;
-  }
-  
-  #logo-container {
-    width: 90%;
-    flex-direction: column;
     height: auto;
     padding: var(--spacing-md);
   }
-  
+
+  #logo-container {
+    width: 90%;
+    height: auto;
+    padding: var(--spacing-sm);
+    flex-direction: column;
+  }
+
   #logo-wrapper {
     width: 50%;
     margin-left: 0;
+    margin-bottom: var(--spacing-sm);
   }
-  
+
   #logo-text-wrapper {
     width: 100%;
   }
-  
+
   #logo-text {
     font-size: 1.25rem;
   }
-  
+
   #product-container {
     width: 90%;
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   #testimonials-section,
-  #newsletter-section {
+  #newsletter-section,
+  #footer-section {
     width: 90%;
   }
 
@@ -355,50 +354,48 @@
 
 @media only screen and (max-width: 480px) {
   #store-page {
-    height: auto;
+    padding-bottom: var(--spacing-lg);
   }
-  
+
   #banner {
     height: 20vh;
   }
-  
+
   #banner-text {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     max-width: 80%;
-    top: 15%;
-    left: 10%;
-    height: 70%;
+    padding: var(--spacing-sm);
   }
-  
+
   #logo-section {
     height: auto;
     padding: var(--spacing-md) 0;
   }
-  
+
   #logo-container {
     padding: var(--spacing-sm);
   }
-  
+
   #logo-wrapper {
     width: 70%;
   }
-  
+
   #logo-text {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
-  
+
   #testimonials-section h3,
   #newsletter-section h3 {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
   }
-  
+
   .testimonial-text {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
-  
+
   #product-container {
     grid-template-columns: 1fr;
-    padding: var(--spacing-sm);
+    gap: var(--spacing-md);
   }
 }
 
