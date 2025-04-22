@@ -115,7 +115,7 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
   } */
 
   addToUrl(segment: string): void {
-      /* this.router.navigate([segment], { relativeTo: this.route });
+/*       this.router.navigate([segment], { relativeTo: this.route });
       this.ViewChanged.emit(segment);
       console.log(segment); */
       this.storeNavService.changeView(segment);
@@ -124,8 +124,6 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
   storeHome(): void{
     this.storeNavService.toStoreHome();
   }
-
-
 
 
   invertColor(origColor: string): string{

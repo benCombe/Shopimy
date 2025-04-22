@@ -1,5 +1,13 @@
 <div id="container">
-  <app-store-nav  (ViewChanged)="changeView($event)"></app-store-nav>
+  <ng-container *ngIf="loadingStore; else store">
+    <div id="loading" >
+      <div id="loading-text" class="center">
+        <h2>Loading...</h2>
+      </div>
+    </div> <!-- Closing the loading div here -->
+  </ng-container>
+  <ng-template #store>
+    <app-store-nav  (ViewChanged)="changeView($event)"></app-store-nav>
   <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="isStorePageView()" [ngStyle]="{ 'height': storePageHeight + 'vh' }">
 
       <div id="banner" class="theme2" [style.background-image]="'url(' + storeData?.bannerURL + ')'" *ngIf="storeData?.componentVisibility?.hero">
@@ -21,7 +29,7 @@
         </div>
       </div>
       <div id="product-container" *ngIf="storeData?.componentVisibility?.featured">
-        <app-item-card *ngFor="let item of itemIds.slice(0, displayCount)" [itemId]="item"></app-item-card>
+        <app-item-card *ngFor="let item of itemIds.slice(0, displayCount)" [itemId]="item" (click)="goToItemDetails(item)"></app-item-card>
       </div>
       <div id="load-more-wrapper" class="center" *ngIf="displayCount < itemIds.length && storeData?.componentVisibility?.featured"><span id="load-more-btn" class="center" (click)="loadMore()">Load More</span></div>
 
@@ -52,7 +60,12 @@
   </div>
   <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData"></app-shopping-cart>
   <app-checkout *ngIf="isCheckoutView()"></app-checkout>
+  <app-item-detail *ngIf="isItemView()" [storeDetails]="storeData" [itemId]="currentItemView"></app-item-detail>
+  <!-- The category page is loaded if the url is "shopimy.com/[storeurl]/[category-name]" -->
   <ng-container *ngFor="let c of storeData?.categories">
-    <app-category-page *ngIf="isCategoryView(c.name) && storeData?.componentVisibility?.categories" [category]="c" [storeDetails]="storeData"></app-category-page>
+    <app-category-page *ngIf="isCategoryView(c.name)" [category]="c" [storeDetails]="storeData"></app-category-page>
   </ng-container>
+  </ng-template>
+
+
 </div>
