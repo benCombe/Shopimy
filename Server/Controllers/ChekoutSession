@@ -1,0 +1,44 @@
+[ApiController]
+[Route("api/[controller]")]
+public class PaymentController : ControllerBase
+{
+    [HttpPost("create-checkout-session")]
+    public ActionResult CreateCheckoutSession([FromBody] CheckoutSessionRequest request)
+    {
+        var options = new SessionCreateOptions
+        {
+            PaymentMethodTypes = new List<string> { "card" },
+            Mode = "payment",
+            LineItems = new List<SessionLineItemOptions>
+            {
+                new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency = "usd",
+                        UnitAmount = (long)(request.Amount * 100), // amount in cents
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = request.ProductName,
+                        },
+                    },
+                    Quantity = 1,
+                },
+            },
+            SuccessUrl = "https://yourdomain.com/success?session_id={CHECKOUT_SESSION_ID}",
+            CancelUrl = "https://yourdomain.com/cancel",
+        };
+
+        var service = new SessionService();
+        Session session = service.Create(options);
+
+        return Ok(new { sessionUrl = session.Url });
+    }
+}
+
+public class CheckoutSessionRequest
+{
+    public decimal Amount { get; set; }
+    public string ProductName { get; set; }
+    // Optionally include StoreId, CategoryId, etc.
+}

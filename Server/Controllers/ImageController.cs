@@ -85,6 +85,6 @@ namespace Server.Controllers
     // Re-use the existing model definition if appropriate, or define it here
     public class ImageUploadRequest
     {
-        public string ImageData { get; set; }
+        public required string ImageData { get; set; }
     }
 } 

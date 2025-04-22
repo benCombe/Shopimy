@@ -13,6 +13,9 @@ import { StoreNavService } from '../../../services/store-nav.service';
 import { CategoryPageComponent } from '../category-page/category-page.component';
 import { ItemCardComponent } from "../../item-card/item-card.component";
 
+// Using a more flexible type that allows category names while maintaining type safety for known values
+type ViewType = 'store-page' | 'cart' | 'checkout' | string;
+
 @Component({
   selector: 'app-store-page',
   standalone: true,
@@ -25,7 +28,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
 
   storeData: StoreDetails | null = null;
   currentUrl: string = "";
-  currentView: string = "";
+  currentView: ViewType = "store-page";
 
   itemIds: number[] = [];
   displayCount: number = 9;
@@ -162,15 +165,19 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   }
 
   changeView(v: string): void{
-    this.currentView = v;
+    this.currentView = v as ViewType;
     this.storeNavService.changeView(v);
   }
 
-  extractViewFromUrl(url: string): string {
+  extractViewFromUrl(url: string): ViewType {
     const segments = url.split('/'); // Split URL by "/"
 
     if (segments.length > 1) {
-      return segments[1]; // Get the second segment (everything after store-url)
+      const view = segments[1];
+      // Check if view is one of our allowed ViewType values
+      if (view === 'cart' || view === 'checkout') {
+        return view;
+      }
     }
 
     return 'store-page'; // Default to store-page if no view is specified
@@ -192,6 +199,23 @@ export class StorePageComponent implements AfterViewInit, OnInit{
       this.displayCount = Math.min(this.displayCount + 9, this.itemIds.length);
       this.storePageHeight += this.isMobile ? 300 : 100;
     }
+  }
+
+  // Helper methods to check currentView type
+  isStorePageView(): boolean {
+    return this.currentView === 'store-page';
+  }
+  
+  isCartView(): boolean {
+    return this.currentView === 'cart';
+  }
+  
+  isCheckoutView(): boolean {
+    return this.currentView === 'checkout';
+  }
+  
+  isCategoryView(categoryName: string): boolean {
+    return this.currentView === categoryName;
   }
 
 }

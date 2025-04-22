@@ -218,11 +218,14 @@
   transition: all 0.3s ease;
   overflow-x: hidden;
   box-sizing: border-box;
+  max-width: calc(100% - var(--spacing-md));
+  padding: 0 var(--spacing-md) 0 0;
 }
 
 .main-content.sidebar-collapsed {
   margin-left: var(--sidebar-collapsed-width);
   width: calc(100% - var(--sidebar-collapsed-width));
+  max-width: calc(100% - var(--spacing-md));
 }
 
 /* Standard Dashboard Component Styles */

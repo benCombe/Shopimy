@@ -1,6 +1,6 @@
 <div id="container">
   <app-store-nav  (ViewChanged)="changeView($event)"></app-store-nav>
-  <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="currentView === 'store-page'" [ngStyle]="{ 'height': storePageHeight + 'vh' }">
+  <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="isStorePageView()" [ngStyle]="{ 'height': storePageHeight + 'vh' }">
 
       <div id="banner" class="theme2" [style.background-image]="'url(' + storeData?.bannerURL + ')'" *ngIf="storeData?.componentVisibility?.hero">
 
@@ -50,9 +50,9 @@
         </p>
       </div>
   </div>
-  <app-shopping-cart *ngIf="currentView === 'cart'" [storeDetails]="storeData"></app-shopping-cart>
-  <app-checkout *ngIf="currentView === 'checkout'"></app-checkout>
+  <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData"></app-shopping-cart>
+  <app-checkout *ngIf="isCheckoutView()"></app-checkout>
   <ng-container *ngFor="let c of storeData?.categories">
-    <app-category-page *ngIf="currentView === c.name && storeData?.componentVisibility?.categories" [category]="c" [storeDetails]="storeData"></app-category-page>
+    <app-category-page *ngIf="isCategoryView(c.name) && storeData?.componentVisibility?.categories" [category]="c" [storeDetails]="storeData"></app-category-page>
   </ng-container>
 </div>
