@@ -458,6 +458,237 @@
   }
 }
 
+.analytics-container {
+  padding: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  font-size: 1.75rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* KPI Cards */
+.kpi-cards {
+  margin-bottom: 20px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.kpi-card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.kpi-icon i {
+  font-size: 24px;
+  color: white;
+}
+
+.revenue-icon {
+  background-color: #4CAF50;
+}
+
+.orders-icon {
+  background-color: #2196F3;
+}
+
+.aov-icon {
+  background-color: #FF9800;
+}
+
+.visits-icon {
+  background-color: #9C27B0;
+}
+
+.conversion-icon {
+  background-color: #E91E63;
+}
+
+.products-icon {
+  background-color: #607D8B;
+}
+
+.kpi-content {
+  flex-grow: 1;
+}
+
+.kpi-value {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 5px 0;
+  color: var(--text-primary);
+}
+
+.kpi-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Chart Card */
+.chart-card {
+  margin-bottom: 20px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chart-filters {
+  display: flex;
+  gap: 15px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.filter-group select {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: white;
+  font-size: 0.9rem;
+}
+
+.card-content {
+  padding: 20px;
+  position: relative;
+}
+
+.chart-container {
+  height: 350px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.top-products-table {
+  overflow-x: auto;
+}
+
+.top-products-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.top-products-table th,
+.top-products-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.top-products-table th {
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: var(--bg-light);
+}
+
+.top-products-table tbody tr:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Loading and Error States */
+.loading-indicator, 
+.error-message,
+.no-data {
+  padding: 30px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.loading-indicator i,
+.error-message i,
+.no-data i {
+  margin-right: 8px;
+}
+
+.error-message {
+  color: var(--danger-color);
+}
+
+.no-data {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .chart-filters {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+}
+
 
 
 

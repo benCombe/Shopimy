@@ -157,8 +157,8 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] 🧊 **Implement Review Moderation:** Design and implement features for store owners to manage/moderate reviews. (`REQUIREMENTS.md FR4.6.3`)
 
 ### Analytics
--   [ ] ⚠️ **Implement Backend Analytics Tracking:** Add logic to track views, sales, etc., and store/aggregate this data. (`REQUIREMENTS.md FR4.7.1`)
--   [ ] ⚠️ **Connect Analytics Frontend:** Fetch and display actual analytics data in the `AnalyticsComponent` instead of placeholders. (`AnalyticsComponent`, `AnalyticsService`)
+-   [x] ⚠️ **Implement Backend Analytics Tracking:** Add logic to track views, sales, etc., and store/aggregate this data. (`REQUIREMENTS.md FR4.7.1`)
+-   [x] ⚠️ **Connect Analytics Frontend:** Fetch and display actual analytics data in the `AnalyticsComponent` instead of placeholders. (`AnalyticsComponent`, `AnalyticsService`)
 - [ ] 🔥 **Implement Live Data for Recent Sales Component:**
     - **Description:** The "Recent Sales" section within the `OverviewComponent` currently displays static dummy data. This task involves replacing the dummy data with live order data fetched from the backend API.
     - **Acceptance Criteria:**

@@ -38,8 +38,11 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<Server.Services.LogoService>(); // Register LogoService
 builder.Services.AddScoped<IPromotionsService, PromotionsService>(); // Register PromotionsService
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>(); // Register AnalyticsService
 //builder.Services.AddScoped<IEmailService, EmailService>();
 
+// Register services
+builder.Services.AddMemoryCache();
 
 // Register Swagger (Swashbuckle)
 builder.Services.AddSwaggerGen(c =>
