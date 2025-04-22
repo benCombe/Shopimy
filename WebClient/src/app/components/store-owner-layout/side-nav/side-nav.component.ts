@@ -31,7 +31,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
   navItems = [
     {name: 'Account', subNav: ['Profile', 'Settings'], open: false},
     {name: 'My Store', subNav: ['Products', 'Categories', 'Orders', 'Themes & Logos', 'Store Editor', 'Promotions'], open: false},
-    {name: 'Analytics', subNav: ['Traffic', 'Sales'], open: false}
+    {name: 'Analytics', subNav: ['Traffic & Sales'], open: false}
   ]
 
   constructor(private userService: UserService, private router: Router, private loadingService: LoadingService) {}
@@ -96,7 +96,10 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
   setActive(item: string, event?: Event) {
     this.activeNav = item;
-    this.pageChange.emit(item);
+    // Only emit pageChange event on user-triggered interaction
+    if (event) {
+      this.pageChange.emit(item);
+    }
     
     // Close mobile sidebar when a navigation item is selected
     if (this.isMobile) {

@@ -12,7 +12,7 @@ import { User } from '../models/user';
 })
 export class UserService {
 
-  private apiUrl = `${environment.apiUrl}/account`;
+  private apiUrl = `${environment.apiUrl}/api/account`;
 
   private defaultUser: User = new User(
     0,
@@ -110,7 +110,12 @@ export class UserService {
       LastName: user.LastName,
       Phone: user.Phone,
       Address: user.Address,
-      Country: user.Country
+      City: user.City,
+      State: user.State,
+      PostalCode: user.PostalCode,
+      Country: user.Country,
+      DOB: (user as any).DOB,
+      Subscribed: (user as any).Subscribed
     };
 
     return this.http.put<boolean>(`${this.apiUrl}/profile`, profileUpdate, { headers }).pipe(
@@ -124,7 +129,12 @@ export class UserService {
             LastName: user.LastName,
             Phone: user.Phone,
             Address: user.Address,
-            Country: user.Country
+            City: user.City,
+            State: user.State,
+            PostalCode: user.PostalCode,
+            Country: user.Country,
+            DOB: (user as any).DOB,
+            Subscribed: (user as any).Subscribed
           };
           this.activeUserSubject.next(updatedUser as User);
         }

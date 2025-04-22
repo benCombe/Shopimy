@@ -53,7 +53,7 @@ import { StoreService } from './store.service';
 
 export class ShoppingService {
 
-  private apiUrl = `${environment.apiUrl}/shoppingcart`;
+  private apiUrl = `${environment.apiUrl}/api/shoppingcart`;
   storeToDB: boolean = false;
   currentStore: string = '';
   currentStoreId: number = 0;

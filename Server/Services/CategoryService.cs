@@ -38,7 +38,16 @@ public class CategoryService : ICategoryService
 
     public async Task<Category> CreateCategoryAsync(int storeId, Category model)
     {
-        // You can add any business rules or validations here.
+        // Check if a category with the same name already exists for this store
+        var categories = await _repository.GetCategoriesByStoreIdAsync(storeId);
+        var existingCategory = categories.FirstOrDefault(c => c.Name.Equals(model.Name, StringComparison.OrdinalIgnoreCase));
+
+        if (existingCategory != null)
+        {
+            throw new InvalidOperationException($"A category with the name '{model.Name}' already exists for this store.");
+        }
+
+        // Create new category
         var category = new Category
         {
             StoreId = storeId,
@@ -47,7 +56,6 @@ public class CategoryService : ICategoryService
         };
 
         await _repository.AddCategoryAsync(category);
-        // Optionally, if your repository saves changes automatically, return the created category.
         return category;
     }
 

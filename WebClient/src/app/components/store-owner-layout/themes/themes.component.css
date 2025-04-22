@@ -1,74 +1,86 @@
 .themes-container {
-  padding: 20px;
+  padding: var(--spacing-xl);
   max-width: 1600px;
   margin: 0 auto;
   font-family: var(--main-font-fam);
 }
 
 .themes-header {
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .themes-header h2 {
-  font-size: 1.75rem;
+  font-size: 2rem;
   color: var(--main-color);
-  margin: 0 0 6px 0;
+  margin: 0 0 var(--spacing-xs) 0;
   font-family: var(--main-font-fam);
+  font-weight: 500;
 }
 
 .description {
   color: var(--main-color);
   font-size: 0.95rem;
   opacity: 0.8;
+  line-height: 1.4;
 }
 
 .tabs {
   display: flex;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color-light);
+  margin-bottom: var(--spacing-lg);
 }
 
 .tab {
-  padding: 8px 16px;
+  padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
   color: var(--main-color);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .tab.active {
   border-bottom-color: var(--second-color);
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--second-color);
+}
+
+.tab:hover:not(.active) {
+  border-bottom-color: var(--border-color);
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .theme-swatches {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
 }
 
 .theme-swatch {
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   overflow: hidden;
   border: 2px solid transparent;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
 }
 
 .theme-swatch:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .theme-swatch.selected {
   border-color: var(--second-color);
+  box-shadow: var(--shadow-md);
 }
 
 .swatch-header {
-  padding: 8px 12px;
+  padding: var(--spacing-sm) var(--spacing-md);
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 500;
 }
 
@@ -82,35 +94,36 @@
 }
 
 .theme-editor {
-  margin-top: 24px;
+  margin-top: var(--spacing-lg);
 }
 
 .color-section,
 .font-section {
-  margin-bottom: 24px;
-  background-color: white;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-bottom: var(--spacing-lg);
+  background-color: var(--third-color);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
 }
 
 h3 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: var(--main-color);
-  margin: 0 0 12px 0;
+  margin: 0 0 var(--spacing-sm) 0;
   font-family: var(--main-font-fam);
+  font-weight: 500;
 }
 
 .color-inputs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 20px;
+  gap: var(--spacing-md);
 }
 
 .color-input {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--spacing-xs);
   min-width: 0;
 }
 
@@ -127,10 +140,16 @@ h3 {
   width: 100%;
   height: 36px;
   padding: 2px;
-  border: 2px solid var(--third-color);
-  border-radius: 6px;
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius);
   cursor: pointer;
   background-color: white;
+}
+
+.color-input input[type="color"]:focus {
+  outline: none;
+  border-color: var(--second-color);
+  box-shadow: var(--shadow-focus);
 }
 
 .color-value {
@@ -139,8 +158,8 @@ h3 {
   opacity: 0.7;
   font-size: 0.85rem;
   background-color: var(--third-color);
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius);
   display: block;
   word-break: break-all;
   max-width: 100%;
@@ -152,12 +171,12 @@ h3 {
 .font-input {
   max-width: 100%;
   padding: 0;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
 }
 
 .font-input label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: var(--spacing-xs);
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--main-color);
@@ -165,9 +184,9 @@ h3 {
 
 .font-select {
   width: 100%;
-  padding: 8px 10px;
-  border: 2px solid var(--third-color);
-  border-radius: 6px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius);
   font-size: 0.95rem;
   color: var(--main-color);
   background-color: white;
@@ -176,10 +195,17 @@ h3 {
   overflow: hidden;
 }
 
+.font-select:focus {
+  outline: none;
+  border-color: var(--second-color);
+  box-shadow: var(--shadow-focus);
+}
+
 .actions {
-  margin-top: 24px;
+  margin-top: var(--spacing-xl);
   display: flex;
   justify-content: flex-end;
+  gap: var(--spacing-md);
 }
 
 app-store-preview {
@@ -204,7 +230,7 @@ app-store-preview {
 
 @media (min-width: 1440px) {
   .themes-container {
-    padding: 32px;
+    padding: var(--spacing-xl);
   }
   
   .color-inputs {
@@ -214,7 +240,7 @@ app-store-preview {
 
 @media (max-width: 768px) {
   .themes-container {
-    padding: 16px;
+    padding: var(--spacing-md);
   }
   
   .theme-swatches {
@@ -228,4 +254,58 @@ app-store-preview {
   .color-inputs {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
+}
+
+/* New styles for save button and feedback messages */
+.actions-container {
+  margin-top: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.save-button {
+  background-color: var(--main-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.save-button:hover {
+  background-color: var(--second-color);
+}
+
+.save-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.feedback-message {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius);
+  animation: fadeIn 0.3s ease-in-out;
+  width: 100%;
+  max-width: 400px;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: var(--color-success, #155724);
+  border: 1px solid #c3e6cb;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: var(--color-error, #721c24);
+  border: 1px solid #f5c6cb;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 } 

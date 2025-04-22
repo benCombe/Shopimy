@@ -10,15 +10,15 @@ import { CheckoutItem } from '../models/checkout-item.model';
 })
 export class PaymentService {
   // Use base API URL from environment for consistency
-  private apiUrl = `${environment.apiUrl}/payment`;
-  private userPaymentUrl = `${environment.apiUrl}/user-payment`;
+  private apiUrl = `${environment.apiUrl}/api/payment`;
+  private userPaymentUrl = `${environment.apiUrl}/api/user-payment`;
 
   constructor(private http: HttpClient) {}
 
   // New method to get Stripe public key
   getStripePublicKey(): Observable<{ publicKey: string }> {
     // Assuming endpoint /api/stripe/config or similar
-    return this.http.get<{ publicKey: string }>(`${environment.apiUrl}/stripe/config`);
+    return this.http.get<{ publicKey: string }>(`${environment.apiUrl}/api/stripe/config`);
   }
 
   // New method to create SetupIntent
