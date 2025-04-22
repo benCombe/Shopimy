@@ -9,7 +9,11 @@ CREATE TABLE Users (
     dob DATE NOT NULL,
     password NVARCHAR(255) NOT NULL,
     verified BIT NOT NULL DEFAULT 0,
-    subscribed BIT NOT NULL DEFAULT 0
+    subscribed BIT NOT NULL DEFAULT 0,
+    city NVARCHAR(100) NULL,
+    state NVARCHAR(100) NULL,
+    postal_code NVARCHAR(20) NULL,
+    stripe_customer_id NVARCHAR(100) NULL
 );
 
 CREATE TABLE ActiveUsers (

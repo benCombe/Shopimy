@@ -265,86 +265,59 @@ namespace Server.Controllers
             
             if (userId == 0)
             {
-                Console.WriteLine("ERROR: Failed to find a valid numeric User ID from claims.");
+                Console.WriteLine("ERROR (GetCurrentUserStore): Failed to find a valid numeric User ID from claims.");
                 return Unauthorized("Invalid user authentication token.");
             }
 
-            // Get user email from the non-numeric claim with NameIdentifier type
-            // or from the Subject claim which should have the email
-            string userEmail = "";
-            foreach (var claim in nameIdentifierClaims)
+            // Get user's email to extract username for store name
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
             {
-                if (!int.TryParse(claim.Value, out _) && claim.Value.Contains('@'))
-                {
-                    userEmail = claim.Value;
-                    break;
-                }
+                return Unauthorized("User not found.");
             }
             
-            // Fallback to using the Sub claim if needed
-            if (string.IsNullOrEmpty(userEmail))
+            // Set default store name if not provided
+            if (string.IsNullOrWhiteSpace(storeDetails.Name) || storeDetails.Name == "DEFAULT")
             {
-                userEmail = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? string.Empty;
+                // Extract username from email (part before @)
+                string email = user.Email ?? "";
+                int atIndex = email.IndexOf('@');
+                string username = atIndex > 0 ? email.Substring(0, atIndex) : "mystore";
+                
+                // Format to be more store-like
+                storeDetails.Name = $"{username}'s Store";
             }
             
-            if (string.IsNullOrEmpty(userEmail) || !userEmail.Contains('@'))
+            // Generate store URL if not provided
+            if (string.IsNullOrWhiteSpace(storeDetails.URL) || storeDetails.URL == "DEFAULT")
             {
-                Console.WriteLine("ERROR: Failed to find a valid email address in the claims.");
-                // We'll continue with a default value since we have the user ID
-                userEmail = $"user{userId}@example.com";
+                storeDetails.URL = GenerateUniqueStoreUrl(storeDetails.Name);
+            }
+            
+            // Validate the store details
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
-            // Extract username from email (part before the @ symbol)
-            string username = userEmail.Split('@')[0];
-
-            // Check if user already has a store
-            var existingStoreCheck = await _context.Stores
-                .AsNoTracking() // Use AsNoTracking for read-only checks
-                .Where(s => s.StoreOwnerId == userId)
-                .FirstOrDefaultAsync();
-
-            if (existingStoreCheck != null)
-            {
-                return BadRequest("User already has a store");
-            }
-
-            // Check if store URL is unique
-            var storeWithSameUrlCheck = await _context.Stores
-                .AsNoTracking()
-                .Where(s => s.StoreUrl == storeDetails.URL)
-                .FirstOrDefaultAsync();
-
-            if (storeWithSameUrlCheck != null)
-            {
-                return BadRequest("Store URL already exists");
-            }
-
-            // Check if store name (username) already exists and find a unique one
-            string storeName = username;
-            int suffix = 1;
-            while (await _context.Stores.AsNoTracking().AnyAsync(s => s.Name == storeName))
-            {
-                storeName = $"{username}{suffix}";
-                suffix++;
-            }
-
-            // Start Transaction
+            // Use a transaction to ensure atomicity across tables
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    // Create new store with the extracted and validated username
+                    // Create the store record
                     var store = new Store
                     {
                         StoreOwnerId = userId,
-                        Name = storeName,
+                        Name = storeDetails.Name,
                         StoreUrl = storeDetails.URL
                     };
+                    
                     _context.Stores.Add(store);
-                    await _context.SaveChangesAsync(); // Save store to get its ID
-
-                    // Create themes
-                    var theme = new StoreTheme
+                    await _context.SaveChangesAsync();
+                    
+                    // Create the store theme
+                    var storeTheme = new StoreTheme
                     {
                         StoreId = store.StoreId,
                         Theme_1 = storeDetails.Theme_1,
@@ -353,46 +326,78 @@ namespace Server.Controllers
                         FontColor = storeDetails.FontColor,
                         FontFamily = storeDetails.FontFamily,
                         BannerText = storeDetails.BannerText,
-                        LogoText = storeDetails.LogoText ?? storeName, // Default LogoText to store name if not provided
+                        LogoText = storeDetails.LogoText,
                         ComponentVisibility = storeDetails.ComponentVisibility
                     };
-                    _context.StoreThemes.Add(theme);
                     
-                    // Create banner
-                    var banner = new StoreBanner
-                    {
-                        StoreID = store.StoreId,
-                        BannerURL = storeDetails.BannerURL
-                    };
-                    _context.StoreBanners.Add(banner);
-
-                    // Create logo
-                    var logo = new StoreLogo
-                    {
-                        StoreID = store.StoreId,
-                        LogoURL = storeDetails.LogoURL
-                    };
-                    _context.StoreLogos.Add(logo);
+                    _context.StoreThemes.Add(storeTheme);
                     
-                    // Save all related entities
+                    // Add banner URL if provided
+                    if (!string.IsNullOrWhiteSpace(storeDetails.BannerURL))
+                    {
+                        var banner = new StoreBanner
+                        {
+                            StoreID = store.StoreId,
+                            BannerURL = storeDetails.BannerURL
+                        };
+                        _context.StoreBanners.Add(banner);
+                    }
+                    
+                    // Add logo URL if provided
+                    if (!string.IsNullOrWhiteSpace(storeDetails.LogoURL))
+                    {
+                        var logo = new StoreLogo
+                        {
+                            StoreID = store.StoreId,
+                            LogoURL = storeDetails.LogoURL
+                        };
+                        _context.StoreLogos.Add(logo);
+                    }
+                    
                     await _context.SaveChangesAsync();
-
-                    // Commit transaction
                     await transaction.CommitAsync();
-
-                    // Return the created store details with the actual store name used
-                    storeDetails.Id = store.StoreId;
-                    storeDetails.Name = storeName; // Update the name in the response
-                    return CreatedAtAction(nameof(GetStoreDetails), new { url = store.StoreUrl }, storeDetails);
+                    
+                    // Get a fresh copy of the store with all added data
+                    var createdStoreDetails = await GetStoreById(store.StoreId);
+                    if (createdStoreDetails == null)
+                    {
+                        return StatusCode(500, "Store created but details could not be retrieved.");
+                    }
+                    
+                    return Ok(createdStoreDetails);
                 }
                 catch (Exception ex)
                 {
-                    // Rollback transaction in case of error
                     await transaction.RollbackAsync();
-                    Console.WriteLine($"Error creating store: {ex.Message}"); // Log the error
-                    return StatusCode(500, "An error occurred while creating the store.");
+                    return StatusCode(500, "An error occurred during store creation: " + ex.Message);
                 }
             }
+        }
+
+        // Helper method to generate a unique store URL based on the store name
+        private string GenerateUniqueStoreUrl(string name)
+        {
+            // Convert name to URL-friendly format (lowercase, replace spaces with hyphens)
+            string baseUrl = name
+                .ToLower()
+                .Replace(" ", "-")
+                .Replace("'", "")
+                .Replace("\"", "");
+                
+            // Remove any characters that aren't allowed in URLs
+            baseUrl = System.Text.RegularExpressions.Regex.Replace(baseUrl, "[^a-z0-9\\-]", "");
+            
+            string uniqueUrl = baseUrl;
+            int counter = 1;
+            
+            // Check if URL exists, append number if needed
+            while (_context.Stores.Any(s => s.StoreUrl == uniqueUrl))
+            {
+                uniqueUrl = $"{baseUrl}-{counter}";
+                counter++;
+            }
+            
+            return uniqueUrl;
         }
 
         // Update store configuration
@@ -660,6 +665,71 @@ namespace Server.Controllers
 
             // Return the updated store details
             return await GetCurrentUserStore();
+        }
+
+        [HttpGet("check-url/{url}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<bool>> CheckUrlAvailability(string url)
+        {
+            // Validate URL format
+            if (!System.Text.RegularExpressions.Regex.IsMatch(url, @"^[a-zA-Z0-9\-]+$"))
+            {
+                return BadRequest("Invalid URL format.");
+            }
+            
+            // Check if URL exists
+            bool isAvailable = !await _context.Stores.AnyAsync(s => s.StoreUrl == url);
+            return Ok(isAvailable);
+        }
+
+        // Helper method to get a store by ID with all related data
+        private async Task<StoreDetails> GetStoreById(int storeId)
+        {
+            var store = await _context.Stores
+                .Where(s => s.StoreId == storeId)
+                .FirstOrDefaultAsync();
+
+            if (store == null)
+            {
+                return null;
+            }
+
+            var themes = await _context.StoreThemes
+                .Where(s => s.StoreId == storeId)
+                .FirstOrDefaultAsync();
+
+            var banner = await _context.StoreBanners
+                .Where(s => s.StoreID == storeId)
+                .FirstOrDefaultAsync();
+            
+            var logo = await _context.StoreLogos
+                .Where(s => s.StoreID == storeId)
+                .FirstOrDefaultAsync();
+
+            // Fetch categories linked to this store
+            var categories = await _context.Categories
+                .Where(c => c.StoreId == storeId)
+                .ToListAsync();
+            
+            // Construct StoreDetails, using defaults for missing optional data
+            StoreDetails storeDetails = new StoreDetails(
+                store.StoreId,
+                store.StoreUrl,
+                store.Name,
+                themes?.Theme_1 ?? "#393727", // Default Theme 1
+                themes?.Theme_2 ?? "#D0933D", // Default Theme 2
+                themes?.Theme_3 ?? "#D3CEBB", // Default Theme 3
+                themes?.FontColor ?? "#333333", // Default Font Color
+                themes?.FontFamily ?? "sans-serif", // Default Font Family
+                themes?.BannerText ?? "", // Default Banner Text
+                themes?.LogoText ?? store.Name, // Default Logo Text (use store name)
+                banner?.BannerURL ?? "", // Default Banner URL
+                logo?.LogoURL ?? "", // Default Logo URL
+                categories, // Categories can be empty list if none
+                themes?.ComponentVisibility ?? "{}" // Default Component Visibility (empty JSON)
+            );
+
+            return storeDetails;
         }
     }
 }

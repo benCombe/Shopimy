@@ -12,6 +12,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
 ## 🔥 Core Features & Bug Fixes
 
 ### Authentication & User Management
+-   [X] 🔥 **End-to-End Review and Audit of Registration & Store Creation:** Comprehensive audit of user registration and store creation, leading to multiple fixes and improvements in data validation, security, user experience, and database schema. Results documented in `Documents/TASKS/REGISTRATION_STORE_CREATION_AUDIT_RESULTS.md`. (`REGISTRATION_STORE_CREATION_AUDIT.md`)
 -   [ ] 🔥 **Implement Email Sending Service:** Integrate a service (SendGrid, Mailgun, SMTP) for sending transactional emails. (`EMAIL_MANAGEMENT.md`, `Program.cs`)
 -   [ ] ⚠️ **Define IEmailService Interface:** Create the `IEmailService` interface in `Server/Services/IEmailService.cs` with necessary methods (e.g., `Task SendOrderConfirmationEmailAsync(User user, Order order);`).
 -   [ ] ⚠️ **Implement EmailService:** Create the `EmailService` class in `Server/Services/EmailService.cs` implementing `IEmailService`. Include logic for connecting to the chosen email provider and handling configuration/secrets. (Depends on choosing a provider in the task above).
