@@ -22,9 +22,12 @@
 
 #cart-items-container{
   width: calc(70% - 4rem);
+  min-width: 300px;
+  min-height: 300px;
   padding: 10px;
   max-height: 60vh;
   overflow-y: scroll;
+  border: 2px solid #000; /* Added border to cart summary */
 }
 
 .cart-item{
@@ -151,6 +154,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  margin-left: auto; /* Changed from 2rem to auto to push to right */
+  padding-left: 2rem; /* Added padding to maintain space from cart items */
 }
 
 #promo-code{
@@ -164,11 +169,15 @@
   margin-right: 10px;
   font-size: 1.2rem;
   font-weight: bold;
+  min-width: 120px;
+  min-height: 25px;
 }
 
 #promo{
   width: clamp(150px, 60%, 250px);
   height: 30px;
+  min-width: 120px;
+  min-height: 30px;
 }
 
 
@@ -181,16 +190,24 @@
   #promo-code label{
     width: 50%;
     font-size: 1rem;
+    min-width: 100px;
   }
 }
 
-@media only screen and (max-width: 715px){
+@media only screen and (max-width: 800px){
   #basket{
     flex-direction: column;
+    padding: 0rem; /* Reduced padding from 2rem */
+    width: calc(100% - 2rem); /* Adjusted width to account for smaller padding */
   }
 
   #cart-items-container{
     width: 100%;
+    padding: 1rem; /* Reduced padding from 10px */
+    margin-left: -15px;
+    margin-bottom: 15px;
+    min-width: 380px;
+
   }
 
   .item-img-container{
@@ -227,11 +244,26 @@
 
   #promo-code{
     width: 63vw;
+    margin-top: 10px; /* Reduced margin from 20px */
   }
 
   #promo-code label{
     width: 40%;
     font-size: 1rem;
+    min-width: 90px;
+  }
+
+  #order-summary-container{
+    width: 80%;
+    max-width: 400px;
+    min-width: 380px;
+    height: auto;
+    margin: 0 ;  /* Removed top margin */
+    margin-left: -15px; /* Shift content 12px to the left */
+    padding: 0;
+    align-content: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Added shadow effect */
+    font-size: 14px;
   }
 
 }

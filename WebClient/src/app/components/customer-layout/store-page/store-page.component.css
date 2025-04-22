@@ -1,5 +1,4 @@
-
-        #store-page{
+#store-page{
           height: 175vh;
 
           display: flex;
@@ -335,11 +334,18 @@
     height: 15vh;
     background-color: white;
     z-index: 0;
+    display: none;
   }
 
   #banner-text{
     max-width: 30%;
     height: 50%;
+    display: none; /* Hide banner text by default on mobile */
+  }
+  
+  /* Only show banner text when banner is displayed */
+  #banner:not([style*="display: none"]) #banner-text {
+    display: block;
   }
 
   #product-container{

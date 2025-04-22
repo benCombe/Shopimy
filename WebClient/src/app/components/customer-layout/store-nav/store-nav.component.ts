@@ -3,7 +3,7 @@ import { Category } from '../../../models/category';
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, Renderer2 } from '@angular/core';
 import { StoreDetails } from '../../../models/store-details';
 import { ThemeService } from '../../../services/theme.service';
-import { NgFor, NgIf, NgStyle } from '@angular/common';
+import { NgFor, NgIf, NgStyle, NgClass } from '@angular/common';
 import { StoreService } from '../../../services/store.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { StoreNavService } from '../../../services/store-nav.service';
@@ -12,7 +12,7 @@ import { ShoppingService } from '../../../services/shopping.service';
 @Component({
   selector: 'app-store-nav',
   standalone: true,
-  imports: [NgFor, NgIf, NgStyle],
+  imports: [NgFor, NgIf, NgStyle, NgClass],
   templateUrl: './store-nav.component.html',
   styleUrl: './store-nav.component.css'
 })
@@ -151,5 +151,12 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
+    
+    // Prevent scrolling of the body when sidebar is open
+    if (this.menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
   }
 }

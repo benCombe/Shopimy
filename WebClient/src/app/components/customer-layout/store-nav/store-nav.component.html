@@ -1,45 +1,62 @@
-<div id="main" class="theme1" [style.background-color]="storeDetails?.theme_1">
-  <div id="store-name" class="fc" [style.color]="storeDetails?.fontColor" (click)="storeHome()">{{storeDetails?.name}}</div>
-  <div id="categories-wrapper">
-
-
-    <div id="categories" class="fc" [style.color]="storeDetails?.fontColor">
-      <!-- <span *ngFor="let c of categories" class="cat">{{c.name}}</span> -->
-      <div *ngFor="let c of categories" class="cat-wrapper">
-        <span class="cat" (click)="addToUrl(c.name)">{{ c.name }}</span> <!--[routerLink]="['/', storeUrl, c.name]"  -->
-        <div class="dropdown theme2">
-          <span *ngFor="let sub of c.subCategories" class="sub-cat theme2"
-          [style.background-color]="storeDetails?.theme_3"
-          [ngStyle]="{'background-color': hoverStates[sub.categoryId] ? '#F1F1F1': storeDetails?.theme_1, 'color': hoverStates[sub.categoryId] ? storeDetails?.theme_1: storeDetails?.fontColor}"
-          (mouseenter)="setHover(sub.categoryId, true)"
-          (mouseleave)="setHover(sub.categoryId, false)"
-          [style.color]="storeDetails?.fontColor"
-          (click)="addToUrl(sub.name)">
-          {{ sub.name }}</span> <!--  [routerLink]="['/', storeUrl, sub.name]"-->
-        </div>
+<div id="nav-container">
+  <!-- Top bar with store name -->
+  <div id="main" class="theme1" [style.background-color]="storeDetails?.theme_1">
+    <!-- Hamburger Menu Button (Shown only on small screens) - Moved to left -->
+    <div *ngIf="isMobile" id="hamburger-button">
+      <div id="menu-icon" (click)="toggleMenu()" [style.color]="storeDetails?.fontColor">
+        <i class="fa-solid" [ngClass]="menuOpen ? 'fa-times' : 'fa-bars'"></i>
       </div>
     </div>
-
-
+    
+    <div id="store-name" class="fc" [style.color]="storeDetails?.fontColor" (click)="storeHome()">{{storeDetails?.name}}</div>
+    
     <div id="cart-btn-wrapper">
       <div id="num-item-indicator" class="center" *ngIf="numCartItems > 0">{{numCartItems}}</div>
-      <div id="cart-btn" class="center fc" [style.color]="storeDetails?.fontColor"  (click)="addToUrl('cart')"><i class="fa-solid fa-cart-shopping"></i></div>
+      <div id="cart-btn" class="center fc" [style.color]="storeDetails?.fontColor" (click)="addToUrl('cart')"><i class="fa-solid fa-cart-shopping"></i></div>
     </div>
-          <!-- Hamburger Menu (Shown only on small screens) -->
-    <div *ngIf="isMobile" id="hamburger-menu">
-      <div id="menu-icon" (click)="toggleMenu()" [style.color]="storeDetails?.fontColor">
-        <i class="fa-solid fa-bars"></i>
-      </div>
-      <div id="mobile-dropdown" *ngIf="menuOpen">
-        <div *ngFor="let c of categories" class="mobile-cat">
-          <span class="cat" (click)="addToUrl(c.name); toggleMenu()">{{ c.name }}</span>
-          <div *ngIf="c.subCategories.length" class="mobile-subcategories">
-            <span *ngFor="let sub of c.subCategories" class="sub-cat"
-            (click)="addToUrl(sub.name); toggleMenu()">
+  </div>
+  
+  <!-- Second bar with categories (Desktop only) -->
+  <div id="categories-bar" class="theme2" [style.background-color]="storeDetails?.theme_2" *ngIf="!isMobile">
+    <div id="categories-wrapper">
+      <div id="categories" class="fc" [style.color]="storeDetails?.fontColor">
+        <div *ngFor="let c of categories" class="cat-wrapper">
+          <span class="cat" (click)="addToUrl(c.name)">{{ c.name }}</span>
+          <div class="dropdown theme2">
+            <span *ngFor="let sub of c.subCategories" class="sub-cat theme2"
+            [style.background-color]="storeDetails?.theme_3"
+            [ngStyle]="{'background-color': hoverStates[sub.categoryId] ? '#F1F1F1': storeDetails?.theme_1, 'color': hoverStates[sub.categoryId] ? storeDetails?.theme_1: storeDetails?.fontColor}"
+            (mouseenter)="setHover(sub.categoryId, true)"
+            (mouseleave)="setHover(sub.categoryId, false)"
+            [style.color]="storeDetails?.fontColor"
+            (click)="addToUrl(sub.name)">
             {{ sub.name }}</span>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Mobile sidebar navigation - Updated to slide from left -->
+  <div id="mobile-sidebar" class="theme2" [ngClass]="{'open': menuOpen}" [style.background-color]="storeDetails?.theme_2">
+    <div class="sidebar-content">
+      <div class="sidebar-header fc" [style.color]="storeDetails?.fontColor">Categories</div>
+      <div class="sidebar-categories">
+        <div *ngFor="let c of categories" class="mobile-cat">
+          <div class="mobile-category-item fc" (click)="addToUrl(c.name); toggleMenu()" [style.color]="storeDetails?.fontColor">
+            {{ c.name }}
+          </div>
+          <div *ngIf="c.subCategories.length" class="mobile-subcategories">
+            <div *ngFor="let sub of c.subCategories" class="mobile-subcategory-item fc"
+                 (click)="addToUrl(sub.name); toggleMenu()" [style.color]="storeDetails?.fontColor">
+              {{ sub.name }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Overlay when sidebar is open -->
+  <div id="sidebar-overlay" *ngIf="menuOpen" (click)="toggleMenu()"></div>
 </div>

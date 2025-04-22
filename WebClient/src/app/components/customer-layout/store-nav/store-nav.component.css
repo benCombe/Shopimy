@@ -1,96 +1,73 @@
-/* #main{
-  position: relative;
+#nav-container {
   width: 100vw;
-  height: 5vh;
-  padding: 2rem;
+  z-index: 1000;
+  position: relative;
 }
 
-#store-name{
-  font-size: 2.8rem;
-  max-width: 500px;
-  background-color: none;
-}
-
-#categories{
-  float: right;
+#main {
   display: flex;
   align-items: center;
-  justify-content: left;
-  max-width: 50%;
-  margin-top: 10px;
-}
-
-.cat{
-  text-align: center;
-  margin-left: 30px;
-  font-weight: bold;
-}
- */
-
-
- #main {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Ensures store name is on the left */
-  position: relative;
-  width: 100vw;
-  height: 5vh;
-  padding: 2rem;
-/*   overflow: hidden; */
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.5rem 2rem;
   z-index: 1000;
 }
 
 #store-name {
   font-size: 2.8rem;
   max-width: 500px;
-  white-space: nowrap; /* Prevents breaking into multiple lines */
+  white-space: nowrap;
   cursor: pointer;
 }
 
-#categories-wrapper{
-  margin-right: 100px;
+/* Categories bar - new section */
+#categories-bar {
+  width: 100%;
+  padding: 0.5rem 2rem;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  z-index: 999;
+}
+
+#categories-wrapper {
   display: flex;
-  align-items: flex-end;
-  padding-bottom: 20px;
-  width: 30%;
+  justify-content: center;
+  width: 100%;
+  position: relative;
 }
 
 #categories {
-  /* margin-right: 50px; */
   display: flex;
-  flex-direction: row-reverse; /* Makes the items align right & grow leftward */
-  align-items: flex-end;
-  justify-content: flex-end; /* Ensures right alignment */
-  height: 100px;
-  width: auto; /* Expands as needed */
-  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  max-width: 80%;
   z-index: 1000;
 }
 
 .cat-wrapper {
-  position: relative; /* Ensures dropdown is positioned relative to the parent category */
+  position: relative;
   display: inline-block;
+  margin: 0 20px;
 }
 
 .cat {
-  margin-right: 100px; /* Moves elements leftward instead of rightward */
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bold;
   white-space: nowrap;
-  padding: 5px;
+  padding: 5px 10px;
   border-radius: 10px;
 }
 
-.cat:hover{
+.cat:hover {
   cursor: pointer;
 }
 
 .dropdown {
-  display: none; /* Initially hidden */
+  display: none;
   position: absolute;
   top: 110%;
-  left: -20px;
-  background-color: grey; /* FIX THIS */
+  left: 0;
+  background-color: grey;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   min-width: 125px;
@@ -115,9 +92,7 @@
   display: block;
 }
 
-
-
-#cart-btn-wrapper{
+#cart-btn-wrapper {
   position: relative;
   height: 100%;
   display: flex;
@@ -125,7 +100,7 @@
   justify-content: center;
 }
 
-#num-item-indicator{
+#num-item-indicator {
   position: absolute;
   height: 20px;
   width: 20px;
@@ -137,24 +112,24 @@
   border-radius: 50%;
 }
 
-#cart-btn{
+#cart-btn {
   height: 50px;
   width: 50px;
   font-size: 2.5rem;
 }
 
-#cart-btn:hover{
+#cart-btn:hover {
   cursor: pointer;
 }
 
 /* MOBILE */
-
 #hamburger-menu {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   cursor: pointer;
-  width: 60%;
+  position: absolute;
+  right: 20px;
 }
 
 #menu-icon {
@@ -164,12 +139,13 @@
 
 #mobile-dropdown {
   position: absolute;
-  top: 85px;
-  right: 85px;
+  top: 50px;
+  right: 0;
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 10px;
   width: 300px;
+  z-index: 1001;
 }
 
 .mobile-cat {
@@ -181,40 +157,132 @@
   padding-left: 20px;
 }
 
+/* Mobile sidebar navigation */
+#hamburger-button {
+  display: none;
+}
+
+#mobile-sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px; /* Start off-screen from left instead of right */
+  width: 280px;
+  height: 100vh;
+  z-index: 1100;
+  transition: left 0.3s ease-in-out; /* Change transition property from right to left */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Shadow on right side instead of left */
+  overflow-y: auto;
+}
+
+#mobile-sidebar.open {
+  left: 0; /* Open position at left edge instead of right */
+}
+
+.sidebar-content {
+  padding: 20px;
+}
+
+.sidebar-header {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding-top: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.sidebar-categories {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-cat {
+  margin-bottom: 15px;
+}
+
+.mobile-category-item {
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.mobile-subcategories {
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
+.mobile-subcategory-item {
+  font-size: 1.1rem;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+#sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+}
+
 @media (max-width: 900px) {
   #categories {
     display: none;
   }
 
-  #categories-wrapper{
-    margin-right: 8%;
-    width: 20%;
+  #categories-bar {
+    display: none;
+    padding: 0.5rem;
   }
 
+  #hamburger-button {
+    display: block;
+    margin-right: 0;
+    margin-left: 15px; /* Add margin to the left instead of right */
+  }
+
+  #menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  #main {
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  #store-name {
+    font-size: 1.8rem;
+    max-width: 60%;
+  }
 }
 
 @media (min-width: 900px) {
   #hamburger-menu {
     display: none;
   }
-
-
 }
 
+@media (min-width: 901px) {
+  #mobile-sidebar, 
+  #sidebar-overlay {
+    display: none;
+  }
+}
 
-@media only screen and (max-width: 1200px) {
-
-  .cat {
-    margin-right: 50px; /* Moves elements leftward instead of rightward */
-    font-size: 1rem;
-
+@media only screen and (max-width: 600px) {
+  #store-name {
+    font-size: 1.5rem;
   }
 
-  #categories{
-    margin-bottom: 10px;
+  #main {
+    padding: 1rem;
   }
 
-  .dropdown{
-    left: -25px;
+  #cart-btn {
+    font-size: 1.8rem;
   }
 }
