@@ -238,6 +238,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 .dashboard-wrapper {
@@ -250,6 +252,7 @@
   box-sizing: border-box;
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
+  overflow-x: hidden;
 }
 
 /* Dashboard Card Styles */
@@ -735,13 +738,24 @@
     gap: 0.5rem;
   }
   
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    overflow-x: hidden;
+  }
+  
   .dashboard-container,
   .section {
     padding: var(--spacing-md);
+    max-width: 100%;
+    overflow-x: hidden;
   }
   
   .dashboard-card {
     padding: var(--spacing-md);
+    max-width: 100%;
   }
   
   .card-header h2,
@@ -759,6 +773,12 @@
   
   .form-row .form-group {
     width: 100%;
+  }
+  
+  .dashboard-wrapper {
+    max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
   }
 }
 
@@ -787,13 +807,25 @@
     width: 100%;
   }
   
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    overflow-x: hidden;
+  }
+  
   .dashboard-container,
   .section {
     padding: var(--spacing-sm);
+    max-width: 100%;
+    overflow-x: hidden;
   }
   
   .dashboard-card {
     padding: var(--spacing-sm);
+    max-width: 100%;
+    overflow-x: hidden;
   }
   
   .card-header h2,
@@ -803,5 +835,14 @@
   
   .table-container {
     max-height: calc(100vh - 150px);
+    max-width: 100%;
+  }
+  
+  .dashboard-wrapper {
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
   }
 } 

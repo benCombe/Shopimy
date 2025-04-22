@@ -71,7 +71,7 @@ namespace Server.Controllers
                             order.orderDate = reader.GetDateTime(reader.GetOrdinal("order_date"));
                             order.customerName = customerName;
                             order.totalAmount = reader.GetDecimal(reader.GetOrdinal("total_amount"));
-                            order.status = reader.GetString(reader.GetOrdinal("status"));
+                            order.status = reader.GetString(reader.GetOrdinal("status")) ?? string.Empty;
                             order.shippingAddress = !reader.IsDBNull(reader.GetOrdinal("shipping_address")) 
                                 ? reader.GetString(reader.GetOrdinal("shipping_address")) 
                                 : null;
@@ -115,7 +115,7 @@ namespace Server.Controllers
                                 
                                 // Handle potentially null imageUrl
                                 int imageUrlOrdinal = itemsReader.GetOrdinal("image_url");
-                                item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : null;
+                                item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : (string?)null;
                                     
                                 orderItems.Add(item);
                             }
@@ -146,7 +146,7 @@ namespace Server.Controllers
                 return StatusCode(500, "Database connection not configured");
             }
 
-            dynamic order = null;
+            dynamic? order = null;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -174,7 +174,7 @@ namespace Server.Controllers
                             order.orderDate = reader.GetDateTime(reader.GetOrdinal("order_date"));
                             order.customerName = customerName;
                             order.totalAmount = reader.GetDecimal(reader.GetOrdinal("total_amount"));
-                            order.status = reader.GetString(reader.GetOrdinal("status"));
+                            order.status = reader.GetString(reader.GetOrdinal("status")) ?? string.Empty;
                             order.shippingAddress = !reader.IsDBNull(reader.GetOrdinal("shipping_address")) 
                                 ? reader.GetString(reader.GetOrdinal("shipping_address")) 
                                 : null;
@@ -217,7 +217,7 @@ namespace Server.Controllers
                                     
                                     // Handle potentially null imageUrl
                                     int imageUrlOrdinal = itemsReader.GetOrdinal("image_url");
-                                    item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : null;
+                                    item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : (string?)null;
                                         
                                     items.Add(item);
                                 }

@@ -8,13 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- *(Add new features/changes here before the next release)*
+- **Analytics Dashboard**: Implemented real-time analytics for store owners with:
+  - Key Performance Indicators (KPIs) showing orders, revenue, visits, and conversion rates
+  - Sales trend charts with daily/weekly/monthly view options
+  - Store visit statistics with time period filtering
+  - Data caching to improve performance and reduce database load
+  - Fallback sample data for development environment when no real data exists
 
 ### Changed
 - *(Add changes to existing functionality here)*
 
 ### Fixed
-- *(Add bug fixes here)*
+- Fixed analytics API endpoints to properly handle database queries and error conditions
+- Resolved Chart.js rendering issues when data sets are empty
 
 ---
 
