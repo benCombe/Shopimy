@@ -33,7 +33,9 @@ namespace Server.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Server.Models.Order> Orders { get; set; }
         public DbSet<StoreVisit> StoreVisits { get; set; }
+        public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Quantity> Quantity{get; set;}
+
 
         // Ensure table names match conventions  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -99,6 +101,7 @@ namespace Server.Data
             modelBuilder.Entity<Server.Models.Order>().ToTable("Orders");
             modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
             modelBuilder.Entity<StoreVisit>().ToTable("StoreVisits");
+            modelBuilder.Entity<Promotion>().ToTable("Promotions");
         }
     }
 }

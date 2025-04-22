@@ -1,16 +1,62 @@
-<div class="logo-selector">
-    <h3>Choose Your Shop Logo</h3>
-    <input type="file" (change)="onFileSelected($event)" accept="image/*">
-    <div class="logo-preview" *ngIf="logoPreviewUrl; else currentLogo">
-      <h4>Preview:</h4>
-      <img [src]="logoPreviewUrl" alt="Logo Preview" />
-    </div>
-    <ng-template #currentLogo>
-      <div class="current-logo">
-        <h4>Current Logo:</h4>
-        <img [src]="storeDetails.LogoUrl" alt="Current Logo" />
-      </div>
-    </ng-template>
-    <button (click)="saveLogo()">Save Logo</button>
+<div class="logo-selector-container dashboard-card">
+  <div class="card-header">
+    <h2 class="section-title">Brand Logo</h2>
+    <p class="description">Complete your store's branding with a custom logo. Your logo will appear in your store header and promotional materials. Recommended size: 200x200px, PNG or JPG format.</p>
   </div>
+  
+  <div class="card-content">
+    <!-- Current Logo Display -->
+    <div class="current-logo-container">
+      <div class="logo-preview" *ngIf="currentLogoUrl">
+        <img [src]="currentLogoUrl" alt="Store Logo" class="logo-image" 
+             (error)="handleImageError($event)" onerror="this.style.display='none'">
+        <div *ngIf="logoLoadError" class="image-error-message">
+          Unable to load logo image. The file might be missing or inaccessible.
+        </div>
+        <button class="delete-button" (click)="deleteLogo()" [disabled]="isDeleting">
+          <span *ngIf="!isDeleting">Remove Logo</span>
+          <span *ngIf="isDeleting">Removing...</span>
+        </button>
+      </div>
+      <div class="empty-logo" *ngIf="!currentLogoUrl && !logoPreviewUrl">
+        <div class="placeholder-text">No logo uploaded</div>
+      </div>
+    </div>
+    
+    <!-- File Selection and Preview -->
+    <div class="logo-upload-container" *ngIf="!logoPreviewUrl">
+      <label for="logo-upload" class="file-input-label standard-button">
+        Select Logo Image
+      </label>
+      <input 
+        type="file" 
+        id="logo-upload" 
+        class="file-input" 
+        accept="image/png, image/jpeg, image/gif"
+        (change)="onFileSelected($event)" 
+      >
+    </div>
+    
+    <!-- Logo Preview Before Upload -->
+    <div class="logo-preview-container" *ngIf="logoPreviewUrl">
+      <h4>Preview</h4>
+      <div class="preview-image-container">
+        <img [src]="logoPreviewUrl" alt="Logo Preview" class="preview-image">
+      </div>
+      <div class="action-buttons">
+        <button class="cancel-button" (click)="cancelSelection()">Cancel</button>
+        <button class="upload-button standard-button" (click)="uploadLogo()" [disabled]="isUploading">
+          <span *ngIf="!isUploading">Upload Logo</span>
+          <span *ngIf="isUploading">Uploading...</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Status Messages -->
+    <div class="status-container">
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+    </div>
+  </div>
+</div>
   

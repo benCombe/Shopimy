@@ -1,46 +1,48 @@
-<div class="item-card" *ngIf="item">
+<div class="item-card" *ngIf="item" tabindex="0">
   <!-- Image Section -->
   <div class="item-image" *ngIf="item.blob; else defaultImage">
     <img [src]="item.blob" [alt]="item.name" />
   </div>
   <ng-template #defaultImage>
-    <div class="item-image-placeholder">
-      <img src="assets/images/default.png" alt="Placeholder Image" />
+    <div class="item-image-placeholder center">
+      <i class="fa-regular fa-image"></i>
     </div>
   </ng-template>
 
   <!-- Details Section -->
   <div class="item-details">
     <h3 class="item-name">{{ item.name ? item.name : "MISSING NAME"}}</h3>
+    
+    <!-- Price display with sale indicator -->
     <div class="item-price">
-      <ng-container *ngIf="item.salePrice < item.price; else notOnSale">
-        <span class="sale-price">${{ item.salePrice }}</span>
-        <span class="original-price strikethrough">${{ item.price }}</span>
+      <ng-container *ngIf="item.salePrice && item.salePrice < item.price; else notOnSale">
+        <span class="sale-price">{{ item.salePrice | currency }}</span>
+        <span class="original-price strikethrough">{{ item.price | currency }}</span>
       </ng-container>
       <ng-template #notOnSale>
-        ${{ item.price }}
+        {{ item.price | currency }}
       </ng-template>
     </div>
-    <!-- <p class="item-description">{{ item.Description }}</p> -->
-    <p class="item-info">
-      <strong>In Stock:</strong> {{ item.quantity }}<br>
-      <strong>Available:</strong> {{ item.availFrom | date:'shortDate' }} - {{ item.availTo | date:'shortDate' }}<br>
-     <!--  <strong>Rating:</strong> {{ item.CurrentRating }} / 5 -->
+    
+    <!-- Item information -->
+    <p class="item-info" *ngIf="item.quantity !== null && item.quantity !== undefined">
+      <strong>In Stock:</strong> {{ item.quantity }}
     </p>
+    
+    <!-- Add to cart controls -->
     <div class="item-actions center">
       <ng-container *ngIf="getQuantity(item) === 0; else quantityControls">
-        <button class="btn add-to-basket" (click)="increaseQuantity(item)">Add to Cart</button>
+        <button class="add-to-basket standard-button primary small" (click)="increaseQuantity(item)">Add to Cart</button>
       </ng-container>
 
       <ng-template #quantityControls>
         <div class="quantity-controls">
-          <button (click)="decreaseQuantity(item)">−</button>
-          <span class="quantity">{{ getQuantity(item) }}</span>
-          <button (click)="increaseQuantity(item)">+</button>
+          <button class="standard-button small" (click)="decreaseQuantity(item)" aria-label="Decrease quantity">−</button>
+          <span class="quantity" aria-live="polite">{{ getQuantity(item) }}</span>
+          <button class="standard-button small" (click)="increaseQuantity(item)" aria-label="Increase quantity">+</button>
         </div>
       </ng-template>
     </div>
-
   </div>
   <!-- <a [routerLink]="['/items', item.listId]" class="details-link">View Details</a> -->
 </div>

@@ -1,4 +1,4 @@
-<div id="container">
+<div class="container">
 <!--   <app-store-nav></app-store-nav> -->
   <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3">
     <div class="checkout-container theme2" [style.background-color]="storeDetails?.theme_2">
@@ -16,52 +16,59 @@
         <h2>Shipping Details</h2>
         <form [formGroup]="shippingForm">
           <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">First Name:</label>
-            <input type="text" formControlName="firstName">
+            <label for="firstName" class="fc" [style.color]="storeDetails?.fontColor">First Name:</label>
+            <input type="text" id="firstName" formControlName="firstName" placeholder="Enter your first name">
           </div>
 
           <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Last Name:</label>
-            <input type="text" formControlName="lastName">
+            <label for="lastName" class="fc" [style.color]="storeDetails?.fontColor">Last Name:</label>
+            <input type="text" id="lastName" formControlName="lastName" placeholder="Enter your last name">
           </div>
 
           <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Address:</label>
-            <input type="text" formControlName="address">
+            <label for="address" class="fc" [style.color]="storeDetails?.fontColor">Address:</label>
+            <input type="text" id="address" formControlName="address" placeholder="Enter your address">
           </div>
 
           <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">City:</label>
-            <input type="text" formControlName="city">
+            <label for="city" class="fc" [style.color]="storeDetails?.fontColor">City:</label>
+            <input type="text" id="city" formControlName="city" placeholder="Enter your city">
           </div>
 
           <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Province/State:</label>
-            <input type="text" formControlName="province">
+            <label for="province" class="fc" [style.color]="storeDetails?.fontColor">Province/State:</label>
+            <input type="text" id="province" formControlName="province" placeholder="Enter your province or state">
           </div>
 
           <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Country:</label>
-            <input type="text" formControlName="country">
+            <label for="country" class="fc" [style.color]="storeDetails?.fontColor">Country:</label>
+            <input type="text" id="country" formControlName="country" placeholder="Enter your country">
           </div>
 
           <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Zip/Postal Code:</label>
-            <input type="text" formControlName="postalCode">
+            <label for="postalCode" class="fc" [style.color]="storeDetails?.fontColor">Zip/Postal Code:</label>
+            <input type="text" id="postalCode" formControlName="postalCode" placeholder="Enter your postal code">
           </div>
 
           <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Email:</label>
-            <input type="email" formControlName="email">
+            <label for="email" class="fc" [style.color]="storeDetails?.fontColor">Email:</label>
+            <input type="email" id="email" formControlName="email" placeholder="Enter your email">
           </div>
 
           <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Phone:</label>
-            <input type="text" formControlName="phone">
+            <label for="phone" class="fc" [style.color]="storeDetails?.fontColor">Phone:</label>
+            <input type="text" id="phone" formControlName="phone" placeholder="Enter your phone number">
           </div>
         </form>
         <!-- Update button to call proceedToPayment -->
-        <button (click)="proceedToPayment()" [disabled]="!shippingForm.valid">Proceed To Payment</button>
+        <button 
+          class="standard-button"
+          [style.background-color]="storeDetails?.theme_1"
+          [style.color]="storeDetails?.fontColor"
+          (click)="proceedToPayment()" 
+          [disabled]="!shippingForm.valid">
+          Proceed To Payment
+        </button>
       </div>
 
       <!-- Remove Step 2: Payment Details -->

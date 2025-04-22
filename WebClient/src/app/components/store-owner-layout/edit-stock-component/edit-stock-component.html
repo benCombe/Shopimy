@@ -1,11 +1,25 @@
-<div class="edit-stock">
-    <h3>Edit Stock Level for Item: {{ currentItem?.Name }}</h3>
-    <form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
-      <div>
-        <label for="quantity">Stock Level:</label>
-        <input id="quantity" type="number" formControlName="quantity">
+<div class="edit-stock section">
+  <h3>Edit Stock Level for Item: {{ currentItem?.Name }}</h3>
+  <form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="quantity">Stock Level:</label>
+      <input 
+        id="quantity" 
+        type="number" 
+        formControlName="quantity" 
+        aria-required="true"
+        min="0" 
+        [class.error]="stockForm.get('quantity')?.invalid && stockForm.get('quantity')?.touched">
+      <div class="error-message" *ngIf="stockForm.get('quantity')?.invalid && stockForm.get('quantity')?.touched">
+        <span *ngIf="stockForm.get('quantity')?.errors?.['required']">Stock level is required.</span>
+        <span *ngIf="stockForm.get('quantity')?.errors?.['min']">Stock level cannot be negative.</span>
       </div>
-      <button type="submit" [disabled]="stockForm.invalid">Update Stock</button>
-    </form>
-  </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="standard-button primary" [disabled]="stockForm.invalid">
+        <i class="fa fa-check" aria-hidden="true"></i> Update Stock
+      </button>
+    </div>
+  </form>
+</div>
   

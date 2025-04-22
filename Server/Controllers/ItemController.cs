@@ -107,7 +107,7 @@ namespace Server.Controllers
                             listing.categoryId = reader.GetInt32(reader.GetOrdinal("category"));
                             listing.categoryName = !reader.IsDBNull(reader.GetOrdinal("category_name")) 
                                 ? reader.GetString(reader.GetOrdinal("category_name")) 
-                                : null;
+                                : (string?)null;
                             listing.minPrice = reader.GetDecimal(reader.GetOrdinal("min_price"));
                             listing.maxPrice = reader.GetDecimal(reader.GetOrdinal("max_price"));
                             listing.totalQuantity = reader.GetInt32(reader.GetOrdinal("total_quantity"));
@@ -141,7 +141,7 @@ namespace Server.Controllers
                 return StatusCode(500, "Database connection not configured");
             }
 
-            dynamic listing = null;
+            dynamic? listing = null;
             var variants = new List<dynamic>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -169,7 +169,7 @@ namespace Server.Controllers
                             listing.categoryId = reader.GetInt32(reader.GetOrdinal("category"));
                             listing.categoryName = !reader.IsDBNull(reader.GetOrdinal("category_name")) 
                                 ? reader.GetString(reader.GetOrdinal("category_name")) 
-                                : null;
+                                : (string?)null;
                             listing.storeId = reader.GetInt32(reader.GetOrdinal("store_id"));
                             listing.availFrom = !reader.IsDBNull(reader.GetOrdinal("availFrom")) 
                                 ? (DateTime?)reader.GetDateTime(reader.GetOrdinal("availFrom")) 
@@ -792,10 +792,10 @@ namespace Server.Controllers
         public int CategoryId { get; set; }
         public DateTime? AvailFrom { get; set; }
         public DateTime? AvailTo { get; set; }
-        public List<ProductVariantRequest> Variants { get; set; }
-        public List<int> DeletedVariantIds { get; set; }
-        //public required List<ProductVariantRequest> Variants { get; set; }
-        //public required List<int> DeletedVariantIds { get; set; }
+
+        public required List<ProductVariantRequest> Variants { get; set; }
+        public required List<int> DeletedVariantIds { get; set; }
+
     }
 
     public class ProductVariantRequest

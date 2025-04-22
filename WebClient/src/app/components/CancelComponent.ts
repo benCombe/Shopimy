@@ -6,86 +6,103 @@ import { CommonModule } from '@angular/common';
   selector: 'app-cancel',
   template: `
     <div class="cancel-container">
+      <div class="icon-wrapper">
+        <i class="fa-solid fa-circle-xmark"></i>
+      </div>
       <h2>Payment Cancelled or Failed</h2>
       <p>Unfortunately, your payment could not be completed or was cancelled.</p>
 
-      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
       <p>You have not been charged.</p>
 
       <p>What would you like to do next?</p>
       <div class="actions">
-          <button (click)="returnToCart()" class="standard-button secondary-button">Return to Cart</button>
+          <button (click)="returnToCart()" class="standard-button secondary">Return to Cart</button>
           <button (click)="tryAgain()" class="standard-button">Try Checkout Again</button>
-          <a routerLink="/contact-support" class="support-link">Contact Support</a>
       </div>
+      <a routerLink="/contact-support" class="support-link">Contact Support</a>
     </div>
   `,
   styles: [`
     .cancel-container {
       max-width: 600px;
       margin: 40px auto;
-      padding: 30px;
-      border: 1px solid var(--border-color, #ddd);
-      border-radius: 8px;
+      padding: var(--spacing-xl);
+      border: 1px solid var(--border-color-light);
+      border-radius: var(--border-radius);
       text-align: center;
-      background-color: var(--background-color, #fff);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      background-color: var(--third-color);
+      box-shadow: var(--shadow-md);
+      font-family: var(--main-font-fam);
     }
+    
+    .icon-wrapper {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto var(--spacing-lg);
+      background-color: var(--color-error-light);
+      border-radius: var(--border-radius-round);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .icon-wrapper i {
+      font-size: 40px;
+      color: var(--color-error);
+    }
+    
     h2 {
-      color: var(--error-color, #dc3545);
-      margin-bottom: 15px;
+      color: var(--main-color);
+      margin-bottom: var(--spacing-md);
+      font-size: 1.8rem;
+      font-weight: 600;
     }
+    
     p {
-      color: var(--text-color-secondary, #555);
+      color: var(--main-color);
       line-height: 1.6;
-      margin-bottom: 10px;
+      margin-bottom: var(--spacing-sm);
+      font-size: 1.1rem;
     }
+    
     .error-message {
-        color: var(--error-color, #dc3545);
-        font-weight: bold;
-        margin-top: 15px;
-        margin-bottom: 15px;
-        padding: 10px;
-        border: 1px solid var(--error-color, #dc3545);
-        border-radius: 4px;
-        background-color: var(--error-background-color, #f8d7da);
+      color: var(--color-error);
+      font-weight: 600;
+      margin: var(--spacing-md) 0;
+      padding: var(--spacing-sm);
+      border: 1px solid var(--color-error);
+      border-radius: var(--border-radius);
+      background-color: var(--color-error-light);
     }
+    
     .actions {
-      margin-top: 30px;
+      margin-top: var(--spacing-lg);
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: var(--spacing-md);
       align-items: center;
     }
-    .standard-button, .support-link {
-        padding: 10px 20px;
-        min-width: 150px;
-        text-align: center;
-    }
-    .secondary-button {
-        background-color: var(--button-secondary-bg, #6c757d);
-        color: var(--button-secondary-text, #fff);
-        border-color: var(--button-secondary-border, #6c757d);
-    }
-    .secondary-button:hover {
-        background-color: var(--button-secondary-hover-bg, #5a6268);
-        border-color: var(--button-secondary-hover-border, #545b62);
-    }
+    
     .support-link {
       display: inline-block;
-      color: var(--link-color, #007bff);
+      color: var(--second-color);
       text-decoration: underline;
-      margin-top: 10px;
+      margin-top: var(--spacing-md);
+      font-size: 1rem;
+    }
+
+    .support-link:hover {
+      color: var(--main-color);
     }
 
     @media (min-width: 576px) {
-        .actions {
-            flex-direction: row;
-            justify-content: center;
-        }
+      .actions {
+        flex-direction: row;
+        justify-content: center;
+      }
     }
-
   `],
   standalone: true,
   imports: [CommonModule, RouterLink]
@@ -103,9 +120,6 @@ export class CancelComponent implements OnInit {
       const errorCode = params['error_code'];
       if (errorCode) {
           this.errorMessage = `There was an issue processing your payment (Code: ${this.mapErrorCode(errorCode)}). Please try again or contact support.`;
-      } else {
-          // Default cancellation message if no specific error found in params
-          // Optional: could add a generic "If you encountered an issue..." message here too
       }
     });
   }
@@ -113,7 +127,6 @@ export class CancelComponent implements OnInit {
   mapErrorCode(code: string): string {
       switch(code) {
           case 'payment_intent_authentication_failure': return 'AuthFailed';
-          // Add other known Stripe error codes if necessary
           default: return 'General';
       }
   }

@@ -1,4 +1,4 @@
-import { NgFor, NgIf, NgStyle } from '@angular/common';
+import { CommonModule, NgFor, NgIf, NgStyle } from '@angular/common';
 import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { ThemeService } from '../../../services/theme.service';
@@ -12,6 +12,8 @@ import { CheckoutComponent } from "../checkout/checkout.component";
 import { StoreNavService } from '../../../services/store-nav.service';
 import { CategoryPageComponent } from '../category-page/category-page.component';
 import { ItemCardComponent } from "../../item-card/item-card.component";
+import { ItemPageComponent } from "../item-page/item-page.component";
+import { ItemDetailComponent } from "../../item-detail/item-detail.component";
 
 // Using a more flexible type that allows category names while maintaining type safety for known values
 type ViewType = 'store-page' | 'cart' | 'checkout' | string;
@@ -19,7 +21,7 @@ type ViewType = 'store-page' | 'cart' | 'checkout' | string;
 @Component({
   selector: 'app-store-page',
   standalone: true,
-  imports: [NgFor, NgIf, NgStyle, StoreNavComponent, ShoppingCartComponent, CheckoutComponent, CategoryPageComponent, ItemCardComponent],
+  imports: [CommonModule, StoreNavComponent, ShoppingCartComponent, CheckoutComponent, CategoryPageComponent, ItemCardComponent, ItemDetailComponent],
   templateUrl: './store-page.component.html',
   styleUrl: './store-page.component.css'
 })
@@ -29,6 +31,9 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   storeData: StoreDetails | null = null;
   currentUrl: string = "";
   currentView: ViewType = "store-page";
+  currentItemView: number = 0;
+
+  loadingStore: boolean = false;
 
   itemIds: number[] = [];
   displayCount: number = 9;
@@ -37,13 +42,13 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   initialLoad: boolean = true;
 
   currentBannerUrl: string = '';
-  bannerImages: string[] = [
+/*   bannerImages: string[] = [
     'https://picsum.photos/1200/300?random=1',
   'https://picsum.photos/1200/300?random=2',
   'https://picsum.photos/1200/300?random=3'
   ];
   private bannerIndex: number = 0;
-  private bannerIntervalId: any;
+  private bannerIntervalId: any; */
 
   constructor(
     private route:ActivatedRoute,
@@ -68,6 +73,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   }
 
   ngOnInit(): void {
+    this.loadingStore = true;
     this.checkScreenSize();
     const fullUrl = this.router.url;
     const urlext = fullUrl.split("/");
@@ -75,7 +81,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
 
     if (urlext.length > 2){
       const view = urlext[2];
-      if (view === 'cart' || view === 'checkout') {
+      if (view === 'cart' || view === 'checkout' || view ==='item') {
         console.log("Navigating to " + view);
         this.changeView(view); // Update the view based on URL (cart or checkout)
       }
@@ -91,13 +97,13 @@ export class StorePageComponent implements AfterViewInit, OnInit{
             this.storeData = data;
             // DEBUG: What's in storeData?
             console.log('StoreData:', this.storeData);
-            if (this.storeData?.bannerURL) {
+           /*  if (this.storeData?.bannerURL) {
               this.bannerImages.unshift(this.storeData.bannerURL);
             }
-        
-            this.startBannerRotation();
+ */
+           // this.startBannerRotation();
             this.storeNavService.initialize();
-            
+
             // Apply theme from store data
             console.log("Applying store theme:", data.theme_1, data.theme_2, data.theme_3);
             this.applyStoreTheme(data);
@@ -107,7 +113,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
               this.currentUrl = u;
               if (!this.initialLoad)
                 this.currentView = this.extractViewFromUrl(u);
-              console.log("CURRENT VIEW: "+this.currentView)
+              console.log("CURRENT VIEW: " + this.currentView);
             });
 
             this.fetchItemIds(this.storeData.id);
@@ -118,23 +124,23 @@ export class StorePageComponent implements AfterViewInit, OnInit{
       }
     });
 
-
+    this.loadingStore = false;
     this.initialLoad = false;
     this.loadingService.setIsLoading(false);
   }
-  startBannerRotation(): void {
+/*   startBannerRotation(): void {
     if (this.bannerImages.length === 0) return;
-  
+
     this.currentBannerUrl = this.bannerImages[0];
     console.log('Initial banner:', this.currentBannerUrl); // ✅
-  
+
     this.bannerIntervalId = setInterval(() => {
       this.bannerIndex = (this.bannerIndex + 1) % this.bannerImages.length;
       this.currentBannerUrl = this.bannerImages[this.bannerIndex];
       console.log('Rotating banner to:', this.currentBannerUrl); // ✅
     }, 3000);
   }
-
+ */
   ngAfterViewInit(): void {
     // Apply theme on after view init as well to ensure components have loaded
     if (this.storeData) {
@@ -146,7 +152,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   applyStoreTheme(storeData: StoreDetails): void {
     // Update theme service with store details
     if (!storeData) return;
-    
+
     // Apply theme to root elements with CSS classes
     this.themeService.setThemeOne('theme1');
     this.themeService.setThemeTwo('theme2');
@@ -154,7 +160,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
     this.themeService.setFontColor('fc');
     this.themeService.setButtonHoverColor('hover');
     this.themeService.setFontFamily('body');
-    
+
     // Also apply theme variables to :root for global CSS access
     const rootStyle = document.documentElement.style;
     rootStyle.setProperty('--main-color', storeData.theme_1);
@@ -168,6 +174,13 @@ export class StorePageComponent implements AfterViewInit, OnInit{
     this.currentView = v as ViewType;
     this.storeNavService.changeView(v);
   }
+
+  goToItemDetails(itemId: number): void {
+    const storeUrl = this.storeData?.url || '';
+    this.router.navigate([`${storeUrl}/item`, itemId]);
+    //this.storeNavService.changeView('item');
+  }
+
 
   extractViewFromUrl(url: string): ViewType {
     const segments = url.split('/'); // Split URL by "/"
@@ -205,15 +218,21 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   isStorePageView(): boolean {
     return this.currentView === 'store-page';
   }
-  
+
   isCartView(): boolean {
     return this.currentView === 'cart';
   }
-  
+
   isCheckoutView(): boolean {
     return this.currentView === 'checkout';
   }
-  
+
+  isItemView(): boolean {
+    var result: boolean = this.currentView.split("/")[0] === 'item';
+    //console.log(result + " " + this.currentView);
+    return result;
+  }
+
   isCategoryView(categoryName: string): boolean {
     return this.currentView === categoryName;
   }

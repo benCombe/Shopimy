@@ -17,7 +17,7 @@ export interface WeatherForecast{
 })
 
 export class WeatherExampleService {
-  private apiUrl = `${environment.apiUrl}/weatherforecast`;
+  private apiUrl = `${environment.apiUrl}/api/weatherforecast`;
 
   private weatherSubject = new BehaviorSubject<WeatherForecast[]>([]);
   public weather$: Observable<WeatherForecast[]> = this.weatherSubject.asObservable(); //this is what components subscribe to
