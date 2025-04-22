@@ -10,10 +10,14 @@
         <button [class.active]="viewMode === 'table'" (click)="viewMode = 'table'" class="standard-button small">Table View</button>
         <button [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'" class="standard-button small">Grid View</button>
       </div>
-      <button class="standard-button primary" (click)="createNewCategory()" aria-label="Create new category">Create New Category</button>
+      <button class="standard-button primary" (click)="openCreateModal()">
+        <i class="fa fa-plus" aria-hidden="true"></i> Create New Category
+      </button>
     </div>
 
-    <div *ngIf="error" class="error-message">{{ error }}</div>
+    <div *ngIf="error" class="error-message">
+      <i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+    </div>
 
     <div *ngIf="loading" class="loading-container">
       <div class="loading-spinner" aria-hidden="true"></div>
@@ -43,8 +47,12 @@
             <td>{{ category.name }}</td>
             <td>{{ getCategoryParentName(category.parentCategory) }}</td>
             <td class="actions-cell">
-              <button class="standard-button small" (click)="editCategory(category.categoryId)" aria-label="Edit category">Edit</button>
-              <button class="standard-button small" (click)="deleteCategory(category.categoryId)" aria-label="Delete category">Delete</button>
+              <button class="standard-button small" (click)="openEditModal(category)">
+                <i class="fa fa-pencil" aria-hidden="true"></i> Edit
+              </button>
+              <button class="standard-button small danger" (click)="deleteCategory(category.categoryId)">
+                <i class="fa fa-trash" aria-hidden="true"></i> Delete
+              </button>
             </td>
           </tr>
         </tbody>
@@ -52,16 +60,41 @@
     </div>
 
     <!-- Grid View -->
-    <div *ngIf="!loading && categories.length > 0 && viewMode === 'grid'" class="category-list">
+    <div *ngIf="!loading && categories.length > 0 && viewMode === 'grid'" class="category-grid">
       <div *ngFor="let category of categories" class="category-card">
         <h3>{{ category.name }}</h3>
         <p *ngIf="category.parentCategory">Parent: {{ getCategoryParentName(category.parentCategory) }}</p>
         <p *ngIf="!category.parentCategory">Top-level category</p>
         <div class="category-actions">
-          <button class="standard-button small" (click)="editCategory(category.categoryId)" aria-label="Edit category">Edit</button>
-          <button class="standard-button small" (click)="deleteCategory(category.categoryId)" aria-label="Delete category">Delete</button>
+          <button class="standard-button small" (click)="openEditModal(category)">
+            <i class="fa fa-pencil" aria-hidden="true"></i> Edit
+          </button>
+          <button class="standard-button small danger" (click)="deleteCategory(category.categoryId)">
+            <i class="fa fa-trash" aria-hidden="true"></i> Delete
+          </button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Category Form Modal -->
+<div *ngIf="isModalOpen" class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>{{ selectedCategory ? 'Edit Category' : 'Create New Category' }}</h2>
+      <button class="close-button" (click)="closeModal()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal-content">
+      <app-category-form
+        [isModal]="true"
+        [categoryToEdit]="selectedCategory"
+        [allCategories]="categories"
+        (formSubmitted)="handleFormSubmit($event)"
+        (canceled)="closeModal()">
+      </app-category-form>
     </div>
   </div>
 </div>

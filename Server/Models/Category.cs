@@ -18,10 +18,11 @@ namespace Shopimy.Server.Models
 
 
         // Lightweight models for create/update operations:
-       /*  public class CreateCategory
+        public class CreateCategory
         {
-            public string Name { get; set; }
+            public required string Name { get; set; }
             public int? ParentCategory { get; set; }
+            public int? StoreId { get; set; }
         }
         
 
@@ -30,7 +31,7 @@ namespace Shopimy.Server.Models
             public string Name { get; set; }
             public int? ParentCategory { get; set; }
         }
-         */
+        
 
         // Navigation properties can be added if using EF Core:
         //public virtual Category Parent { get; set; }

@@ -56,20 +56,18 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForms();
-    if (this.user && this.user.Id > 0) {
-      this.loadDeliveryAddresses(this.user.Id);
-      this.loadPaymentMethods(this.user.Id);
-    }
     this.loadStripe();
 
     this.userService.activeUser$.subscribe(u => {
       this.user = u;
       this.initializeForms();
-      this.loadDeliveryAddresses(this.user.Id);
-      this.loadPaymentMethods(this.user.Id);
+      
+      // Only load addresses and payment methods if we have a valid user (not guest)
+      if (this.user && this.user.Id > 0) {
+        this.loadDeliveryAddresses(this.user.Id);
+        this.loadPaymentMethods(this.user.Id);
+      }
       console.log('User updated:', this.user);
-//       if (u && (!this.user || u.Id !== this.user.Id)) {...
-
     });
   }
 
