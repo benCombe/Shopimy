@@ -2,11 +2,25 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { StoreTheme } from '../../../models/store-theme.model';
 import { StoreDetails } from '../../../models/store-details';
 import { CommonModule } from '@angular/common';
+import { HeroBannerComponent } from '../hero-banner/hero-banner.component';
+import { StoreHeaderComponent } from '../store-header/store-header.component';
+import { FeaturedProductsComponent } from '../featured-products/featured-products.component';
+import { TestimonialsComponent } from '../testimonials/testimonials.component';
+import { NewsletterComponent } from '../newsletter/newsletter.component';
+import { StoreFooterComponent } from '../store-footer/store-footer.component';
 
 @Component({
   selector: 'app-store-preview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    HeroBannerComponent,
+    StoreHeaderComponent,
+    FeaturedProductsComponent,
+    TestimonialsComponent,
+    NewsletterComponent,
+    StoreFooterComponent
+  ],
   templateUrl: './store-preview.component.html',
   styleUrls: ['./store-preview.component.css']
 })
@@ -14,9 +28,6 @@ export class StorePreviewComponent implements OnChanges {
   @Input() theme: StoreTheme | null = null;
   @Input() selectedComponents: string[] | null = null;
   @Input() storeData: StoreDetails | null = null;
-
-  // Display a limited number of sample items
-  displayCount: number = 3;
   
   // Flag to track preview readiness
   previewReady: boolean = false;
@@ -55,28 +66,23 @@ export class StorePreviewComponent implements OnChanges {
   }
 
   getThemeStyles(): { [key: string]: string } {
-    if (!this.theme) return {};
-
-    return {
-      '--preview-main-color': this.theme.mainColor || '#393727',
-      '--preview-second-color': this.theme.secondColor || '#D0933D',
-      '--preview-third-color': this.theme.thirdColor || '#D3CEBB',
-      '--preview-alt-color': this.theme.altColor || '#333333',
-      '--preview-font-family': this.theme.mainFontFam || 'sans-serif'
+    const styles: { [key: string]: string } = {
+      '--preview-main-color': '#393727',
+      '--preview-second-color': '#D0933D', 
+      '--preview-third-color': '#D3CEBB',
+      '--preview-alt-color': '#333333',
+      '--preview-font-family': 'sans-serif'
     };
-  }
 
-  // Helper method to get sample item IDs - These represent actual products
-  getSampleItemIds(): number[] {
-    // Return sample item IDs for preview purposes
-    return [1, 2, 3]; // Always use sample IDs for preview
-  }
-  
-  // Helper to check if preview is in a stable state
-  isPreviewStable(): boolean {
-    return this.previewReady && 
-           !!this.storeData?.name && 
-           !!this.storeData?.url;
+    if (this.theme) {
+      if (this.theme.mainColor) styles['--preview-main-color'] = this.theme.mainColor;
+      if (this.theme.secondColor) styles['--preview-second-color'] = this.theme.secondColor;
+      if (this.theme.thirdColor) styles['--preview-third-color'] = this.theme.thirdColor;
+      if (this.theme.altColor) styles['--preview-alt-color'] = this.theme.altColor;
+      if (this.theme.mainFontFam) styles['--preview-font-family'] = this.theme.mainFontFam;
+    }
+    
+    return styles;
   }
   
   // Get the actual URL where the store will be accessible

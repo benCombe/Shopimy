@@ -35,8 +35,10 @@
       <div id="num-item-indicator" class="cart-badge" *ngIf="numCartItems > 0" 
            [attr.aria-label]="numCartItems + ' items in cart'">{{numCartItems}}</div>
       <button id="cart-btn" class="cart-button" [ngStyle]="{'color': storeDetails?.fontColor}" 
-              (click)="navigateToCart()" aria-label="View shopping cart">
+              (click)="navigateToCart()" aria-label="View shopping cart" 
+              (keydown.enter)="navigateToCart()" (keydown.space)="navigateToCart()">
         <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+        <span class="sr-only">Shopping Cart</span>
       </button>
     </div>
     

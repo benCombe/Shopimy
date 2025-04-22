@@ -7,12 +7,12 @@ import { StoreDetails } from '../../../models/store-details';
 import { StoreNavService } from '../../../services/store-nav.service';
 import { ShoppingService } from '../../../services/shopping.service';
 import { BasicItem } from '../../../models/basic-item';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, CommonModule } from '@angular/common';
 import { OrderSummaryComponent } from "../order-summary/order-summary.component";
 
 @Component({
   selector: 'app-shopping-cart',
-  imports: [NgFor, NgIf, OrderSummaryComponent],
+  imports: [NgFor, NgIf, OrderSummaryComponent, CommonModule],
   templateUrl: './shopping-cart.component.html',
   styleUrl: './shopping-cart.component.css'
 })

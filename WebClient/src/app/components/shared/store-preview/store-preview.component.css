@@ -52,6 +52,7 @@
   gap: var(--spacing-md);
   padding-bottom: var(--spacing-md);
   box-sizing: border-box;
+  background-color: var(--preview-third-color, var(--third-color));
 }
 
 /* Banner Section */
@@ -497,17 +498,16 @@
   background-color: var(--border-color, #d1d5db);
 }
 
-/* Message for when no store data is available */
+/* No data message */
 .no-store-data {
+  padding: var(--spacing-lg);
+  text-align: center;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xl);
-  text-align: center;
-  color: var(--main-color);
-  opacity: 0.7;
-  height: 100%;
+  min-height: 200px;
+  color: var(--text-color);
+  font-style: italic;
 }
 
 /* Ensure proper display in landscape mode */
@@ -578,16 +578,20 @@
   .testimonial {
     padding: var(--spacing-xs);
   }
+  
+  .store-preview {
+    gap: var(--spacing-sm);
+  }
 }
 
 @media (max-width: 480px) {
   .store-preview-container {
-    min-height: 350px;
+    min-height: 300px;
     margin-bottom: var(--spacing-sm);
   }
   
   .store-preview-content {
-    min-height: 350px;
+    min-height: 300px;
   }
   
   .product-grid,
@@ -665,6 +669,11 @@
   .newsletter-form button {
     padding: var(--spacing-xs) var(--spacing-sm);
   }
+  
+  .no-store-data {
+    min-height: 150px;
+    padding: var(--spacing-md);
+  }
 }
 
 @media (max-width: 360px) {
@@ -686,11 +695,6 @@
   
   .banner-section {
     height: 80px;
-  }
-  
-  .no-store-data {
-    padding: var(--spacing-md);
-    font-size: 0.875rem;
   }
   
   .testimonial {
