@@ -1,11 +1,18 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
 
+// Define an interface for the navigation options
+interface NavOption {
+  label: string;
+  link: string;
+  icon?: string; // Optional icon property
+}
+
 @Component({
   selector: 'app-top-nav',
-  imports: [NgIf, NgFor, NgClass, RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './top-nav.component.html',
   styleUrl: './top-nav.component.css',
   standalone: true
@@ -18,14 +25,20 @@ export class TopNavComponent implements OnInit {
   isLoggedIn: boolean = false;
   isUserMenuOpen: boolean = false;
 
-  options = [
-    { label: 'Register', link: '/register' },
-    { label: 'Dashboard', link: '/dashboard' },
-    { label: 'Items', link: '/items' },
-    { label: 'Categories', link: '/categories' },
-    {label: 'Cart', link: '/cart'},
-    {label: 'Checkout', link: '/checkout'},
-    {label: 'Store', link: '/store'}
+  // Update options to use the NavOption interface and include icons
+  options: NavOption[] = [
+    // Example Resources (adjust as needed)
+    { label: 'Blog', link: '/blog', icon: 'fa-newspaper' },
+    { label: 'Documentation', link: '/docs', icon: 'fa-book' },
+    { label: 'Support', link: '/support', icon: 'fa-headset' },
+    // --- Other Example Links (adjust or remove as needed) ---
+    //{ label: 'Register', link: '/register', icon: 'fa-user-plus' },
+    //{ label: 'Dashboard', link: '/dashboard', icon: 'fa-tachometer-alt' },
+    //{ label: 'Items', link: '/items' }, // Example without icon
+    //{ label: 'Categories', link: '/categories' },
+    //{ label: 'Cart', link: '/cart', icon: 'fa-shopping-cart' },
+    //{ label: 'Checkout', link: '/checkout', icon: 'fa-credit-card' },
+    //{ label: 'Store', link: '/store' }
   ];
 
   constructor(private userService: UserService) {}
@@ -35,32 +48,35 @@ export class TopNavComponent implements OnInit {
     this.userService.loggedIn$.subscribe(
       loggedIn => {
         this.isLoggedIn = loggedIn;
+        if (!loggedIn) {
+          this.isUserMenuOpen = false;
+        }
       }
     );
   }
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
-    console.log(this.isDropdownOpen ? "Open" : "Close");
+    if (this.isDropdownOpen) {
+      this.isUserMenuOpen = false;
+    }
   }
 
   toggleUserMenu() {
     this.isUserMenuOpen = !this.isUserMenuOpen;
+    if (this.isUserMenuOpen) {
+      this.isDropdownOpen = false;
+    }
   }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
-    console.log("Mobile menu toggled:", this.isMobileMenuOpen ? "Open" : "Closed");
     
-    // If opening mobile menu, close other menus
     if (this.isMobileMenuOpen) {
       this.isDropdownOpen = false;
       this.isUserMenuOpen = false;
-      
-      // Prevent scrolling when mobile menu is open
       document.body.style.overflow = 'hidden';
     } else {
-      // Restore scrolling when mobile menu is closed
       document.body.style.overflow = '';
     }
   }
@@ -68,57 +84,50 @@ export class TopNavComponent implements OnInit {
   closeMobileMenu() {
     if (this.isMobileMenuOpen) {
       this.isMobileMenuOpen = false;
-      
-      // Restore scrolling when mobile menu is closed
       document.body.style.overflow = '';
-      console.log("Mobile menu closed");
     }
   }
 
   logout() {
     this.userService.logout();
-    this.closeMobileMenu(); // Close mobile menu if open
+    this.isUserMenuOpen = false;
+    this.closeMobileMenu();
   }
 
   @HostListener('window:resize', [])
   onResize() {
-    this.isMobile = window.innerWidth <= 768;
-    if (!this.isMobile) {
-      this.isMobileMenuOpen = false; // Close mobile menu when resizing to desktop
-      document.body.style.overflow = ''; // Restore scrolling
+    this.isMobile = window.innerWidth <= 715;
+    if (!this.isMobile && this.isMobileMenuOpen) {
+      this.closeMobileMenu();
     }
   }
 
   @HostListener('window:load', [])
   onLoad() {
-    this.isMobile = window.innerWidth <= 768;
+    this.isMobile = window.innerWidth <= 715;
   }
 
   closeDropdown() {
     this.isDropdownOpen = false;
   }
 
-  // Close dropdown if the user clicks outside of it
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: Event) {
     const clickedElement = event.target as HTMLElement;
 
-    // Close Resources dropdown
-    if (!clickedElement.closest('#dropdown')) {
-      this.isDropdownOpen = false;
+    if (!clickedElement.closest('.dropdown-header') && !clickedElement.closest('.dropdown-options')) {
+      const resourcesDropdown = document.querySelector('#nav-wrapper .dropdown:not(#user-menu)');
+      if (resourcesDropdown && !resourcesDropdown.contains(clickedElement)){
+        this.isDropdownOpen = false;
+      }
+      const userMenuDropdown = document.querySelector('#user-menu');
+      if (userMenuDropdown && !userMenuDropdown.contains(clickedElement)){
+        this.isUserMenuOpen = false;
+      }
     }
-
-    // Close User menu dropdown
-    if (!clickedElement.closest('#user-menu')) {
-      this.isUserMenuOpen = false;
-    }
-
-    // We don't need to handle mobile menu here since we have a dedicated overlay for it
   }
 
   navigateAndCloseMenu(link: string) {
-    console.log("Navigating to:", link);
     this.closeMobileMenu();
-    // The routerLink directive will handle the actual navigation
   }
 }

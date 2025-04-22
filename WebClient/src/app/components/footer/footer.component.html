@@ -1,26 +1,43 @@
-<div id="main">
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <div id="footer-logo">Shopimy</div>
-        <p>Your trusted e-commerce platform</p>
-      </div>
-      
-      <div class="footer-section">
-        <h3>Quick Links</h3>
-        <a routerLink="/shop" class="footer-link">Shop</a>
-        <a routerLink="/about" class="footer-link">About Us</a>
-        <a routerLink="/contact" class="footer-link">Contact Us</a>
-      </div>
+<footer class="footer-container" role="contentinfo">
+  <div class="footer-content">
+    <section class="footer-section">
+      <h3 class="footer-heading">About Shopimy</h3>
+      <p>Shopimy is an e-commerce platform that makes it easy to create and manage your online store.</p>
+    </section>
 
-      <div class="footer-section">
-        <h3>Account</h3>
-        <a routerLink="/login" class="footer-link">Login</a>
-        <a routerLink="/register" class="footer-link">Sign Up</a>
+    <section class="footer-section">
+      <h3 class="footer-heading">Quick Links</h3>
+      <nav aria-label="Footer navigation">
+        <ul class="footer-links">
+          <li><a routerLink="/" aria-label="Home page">Home</a></li>
+          <li><a routerLink="/about" aria-label="About us page">About Us</a></li>
+          <li><a routerLink="/contact" aria-label="Contact page">Contact</a></li>
+          <li><a routerLink="/privacy" aria-label="Privacy policy page">Privacy Policy</a></li>
+          <li><a routerLink="/terms" aria-label="Terms of service page">Terms of Service</a></li>
+        </ul>
+      </nav>
+    </section>
+
+    <section class="footer-section">
+      <h3 class="footer-heading">Connect With Us</h3>
+      <div class="social-icons">
+        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Visit our Facebook page">
+          <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Visit our Twitter page">
+          <i class="fa-brands fa-twitter" aria-hidden="true"></i>
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Visit our Instagram page">
+          <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+        </a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="Visit our LinkedIn page">
+          <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+        </a>
       </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2024 Shopimy. All rights reserved.</p>
-    </div>
-  </footer>
-</div>
+    </section>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; {{currentYear}} Shopimy. All rights reserved.</p>
+  </div>
+</footer>

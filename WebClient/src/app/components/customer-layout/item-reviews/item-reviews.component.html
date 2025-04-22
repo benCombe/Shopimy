@@ -1,40 +1,41 @@
-<div id="reviews">
-    <div id="reviewLeft">
-        <p id ="reviewLeftHeader">Ratings and Reviews</p>
-        <div id="bigStarDiv"> 
-            <img id="bigStar" src="Star 10.png" width="20px" height="20px">
-            <img id="bigStar" src="Star 10.png" width="20px" height="20px">
-            <img id="bigStar" src="Star 10.png" width="20px" height="20px">
-            <img id="bigStar" src="Star 10.png" width="20px" height="20px">
-            <img id="bigStar" src="Star 10.png" width="20px" height="20px">
+<div class="review-item-container" *ngIf="itemId">
+  <!-- Check if there are reviews to display -->
+  <div *ngIf="reviews && reviews.length > 0; else noReviewsYet">
+    <div *ngFor="let review of reviews" class="individual-review">
+      <article [attr.aria-label]="'Review rated ' + review.rating + ' stars'"> 
+        <div class="review-rating-display" [attr.aria-label]="review.rating + ' out of 5 stars'">
+          <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
+            <i class="fa-star" 
+               [ngClass]="{'fa-solid': review.rating >= i, 'fa-regular': review.rating < i}"
+               aria-hidden="true"></i>
+          </ng-container>
         </div>
-        <p id="reviewCount">5 reviews</p>
+        <p class="review-text">{{ review.comment || 'No comment provided.' }}</p>
+        <p class="review-meta">
+          <!-- Display user info if available, otherwise anonymous -->
+          By {{ review.userName || ('User ' + review.userId) || 'Anonymous' }} 
+          on {{ review.createdAt ? (review.createdAt | date:'shortDate') : 'Unknown date' }}
+        </p>
+      </article>
     </div>
-    <div id="reviewRight">
+  </div>
 
-        <p id = "reviewText">Super easy and well structured</p>
-        <div id="stars">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-        </div>
-        <div id="dateDiv">
-            <p id="date">Jan 16, 2025</p>
-        </div>
-        <div id="reviewDivider"></div>
+  <!-- Template shown if no reviews are available -->
+  <ng-template #noReviewsYet>
+    <p>There are currently no reviews for this item.</p>
+  </ng-template>
 
-        <p id = "reviewText">I like shirts!</p>
-        <div id="stars">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-           
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-        </div>
-        <div id="dateDiv">
-            <p id="date">feb 16, 2025</p>
-        </div>
-        <div id="reviewDivider"></div>
-        
-    </div>
+  <!-- Optional: Add loading state if reviews are fetched asynchronously within this component -->
+  <!-- 
+  <div *ngIf="isLoading">
+    <p>Loading reviews...</p>
+  </div> 
+  -->
+
+  <!-- Optional: Error handling display -->
+  <!-- 
+  <div *ngIf="errorLoading">
+    <p class="error-message">Could not load reviews at this time.</p>
+  </div> 
+  -->
 </div>

@@ -1,8 +1,11 @@
-<div class="popup-overlay center" *ngIf="isVisible">
+<div class="popup-overlay center" *ngIf="isVisible" role="dialog" aria-modal="true" aria-labelledby="popup-question">
   <div class="popup-box">
-    <p>{{ question }}</p>
+    <p id="popup-question">{{ question }}</p>
     <div class="popup-buttons">
-      <button *ngFor="let response of responses" (click)="selectResponse(response)">
+      <button 
+        *ngFor="let response of responses" 
+        (click)="selectResponse(response)"
+        [attr.aria-label]="response">
         {{ response }}
       </button>
     </div>

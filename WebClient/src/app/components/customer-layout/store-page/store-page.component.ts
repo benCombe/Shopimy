@@ -1,4 +1,4 @@
-import { NgFor, NgIf, NgStyle } from '@angular/common';
+import { CommonModule, NgFor, NgIf, NgStyle } from '@angular/common';
 import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { ThemeService } from '../../../services/theme.service';
@@ -19,7 +19,7 @@ type ViewType = 'store-page' | 'cart' | 'checkout' | string;
 @Component({
   selector: 'app-store-page',
   standalone: true,
-  imports: [NgFor, NgIf, NgStyle, StoreNavComponent, ShoppingCartComponent, CheckoutComponent, CategoryPageComponent, ItemCardComponent],
+  imports: [CommonModule, StoreNavComponent, ShoppingCartComponent, CheckoutComponent, CategoryPageComponent, ItemCardComponent],
   templateUrl: './store-page.component.html',
   styleUrl: './store-page.component.css'
 })

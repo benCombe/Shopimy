@@ -1,58 +1,92 @@
-<div id="container">
-  <app-store-nav  (ViewChanged)="changeView($event)"></app-store-nav>
-  <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="isStorePageView()" [ngStyle]="{ 'height': storePageHeight + 'vh' }">
+<main id="store-container" class="store-layout">
+  <app-store-nav (ViewChanged)="changeView($event)" aria-label="Store navigation"></app-store-nav>
+  
+  <div id="store-page" class="store-content" [ngClass]="{'theme-background': true}" 
+       [ngStyle]="{'background-color': storeData?.theme_3, 'height': storePageHeight + 'vh'}" 
+       *ngIf="isStorePageView()">
 
-      <div id="banner" class="theme2" [style.background-image]="'url(' + storeData?.bannerURL + ')'" *ngIf="storeData?.componentVisibility?.hero">
+    <!-- Banner Section -->
+    <section id="banner" class="store-banner" [ngStyle]="{'background-image': 'url(' + storeData?.bannerURL + ')'}" 
+             *ngIf="storeData?.componentVisibility?.hero" [attr.aria-label]="'Store banner'">
+      <div id="banner-text" class="banner-content theme-primary" [ngStyle]="{'background-color': storeData?.theme_1}">
+        <h1 class="banner-heading" [ngStyle]="{'color': storeData?.fontColor}">{{storeData?.bannerText}}</h1>
+      </div>
+    </section>
 
-<!--       <div id="banner" class="theme2" [style.background-image]="'url(' + currentBannerUrl + ')'"> -->
-
-        <div id="banner-text" class="center theme1 fc" [style.background-color]="storeData?.theme_1">
-          <span [style.color]="storeData?.fontColor">{{storeData?.bannerText}}</span>
+    <!-- Logo Section -->
+    <section id="logo-section" class="store-branding" *ngIf="storeData?.componentVisibility?.header" [attr.aria-label]="'Store logo'">
+      <div id="logo-container" class="theme-primary" [ngStyle]="{'background-color': storeData?.theme_1}">
+        <div id="logo-wrapper" class="logo-image-container">
+          <img id="logo" class="store-logo" [src]="storeData?.logoURL" alt="{{storeData?.name}} logo">
+        </div>
+        <div id="logo-text-wrapper" class="logo-text-container">
+          <h2 id="logo-text" class="store-name" [ngStyle]="{'color': storeData?.fontColor}">
+            {{storeData?.logoText || storeData?.name}}
+          </h2>
         </div>
       </div>
-      <div id="logo-section" class="center" *ngIf="storeData?.componentVisibility?.header">
-        <div id="logo-container" class="theme1 fc" [style.background-color]="storeData?.theme_1">
-          <div id="logo-wrapper">
-            <img id="logo" [src]="storeData?.logoURL" alt="store-logo">
-          </div>
-          <div id="logo-text-wrapper" class="center">
-            <h2 id="logo-text" [style.color]="storeData?.fontColor">{{storeData?.logoText}}</h2>
-          </div>
-        </div>
-      </div>
-      <div id="product-container" *ngIf="storeData?.componentVisibility?.featured">
-        <app-item-card *ngFor="let item of itemIds.slice(0, displayCount)" [itemId]="item"></app-item-card>
-      </div>
-      <div id="load-more-wrapper" class="center" *ngIf="displayCount < itemIds.length && storeData?.componentVisibility?.featured"><span id="load-more-btn" class="center" (click)="loadMore()">Load More</span></div>
+    </section>
 
-      <div id="testimonials-section" *ngIf="storeData?.componentVisibility?.testimonials"
-           [style.background-color]="storeData?.theme_3">
-        <h3>Testimonials</h3>
-        <div class="testimonial">
-          <p class="testimonial-text">"This store is amazing! Great products and service."</p>
-          <p class="testimonial-author">- Happy Customer</p>
-        </div>
-      </div>
+    <!-- Featured Products Section -->
+    <section id="product-container" class="featured-products" *ngIf="storeData?.componentVisibility?.featured" 
+             [attr.aria-label]="'Featured products'">
+      <h2 class="section-heading visually-hidden">Featured Products</h2>
+      <app-item-card *ngFor="let item of itemIds.slice(0, displayCount)" [itemId]="item"></app-item-card>
+    </section>
+    
+    <!-- Load More Button -->
+    <div id="load-more-wrapper" class="load-more-container" *ngIf="displayCount < itemIds.length && storeData?.componentVisibility?.featured">
+      <button id="load-more-btn" class="standard-button primary" (click)="loadMore()" aria-label="Load more products">
+        Load More
+      </button>
+    </div>
 
-      <div id="newsletter-section" *ngIf="storeData?.componentVisibility?.newsletter"
-           [style.background-color]="storeData?.theme_1">
-        <h3 [style.color]="storeData?.fontColor">Subscribe to Our Newsletter</h3>
-        <div class="newsletter-form">
-          <input type="email" placeholder="Enter your email">
-          <button [style.background-color]="storeData?.theme_2">Subscribe</button>
-        </div>
+    <!-- Testimonials Section -->
+    <section id="testimonials-section" class="testimonials theme-tertiary" 
+             *ngIf="storeData?.componentVisibility?.testimonials"
+             [ngStyle]="{'background-color': storeData?.theme_3}"
+             [attr.aria-label]="'Customer testimonials'">
+      <h2 class="section-heading">Testimonials</h2>
+      <div class="testimonial" role="region">
+        <blockquote class="testimonial-text">
+          <p>"This store is amazing! Great products and service."</p>
+          <cite class="testimonial-author">- Happy Customer</cite>
+        </blockquote>
       </div>
+    </section>
 
-      <div id="footer-section" *ngIf="storeData?.componentVisibility?.footer"
-           [style.background-color]="storeData?.theme_1">
-        <p [style.color]="storeData?.fontColor">
-          &copy; {{ storeData?.name || 'Store Name' }}. All rights reserved.
-        </p>
-      </div>
+    <!-- Newsletter Section -->
+    <section id="newsletter-section" class="newsletter theme-primary" 
+             *ngIf="storeData?.componentVisibility?.newsletter"
+             [ngStyle]="{'background-color': storeData?.theme_1}"
+             [attr.aria-label]="'Newsletter signup'">
+      <h2 class="section-heading" [ngStyle]="{'color': storeData?.fontColor}">Subscribe to Our Newsletter</h2>
+      <form class="newsletter-form" aria-labelledby="newsletter-heading">
+        <input type="email" class="form-input" placeholder="Enter your email" aria-label="Email for newsletter">
+        <button type="submit" class="standard-button secondary" 
+                [ngStyle]="{'background-color': storeData?.theme_2}" 
+                aria-label="Subscribe to newsletter">Subscribe</button>
+      </form>
+    </section>
+
+    <!-- Footer Section -->
+    <footer id="footer-section" class="store-footer theme-primary" 
+            *ngIf="storeData?.componentVisibility?.footer"
+            [ngStyle]="{'background-color': storeData?.theme_1}"
+            role="contentinfo">
+      <p class="copyright" [ngStyle]="{'color': storeData?.fontColor}">
+        &copy; {{ storeData?.name || 'Store Name' }}. All rights reserved.
+      </p>
+    </footer>
   </div>
+  
+  <!-- Other Views -->
   <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData"></app-shopping-cart>
   <app-checkout *ngIf="isCheckoutView()"></app-checkout>
   <ng-container *ngFor="let c of storeData?.categories">
-    <app-category-page *ngIf="isCategoryView(c.name) && storeData?.componentVisibility?.categories" [category]="c" [storeDetails]="storeData"></app-category-page>
+    <app-category-page *ngIf="isCategoryView(c.name) && storeData?.componentVisibility?.categories" 
+                      [category]="c" 
+                      [storeDetails]="storeData">
+    </app-category-page>
   </ng-container>
-</div>
+</main>

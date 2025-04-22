@@ -1,0 +1,7 @@
+/* Minimal styling needed for app component as it mainly serves as a container for the router outlet */
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  font-family: var(--main-font-fam);
+}

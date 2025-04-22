@@ -1,8 +1,8 @@
 .logo-selector-container {
   padding: var(--spacing-lg);
-  background-color: #fff;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
+  background-color: var(--third-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
   margin-bottom: var(--spacing-xl);
   font-family: var(--main-font-fam);
 }
@@ -11,7 +11,7 @@
   font-size: 1.75rem;
   color: var(--main-color);
   margin: 0 0 var(--spacing-xs) 0;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .description {
@@ -37,7 +37,7 @@
 .logo-image {
   max-width: 200px;
   max-height: 200px;
-  border: 1px solid var(--border-color-light);
+  border: 1px solid var(--border-color, #d1d5db);
   border-radius: var(--border-radius);
   padding: 5px;
   background-color: white;
@@ -46,9 +46,9 @@
 }
 
 .image-error-message {
-  color: var(--color-error, #721c24);
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
+  color: var(--color-error, #e02424);
+  background-color: var(--color-error-light, #fde8e8);
+  border: 1px solid var(--color-error, #e02424);
   border-radius: var(--border-radius);
   padding: var(--spacing-sm);
   margin-bottom: var(--spacing-sm);
@@ -63,8 +63,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--third-color);
-  border: 1px dashed var(--border-color);
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px dashed var(--border-color, #d1d5db);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
 }
@@ -89,14 +89,22 @@
   background-color: var(--main-color);
   color: white;
   padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--border-radius);
+  border-radius: 25px;
   cursor: pointer;
   font-weight: 500;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  box-shadow: var(--shadow-sm);
 }
 
 .file-input-label:hover {
   background-color: var(--second-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .logo-preview-container {
@@ -113,7 +121,7 @@
 .preview-image {
   max-width: 200px;
   max-height: 200px;
-  border: 1px solid var(--border-color-light);
+  border: 1px solid var(--border-color, #d1d5db);
   border-radius: var(--border-radius);
   padding: 5px;
   box-shadow: var(--shadow-sm);
@@ -121,63 +129,96 @@
 
 .action-buttons {
   display: flex;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-sm);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
 }
 
 .cancel-button {
-  background-color: #e7e7e7;
+  background-color: var(--third-color);
   color: var(--main-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-xs) var(--spacing-md);
+  border: 1px solid var(--main-color);
+  border-radius: 25px;
+  padding: 8px 16px;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  box-shadow: var(--shadow-sm);
 }
 
 .cancel-button:hover {
-  background-color: #d7d7d7;
+  background-color: var(--main-color);
+  color: var(--third-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .upload-button {
   background-color: var(--main-color);
   color: white;
   border: none;
-  border-radius: var(--border-radius);
-  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: 25px;
+  padding: 8px 16px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  box-shadow: var(--shadow-sm);
 }
 
 .upload-button:hover {
   background-color: var(--second-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .upload-button:disabled {
-  background-color: #95a5a6;
+  background-color: #ccc;
+  color: #666;
+  transform: none;
+  box-shadow: none;
   cursor: not-allowed;
 }
 
 .delete-button {
-  background-color: #f8d7da;
-  color: var(--color-error, #721c24);
-  border: 1px solid #f5c6cb;
-  border-radius: var(--border-radius);
-  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: var(--color-error-light, #fde8e8);
+  color: var(--color-error, #e02424);
+  border: 1px solid var(--color-error, #e02424);
+  border-radius: 25px;
+  padding: 8px 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  box-shadow: var(--shadow-sm);
 }
 
 .delete-button:hover {
-  background-color: #f1b5b8;
+  background-color: var(--color-error, #e02424);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .delete-button:disabled {
-  background-color: #e9e9e9;
-  color: #9a9a9a;
-  border-color: #d5d5d5;
+  background-color: #ccc;
+  color: #666;
+  transform: none;
+  box-shadow: none;
   cursor: not-allowed;
+  border-color: #ccc;
 }
 
 .status-container {
@@ -185,18 +226,18 @@
 }
 
 .error-message {
-  background-color: #f8d7da;
-  color: var(--color-error, #721c24);
-  border: 1px solid #f5c6cb;
+  background-color: var(--color-error-light, #fde8e8);
+  color: var(--color-error, #e02424);
+  border: 1px solid var(--color-error, #e02424);
   padding: var(--spacing-sm);
   border-radius: var(--border-radius);
   margin-top: var(--spacing-sm);
 }
 
 .success-message {
-  background-color: #d4edda;
-  color: var(--color-success, #155724);
-  border: 1px solid #c3e6cb;
+  background-color: var(--color-success-light, #e8f5e9);
+  color: var(--color-success, #059669);
+  border: 1px solid var(--color-success, #059669);
   padding: var(--spacing-sm);
   border-radius: var(--border-radius);
   margin-top: var(--spacing-sm);
@@ -206,5 +247,42 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .logo-selector-container {
+    padding: var(--spacing-md);
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+  }
+  
+  .logo-image, .preview-image, .empty-logo {
+    max-width: 180px;
+    max-height: 180px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .cancel-button, .upload-button, .delete-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.3rem;
+  }
+  
+  .logo-image, .preview-image, .empty-logo {
+    max-width: 150px;
+    max-height: 150px;
+  }
 }
   
