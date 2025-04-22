@@ -39,31 +39,34 @@ export class ItemFormComponent implements OnInit {
 
   ngOnInit(): void {
     // Load available categories for selection.
-    this.categoryService.getCategories().subscribe(cats => {
-      this.categories = cats;
-    });
-    // Subscribe to the active store observable so we know which store is currently active.
     this.storeService.activeStore$.subscribe(store => {
       this.activeStore = store;
+      
+      // Load categories using the store ID
+      if (store && store.id) {
+        this.categoryService.getCategories(store.id).subscribe(cats => {
+          this.categories = cats;
+        });
+      }
     });
   }
 
 
   onSubmit(): void {
-    if (this.itemForm.invalid) {
+    if (this.productForm.invalid) {
       return;
     }
     // Get the item data from the form.
-    const itemData = this.itemForm.value;
+    const itemData = this.productForm.value;
     // Append the active store ID (assumes StoreDetails has an 'id' property) to associate the item with the store.
     itemData.storeId = this.activeStore.id;
     // Create the item using the dedicated ItemService.
-    this.itemService.createItem(itemData).subscribe({
+    this.itemService.createProduct(itemData).subscribe({
       next: () => {
         // Success: redirect or show a success message.
         console.log('Item created successfully!');
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error creating item:', err);
       }
     });

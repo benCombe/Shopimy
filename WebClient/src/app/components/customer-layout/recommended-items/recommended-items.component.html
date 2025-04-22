@@ -1,43 +1,23 @@
-<div id="main" >
-   
-   <!-- <div id="arrowDivLeft">
-        <img id="arrow" src="arrow.svg" width="1vw" height="1vw">
-    </div>-->
-    <div id="item-card">
-        <img id="item-pic" src="" width="150px" height="152px">
-        <div id="textSide">
-            <p id="itemName">Joni Sweater</p>
-            <P id="itemDesc">Lorem ipsum dolor sit amet, </P>
-            <p id="price">$19.99</p>
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-
+<div class="recommended-items" aria-labelledby="recommended-items-heading">
+  <h2 id="recommended-items-heading" class="visually-hidden">Recommended Items</h2>
+  <button class="nav-arrow left" aria-label="Scroll left" (click)="scrollLeft()">
+    <img src="assets/icons/arrow-left.svg" alt="Left arrow">
+  </button>
+  <div #itemContainer class="recommended-items__container">
+    <div *ngFor="let item of recommendedItems" class="recommended-items__card">
+      <img [src]="item.imageUrl" alt="{{item.name}}" class="recommended-items__image">
+      <div class="recommended-items__details">
+        <p class="recommended-items__name">{{ item.name }}</p>
+        <p class="recommended-items__desc">{{ item.description }}</p>
+        <p class="recommended-items__price">{{ item.price | currency }}</p>
+        <div class="recommended-items__rating">
+          <img *ngFor="let _ of [].constructor(item.rating)" src="assets/icons/star-filled.svg" alt="Star" class="star-icon">
+          <img *ngFor="let _ of [].constructor(5 - item.rating)" src="assets/icons/star-outline.svg" alt="Star outline" class="star-icon">
         </div>
+      </div>
     </div>
-    <div id="item-card">
-        <img id="item-pic" src="" width="150px" height="152px">
-        <div id="textSide">
-            <p id="itemName">Joni Sweater</p>
-            <P id="itemDesc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas interdum diam vel vestibulum maximus.</P>
-            <p id="price">$19.99</p>
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-        </div>
-    </div>
-    <div id="item-card">
-        <img id="item-pic" src="" width="150px" height="152px">
-        <div id="textSide">
-            <p id="itemName">Joni Sweater</p>
-            <P id="itemDesc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas interdum diam vel vestibulum maximus.</P>
-            <p id="price">$19.99</p>
-            <img id="star" src="Star 10.png" width="20px" height="20px">
-        </div>
-    </div>
-    <!--<div id="arrowDivRight">
-        <img id="arrow" src="arrow.svg" width="1vw" height="1vw">
-    </div>-->
-
+  </div>
+  <button class="nav-arrow right" aria-label="Scroll right" (click)="scrollRight()">
+    <img src="assets/icons/arrow-right.svg" alt="Right arrow">
+  </button>
 </div>

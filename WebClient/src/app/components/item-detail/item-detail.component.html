@@ -1,18 +1,18 @@
-<div class="item-detail" *ngIf="item">
+<div class="item-detail" *ngIf="item" aria-labelledby="itemNameHeading">
     <!-- Main Info Section -->
     <div class="item-header">
       <div class="item-image">
         <img [src]="displayImageUrl" [alt]="item.name" />
       </div>
       <div class="item-info">
-        <h2 class="item-name">{{ item.name }}</h2>
+        <h2 id="itemNameHeading" class="item-name">{{ item.name }}</h2>
         <p class="item-price">
-          <ng-container *ngIf="item.salePrice < item.price; else notOnSale">
-            <span class="sale-price">\${{ item.salePrice }}</span>
-            <span class="original-price strikethrough">\${{ item.price }}</span>
+          <ng-container *ngIf="item.salePrice && item.salePrice < item.price; else notOnSale">
+            <span class="sale-price">{{ item.salePrice | currency }}</span>
+            <span class="original-price strikethrough">{{ item.price | currency }}</span>
           </ng-container>
           <ng-template #notOnSale>
-            \${{ item.price }}
+            {{ item.price | currency }}
           </ng-template>
         </p>
 
@@ -21,18 +21,22 @@
         </p>
    -->
         <!-- Example: Sizes & Yarn Info if you store them -->
-        <div class="item-sizes">
-          <strong>Sizes:</strong> XS (S) M (L) XL (2XL)
+        <!-- Removing sections referencing item.size and item.details as they don't exist on BasicItem -->
+        <!-- <div class="item-sizes" *ngIf="item.size">
+          <strong>Sizes:</strong> {{ item.size }}
         </div>
-        <div class="item-yarn">
-          <strong>Yarn - Aran Weight:</strong> 539 (609) ...
-        </div>
+        <div class="item-yarn" *ngIf="item.details"> 
+          <strong>Details:</strong> {{ item.details }}
+        </div> -->
 
         <div class="item-actions">
-          <button class="btn add-to-basket" (click)="addToBasket(item)">Add To Basket</button>
-          <button class="btn bookmark" (click)="bookmarkItem(item)">
-            <!-- Replace with an icon if you like -->
-            Bookmark
+          <!-- Using standard-button primary -->
+          <button class="standard-button primary" (click)="addToBasket(item)" [attr.aria-label]="'Add ' + item.name + ' to basket'">
+            <i class="fa-solid fa-shopping-cart" aria-hidden="true"></i> Add To Basket
+          </button>
+          <!-- Using standard-button secondary -->
+          <button class="standard-button secondary" (click)="bookmarkItem(item)" [attr.aria-label]="'Bookmark ' + item.name">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i> Bookmark
           </button>
         </div>
       </div>

@@ -186,6 +186,22 @@ CREATE TABLE StoreVisits (
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION
 );
 
+-- Promotions table for store discount codes
+CREATE TABLE Promotions (
+    PromotionId INT IDENTITY(1,1) PRIMARY KEY,
+    StoreId INT NOT NULL,
+    Code NVARCHAR(50) NOT NULL,
+    Description NVARCHAR(255) NULL,
+    DiscountType NVARCHAR(20) NOT NULL, -- 'Percentage', 'FixedAmount'
+    DiscountValue DECIMAL(10,2) NOT NULL,
+    StartDate DATETIME2 NOT NULL,
+    EndDate DATETIME2 NULL,
+    IsActive BIT NOT NULL DEFAULT 1,
+    UsageLimit INT NULL,
+    FOREIGN KEY (StoreId) REFERENCES Stores(store_id) ON DELETE CASCADE,
+    CONSTRAINT UQ_StorePromotion UNIQUE (StoreId, Code)
+);
+
 CREATE TRIGGER Quantity ON dbo.Items 
 AFTER INSERT, UPDATE
 AS 

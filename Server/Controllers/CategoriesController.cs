@@ -21,20 +21,52 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCategories()
+    public async Task<IActionResult> GetCategories([FromQuery] int? storeId = null)
     {
-        // retrieve the current store's id from the user claims or session
-        int storeId = GetCurrentStoreId();
-        var categories = await _categoryService.GetCategoriesForStoreAsync(storeId);
+        // Priority 1: Use the storeId from query parameter if provided
+        // Priority 2: Retrieve from claims if available
+        int effectiveStoreId = storeId ?? GetCurrentStoreId();
+        
+        // If we still don't have a valid storeId, return an error
+        if (effectiveStoreId <= 0)
+        {
+            return BadRequest(new { error = "Store ID is required but was not provided in the request or found in the user context." });
+        }
+        
+        var categories = await _categoryService.GetCategoriesForStoreAsync(effectiveStoreId);
         return Ok(categories);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] Category dto)
+    public async Task<IActionResult> CreateCategory([FromBody] Category.CreateCategory dto)
     {
-        int storeId = GetCurrentStoreId();
-        var createdCategory = await _categoryService.CreateCategoryAsync(storeId, dto);
-        return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.CategoryId }, createdCategory);
+        try
+        {
+            // Determine store ID from claims or use client-provided StoreId
+            int storeId = GetCurrentStoreId();
+            if (storeId <= 0 && dto.StoreId.HasValue && dto.StoreId.Value > 0)
+            {
+                storeId = dto.StoreId.Value;
+            }
+            
+            var category = new Category
+            {
+                Name = dto.Name,
+                ParentCategory = dto.ParentCategory,
+                StoreId = storeId
+            };
+            
+            var createdCategory = await _categoryService.CreateCategoryAsync(storeId, category);
+            return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.CategoryId }, createdCategory);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "An error occurred while creating the category." });
+        }
     }
 
     [HttpGet("{id}")]
@@ -137,13 +169,22 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCategory(int id)
+    public async Task<IActionResult> DeleteCategory(int id, [FromQuery] int? storeId = null)
     {
-        int storeId = GetCurrentStoreId();
-        var category = await _categoryService.GetCategoryByIdAsync(storeId, id);
+        // Priority 1: Use the storeId from query parameter if provided
+        // Priority 2: Retrieve from claims if available
+        int effectiveStoreId = storeId ?? GetCurrentStoreId();
+        
+        // If we still don't have a valid storeId, return an error
+        if (effectiveStoreId <= 0)
+        {
+            return BadRequest(new { error = "Store ID is required but was not provided in the request or found in the user context." });
+        }
+
+        var category = await _categoryService.GetCategoryByIdAsync(effectiveStoreId, id);
         if (category == null) return NotFound();
 
-        await _categoryService.DeleteCategoryAsync(storeId, id);
+        await _categoryService.DeleteCategoryAsync(effectiveStoreId, id);
         return Ok(category);
     }
 

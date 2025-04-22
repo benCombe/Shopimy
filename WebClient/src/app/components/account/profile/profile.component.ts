@@ -48,6 +48,10 @@ export class ProfileComponent implements OnInit {
   cardError: string | null = null;
   newPaymentIsDefault = false;
   
+  // Add a new property for purchase history loading state
+  isPurchaseHistoryLoading: boolean = false;
+  purchaseHistoryError: string | null = null;
+  
   constructor(
     private userService: UserService,
     private deliveryService: DeliveryService,
@@ -132,7 +136,7 @@ export class ProfileComponent implements OnInit {
       if (user.Id > 0) {
         this.loadDeliveryAddresses(user.Id);
         this.loadPaymentMethods();
-        this.loadPurchaseHistory(user.Id, this.currentPage);
+        this.loadPurchaseHistory(this.currentPage);
         this.loadWishLists(user.Id);
       }
     });
@@ -150,11 +154,20 @@ export class ProfileComponent implements OnInit {
     });
   }
   
-  loadPurchaseHistory(userId: number, page: number): void {
-    this.purchaseService.getPurchaseHistory(userId, page, this.itemsPerPage).subscribe(
+  loadPurchaseHistory(page: number): void {
+    this.isPurchaseHistoryLoading = true;
+    this.purchaseHistoryError = null;
+    
+    this.purchaseService.getPurchaseHistory(page, this.itemsPerPage).subscribe(
       (result: PurchaseHistoryResponse) => {
         this.purchaseHistory = result.purchases;
         this.totalPages = Math.ceil(result.total / this.itemsPerPage);
+        this.isPurchaseHistoryLoading = false;
+      },
+      (error) => {
+        console.error('Error loading purchase history:', error);
+        this.purchaseHistoryError = 'Failed to load purchase history. Please try again.';
+        this.isPurchaseHistoryLoading = false;
       }
     );
   }
@@ -329,13 +342,19 @@ export class ProfileComponent implements OnInit {
   setActiveTab(tab: string): void {
     this.activeTab = tab;
     
-    // Clean up any open forms when switching tabs
-    if (tab !== 'delivery') {
-      this.showAddDelivery = false;
+    // Reset any forms or states when changing tabs
+    if (this.editMode) {
+      this.cancelEdit();
     }
-    if (tab !== 'payment') {
-      this.unmountCardElement();
+    
+    // Specific tab initializations
+    if (tab === 'delivery') {
+      this.showAddDelivery = false;
+    } else if (tab === 'payments') {
       this.showAddPayment = false;
+      this.unmountCardElement();
+    } else if (tab === 'history') {
+      this.loadPurchaseHistory(this.currentPage);
     }
   }
 
@@ -438,14 +457,14 @@ export class ProfileComponent implements OnInit {
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.loadPurchaseHistory(this.user.Id, this.currentPage);
+      this.loadPurchaseHistory(this.currentPage);
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.loadPurchaseHistory(this.user.Id, this.currentPage);
+      this.loadPurchaseHistory(this.currentPage);
     }
   }
 

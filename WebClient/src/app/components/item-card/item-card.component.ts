@@ -5,6 +5,7 @@ import { Item } from '../../models/item';
 import { ItemService } from '../../services/item.service';
 import { BasicItem } from '../../models/basic-item';
 import { ShoppingService } from '../../services/shopping.service';
+import { StoreNavService } from '../../services/store-nav.service';
 
 @Component({
   selector: 'app-item-card',
@@ -20,7 +21,8 @@ export class ItemCardComponent implements OnInit {
   constructor(
     private itemService: ItemService,
     private cdr: ChangeDetectorRef,
-    private shoppingService: ShoppingService
+    private shoppingService: ShoppingService,
+    private storeNavService: StoreNavService
   ) {}
 
   ngOnInit(): void {
@@ -80,4 +82,6 @@ export class ItemCardComponent implements OnInit {
   getQuantity(item: BasicItem): number{
     return this.shoppingService.getQuantity(item);
   }
+
+
 }
