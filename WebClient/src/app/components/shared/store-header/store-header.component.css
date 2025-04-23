@@ -31,6 +31,7 @@
   box-shadow: var(--shadow-md);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: var(--header-bg-color, var(--main-color));
+  cursor: pointer;
 }
 
 .logo-container:hover {
@@ -38,11 +39,18 @@
   box-shadow: var(--shadow-lg);
 }
 
+.logo-container:focus-visible {
+  outline: 2px solid var(--second-color, #D0933D);
+  outline-offset: 2px;
+  transform: translateY(-2px);
+}
+
 .logo-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: var(--spacing-sm);
+  flex-shrink: 0;
 }
 
 .logo {
@@ -50,6 +58,11 @@
   height: 40px;
   object-fit: contain;
   border-radius: var(--border-radius-round);
+  transition: transform 0.2s ease;
+}
+
+.logo-container:hover .logo {
+  transform: scale(1.05);
 }
 
 .default-logo {
@@ -64,12 +77,19 @@
   font-weight: bold;
   box-shadow: var(--shadow-sm);
   color: var(--third-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.logo-container:hover .default-logo {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
 }
 
 .logo-text-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  flex: 1;
 }
 
 .logo-text {
@@ -79,13 +99,32 @@
   word-wrap: break-word;
   word-break: break-word;
   color: var(--header-text-color, var(--alt-color));
+  transition: color 0.2s ease;
+  max-width: 80%; /* Prevent extremely long text from overflowing */
+}
+
+.logo-container:hover .logo-text {
+  color: var(--third-color, #D3CEBB);
 }
 
 /* Responsive styles */
+@media (max-width: 768px) {
+  .logo-container {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    height: 80px;
+    justify-content: center;
+  }
+  
+  .logo-text-wrapper {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 480px) {
   .logo-container {
     min-width: 150px;
     padding: var(--spacing-xs);
+    height: 70px;
   }
   
   .logo, .default-logo {
@@ -97,9 +136,9 @@
     font-size: 0.875rem;
   }
 
-  /* Remove negative margin on small screens if needed */
+  /* Reduce negative margin on small screens */
   :host-context(app-hero-banner + app-store-header) .logo-section,
   :host-context(.hero-banner + *) .logo-section {
-    margin-top: -15px; /* Adjust overlap for smaller screens */
+    margin-top: -15px;
   }
 } 

@@ -17,14 +17,30 @@ export class StoreHeaderComponent {
   
   constructor(private router: Router) {}
   
+  /**
+   * Gets the text to display in the store logo
+   * Prioritizes logoText, falls back to store name, then default text
+   */
   getLogoText(): string {
     return this.storeData?.logoText || this.storeData?.name || 'Store Name';
   }
   
+  /**
+   * Navigates back to the home/main page of the store
+   * Uses the store URL if available
+   */
   navigateToHome(): void {
-    this.router.navigate(['/']);
+    if (this.storeData?.url) {
+      this.router.navigate([`/${this.storeData.url}`]);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
   
+  /**
+   * Generates the inline CSS style object for the header based on theme settings
+   * Prioritizes the theme input, falls back to storeData values, then default colors
+   */
   getThemeStyles(): { [key: string]: string } {
     // Set default values
     const styles: { [key: string]: string } = {

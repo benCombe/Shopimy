@@ -18,6 +18,18 @@
   width: 100%;
 }
 
+/* Accessibility: Visually hidden elements for screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
 /* Each component should take up to 95% width on larger screens */
 #store-page > * {
   width: 90%;
@@ -132,13 +144,20 @@
   padding: var(--spacing-md);
   border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   border-radius: var(--border-radius);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: white;
 }
 
 .product:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-md);
+}
+
+/* Focus state for keyboard navigation */
+.product:focus-visible {
+  outline: 2px solid var(--main-color, #393727);
+  outline-offset: 2px;
+  transform: translateY(-5px);
 }
 
 /* Load more button styling */
@@ -168,6 +187,12 @@
   color: white;
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+#load-more-btn:focus-visible {
+  outline: 2px solid var(--main-color, #393727);
+  outline-offset: 2px;
+  transform: translateY(-2px);
 }
 
 /* Testimonials section styling */
@@ -250,13 +275,14 @@
 }
 
 .newsletter-form button {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: none;
+  padding: var(--spacing-sm) var(--spacing-lg);
   background-color: var(--main-color);
-  color: var(--second-color);
-  font-weight: 600;
-  cursor: pointer;
+  color: var(--alt-color);
+  border: none;
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
   transition: all 0.3s ease;
 }
 
@@ -264,45 +290,110 @@
   background-color: var(--second-color);
   color: white;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
+}
+
+.newsletter-form button:focus-visible {
+  outline: 2px solid var(--main-color, #393727);
+  outline-offset: 2px;
 }
 
 /* Footer section styling */
 #footer-section {
-  width: 60%;
-  padding: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-lg);
   margin-top: auto;
-  width: 60%;
-  padding: var(--spacing-md);
-  margin-top: auto;
+  background-color: var(--main-color);
+  color: var(--alt-color);
   text-align: center;
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
 }
 
 #footer-section p {
+  margin: var(--spacing-sm) 0;
   font-size: 0.9rem;
-  margin: 0;
 }
 
-/* Responsive styles */
+/* Responsive Styles */
+@media only screen and (max-width: 1024px) {
+  #product-container {
+    grid-template-columns: repeat(2, 1fr);
+    width: 80%;
+  }
+  
+  #testimonials-section,
+  #newsletter-section {
+    width: 80%;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   #store-page {
-    gap: var(--spacing-sm, 0.5rem);
-    padding-bottom: var(--spacing-md, 1rem);
+    padding: 0 0 var(--spacing-lg);
   }
+  
   #store-page > * {
     width: 95%;
+  }
+
+  #banner-text {
+    max-width: 50%;
+    font-size: 1.75rem;
+  }
+  
+  #product-container {
+    padding: var(--spacing-sm);
+    width: 90%;
+  }
+  
+  .newsletter-form {
+    flex-direction: column;
+    width: 90%;
+  }
+  
+  .newsletter-form input {
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .newsletter-form button {
+    border-radius: var(--border-radius);
+    width: 100%;
   }
 }
 
 @media only screen and (max-width: 480px) {
   #store-page {
-    padding-bottom: var(--spacing-md, 1rem);
+    gap: var(--spacing-md);
   }
+  
   #store-page > * {
     width: 100%;
+  }
+  
+  #product-container {
+    grid-template-columns: 1fr;
+    width: 95%;
+    gap: var(--spacing-md);
+  }
+  
+  #banner-text {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%;
+    font-size: 1.5rem;
+  }
+
+  #testimonials-section,
+  #newsletter-section {
+    width: 95%;
+    padding: var(--spacing-md);
+  }
+  
+  #testimonials-section h3,
+  #newsletter-section h3 {
+    font-size: 1.5rem;
   }
 }
 
