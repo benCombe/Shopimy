@@ -106,6 +106,13 @@ export class StoreService {
         this.activeStoreSubject.next(store);
       }),
       catchError(error => {
+        if (error.status === 404) {
+          // Special handling for 404 - user doesn't have a store yet
+          console.log('User has no store yet, returning empty store details');
+          const emptyStore = new StoreDetails(0, '', '', '#393727', '#D0933D', '#D3CEBB', '#333333', 'sans-serif', '', '', '', '', [], DEFAULT_VISIBILITY);
+          this.activeStoreSubject.next(emptyStore);
+          return of(emptyStore);
+        }
         console.error('Error fetching current user store', error);
         return throwError(() => new Error('Failed to fetch current user store.'));
       })
@@ -370,5 +377,65 @@ export class StoreService {
         return of(false); // Assume URL is not available in case of error
       })
     );
+  }
+
+  /**
+   * Checks if the current user has a valid store
+   * @returns Observable<boolean> true if the user has a store with valid ID
+   */
+  hasStore(): Observable<boolean> {
+    return this.getCurrentUserStore().pipe(
+      map(store => store && store.id && store.id > 0 ? true : false),
+      catchError(() => of(false))
+    );
+  }
+
+  /**
+   * Creates a default store for a user who doesn't have one yet
+   * @returns Observable<StoreDetails> The newly created store
+   */
+  createDefaultStore(): Observable<StoreDetails> {
+    // Get username for store URL generation
+    const token = this.cookieService.get('auth_token');
+    if (!token) {
+      return throwError(() => new Error('Authentication required.'));
+    }
+    
+    // Extract username from JWT token for the store URL
+    try {
+      const tokenParts = token.split('.');
+      if (tokenParts.length !== 3) {
+        throw new Error('Invalid token format');
+      }
+      
+      const payload = JSON.parse(atob(tokenParts[1]));
+      const email = payload.email || '';
+      // Create a URL-friendly version of the username from email
+      const username = email.split('@')[0]?.replace(/[^a-zA-Z0-9]/g, '') || 'mystore';
+      
+      // Create a default store with username-based URL
+      const timestamp = new Date().getTime().toString().slice(-4);
+      const defaultStore = new StoreDetails(
+        0, // ID will be assigned by the server
+        `${username}-${timestamp}`, // URL with timestamp to avoid conflicts
+        `${username}'s Store`, // Name
+        '#232323', // theme_1
+        '#545454', // theme_2
+        '#E1E1E1', // theme_3
+        '#f6f6f6', // fontColor
+        'Cambria, Cochin', // fontFamily
+        'Welcome to My Store', // bannerText
+        `${username}'s Store`, // logoText
+        '', // bannerURL
+        '', // logoURL
+        [], // categories
+        DEFAULT_VISIBILITY // componentVisibility
+      );
+      
+      return this.createStore(defaultStore);
+    } catch (error) {
+      console.error('Error parsing token or creating default store:', error);
+      return throwError(() => new Error('Failed to create default store.'));
+    }
   }
 }

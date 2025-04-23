@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using Server.Middleware;
 
 // Clear default claim mappings
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -128,6 +129,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseAuthentication();
+// Add our store claim middleware after authentication but before authorization
+app.UseStoreClaimMiddleware();
 app.UseAuthorization();
 app.MapControllers();
 

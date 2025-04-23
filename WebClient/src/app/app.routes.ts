@@ -17,6 +17,8 @@ import { ItemPageComponent } from './components/customer-layout/item-page/item-p
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { OrdersComponent } from './components/store-owner-layout/orders/orders.component';
 import { QuantityChartComponent } from './components/quantity-chart/quantity-chart.component';
+import { CreateStoreComponent } from './components/create-store/create-store.component';
+import { StoreOwnerGuard } from './guards/store-owner.guard';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
@@ -25,9 +27,10 @@ export const appRoutes: Routes = [
 
   { path: 'register', component: RegisterComponent},
   { path: 'login', component: LoginComponent },
+  { path: 'create-store', component: CreateStoreComponent },
 
   { path: 'profile', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: StoreOwnerDashboardComponent },
+  { path: 'dashboard', component: StoreOwnerDashboardComponent, canActivate: [StoreOwnerGuard] },
   { path: '404', component: PageNotFoundComponent },
 
   {
@@ -41,7 +44,6 @@ export const appRoutes: Routes = [
     ]
   },
   { path: '**', redirectTo: '/' } // Handle unknown routes
-
 ];
 
 export const appRouterProvider = provideRouter(appRoutes);
