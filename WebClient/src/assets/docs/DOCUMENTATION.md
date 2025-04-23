@@ -53,6 +53,23 @@ Welcome to the central documentation hub for the Shopimy project. This file serv
     *   **Audience:** Developers, DevOps, Operations.
     *   **When to Read:** When preparing to deploy the application to a new environment.
 
+## 📚 Frontend-Specific Documentation
+
+*   **[WebClient/src/README-STYLES.md](../WebClient/src/README-STYLES.md)**
+    *   **Content:** Guidelines for styling components and maintaining consistent design across the application.
+    *   **Audience:** Frontend Developers.
+    *   **When to Read:** When implementing or modifying UI components.
+
+*   **[WebClient/src/README-COMPONENTS.md](../WebClient/src/README-COMPONENTS.md)**
+    *   **Content:** Information about shared components, their usage patterns, and implementation details.
+    *   **Audience:** Frontend Developers.
+    *   **When to Read:** When using or creating reusable components.
+
+*   **[WebClient/src/app/components/store-owner-layout/README-STYLE-AUDIT.md](../WebClient/src/app/components/store-owner-layout/README-STYLE-AUDIT.md)**
+    *   **Content:** Results of style audit for store owner layout components.
+    *   **Audience:** Frontend Developers.
+    *   **When to Read:** When working on store owner interface components.
+
 ---
 
 Please keep these documents updated as the project evolves. Refer to `DEVELOPMENT_GUIDELINES.md` for instructions on maintaining documentation.

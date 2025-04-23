@@ -23,7 +23,7 @@ This is a culmination project for the COSC 4P02 course at Brock University, deve
 *   **Secure Authentication:** JWT-based user registration, login, and profile management.
 *   **Promotions Management:** Create and manage discount codes (percentage or fixed amount).
 *   **Blog Page:** Dedicated section for blog posts and articles.
-*   **Consistent Store Preview:** Store editor preview accurately reflects the live store page using shared components.
+*   **Consistent Store Preview:** Store editor preview accurately reflects the live store page using shared components for store header, hero banner, featured products, testimonials, newsletter, and store footer.
 
 ## 🛠️ Technology Stack
 

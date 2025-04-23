@@ -49,7 +49,7 @@ namespace Server.Models
 
         [Required(ErrorMessage = "Font Color is required.")]
         [RegularExpression(@"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", ErrorMessage = "Invalid hex color format for Font Color.")]
-        public string FontColor {get; set;} = "#333333"; // Default color
+        public string FontColor {get; set;} = "#FFFFFF"; // Default color
 
         [Required(ErrorMessage = "Font Family is required.")]
         [StringLength(200, ErrorMessage = "Font Family cannot be longer than 200 characters.")]
@@ -83,7 +83,7 @@ namespace Server.Models
             Theme_1 = "#393727";
             Theme_2 = "#D0933D";
             Theme_3 = "#D3CEBB";
-            FontColor = "#333333";
+            FontColor = "#FFFFFF";
             FontFamily = "sans-serif";
             BannerText = "Welcome to our store";
             LogoText = string.Empty; // Let controller set default based on name

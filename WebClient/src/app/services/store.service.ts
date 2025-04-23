@@ -27,7 +27,7 @@ export const DEFAULT_THEME: StoreTheme = {
   mainColor: '#393727',
   secondColor: '#D0933D',
   thirdColor: '#D3CEBB',
-  altColor: '#333333',
+  altColor: '#FFFFFF',
   mainFontFam: 'Cambria, Cochin'
 };
 

@@ -95,7 +95,7 @@ namespace Server.Controllers
                 themes?.Theme_1 ?? "#393727", // Default Theme 1
                 themes?.Theme_2 ?? "#D0933D", // Default Theme 2
                 themes?.Theme_3 ?? "#D3CEBB", // Default Theme 3
-                themes?.FontColor ?? "#333333", // Default Font Color
+                themes?.FontColor ?? "#FFFFFF", // Default Font Color
                 themes?.FontFamily ?? "sans-serif", // Default Font Family
                 themes?.BannerText ?? "", // Default Banner Text
                 themes?.LogoText ?? store.Name, // Default Logo Text (use store name)
@@ -218,7 +218,7 @@ namespace Server.Controllers
                 themes?.Theme_1 ?? "#393727",
                 themes?.Theme_2 ?? "#D0933D",
                 themes?.Theme_3 ?? "#D3CEBB",
-                themes?.FontColor ?? "#333333",
+                themes?.FontColor ?? "#FFFFFF",
                 themes?.FontFamily ?? "sans-serif",
                 themes?.BannerText ?? "Welcome to our store",
                 themes?.LogoText ?? storeName,
@@ -352,7 +352,7 @@ namespace Server.Controllers
                             Theme_1 = storeDetails.Theme_1 ?? "#393727",
                             Theme_2 = storeDetails.Theme_2 ?? "#D0933D",
                             Theme_3 = storeDetails.Theme_3 ?? "#D3CEBB",
-                            FontColor = storeDetails.FontColor ?? "#333333",
+                            FontColor = storeDetails.FontColor ?? "#FFFFFF",
                             FontFamily = storeDetails.FontFamily ?? "sans-serif",
                             BannerText = storeDetails.BannerText ?? "Welcome",
                             LogoText = storeDetails.LogoText ?? store.Name, // Use created store name
@@ -774,7 +774,7 @@ namespace Server.Controllers
                 themes?.Theme_1 ?? "#393727",
                 themes?.Theme_2 ?? "#D0933D",
                 themes?.Theme_3 ?? "#D3CEBB",
-                themes?.FontColor ?? "#333333",
+                themes?.FontColor ?? "#FFFFFF",
                 themes?.FontFamily ?? "sans-serif",
                 themes?.BannerText ?? "",
                 themes?.LogoText ?? store.Name,

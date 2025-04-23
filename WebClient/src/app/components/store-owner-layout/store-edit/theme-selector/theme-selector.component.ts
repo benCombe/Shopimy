@@ -23,7 +23,7 @@ export class ThemeSelectorComponent {
     mainColor: '#393727',
     secondColor: '#D0933D',
     thirdColor: '#D3CEBB',
-    altColor: '#d5d5d5',
+    altColor: '#FFFFFF',
     mainFontFam: '"Inria Serif", serif'
   };
 
