@@ -1,97 +1,216 @@
-<div id="main">
+<div class="analytics-container">
+  <h1>Store Analytics Dashboard</h1>
 
-    <div class ="title">
-        <h2>Traffic Analytic</h2>
+  <!-- KPI Cards Section -->
+  <div class="kpi-cards">
+    <div *ngIf="isLoadingKPIs" class="loading-indicator">
+      <i class="fas fa-spinner fa-spin"></i> Loading Key Performance Indicators...
+    </div>
+    <div *ngIf="kpiError" class="error-message">
+      <i class="fas fa-exclamation-triangle"></i> {{ kpiError }}
+    </div>
+    <div *ngIf="!isLoadingKPIs && !kpiError && kpiData" class="kpi-grid">
+      <!-- Revenue Card -->
+      <div class="dashboard-card kpi-card">
+        <div class="kpi-icon revenue-icon">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="kpi-content">
+          <h3>Total Revenue</h3>
+          <div class="kpi-value">{{ formatCurrency(kpiData.totalRevenue) }}</div>
+          <p class="kpi-description">All-time store revenue</p>
+        </div>
     </div>
 
-    <div class="section">
-        
-        <div id="analytic-info2">
-            <h3>Recent Purchase</h3>
-            <div id = "analytic-list-wrapper">
-                <table id ="analytic-list">
+      <!-- Orders Card -->
+      <div class="dashboard-card kpi-card">
+        <div class="kpi-icon orders-icon">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="kpi-content">
+          <h3>Total Orders</h3>
+          <div class="kpi-value">{{ formatNumber(kpiData.totalOrders) }}</div>
+          <p class="kpi-description">All-time orders processed</p>
+        </div>
+      </div>
+
+      <!-- Average Order Value Card -->
+      <div class="dashboard-card kpi-card">
+        <div class="kpi-icon aov-icon">
+          <i class="fas fa-tags"></i>
+        </div>
+        <div class="kpi-content">
+          <h3>Average Order Value</h3>
+          <div class="kpi-value">{{ formatCurrency(kpiData.averageOrderValue) }}</div>
+          <p class="kpi-description">Average spending per order</p>
+        </div>
+            </div>
+
+      <!-- Visits Card -->
+      <div class="dashboard-card kpi-card">
+        <div class="kpi-icon visits-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="kpi-content">
+          <h3>Total Visits</h3>
+          <div class="kpi-value">{{ formatNumber(kpiData.totalVisits) }}</div>
+          <p class="kpi-description">All-time store visitors</p>
+        </div>
+        </div>
+    
+      <!-- Conversion Rate Card -->
+      <div class="dashboard-card kpi-card">
+        <div class="kpi-icon conversion-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="kpi-content">
+          <h3>Conversion Rate</h3>
+          <div class="kpi-value">{{ formatPercent(kpiData.conversionRate) }}</div>
+          <p class="kpi-description">Visits resulting in orders</p>
+        </div>
+    </div>
+
+      <!-- Product Count Card -->
+      <div class="dashboard-card kpi-card">
+        <div class="kpi-icon products-icon">
+          <i class="fas fa-boxes"></i>
+        </div>
+        <div class="kpi-content">
+          <h3>Products</h3>
+          <div class="kpi-value">{{ formatNumber(kpiData.productCount) }}</div>
+          <p class="kpi-description">Products in your store</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sales Trends Section -->
+  <div class="dashboard-card chart-card">
+    <div class="card-header">
+      <h2>Sales Trends</h2>
+      <div class="chart-filters">
+        <div class="filter-group">
+          <label for="salesPeriod">Period:</label>
+          <select id="salesPeriod" [(ngModel)]="salesPeriod" (change)="onSalesFilterChange()">
+            <option value="daily">Daily</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="salesRange">Range:</label>
+          <select id="salesRange" [(ngModel)]="salesRange" (change)="onSalesFilterChange()">
+            <option *ngIf="salesPeriod === 'daily'" value="7">7 days</option>
+            <option *ngIf="salesPeriod === 'daily'" value="14">14 days</option>
+            <option *ngIf="salesPeriod === 'daily'" value="30">30 days</option>
+            <option *ngIf="salesPeriod === 'monthly'" value="3">3 months</option>
+            <option *ngIf="salesPeriod === 'monthly'" value="6">6 months</option>
+            <option *ngIf="salesPeriod === 'monthly'" value="12">12 months</option>
+            <option *ngIf="salesPeriod === 'yearly'" value="3">3 years</option>
+            <option *ngIf="salesPeriod === 'yearly'" value="5">5 years</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card-content">
+      <div *ngIf="isLoadingSales" class="loading-indicator">
+        <i class="fas fa-spinner fa-spin"></i> Loading sales data...
+      </div>
+      <div *ngIf="salesError" class="error-message">
+        <i class="fas fa-exclamation-triangle"></i> {{ salesError }}
+      </div>
+      <div *ngIf="!isLoadingSales && !salesError && salesData" class="chart-container">
+        <canvas id="salesChart"></canvas>
+      </div>
+      <div *ngIf="!isLoadingSales && !salesError && (!salesData || salesData.labels.length === 0)" class="no-data">
+        <i class="fas fa-info-circle"></i> No sales data available for the selected period.
+      </div>
+    </div>
+  </div>
+
+  <!-- Store Visits Section -->
+  <div class="dashboard-card chart-card">
+    <div class="card-header">
+      <h2>Store Traffic</h2>
+      <div class="chart-filters">
+        <div class="filter-group">
+          <label for="visitsPeriod">Period:</label>
+          <select id="visitsPeriod" [(ngModel)]="visitsPeriod" (change)="onVisitsFilterChange()">
+            <option value="daily">Daily</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="visitsRange">Range:</label>
+          <select id="visitsRange" [(ngModel)]="visitsRange" (change)="onVisitsFilterChange()">
+            <option *ngIf="visitsPeriod === 'daily'" value="7">7 days</option>
+            <option *ngIf="visitsPeriod === 'daily'" value="14">14 days</option>
+            <option *ngIf="visitsPeriod === 'daily'" value="30">30 days</option>
+            <option *ngIf="visitsPeriod === 'monthly'" value="3">3 months</option>
+            <option *ngIf="visitsPeriod === 'monthly'" value="6">6 months</option>
+            <option *ngIf="visitsPeriod === 'monthly'" value="12">12 months</option>
+            <option *ngIf="visitsPeriod === 'yearly'" value="3">3 years</option>
+            <option *ngIf="visitsPeriod === 'yearly'" value="5">5 years</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card-content">
+      <div *ngIf="isLoadingVisits" class="loading-indicator">
+        <i class="fas fa-spinner fa-spin"></i> Loading visit data...
+      </div>
+      <div *ngIf="visitsError" class="error-message">
+        <i class="fas fa-exclamation-triangle"></i> {{ visitsError }}
+      </div>
+      <div *ngIf="!isLoadingVisits && !visitsError && visitData" class="chart-container">
+        <canvas id="visitsChart"></canvas>
+      </div>
+      <div *ngIf="!isLoadingVisits && !visitsError && (!visitData || visitData.labels.length === 0)" class="no-data">
+        <i class="fas fa-info-circle"></i> No visit data available for the selected period.
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Products Section -->
+  <div class="dashboard-card chart-card">
+    <div class="card-header">
+      <h2>Top Selling Products</h2>
+    </div>
+    <div class="card-content">
+      <div *ngIf="isLoadingTopProducts" class="loading-indicator">
+        <i class="fas fa-spinner fa-spin"></i> Loading top products...
+      </div>
+      <div *ngIf="topProductsError" class="error-message">
+        <i class="fas fa-exclamation-triangle"></i> {{ topProductsError }}
+      </div>
+      <div *ngIf="!isLoadingTopProducts && !topProductsError && topProductsData?.topProducts?.length" class="chart-container">
+        <canvas id="topProductsChart"></canvas>
+      </div>
+      <div *ngIf="!isLoadingTopProducts && !topProductsError && topProductsData?.topProducts?.length" class="top-products-table">
+        <table>
                     <thead>
                         <tr>
-                            <th>Item</th>
-                            <th>Amounts</th>
+              <th>#</th>
+              <th>Product</th>
+              <th>Quantity Sold</th>
+              <th>Revenue</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Product 1</td>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <td>Product 2</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>Product 3</td>
-                            <td>2</td>
+            <tr *ngFor="let product of topProductsData?.topProducts; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ product.productName }}</td>
+              <td>{{ formatNumber(product.quantitySold) }}</td>
+              <td>{{ formatCurrency(product.revenue) }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-
-        </div>
-    
-        <div id="analytic-graph1">
-            <h3>Visists to Store</h3>
-            <img class= "analytics-img" src="resources/images/tempGraph.jpg">
+      <div *ngIf="!isLoadingTopProducts && !topProductsError && (!topProductsData?.topProducts || topProductsData?.topProducts?.length === 0)" class="no-data">
+        <i class="fas fa-info-circle"></i> No product sales data available.
         </div>
     </div>
-
-    <div class="section">
-        
-        <div id="analytic-info1">
-            <h3>Popular Items</h3>
-            <div id = "analytic-list-wrapper">
-                <table id ="analytic-list">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Amounts</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Product 1</td>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <td>Product 2</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>Product 3</td>
-                            <td>2</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
         </div>
-    
-        <div id="analytic-graph2">
-            <h3>Anual Sales</h3>
-            <img class= "analytics-img" src="resources/images/tempGraph.jpg">
-        </div>
-    </div>
-
-    <div class="section">
-        
-        <div id="analytic-graph1">
-            <h3>Daily Sales</h3>
-            <img class= "analytics-img" src="resources/images/tempGraph.jpg">
-        </div>
-    
-        <div id="analytic-graph2">
-            <h3>Monthly Sales</h3>
-            <img class= "analytics-img" src="resources/images/tempGraph.jpg">
-        </div>
-    </div>
-
-
-    
 </div>
 

@@ -5,6 +5,7 @@ import { Item } from '../../models/item';
 import { ItemService } from '../../services/item.service';
 import { BasicItem } from '../../models/basic-item';
 import { ShoppingService } from '../../services/shopping.service';
+import { StoreNavService } from '../../services/store-nav.service';
 
 @Component({
   selector: 'app-item-card',
@@ -20,7 +21,8 @@ export class ItemCardComponent implements OnInit {
   constructor(
     private itemService: ItemService,
     private cdr: ChangeDetectorRef,
-    private shoppingService: ShoppingService
+    private shoppingService: ShoppingService,
+    private storeNavService: StoreNavService
   ) {}
 
   ngOnInit(): void {
@@ -68,4 +70,18 @@ export class ItemCardComponent implements OnInit {
    // console.log('Bookmarking item:', item);
     // Implement your bookmark logic here
   }
+
+  increaseQuantity(item: BasicItem): void {
+    this.shoppingService.addToCart(item); // This should handle incrementing quantity
+  }
+
+  decreaseQuantity(item: BasicItem): void {
+    this.shoppingService.removeFromCart(item); // You should implement this in your ShoppingService
+  }
+
+  getQuantity(item: BasicItem): number{
+    return this.shoppingService.getQuantity(item);
+  }
+
+
 }

@@ -1,102 +1,151 @@
-<div id="container">
+<div class="container">
 <!--   <app-store-nav></app-store-nav> -->
-  <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3">
-    <div class="checkout-container theme2" [style.background-color]="storeDetails?.theme_2">
-      <!-- Step Indicator -->
+  <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3" role="main">
+    <div class="checkout-container theme2" [style.background-color]="storeDetails?.theme_2" role="form" aria-labelledby="shipping-heading">
+      <!-- Remove Step Indicator -->
+      <!-- 
       <div class="steps">
         <button [class.theme1]="currentStep === 1" [class.active]="currentStep === 1">1. Shipping</button>
         <button [class.theme1]="currentStep === 2" [class.active]="currentStep === 2">2. Payment</button>
         <button [class.theme1]="currentStep === 3" [class.active]="currentStep === 3">3. Review</button>
-      </div>
+      </div> 
+      -->
 
-      <!-- Step 1: Shipping Details -->
-      <div *ngIf="currentStep === 1">
-        <h2>Shipping Details</h2>
-        <form [formGroup]="shippingForm">
-          <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">First Name:</label>
-            <input type="text" formControlName="firstName">
+      <!-- Keep only Shipping Details - Remove *ngIf -->
+      <h2 id="shipping-heading">Shipping Details</h2>
+      <form [formGroup]="shippingForm" novalidate>
+        <div class="form-row">
+          <label for="firstName" class="fc" [style.color]="storeDetails?.fontColor">First Name:</label>
+          <input type="text" id="firstName" formControlName="firstName" placeholder="Enter your first name" 
+                 aria-required="true" [attr.aria-invalid]="shippingForm.get('firstName')?.invalid && shippingForm.get('firstName')?.touched">
+          <div *ngIf="shippingForm.get('firstName')?.invalid && shippingForm.get('firstName')?.touched" class="error-message">
+            Please enter your first name
           </div>
+        </div>
 
-          <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Last Name:</label>
-            <input type="text" formControlName="lastName">
+        <div class="form-row">
+          <label for="lastName" class="fc" [style.color]="storeDetails?.fontColor">Last Name:</label>
+          <input type="text" id="lastName" formControlName="lastName" placeholder="Enter your last name"
+                 aria-required="true" [attr.aria-invalid]="shippingForm.get('lastName')?.invalid && shippingForm.get('lastName')?.touched">
+          <div *ngIf="shippingForm.get('lastName')?.invalid && shippingForm.get('lastName')?.touched" class="error-message">
+            Please enter your last name
           </div>
+        </div>
 
-          <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Address:</label>
-            <input type="text" formControlName="address">
+        <div class="form-row">
+          <label for="address" class="fc" [style.color]="storeDetails?.fontColor">Address:</label>
+          <input type="text" id="address" formControlName="address" placeholder="Enter your address"
+                 aria-required="true" [attr.aria-invalid]="shippingForm.get('address')?.invalid && shippingForm.get('address')?.touched">
+          <div *ngIf="shippingForm.get('address')?.invalid && shippingForm.get('address')?.touched" class="error-message">
+            Please enter your address
           </div>
+        </div>
 
-          <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">City:</label>
-            <input type="text" formControlName="city">
+        <div class="form-row">
+          <label for="city" class="fc" [style.color]="storeDetails?.fontColor">City:</label>
+          <input type="text" id="city" formControlName="city" placeholder="Enter your city"
+                 aria-required="true" [attr.aria-invalid]="shippingForm.get('city')?.invalid && shippingForm.get('city')?.touched">
+          <div *ngIf="shippingForm.get('city')?.invalid && shippingForm.get('city')?.touched" class="error-message">
+            Please enter your city
           </div>
+        </div>
 
-          <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Province/State:</label>
-            <input type="text" formControlName="province">
+        <div class="form-row">
+          <label for="province" class="fc" [style.color]="storeDetails?.fontColor">Province/State:</label>
+          <input type="text" id="province" formControlName="province" placeholder="Enter your province or state"
+                 aria-required="true" [attr.aria-invalid]="shippingForm.get('province')?.invalid && shippingForm.get('province')?.touched">
+          <div *ngIf="shippingForm.get('province')?.invalid && shippingForm.get('province')?.touched" class="error-message">
+            Please enter your province or state
           </div>
+        </div>
 
-          <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Country:</label>
-            <input type="text" formControlName="country">
+        <div class="form-row">
+          <label for="country" class="fc" [style.color]="storeDetails?.fontColor">Country:</label>
+          <input type="text" id="country" formControlName="country" placeholder="Enter your country"
+                 aria-required="true" [attr.aria-invalid]="shippingForm.get('country')?.invalid && shippingForm.get('country')?.touched">
+          <div *ngIf="shippingForm.get('country')?.invalid && shippingForm.get('country')?.touched" class="error-message">
+            Please enter your country
           </div>
+        </div>
 
-          <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Zip/Postal Code:</label>
-            <input type="text" formControlName="postalCode">
+        <div class="form-row">
+          <label for="postalCode" class="fc" [style.color]="storeDetails?.fontColor">Zip/Postal Code:</label>
+          <input type="text" id="postalCode" formControlName="postalCode" placeholder="Enter your postal code"
+                 aria-required="true" [attr.aria-invalid]="shippingForm.get('postalCode')?.invalid && shippingForm.get('postalCode')?.touched">
+          <div *ngIf="shippingForm.get('postalCode')?.invalid && shippingForm.get('postalCode')?.touched" class="error-message">
+            Please enter your postal code
           </div>
+        </div>
 
-          <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Email:</label>
-            <input type="email" formControlName="email">
+        <div class="form-row">
+          <label for="email" class="fc" [style.color]="storeDetails?.fontColor">Email:</label>
+          <input type="email" id="email" formControlName="email" placeholder="Enter your email"
+                 aria-required="true" [attr.aria-invalid]="shippingForm.get('email')?.invalid && shippingForm.get('email')?.touched">
+          <div *ngIf="shippingForm.get('email')?.invalid && shippingForm.get('email')?.touched" class="error-message">
+            Please enter a valid email address
           </div>
+        </div>
 
-          <div class="form-row">
-            <label class="fc" [style.color]="storeDetails?.fontColor">Phone:</label>
-            <input type="text" formControlName="phone">
+        <div class="form-row">
+          <label for="phone" class="fc" [style.color]="storeDetails?.fontColor">Phone:</label>
+          <input type="text" id="phone" formControlName="phone" placeholder="Enter your phone number"
+                 aria-required="true" [attr.aria-invalid]="shippingForm.get('phone')?.invalid && shippingForm.get('phone')?.touched">
+          <div *ngIf="shippingForm.get('phone')?.invalid && shippingForm.get('phone')?.touched" class="error-message">
+            Please enter your phone number
           </div>
-        </form>
-        <button (click)="nextStep()" [disabled]="!shippingForm.valid">Proceed To Payment</button>
-      </div>
-
-      <!-- Step 2: Payment Details -->
-      <div *ngIf="currentStep === 2">
-        <h2>Payment Details</h2>
-        <form [formGroup]="paymentForm">
-          <div class="form-row">
-            <label>Card Number:</label>
-            <input type="text" formControlName="cardNumber">
-          </div>
-
-          <div class="form-row">
-            <label>Expiration:</label>
-            <input type="text" formControlName="expiration">
-          </div>
-
-          <div class="form-row">
-            <label>CVV:</label>
-            <input type="text" formControlName="cvv">
-          </div>
-        </form>
-        <button (click)="previousStep()">Back</button>
-        <button (click)="nextStep()" [disabled]="!paymentForm.valid">Next</button>
-      </div>
-
-      <!-- Step 3: Review & Submit -->
-      <div *ngIf="currentStep === 3">
-        <h2>Review Your Order</h2>
-        <p><strong>Name:</strong> {{ shippingForm.value.firstName }} {{ shippingForm.value.lastName }}</p>
-        <p><strong>Address:</strong> {{ shippingForm.value.address }}, {{ shippingForm.value.city }}, {{ shippingForm.value.province }}, {{ shippingForm.value.country }} - {{ shippingForm.value.postalCode }}</p>
-        <p><strong>Email:</strong> {{ shippingForm.value.email }}</p>
-        <p><strong>Phone:</strong> {{ shippingForm.value.phone }}</p>
-        <p><strong>Payment Card:</strong> **** **** **** {{ paymentForm.value.cardNumber?.slice(-4) }}</p>
-
-        <button (click)="previousStep()">Back</button>
-        <button (click)="submitOrder()">Submit Order</button>
-      </div>
+        </div>
+      </form>
+      <button 
+        class="standard-button"
+        [class.loading]="isLoading"
+        [style.background-color]="storeDetails?.theme_1"
+        [style.color]="storeDetails?.fontColor"
+        (click)="proceedToPayment()" 
+        [disabled]="!shippingForm.valid || isLoading"
+        [attr.aria-disabled]="!shippingForm.valid || isLoading">
+        Proceed To Payment
+      </button>
     </div>
+
+    <!-- Remove Step 2: Payment Details -->
+    <!-- 
+    <div *ngIf="currentStep === 2">
+      <h2>Payment Details</h2>
+      <form [formGroup]="paymentForm">
+        <div class="form-row">
+          <label>Card Number:</label>
+          <input type="text" formControlName="cardNumber">
+        </div>
+
+        <div class="form-row">
+          <label>Expiration:</label>
+          <input type="text" formControlName="expiration">
+        </div>
+
+        <div class="form-row">
+          <label>CVV:</label>
+          <input type="text" formControlName="cvv">
+        </div>
+      </form>
+      <button (click)="previousStep()">Back</button>
+      <button (click)="nextStep()" [disabled]="!paymentForm.valid">Next</button>
+    </div> 
+    -->
+
+    <!-- Remove Step 3: Review & Submit -->
+    <!-- 
+    <div *ngIf="currentStep === 3">
+      <h2>Review Your Order</h2>
+      <p><strong>Name:</strong> {{ shippingForm.value.firstName }} {{ shippingForm.value.lastName }}</p>
+      <p><strong>Address:</strong> {{ shippingForm.value.address }}, {{ shippingForm.value.city }}, {{ shippingForm.value.province }}, {{ shippingForm.value.country }} - {{ shippingForm.value.postalCode }}</p>
+      <p><strong>Email:</strong> {{ shippingForm.value.email }}</p>
+      <p><strong>Phone:</strong> {{ shippingForm.value.phone }}</p>
+      <p><strong>Payment Card:</strong> **** **** **** {{ paymentForm.value.cardNumber?.slice(-4) }}</p>
+
+      <button (click)="previousStep()">Back</button>
+      <button (click)="submitOrder()">Submit Order</button>
+    </div> 
+    -->
 
     <app-order-summary [storeDetails]="storeDetails"></app-order-summary>
   </div>

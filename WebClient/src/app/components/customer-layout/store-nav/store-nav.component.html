@@ -1,29 +1,142 @@
-<div id="main" class="theme1" [style.background-color]="storeDetails?.theme_1">
-  <div id="store-name" class="fc" [style.color]="storeDetails?.fontColor" (click)="storeHome()">{{storeDetails?.name}}</div>
-  <div id="categories-wrapper">
-
-
-    <div id="categories" class="fc" [style.color]="storeDetails?.fontColor">
-      <!-- <span *ngFor="let c of categories" class="cat">{{c.name}}</span> -->
-      <div *ngFor="let c of categories" class="cat-wrapper">
-        <span class="cat" (click)="addToUrl(c.name)">{{ c.name }}</span> <!--[routerLink]="['/', storeUrl, c.name]"  -->
-        <div class="dropdown theme2">
-          <span *ngFor="let sub of c.subCategories" class="sub-cat theme2"
-          [style.background-color]="storeDetails?.theme_3"
-          [ngStyle]="{'background-color': hoverStates[sub.categoryId] ? '#F1F1F1': storeDetails?.theme_1, 'color': hoverStates[sub.categoryId] ? storeDetails?.theme_1: storeDetails?.fontColor}"
-          (mouseenter)="setHover(sub.categoryId, true)"
-          (mouseleave)="setHover(sub.categoryId, false)"
-          [style.color]="storeDetails?.fontColor"
-          (click)="addToUrl(sub.name)">
-          {{ sub.name }}</span> <!--  [routerLink]="['/', storeUrl, sub.name]"-->
+<!-- Main store navigation -->
+<nav id="main" class="store-nav theme-primary" [ngStyle]="{'background-color': storeDetails?.theme_1}" aria-label="Store navigation">
+  <!-- Store name/logo with logo -->
+  <div class="store-brand" (click)="navigateToHome()">
+    <div class="nav-logo-wrapper">
+      <img *ngIf="storeDetails?.logoURL" class="nav-logo" [src]="storeDetails?.logoURL" [alt]="storeDetails?.name + ' logo'" />
+      <ng-template [ngIf]="!storeDetails?.logoURL">
+        <div class="default-nav-logo" [style.color]="storeDetails?.fontColor" [style.background-color]="storeDetails?.theme_2">
+          {{ storeDetails?.name?.[0]?.toUpperCase() }}
         </div>
-      </div>
+      </ng-template>
     </div>
-
-
-    <div id="cart-btn-wrapper">
-      <div id="num-item-indicator" class="center" *ngIf="numCartItems > 0">{{numCartItems}}</div>
-      <div id="cart-btn" class="center fc" [style.color]="storeDetails?.fontColor"  (click)="addToUrl('cart')"><i class="fa-solid fa-cart-shopping"></i></div>
+    <h1 id="store-name" class="store-title" [style.color]="storeDetails?.fontColor">
+      {{ storeDetails?.name }}
+    </h1>
+  </div>
+  
+  <!-- Categories and cart wrapper -->
+  <div id="categories-wrapper" class="nav-container">
+    <!-- Shopping cart button - always visible -->
+    <div id="cart-btn-wrapper" class="cart-container">
+      <div *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</div>
+      <button id="cart-btn" class="cart-button" [ngStyle]="{'color': storeDetails?.fontColor}" 
+              (click)="navigateToCart()" aria-label="View shopping cart" 
+              (keydown.enter)="navigateToCart()" (keydown.space)="navigateToCart()">
+        <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+        <span class="sr-only">Shopping Cart</span>
+      </button>
+    </div>
+        
+    <!-- Hamburger Menu (Always visible regardless of viewport) -->
+    <div id="hamburger-menu" class="mobile-menu-container">
+      <button id="menu-icon" class="menu-toggle" (click)="toggleMobileMenu()" 
+              [ngStyle]="{'color': storeDetails?.fontColor}" 
+              [attr.aria-expanded]="isMobileMenuOpen" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
   </div>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()" aria-hidden="true"></div>
+
+<!-- Dropdown menu (for both mobile and desktop) -->
+<div *ngIf="isMobileMenuOpen" class="mobile-nav" [style.background-color]="storeDetails?.theme_3 || '#f9f9f9'">
+  <!-- Mobile Menu Search Bar -->
+  <div class="search-container">
+    <div class="search-wrapper">
+      <i class="fas fa-search search-icon"></i>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Search products..." 
+        aria-label="Search products"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="searchProducts()">
+    </div>
+  </div>
+  
+  <div class="mobile-menu-divider"></div>
+  
+  <!-- Mobile Menu Cart Link -->
+  <ul class="mobile-menu-list">
+    <li class="mobile-resource-item">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="navigateToCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Cart {{ cartItemCount > 0 ? '(' + cartItemCount + ')' : '' }}</span>
+      </div>
+    </li>
+  </ul>
+  
+  <!-- Mobile Menu Categories Section -->
+  <div class="mobile-menu-header">Categories</div>
+  <ul class="mobile-menu-list">
+    <li class="mobile-category-item" *ngFor="let category of categories">
+      <div class="mobile-category-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="navigateToCategory(category)">
+        <span>{{ category.name }}</span>
+      </div>
+      <div class="mobile-subcategories" *ngIf="category.subCategories && category.subCategories.length > 0">
+        <div class="mobile-subcategory-item" 
+             *ngFor="let subcategory of category.subCategories" 
+             [style.color]="storeDetails?.fontColor"
+             (click)="navigateToSubcategory(category, subcategory)">
+          {{ subcategory.name }}
+        </div>
+      </div>
+    </li>
+  </ul>
+  
+  <div class="mobile-menu-divider"></div>
+  
+  <!-- Mobile Menu Resources Section -->
+  <div class="mobile-menu-header">Resources</div>
+  <ul class="mobile-menu-list">
+    <!-- My Store link (when logged in and has a store) -->
+    <li class="mobile-resource-item" *ngIf="isLoggedIn && userStore">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="navigateToMyStore()">
+        <i class="fas fa-store"></i>
+        <span>My Store</span>
+      </div>
+    </li>
+    <li class="mobile-resource-item" *ngFor="let resource of resourceOptions">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           [routerLink]="resource.route">
+        <i *ngIf="resource.icon" [class]="'fas ' + resource.icon"></i>
+        <span>{{ resource.title }}</span>
+      </div>
+    </li>
+  </ul>
+  
+  <div class="mobile-menu-divider"></div>
+  
+  <!-- Mobile Menu Account Actions -->
+  <ul class="mobile-menu-list">
+    <!-- Login Option -->
+    <li class="mobile-resource-item" *ngIf="!isLoggedIn">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="navigateToLogin()">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Login</span>
+      </div>
+    </li>
+    <!-- Logout Option -->
+    <li class="mobile-resource-item" *ngIf="isLoggedIn">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </div>
+    </li>
+  </ul>
 </div>

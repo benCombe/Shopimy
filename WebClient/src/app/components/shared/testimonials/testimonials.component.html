@@ -1,0 +1,38 @@
+<!-- Testimonials Container -->
+<div class="testimonials-container">
+  <h3 class="section-heading">What Our Customers Say</h3>
+  
+  <!-- For regular store page -->
+  <div class="testimonials-carousel" *ngIf="!isPreview && testimonials.length > 0 && !loading">
+    <div class="testimonial-item" *ngFor="let testimonial of testimonials">
+      <div class="testimonial-content">
+        <p>{{ testimonial.content }}</p>
+        <div class="testimonial-author">
+          <p>- {{ testimonial.author }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- For preview mode -->
+  <div class="testimonials-carousel" *ngIf="isPreview">
+    <div class="testimonial-item" *ngFor="let testimonial of sampleTestimonials">
+      <div class="testimonial-content">
+        <p>{{ testimonial.content }}</p>
+        <div class="testimonial-author">
+          <p>- {{ testimonial.author }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading-container">
+    <app-loading-one></app-loading-one>
+  </div>
+  
+  <!-- Empty state -->
+  <div *ngIf="!loading && (!testimonials || testimonials.length === 0)" class="empty-state">
+    <p class="empty-message">No testimonials available at this time</p>
+  </div>
+</div> 

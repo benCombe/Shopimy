@@ -1,0 +1,62 @@
+<div *ngIf="productId" class="reviews-container">
+  <h3 class="reviews-title">Product Reviews</h3>
+
+  <!-- Average Rating -->
+  <div class="average-rating-section" aria-live="polite">
+    <div *ngIf="averageRating$ | async as avgRating; else loadingRating">
+      <div class="average-rating-display">
+        <span class="average-rating-value">{{ avgRating !== null ? (avgRating | number:'1.1-1') : 'N/A' }}</span>
+        <span class="average-rating-text"> Average Rating</span>
+      </div>
+      <!-- Basic Star Rating Display -->
+      <div class="star-rating" [attr.aria-label]="avgRating !== null ? avgRating.toFixed(1) + ' out of 5 stars' : 'No ratings yet'">
+        <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
+          <i class="fa-star" 
+             [ngClass]="{'fa-solid': avgRating !== null && avgRating >= i, 'fa-regular': avgRating === null || avgRating < i}"
+             aria-hidden="true"></i>
+        </ng-container>
+        <span class="rating-count visually-hidden"> ({{ avgRating !== null ? avgRating.toFixed(1) : '0' }})</span>
+      </div>
+    </div>
+    <ng-template #loadingRating>
+      <p>Loading average rating...</p>
+    </ng-template>
+  </div>
+
+  <!-- Reviews List -->
+  <h4 class="reviews-list-title">Reviews</h4>
+  <div class="reviews-list" aria-live="polite">
+    <div *ngIf="reviews$ | async as reviews; else loadingReviews">
+      <div *ngIf="reviews.length > 0; else noReviews">
+        <ul class="review-list-items">
+          <li *ngFor="let review of reviews" class="review-item">
+            <article [attr.aria-label]="'Review by User ' + review.userId + ' rated ' + review.rating + ' stars'">
+              <div class="review-item-rating">
+                <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
+                  <i class="fa-star" 
+                     [ngClass]="{'fa-solid': review.rating >= i, 'fa-regular': review.rating < i}"
+                     aria-hidden="true"></i>
+                </ng-container>
+                <span class="visually-hidden">{{ review.rating }} out of 5 stars</span>
+              </div>
+              <p class="review-item-comment">{{ review.comment }}</p>
+              <small class="review-item-meta">By User {{ review.userId }} on {{ review.createdAt | date:'short' }}</small>
+            </article>
+          </li>
+        </ul>
+      </div>
+      <ng-template #noReviews>
+        <p>No reviews have been submitted for this product yet.</p>
+      </ng-template>
+    </div>
+    <ng-template #loadingReviews>
+      <p>Loading reviews...</p>
+    </ng-template>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="loadingError" class="error-message" role="alert">
+    <p>Sorry, there was an error loading the reviews. Please try again later.</p>
+  </div>
+
+</div>

@@ -2,5 +2,10 @@
   "name": "Shopimy",
   "lockfileVersion": 3,
   "requires": true,
-  "packages": {}
+  "packages": {},
+  "dependencies": {
+    "@stripe/stripe-js": "^6.1.0",
+    "@types/chart.js": "^2.9.41",
+    "chart.js": "^4.4.9"
+  }
 }

@@ -4,8 +4,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Server.Data;
+using Server.Services;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Server.Middleware;
+
+// Clear default claim mappings
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +37,13 @@ builder.Services.AddHttpContextAccessor(); // Add HttpContextAccessor
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<Server.Services.LogoService>(); // Register LogoService
+builder.Services.AddScoped<IPromotionsService, PromotionsService>(); // Register PromotionsService
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>(); // Register AnalyticsService
+//builder.Services.AddScoped<IEmailService, EmailService>();
 
+// Register services
+builder.Services.AddMemoryCache();
 
 // Register Swagger (Swashbuckle)
 builder.Services.AddSwaggerGen(c =>
@@ -71,7 +84,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured"))
             )
         };
     });
@@ -92,6 +105,8 @@ var app = builder.Build();
 
 // Apply the CORS policy
 app.UseCors("AllowAngularApp");
+
+app.UseStaticFiles(); // Add this line to serve static files from wwwroot
 
 app.Use(async (context, next) =>
 {
@@ -114,11 +129,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseAuthentication();
+// Add our store claim middleware after authentication but before authorization
+app.UseStoreClaimMiddleware();
 app.UseAuthorization();
 app.MapControllers();
 
 
 app.Run();
-
 
 

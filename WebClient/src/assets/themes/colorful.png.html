@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8e9ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .preview {
+      width: 300px;
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+    }
+    .header {
+      background: linear-gradient(to right, #ff5f6d, #ffc371);
+      height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+    }
+    .logo {
+      font-weight: bold;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    .hero {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 15px;
+    }
+    .hero-text {
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+    .products {
+      display: flex;
+      padding: 10px;
+      gap: 10px;
+    }
+    .product {
+      border-radius: 4px;
+      width: 80px;
+      height: 70px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .product:nth-child(1) {
+      background: linear-gradient(to bottom, #1de9b6, #1dc4e9);
+    }
+    .product:nth-child(2) {
+      background: linear-gradient(to bottom, #ffbf00, #ff9500);
+    }
+    .product:nth-child(3) {
+      background: linear-gradient(to bottom, #ff5252, #ff1744);
+    }
+  </style>
+</head>
+<body>
+  <div class="preview">
+    <div class="header">
+      <div class="logo">YourStore</div>
+    </div>
+    <div class="hero">
+      <div class="hero-text">Welcome to Your Store</div>
+    </div>
+    <div class="products">
+      <div class="product"></div>
+      <div class="product"></div>
+      <div class="product"></div>
+    </div>
+  </div>
+</body>
+</html> 

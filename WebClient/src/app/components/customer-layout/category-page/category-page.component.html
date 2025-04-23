@@ -1,15 +1,26 @@
-<div id="main">
-  <ng-container *ngIf="itemIds.length > 0; else noitems" style="border: 1px solid red;">
-    <h1>{{category?.name}}</h1>
-    <div id="item-container">
-      <app-item-card *ngFor="let item of itemIds" [itemId]="item" class="item-card"></app-item-card>
-    </div>
-  </ng-container>
-
-    <ng-template #noitems>
-      <div id="no-items" class="center">
-        <p>There are currently no items listed in the category "{{category?.name}}"</p>
-      </div>
-    </ng-template>
+<main class="container" [attr.aria-label]="'Category page for ' + categoryName">
+  <h1 id="heading">{{ categoryName }}</h1>
+  
+  <!-- Item grid -->
+  <div id="item-container" *ngIf="items.length > 0" role="list" [attr.aria-label]="'Products in ' + categoryName + ' category'">
+    <app-item-card 
+      *ngFor="let item of items" 
+      [itemId]="item.listId" 
+      (click)="navigateToItem(item.listId)"
+      role="listitem">
+    </app-item-card>
   </div>
+
+  <!-- Empty state -->
+  <div id="no-items" *ngIf="items.length === 0 && itemsLoaded" class="center-col empty-state" aria-live="polite">
+    <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+    <p>No items available in this category.</p>
+  </div>
+
+  <!-- Loading state -->
+  <div id="loading" *ngIf="!itemsLoaded" class="center-col empty-state" aria-live="polite">
+    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+    <p>Loading products...</p>
+  </div>
+</main>
 

@@ -1,62 +1,179 @@
-<div id="main">
+<div class="overview-container">
+  <div class="page-header">
+    <h1>Dashboard Overview</h1>
+    <p class="page-description">Welcome to your store dashboard. Here's a quick summary of your store's performance.</p>
+  </div>
 
-    <div class ="title">
-        <h2>Quick Analytics</h2>
-
-    </div>
-
-    <div class="section">
+  <div class="dashboard-grid">
+    <!-- Recent Sales Card -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Recent Sales</h2>
+      </div>
+      <div class="card-content">
+        <div *ngIf="isLoading" class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading recent orders...</p>
+        </div>
         
-        <div id="analytic-info">
-            <h3>Recent Purchase</h3>
-            <div id = "analytic-list-wrapper">
-                <table id ="analytic-list">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Amounts</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Product 1</td>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <td>Product 2</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>Product 3</td>
-                            <td>2</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div *ngIf="error" class="error-message">
+          <p>{{ error }}</p>
+          <button class="standard-button" (click)="loadRecentOrders()">Retry</button>
+        </div>
+        
+        <div *ngIf="!isLoading && !error">
+          <div *ngIf="recentOrders.length > 0" class="table-container">
+            <table class="standard-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let order of recentOrders">
+                  <td>{{ order.customerName }}</td>
+                  <td>{{ order.orderDate | date:'MMM d, y' }}</td>
+                  <td>{{ order.totalAmount | currency }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="'status-' + order.status.toLowerCase()">
+                      {{ order.status }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div *ngIf="recentOrders.length === 0" class="empty-state">
+            <p>No orders found. Start selling to see your orders here!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Store Visits Card -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Visits to Store</h2>
+        <div class="card-actions">
+          <button class="card-action-btn" (click)="changeTimeRange('weekly')" [ngClass]="{'active': selectedTimeRange === 'weekly'}">Week</button>
+          <button class="card-action-btn" (click)="changeTimeRange('monthly')" [ngClass]="{'active': selectedTimeRange === 'monthly'}">Month</button>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="graph-container">
+          <div *ngIf="visitChartLoading" class="loading-container">
+            <div class="loading-spinner"></div>
+            <p>Loading visit data...</p>
+          </div>
+          
+          <div *ngIf="visitChartError" class="error-message">
+            <p>{{ visitChartError }}</p>
+            <button class="standard-button" (click)="retryLoadVisitData()">Retry</button>
+          </div>
+          
+          <div *ngIf="!visitChartLoading && !visitChartError && chartInitialized" class="chart-wrapper">
+            <canvas #visitsChart></canvas>
+            <div class="visits-stats">
+              <div class="stats-item">
+                <span class="total-count">{{ totalVisits }}</span>
+                <span class="total-label">total visits</span>
+              </div>
+              <div class="stats-item" *ngIf="visitsChange !== null">
+                <span class="stat-change" [ngClass]="{'positive': visitsChange > 0, 'negative': visitsChange < 0, 'neutral': visitsChange === 0}">
+                  <i [class]="visitsChange > 0 ? 'fa-solid fa-arrow-up' : visitsChange < 0 ? 'fa-solid fa-arrow-down' : 'fa-solid fa-minus'"></i>
+                  {{ visitsChangePercentage }}%
+                </span>
+                <span class="stat-period">vs previous period</span>
+              </div>
+              <div class="stats-item" *ngIf="averageDailyVisits !== null">
+                <span class="avg-count">{{ averageDailyVisits }}</span>
+                <span class="avg-label">avg daily</span>
+              </div>
             </div>
+          </div>
+          
+          <!-- Fallback visualization when chart doesn't initialize properly -->
+          <div *ngIf="!visitChartLoading && !visitChartError && !chartInitialized && visitData.length > 0" class="fallback-chart-wrapper">
+            <div class="fallback-chart-header">
+              <div class="chart-title">Store Visits</div>
+              <div class="chart-period">{{ selectedTimeRange === 'weekly' ? 'Past 7 days' : 'Past 30 days' }}</div>
+            </div>
+            
+            <div class="fallback-bars-container">
+              <div class="fallback-bar-wrapper" *ngFor="let value of visitData; let i = index">
+                <div class="fallback-bar" [style.height.%]="getBarHeight(value)" [style.--index]="i"></div>
+                <div class="fallback-bar-value">{{ value }}</div>
+                <div class="fallback-bar-label">{{ visitLabels[i] }}</div>
+              </div>
+            </div>
+            
+            <div class="visits-stats">
+              <div class="stats-item">
+                <span class="total-count">{{ totalVisits }}</span>
+                <span class="total-label">total visits</span>
+              </div>
+              <div class="stats-item" *ngIf="visitsChange !== null">
+                <span class="stat-change" [ngClass]="{'positive': visitsChange > 0, 'negative': visitsChange < 0, 'neutral': visitsChange === 0}">
+                  <i [class]="visitsChange > 0 ? 'fa-solid fa-arrow-up' : visitsChange < 0 ? 'fa-solid fa-arrow-down' : 'fa-solid fa-minus'"></i>
+                  {{ visitsChangePercentage }}%
+                </span>
+                <span class="stat-period">vs previous period</span>
+              </div>
+              <div class="stats-item" *ngIf="averageDailyVisits !== null">
+                <span class="avg-count">{{ averageDailyVisits }}</span>
+                <span class="avg-label">avg daily</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Quick Links Section -->
+  <div class="quick-links-section">
+    <div class="section-header">
+      <h2>Quick Links</h2>
+      <p class="section-description">Quick access to common store management tasks</p>
     </div>
-    
-    <div id="analytic-graph">
-        <h3>Visists to Store</h3>
-        <img class= "analytics-img" src="resources/images/tempGraph.jpg">
+    <div class="quick-links-grid">
+      <a class="quick-link-card" (click)="navigateTo('Store Editor')">
+        <div class="icon-container">
+          <i class="fa-solid fa-pencil"></i>
+        </div>
+        <div class="fc-title">Edit Store</div>
+        <div class="fc-divider"></div>
+        <div class="fc-body">Customize your store's appearance and settings</div>
+      </a>
+      <a class="quick-link-card" (click)="navigateTo('Products')">
+        <div class="icon-container">
+          <i class="fa-solid fa-box"></i>
+        </div>
+        <div class="fc-title">Add Product</div>
+        <div class="fc-divider"></div>
+        <div class="fc-body">Create and manage your product listings</div>
+      </a>
+      <a class="quick-link-card" (click)="navigateTo('Promotions')">
+        <div class="icon-container">
+          <i class="fa-solid fa-tag"></i>
+        </div>
+        <div class="fc-title">Add Promotion</div>
+        <div class="fc-divider"></div>
+        <div class="fc-body">Create special offers and discounts</div>
+      </a>
+      <a class="quick-link-card" (click)="navigateTo('Settings')">
+        <div class="icon-container">
+          <i class="fa-solid fa-gear"></i>
+        </div>
+        <div class="fc-title">Store Settings</div>
+        <div class="fc-divider"></div>
+        <div class="fc-body">Configure your store preferences</div>
+      </a>
     </div>
-    </div>
-    
-<div class="QuickLinks">
-    <h2>Quick Links</h2>
-    <button>
-        Edit Store
-    </button>
-    <button>
-        Add Product
-    </button>
-    <button>
-        Add Promotion
-    </button>
-    <button>
-        Store Settings
-    </button>
-</div>
-
+  </div>
 </div>
 

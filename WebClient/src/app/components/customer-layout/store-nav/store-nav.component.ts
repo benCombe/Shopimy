@@ -1,66 +1,166 @@
-import { CategoryPageComponent } from './../category-page/category-page.component';
+import { Component, EventEmitter, HostListener, OnInit, Output, AfterViewInit, OnDestroy } from '@angular/core';
+import { NgFor, NgIf, NgStyle, CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../models/category';
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, Renderer2 } from '@angular/core';
 import { StoreDetails } from '../../../models/store-details';
 import { ThemeService } from '../../../services/theme.service';
-import { NgFor, NgIf, NgStyle } from '@angular/common';
 import { StoreService } from '../../../services/store.service';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { StoreNavService } from '../../../services/store-nav.service';
 import { ShoppingService } from '../../../services/shopping.service';
+import { UserService } from '../../../services/user.service';
+import { Subscription } from 'rxjs';
+
+interface ResourceOption {
+  title: string;
+  route: string;
+  icon?: string;
+}
 
 @Component({
   selector: 'app-store-nav',
-  imports: [NgFor, NgIf, NgStyle, RouterLink],
+  standalone: true,
+  imports: [NgFor, NgIf, NgStyle, CommonModule, RouterModule, FormsModule],
   templateUrl: './store-nav.component.html',
   styleUrl: './store-nav.component.css'
 })
-
-export class StoreNavComponent implements AfterViewInit, OnInit{
-
+export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
   @Output() ViewChanged = new EventEmitter<string>();
 
-  storeDetails: StoreDetails | null = null; //new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", []); //Use  Store/Theme services here
-  categories: Category[] = [] //["Clothing", "Materials", "Other"].reverse();
-
-  hoverStates: { [key: number]: boolean } = {};
-
+  storeDetails: StoreDetails | null = null;
+  categories: Category[] = [];
+  hoveredCategory: Category | null = null;
   storeUrl = "";
+  isMobile = false;
+  isMobileMenuOpen = false;
+  cartItemCount = 0;
+  showResourcesDropdown = false;
+  searchQuery = '';
+  usingCustomTheme = true;
+  storeId: number | undefined;
+  primaryColor: string | undefined;
+  secondaryColor: string | undefined;
+  tertiaryColor: string | undefined;
+  isLoggedIn: boolean = false;
+  userStore: StoreDetails | null = null;
+  private authSubscription: Subscription | undefined;
+  private userStoreSubscription: Subscription | undefined;
 
-  numCartItems: number = 0;
-
-  setHover(categoryId: number, isHovered: boolean): void {
-    this.hoverStates = { ...this.hoverStates, [categoryId]: isHovered };
-  }
+  resourceOptions: ResourceOption[] = [
+    { title: 'Blog', route: '/blog', icon: 'fa-newspaper' },
+    { title: 'Documentation', route: '/docs', icon: 'fa-book' },
+    { title: 'Support', route: '/support', icon: 'fa-headset' },
+    { title: 'FAQs', route: '/faqs', icon: 'fa-question-circle' }
+  ];
 
   constructor(
-    private renderer: Renderer2,
     private themeService: ThemeService,
     private storeService: StoreService,
     private router: Router,
     private route: ActivatedRoute,
     private storeNavService: StoreNavService,
-    private shoppingService: ShoppingService
+    private shoppingService: ShoppingService,
+    private userService: UserService
   ) {}
 
-
+  /**
+   * Lifecycle hook that is called after data-bound properties are initialized
+   */
   ngOnInit(): void {
-    this.storeService.activeStore$.subscribe(s =>{
-      this.storeDetails = s;
-      this.categories = this.mapCategories(s.categories);
-      console.log("Store Details:", this.storeDetails);
+    this.checkScreenSize();
+    
+    this.authSubscription = this.userService.loggedIn$.subscribe(status => {
+      this.isLoggedIn = status;
+      console.log('Login status updated in nav:', this.isLoggedIn);
+      
+      // Fetch user's store when logged in
+      if (this.isLoggedIn) {
+        this.loadUserStore();
+      } else {
+        this.userStore = null;
+      }
     });
+
+    this.storeService.activeStore$.subscribe(
+      store => {
+        if (store) {
+          this.storeDetails = store;
+          this.storeId = store.id;
+          this.primaryColor = store.theme_1;
+          this.secondaryColor = store.theme_2;
+          this.tertiaryColor = store.theme_3;
+          this.categories = this.mapCategories(store.categories);
+          this.usingCustomTheme = !!store.theme_1;
+        }
+      },
+      error => {
+        console.error('Error fetching active store:', error);
+      }
+    );
+    
     this.route.params.subscribe(params => {
       this.storeUrl = params['storeUrl'];
-      //this.storeService.getStoreDetails(storeUrl);
     });
 
-    this.shoppingService.Cart$.subscribe(c =>{
-      this.numCartItems = c.length;
+    this.shoppingService.Cart$.subscribe(cart => {
+      this.cartItemCount = cart.length;
+    });
+
+    document.addEventListener('click', (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const menuContainer = document.querySelector('.mobile-nav');
+      const hamburgerButton = document.querySelector('.menu-toggle');
+      
+      if (menuContainer && hamburgerButton && 
+          !menuContainer.contains(target) && 
+          !hamburgerButton.contains(target) && 
+          this.isMobileMenuOpen) {
+        this.closeMobileMenu();
+      }
+
+      const resourcesContainer = document.querySelector('.resources-container');
+      if (this.showResourcesDropdown && 
+          resourcesContainer && 
+          !resourcesContainer.contains(target)) {
+        this.showResourcesDropdown = false;
+      }
     });
   }
 
+  /**
+   * Load the user's store if they are logged in
+   */
+  private loadUserStore(): void {
+    this.userStoreSubscription = this.storeService.getCurrentUserStore().subscribe(
+      store => {
+        // Only set the userStore if it has a valid ID
+        if (store && store.id && store.id > 0) {
+          this.userStore = store;
+          console.log('User store loaded:', this.userStore);
+        } else {
+          this.userStore = null;
+        }
+      },
+      error => {
+        console.error('Error loading user store:', error);
+        this.userStore = null;
+      }
+    );
+  }
 
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+    if (this.userStoreSubscription) {
+      this.userStoreSubscription.unsubscribe();
+    }
+  }
+
+  /**
+   * Lifecycle hook that is called after the component's view has been initialized
+   */
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.themeService.setThemeOne("theme1");
@@ -71,71 +171,103 @@ export class StoreNavComponent implements AfterViewInit, OnInit{
     });
   }
 
+  hoverCategory(category: Category): void {
+    this.hoveredCategory = category;
+  }
 
-  mapCategories(cats: Category[]): Category[]{
-    let categoryMap = new Map<number, Category>();
-    let rootCategories: Category[] = [];
+  unhoverCategory(): void {
+    this.hoveredCategory = null;
+  }
 
-    // Step 1: Create a map of categories
-    cats.forEach(c => {
-      categoryMap.set(c.categoryId, { ...c, subCategories: [] });
+  mapCategories(cats: Category[]): Category[] {
+    const categoryMap = new Map<number, Category>();
+    const rootCategories: Category[] = [];
+
+    cats.forEach(category => {
+      categoryMap.set(category.categoryId, { 
+        ...category, 
+        subCategories: [] 
+      });
     });
 
-    // Step 2: Assign subcategories to their parents
-    categoryMap.forEach(c => {
-      if (c.parentCategory !== null) {
-        let parent = categoryMap.get(c.parentCategory);
+    categoryMap.forEach(category => {
+      if (category.parentCategory !== null) {
+        const parent = categoryMap.get(category.parentCategory);
         if (parent) {
-          parent.subCategories.push(c);
+          parent.subCategories.push(category);
         }
       } else {
-        rootCategories.push(c); // Top-level categories
+        rootCategories.push(category);
       }
     });
 
-    return rootCategories.reverse(); // Reverse for proper order if needed
+    return rootCategories;
   }
 
-  /* addToUrl(categoryName: string): void {
-    const currentUrl = this.router.url;
-    const newUrl = `${currentUrl}/${categoryName}`;
-
-    this.router.navigateByUrl(newUrl);
-  } */
-
-  /* addToUrl(categoryName: string): void {
-    const currentSegments = this.router.url.split('/').filter(segment => segment); // Remove empty segments
-    const newSegments = [...currentSegments, categoryName]; // Append category
-
-    this.router.navigate(newSegments); // Navigate to new path
-  } */
-
-  addToUrl(segment: string): void {
-      /* this.router.navigate([segment], { relativeTo: this.route });
-      this.ViewChanged.emit(segment);
-      console.log(segment); */
-      this.storeNavService.changeView(segment);
+  navigateToCategory(category: Category): void {
+    this.router.navigate(['/category', category.name]);
+    this.closeMobileMenu();
   }
 
-  storeHome(): void{
+  navigateToSubcategory(category: Category, subcategory: Category): void {
+    this.router.navigate(['/category', category.name, subcategory.name]);
+    this.closeMobileMenu();
+  }
+
+  navigateToHome(): void {
     this.storeNavService.toStoreHome();
+    this.closeMobileMenu();
   }
 
+  navigateToCart(): void {
+    this.router.navigate(['cart'], { relativeTo: this.route });
+    this.closeMobileMenu();
+  }
 
+  toggleResourcesDropdown(): void {
+    this.showResourcesDropdown = !this.showResourcesDropdown;
+  }
 
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
 
-  invertColor(origColor: string): string{
-      // Ensure the input is a valid hex color
-    if (!/^#([0-9A-Fa-f]{6})$/.test(origColor)) {
-      throw new Error("Invalid hex color format. Use '#RRGGBB'.");
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
+  }
+
+  searchProducts(): void {
+    if (this.searchQuery.trim()) {
+      this.router.navigate(['/search'], { queryParams: { q: this.searchQuery } });
+      this.closeMobileMenu();
+      this.searchQuery = '';
     }
+  }
 
-    // Remove the "#" and convert to an array of two-character hex values
-    const inverted = origColor.substring(1)
-      .match(/.{2}/g) // Split into ["F0", "F0", "F0"]
-      ?.map(hex => (255 - parseInt(hex, 16)).toString(16).padStart(2, '0')) // Invert each channel
-      .join(""); // Recombine to form the final color
+  @HostListener('window:resize', [])
+  checkScreenSize(): void {
+    this.isMobile = window.innerWidth < 900;
+    if (!this.isMobile) {
+      this.closeMobileMenu();
+    }
+  }
 
-    return `#${inverted}`;
+  navigateToLogin(): void {
+    this.router.navigate(['/account/login']);
+    this.closeMobileMenu();
+  }
+
+  logout(): void {
+    this.userService.logout();
+    this.closeMobileMenu();
+    this.router.navigate(['/']);
+  }
+
+  /**
+   * Navigate to the user's store management dashboard
+   */
+  navigateToMyStore(): void {
+    this.router.navigate(['/dashboard']);
+    this.closeMobileMenu();
   }
 }

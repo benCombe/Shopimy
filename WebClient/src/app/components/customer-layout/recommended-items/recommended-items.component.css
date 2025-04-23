@@ -1,0 +1,125 @@
+/* Standardized Recommended Items Component */
+.recommended-items-section {
+    width: 100%;
+    padding: var(--spacing-lg);
+    font-family: var(--main-font-fam);
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--main-color);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.items-carousel-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.items-container {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-sm) 0;
+}
+
+.items-container app-item-card {
+    flex: 0 0 auto;
+    width: 250px;
+}
+
+.nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--border-color, #ccc);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: var(--border-radius-round);
+    transition: all 0.3s ease;
+    z-index: 10;
+    color: var(--main-color);
+}
+
+.nav-arrow:hover {
+    background-color: var(--main-color);
+    color: var(--third-color);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: var(--shadow-sm);
+}
+
+.nav-arrow:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: rgba(200, 200, 200, 0.5);
+}
+
+.nav-arrow.prev {
+    left: 10px;
+}
+
+.nav-arrow.next {
+    right: 10px;
+}
+
+.nav-arrow i {
+    font-size: 1.2rem;
+}
+
+.loading-message,
+.error-message {
+    text-align: center;
+    padding: var(--spacing-lg);
+    color: var(--main-color);
+}
+
+.error-message {
+    color: var(--color-error, #e02424);
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .items-container app-item-card {
+        width: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .recommended-items-section {
+        padding: var(--spacing-md);
+    }
+    .section-title {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-md);
+    }
+    .items-container app-item-card {
+        width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .items-container {
+        gap: var(--spacing-md);
+    }
+    .items-container app-item-card {
+        width: 180px;
+    }
+    .section-title {
+        font-size: 1.3rem;
+    }
+    .nav-arrow {
+        width: 35px;
+        height: 35px;
+    }
+    .nav-arrow i {
+        font-size: 1rem;
+    }
+}

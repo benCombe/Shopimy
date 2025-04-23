@@ -1,31 +1,62 @@
-<div id="container">
-  <app-store-nav  (ViewChanged)="changeView($event)"></app-store-nav>
-  <div id="store-page" [style.background-color]="storeData?.theme_3" *ngIf="currentView === 'store-page'" [ngStyle]="{ 'height': storePageHeight + 'vh' }">
-      <div id="banner" class="theme2" [style.background-image]="'url(' + storeData?.bannerURL + ')'">
-        <div id="banner-text" class="center theme1 fc" [style.background-color]="storeData?.theme_1">
-          <span [style.color]="storeData?.fontColor">{{storeData?.bannerText}}</span>
-        </div>
-      </div>
-      <div id="logo-section" class="center">
-        <div id="logo-container" class="theme1 fc" [style.background-color]="storeData?.theme_1">
-          <div id="logo-wrapper">
-            <img id="logo" [src]="storeData?.logoURL" alt="store-logo">
-          </div>
-          <div id="logo-text-wrapper" class="center">
-            <h2 id="logo-text" [style.color]="storeData?.fontColor">{{storeData?.logoText}}</h2>
-          </div>
-        </div>
-      </div>
-      <div id="product-container">
+<main id="store-container" class="store-layout" aria-labelledby="store-name">
+  <app-store-nav (ViewChanged)="changeView($event)" aria-label="Store navigation"></app-store-nav>
+  
+  <div id="store-page" class="store-content" *ngIf="isStorePageView()">
+    <!-- Hidden heading for screenreaders to identify the store -->
+    <h1 id="store-name" class="visually-hidden">{{ storeData?.name || 'Online Store' }}</h1>
 
-        <app-item-card *ngFor="let item of itemIds.slice(0, displayCount)" [itemId]="item"></app-item-card>
-      </div>
-      <div id="load-more-wrapper" class="center" *ngIf="displayCount < itemIds.length"><span id="load-more-btn" class="center" (click)="loadMore()">Load More</span></div>
+    <!-- Hero Banner Section -->
+    <section aria-label="Hero Banner">
+      <app-hero-banner 
+        *ngIf="storeData?.componentVisibility?.hero" 
+        [storeData]="storeData">
+      </app-hero-banner>
+    </section>
 
+    <!-- Store Header/Logo Section -->
+    <section aria-label="Store Header">
+      <app-store-header 
+        *ngIf="storeData?.componentVisibility?.header" 
+        [storeData]="storeData">
+      </app-store-header>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section aria-label="Featured Products">
+      <app-featured-products 
+        *ngIf="storeData?.componentVisibility?.featured" 
+        [storeData]="storeData"
+        [isPreview]="false">
+      </app-featured-products>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section aria-label="Customer Testimonials">
+      <app-testimonials 
+        *ngIf="storeData?.componentVisibility?.testimonials" 
+        [storeData]="storeData">
+      </app-testimonials>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section aria-label="Newsletter Signup">
+      <app-newsletter 
+        *ngIf="storeData?.componentVisibility?.newsletter" 
+        [storeData]="storeData">
+      </app-newsletter>
+    </section>
   </div>
-  <app-shopping-cart *ngIf="currentView === 'cart'" [storeDetails]="storeData"></app-shopping-cart>
-  <app-checkout *ngIf="currentView === 'checkout'" [storeDetails]="storeData"></app-checkout>
+  
+  <!-- Other Views -->
+  <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData"></app-shopping-cart>
+  <app-checkout *ngIf="isCheckoutView()"></app-checkout>
+  <app-item-detail *ngIf="isItemView()" [storeDetails]="storeData" [itemId]="currentItemView"></app-item-detail>
+  
+  <!-- The category page is loaded if the url is "shopimy.com/[storeurl]/[category-name]" -->
   <ng-container *ngFor="let c of storeData?.categories">
-    <app-category-page *ngIf="currentView === c.name" [category]="c" [storeDetails]="storeData"></app-category-page>
+    <app-category-page *ngIf="isCategoryView(c.name) && storeData?.componentVisibility?.categories" 
+                      [category]="c" 
+                      [storeDetails]="storeData">
+    </app-category-page>
   </ng-container>
-</div>
+</main>

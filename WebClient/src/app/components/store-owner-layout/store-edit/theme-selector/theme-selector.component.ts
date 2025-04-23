@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-theme-selector',
   templateUrl: './theme-selector.component.html',
-  styleUrls: ['./theme-selector.component.scss'],
+  styleUrl: './theme-selector.component.scss',
   standalone: true,
   imports: [FormsModule]
 })

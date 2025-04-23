@@ -1,0 +1,48 @@
+<div class="store-preview-container" [ngStyle]="getThemeStyles()">
+  <div class="store-preview-content">
+    <!-- Store Page Preview that resembles the actual store page -->
+    <div class="store-preview" *ngIf="storeData">
+      
+      <!-- Banner Section - Only if 'hero' is selected -->
+      <app-hero-banner 
+        *ngIf="isComponentSelected('hero')" 
+        [storeData]="storeData" 
+        [theme]="theme">
+      </app-hero-banner>
+
+      <!-- Logo Section - Only if 'header' is selected -->
+      <app-store-header 
+        *ngIf="isComponentSelected('header')" 
+        [storeData]="storeData" 
+        [theme]="theme">
+      </app-store-header>
+
+      <!-- Product Grid - Only if 'featured' is selected -->
+      <app-featured-products 
+        *ngIf="isComponentSelected('featured')" 
+        [storeData]="storeData" 
+        [theme]="theme"
+        [isPreview]="true">
+      </app-featured-products>
+
+      <!-- Testimonials Section - Only if 'testimonials' is selected -->
+      <app-testimonials 
+        *ngIf="isComponentSelected('testimonials')" 
+        [storeData]="storeData" 
+        [theme]="theme">
+      </app-testimonials>
+
+      <!-- Newsletter Section - Only if 'newsletter' is selected -->
+      <app-newsletter 
+        *ngIf="isComponentSelected('newsletter')" 
+        [storeData]="storeData" 
+        [theme]="theme">
+      </app-newsletter>
+    </div>
+    
+    <!-- Show a message if no store data is available -->
+    <div *ngIf="!storeData" class="no-store-data">
+      <p>Store preview is loading... If you don't see a preview, try saving your store settings first.</p>
+    </div>
+  </div>
+</div> 

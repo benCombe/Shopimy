@@ -1,1 +1,217 @@
-<p>themes works!</p>
+<div class="themes-container" [class.inline-mode]="inlineMode">
+  <div *ngIf="!inlineMode" class="themes-header">
+    <h2>Store Appearance</h2>
+    <p class="description">Customize your store's visual identity with colors, fonts, and branding elements that reflect your unique style.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" role="tablist">
+    <div class="tab" 
+         role="tab" 
+         [attr.aria-selected]="activeTab === 'select-theme'" 
+         [class.active]="activeTab === 'select-theme'" 
+         (click)="setActiveTab('select-theme')"
+         tabindex="0"
+         aria-controls="select-theme-panel">
+      Select Theme
+    </div>
+    <div class="tab" 
+         role="tab" 
+         [attr.aria-selected]="activeTab === 'customize'" 
+         [class.active]="activeTab === 'customize'" 
+         (click)="setActiveTab('customize')"
+         tabindex="0"
+         aria-controls="customize-panel">
+      Colours & Typography
+    </div>
+  </div>
+  
+  <!-- Select Theme Tab -->
+  <div id="select-theme-panel" *ngIf="activeTab === 'select-theme'" role="tabpanel" aria-labelledby="select-theme-tab">
+    <div class="theme-swatches">
+      <div *ngFor="let theme of themeSwatches" 
+           class="theme-swatch" 
+           [class.selected]="selectedTheme === theme.name"
+           (click)="selectTheme(theme)"
+           tabindex="0"
+           role="button"
+           [attr.aria-pressed]="selectedTheme === theme.name"
+           [attr.aria-label]="'Select ' + theme.name + ' theme'">
+        <div class="swatch-header" [style.background-color]="theme.mainColor">
+          {{ theme.name }}
+        </div>
+        <div class="swatch-colors">
+          <div class="swatch-color" [style.background-color]="theme.mainColor"></div>
+          <div class="swatch-color" [style.background-color]="theme.secondColor"></div>
+          <div class="swatch-color" [style.background-color]="theme.thirdColor"></div>
+        </div>
+      </div>
+      
+      <!-- Custom Theme Option -->
+      <div class="theme-swatch" 
+           [class.selected]="selectedTheme === 'Custom Theme'"
+           (click)="selectTheme(customTheme)"
+           tabindex="0"
+           role="button"
+           [attr.aria-pressed]="selectedTheme === 'Custom Theme'"
+           aria-label="Select Custom Theme">
+        <div class="swatch-header" [style.background-color]="customTheme.mainColor">
+          Custom Theme
+        </div>
+        <div class="swatch-colors">
+          <div class="swatch-color" [style.background-color]="customTheme.mainColor"></div>
+          <div class="swatch-color" [style.background-color]="customTheme.secondColor"></div>
+          <div class="swatch-color" [style.background-color]="customTheme.thirdColor"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customize Tab (Colours & Typography) -->
+  <div id="customize-panel" *ngIf="activeTab === 'customize'" role="tabpanel" aria-labelledby="customize-tab">
+    <div class="customize-container">
+      <div class="color-section">
+        <h3>Color Palette</h3>
+        <p class="tip">Choose colors that reflect your brand identity.</p>
+        
+        <div class="color-picker-group">
+          <label for="primaryColor">Primary Color</label>
+          <div class="color-input-container">
+            <input type="color" 
+                   id="primaryColor" 
+                   [(ngModel)]="customTheme.mainColor" 
+                   (input)="onColorChange()"
+                   aria-label="Select primary color">
+            <span class="color-value">{{customTheme.mainColor}}</span>
+          </div>
+          <div class="color-description">Used for headers, buttons, and primary elements.</div>
+        </div>
+        
+        <div class="color-picker-group">
+          <label for="secondaryColor">Secondary Color</label>
+          <div class="color-input-container">
+            <input type="color" 
+                   id="secondaryColor" 
+                   [(ngModel)]="customTheme.secondColor" 
+                   (input)="onColorChange()"
+                   aria-label="Select secondary color">
+            <span class="color-value">{{customTheme.secondColor}}</span>
+          </div>
+          <div class="color-description">Used for accents and secondary elements.</div>
+        </div>
+        
+        <div class="color-picker-group">
+          <label for="accentColor">Accent Color</label>
+          <div class="color-input-container">
+            <input type="color" 
+                   id="accentColor" 
+                   [(ngModel)]="customTheme.thirdColor" 
+                   (input)="onColorChange()"
+                   aria-label="Select accent color">
+            <span class="color-value">{{customTheme.thirdColor}}</span>
+          </div>
+          <div class="color-description">Used for highlights and backgrounds.</div>
+        </div>
+        
+        <div class="color-picker-group">
+          <label for="textColor">Text Color</label>
+          <div class="color-input-container">
+            <input type="color" 
+                   id="textColor" 
+                   [(ngModel)]="customTheme.altColor" 
+                   (input)="onColorChange()"
+                   aria-label="Select text color">
+            <span class="color-value">{{customTheme.altColor}}</span>
+          </div>
+          <div class="color-description">Used for body text and content.</div>
+        </div>
+        
+        <div class="color-harmony-suggestions">
+          <h4>Color Harmony Suggestions</h4>
+          <div class="harmony-option" (click)="applyColorHarmony('complementary')">
+            <span class="harmony-bullet">•</span> Complementary
+          </div>
+          <div class="harmony-option" (click)="applyColorHarmony('analogous')">
+            <span class="harmony-bullet">•</span> Analogous
+          </div>
+          <div class="harmony-option" (click)="applyColorHarmony('monochromatic')">
+            <span class="harmony-bullet">•</span> Monochromatic
+          </div>
+          <div class="harmony-option" (click)="applyColorHarmony('triadic')">
+            <span class="harmony-bullet">•</span> Triadic
+          </div>
+        </div>
+      </div>
+      
+      <div class="typography-section">
+        <h3>Typography</h3>
+        <p class="tip">Choose fonts that are easy to read and match your style.</p>
+        
+        <div class="font-picker-group">
+          <label for="fontFamily">Font Family</label>
+          <select id="fontFamily" 
+                  [(ngModel)]="customTheme.mainFontFam" 
+                  (change)="onFontChange()"
+                  aria-label="Select font family">
+            <option value="'Inria Serif', serif">Inria Serif</option>
+            <option value="'Roboto', sans-serif">Roboto</option>
+            <option value="'Open Sans', sans-serif">Open Sans</option>
+            <option value="'Lato', sans-serif">Lato</option>
+          </select>
+        </div>
+        
+        <div class="font-size-container">
+          <h4>Font Size</h4>
+          <div class="font-size-row">
+            <label>Heading Size</label>
+            <div class="size-slider-container">
+              <input type="range" min="16" max="32" value="24" class="size-slider">
+              <span class="size-value">24px</span>
+            </div>
+          </div>
+          <div class="font-size-row">
+            <label>Subheading Size</label>
+            <div class="size-slider-container">
+              <input type="range" min="14" max="24" value="18" class="size-slider">
+              <span class="size-value">18px</span>
+            </div>
+          </div>
+          <div class="font-size-row">
+            <label>Body Text Size</label>
+            <div class="size-slider-container">
+              <input type="range" min="12" max="18" value="16" class="size-slider">
+              <span class="size-value">16px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Save Theme Actions (Always visible at the bottom) -->
+  <div class="actions-container">
+    <div class="save-status-info" *ngIf="themeChanged">
+      <span class="pending-indicator"></span>
+      <span class="pending-text">Theme changes are ready to be saved</span>
+    </div>
+    <button class="save-theme-button" (click)="saveTheme()" [disabled]="isLoading || !themeChanged">
+      <span *ngIf="!isLoading">Save Theme</span>
+      <span *ngIf="isLoading">
+        <span class="loading-spinner"></span>
+        Saving...
+      </span>
+    </button>
+    <div class="success-message" *ngIf="saveSuccess">
+      <span class="success-icon">✓</span> {{successMessage}}
+    </div>
+    <div class="error-message" *ngIf="saveError">
+      <span class="error-icon">⚠</span> {{errorMessage}}
+      <div class="error-details" *ngIf="errorDetails">
+        <small>{{errorDetails}}</small>
+      </div>
+      <div class="error-actions" *ngIf="saveError">
+        <button class="retry-button" (click)="saveTheme()">Retry</button>
+      </div>
+    </div>
+  </div>
+</div>

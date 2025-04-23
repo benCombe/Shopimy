@@ -1,0 +1,111 @@
+.reviews-container {
+  margin-top: var(--spacing-lg);
+  font-family: var(--main-font-fam);
+}
+
+.reviews-title {
+  margin-bottom: var(--spacing-md);
+  font-size: 1.5rem;
+  color: var(--main-color);
+  font-weight: bold;
+}
+
+.reviews-list-title {
+  margin-bottom: var(--spacing-sm);
+  font-size: 1.2rem;
+  color: var(--main-color);
+}
+
+.review-list-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.review-item {
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--border-radius);
+  background-color: var(--third-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.review-item-rating {
+  margin-bottom: var(--spacing-sm);
+  color: var(--second-color);
+}
+
+.review-item-comment {
+  margin: var(--spacing-sm) 0;
+  line-height: 1.5;
+  color: var(--main-color);
+}
+
+.review-item-meta {
+  color: rgba(57, 55, 39, 0.7);
+  display: block;
+  margin-top: var(--spacing-sm);
+  font-size: 0.85rem;
+}
+
+.star-rating {
+  margin-bottom: var(--spacing-md);
+  font-weight: bold;
+  color: var(--second-color);
+}
+
+.average-rating-section {
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+.average-rating-display {
+  margin-bottom: var(--spacing-sm);
+}
+
+.average-rating-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--main-color);
+}
+
+.average-rating-text {
+  font-size: 1rem;
+  color: var(--main-color);
+}
+
+.error-message {
+  color: var(--color-error, #e02424);
+  border: 1px solid var(--color-error, #e02424);
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  border-radius: var(--border-radius);
+  background-color: var(--color-error-light, #fde8e8);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .review-item {
+    padding: var(--spacing-sm);
+  }
+  
+  .star-rating {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .average-rating-value {
+    font-size: 1.5rem;
+  }
+}

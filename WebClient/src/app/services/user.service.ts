@@ -12,17 +12,17 @@ import { User } from '../models/user';
 })
 export class UserService {
 
-  private apiUrl = `${environment.apiUrl}/account`;
+  private apiUrl = `${environment.apiUrl}/api/account`;
 
   private defaultUser: User = new User(
-    0, 
-    "Guest", 
-    "User", 
-    "example@gmail.com", 
-    "555-555-5555", 
-    "123 Nowhere Lane, Someplace, NS", 
-    "Canada", 
-    null, 
+    0,
+    "Guest",
+    "User",
+    "example@gmail.com",
+    "555-555-5555",
+    "123 Nowhere Lane, Someplace, NS",
+    "Canada",
+    null,
     true,
     "Someplace",
     "NS",
@@ -38,15 +38,29 @@ export class UserService {
   private loggedInSubject = new BehaviorSubject<boolean>(false);
   public loggedIn$ : Observable<boolean> = this.loggedInSubject.asObservable();
 
-  constructor(private http: HttpClient, private cookieService: CookieService) { }
+  constructor(private http: HttpClient, private cookieService: CookieService) {
+    // We'll move the session check to a separate method that can be called
+    // explicitly by AppComponent during initialization
+  }
 
+  // Initialize user state - should be called by AppComponent on init
+  initializeUserState(): void {
+    // Check if user is logged in using token from cookies
+    this.checkSession();
+  }
 
   //Register
   register(user: RegistrationDetails): Observable<boolean>{
     return this.http.post<boolean>(`${this.apiUrl}/register`, user).pipe(
       tap(success => {
         if (success) {
+          // Don't auto-login the user
+          /* Original auto-login code, commented out:
           this.login(new LoginDetails(user.Email, user.Password)).subscribe(); //Login user if successful registration
+          */
+          
+          // Instead, just return success
+          console.log('Registration successful');
         }
       })
     )
@@ -57,27 +71,32 @@ export class UserService {
   login(credentials: LoginDetails): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        if (response && response.token) {
-          console.log("Successful Login! ", response.token); //TODO REMOVE THIS IN PROD
+        if (response && response.token && response.user) {
+          // Successful login
           this.cookieService.set('auth_token', response.token, 3, '/'); // 3 days expiry
-          const rUser = new User(
-            response.user.id,
-            response.user.firstName,
-            response.user.lastName,
-            response.user.email,
-            response.user.phone,
-            response.user.address,
-            response.user.country,
-            null, //No Stored Password
-            response.user.verified,
-            response.user.city,
-            response.user.province,
-            response.user.postalCode,
-            response.user.countryCode,
-            response.user.phoneCode
+          
+          const loggedInUser = new User(
+            response.user.Id,
+            response.user.FirstName,
+            response.user.LastName,
+            response.user.Email,
+            response.user.Phone,
+            response.user.Address,
+            response.user.Country,
+            null,
+            response.user.Verified,
+            '',
+            '',
+            '',
+            null,
+            null,
+            null
           );
-          this.activeUserSubject.next(rUser);
+          
+          this.activeUserSubject.next(loggedInUser);
           this.loggedInSubject.next(true);
+        } else {
+          console.error("Login response missing token or user data.", response);
         }
       })
     );
@@ -95,7 +114,50 @@ export class UserService {
 
   // Update user profile
   updateUserProfile(user: User): Observable<boolean> {
-    return this.http.put<boolean>(`${this.apiUrl}/profile`, user);
+    const token = this.cookieService.get('auth_token');
+    if (!token) return new Observable(observer => observer.error('No token found'));
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // Create profile update object - excluding Email and Password
+    const profileUpdate = {
+      FirstName: user.FirstName,
+      LastName: user.LastName,
+      Phone: user.Phone,
+      Address: user.Address,
+      City: user.City,
+      State: user.State,
+      PostalCode: user.PostalCode,
+      Country: user.Country,
+      // Convert empty string to null for DOB
+      DOB: user.DOB === "" ? null : user.DOB,
+      Subscribed: user.Subscribed
+    };
+
+    console.log('Sending profile update payload:', profileUpdate);
+
+    return this.http.put<boolean>(`${this.apiUrl}/profile`, profileUpdate, { headers }).pipe(
+      tap(success => {
+        if (success) {
+          // Update the activeUser$ BehaviorSubject
+          const currentUser = this.activeUserSubject.getValue();
+          const updatedUser = {
+            ...currentUser,
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            Phone: user.Phone,
+            Address: user.Address,
+            City: user.City,
+            State: user.State,
+            PostalCode: user.PostalCode,
+            Country: user.Country,
+            DOB: user.DOB === "" ? null : user.DOB,
+            Subscribed: user.Subscribed
+          };
+          this.activeUserSubject.next(updatedUser as User);
+        }
+      })
+    );
   }
 
   // Logout User
@@ -126,6 +188,31 @@ export class UserService {
     });
   }
 
+  checkSession(): void {
+    const token = this.cookieService.get('auth_token');
+
+    if (token) {
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      this.http.get<User>(`${this.apiUrl}/profile`, { headers }).subscribe({
+        next: user => {
+          // Ensure email is properly set
+          if (!user.Email && (user as any).email) {
+            user.Email = (user as any).email;
+          }
+          
+          this.activeUserSubject.next(user);
+          this.loggedInSubject.next(true);
+        },
+        error: err => {
+          console.error("Error checking user session", err);
+          this.clearSession();
+        }
+      });
+    } else {
+      this.clearSession();
+    }
+  }
+
   private clearSession(): void {
     this.cookieService.delete('auth_token', '/');
     this.activeUserSubject.next(this.defaultUser);
@@ -147,6 +234,12 @@ export class UserService {
   //getUserPurchaseHistory
   //getUserPaymentMethods
   //getUserWishlists
+
+  // Helper method to check if current user is a guest
+  isGuest(): boolean {
+    const currentUser = this.activeUserSubject.getValue();
+    return !currentUser || currentUser.Id === 0;
+  }
 }
 
 

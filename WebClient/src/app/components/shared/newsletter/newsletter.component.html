@@ -1,0 +1,35 @@
+<!-- Newsletter Container -->
+<div class="newsletter-container" [ngStyle]="getThemeStyles()" aria-labelledby="newsletter-heading">
+  <div class="newsletter-content">
+    <h3 id="newsletter-heading" class="section-heading">Subscribe to Our Newsletter</h3>
+    <p class="newsletter-description">Stay updated with our latest products and offers</p>
+    
+    <form class="newsletter-form" (ngSubmit)="onSubmit()" [formGroup]="newsletterForm">
+      <div class="form-group">
+        <label for="email" class="visually-hidden">Email address</label>
+        <input 
+          type="email" 
+          id="email" 
+          class="form-control" 
+          formControlName="email" 
+          placeholder="Enter your email address"
+          aria-describedby="email-error"
+        >
+        <div *ngIf="newsletterForm.get('email')?.invalid && newsletterForm.get('email')?.touched" 
+             class="error-message" 
+             id="email-error" 
+             aria-live="polite">
+          Please enter a valid email address
+        </div>
+      </div>
+      
+      <button type="submit" class="btn-subscribe" [disabled]="newsletterForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'Subscribing...' : 'Subscribe' }}
+      </button>
+    </form>
+    
+    <div *ngIf="success" class="success-message" aria-live="polite">
+      Thank you for subscribing!
+    </div>
+  </div>
+</div> 

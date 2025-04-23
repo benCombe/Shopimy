@@ -1,4 +1,5 @@
 import { Category } from "./category";
+import { ComponentVisibility, DEFAULT_VISIBILITY } from "./component-visibility.model";
 
 export class StoreDetails {
   id: number;
@@ -14,6 +15,10 @@ export class StoreDetails {
   bannerURL: string;
   logoURL: string;
   categories: Category[];
+  componentVisibility: ComponentVisibility;
+  description: string = '';
+  customDomain: string = '';
+  isPublished: boolean = false;
 
   constructor(
     id: number,
@@ -28,7 +33,8 @@ export class StoreDetails {
     logoText: string,
     bannerURL: string,
     logoURL: string,
-    categories: Category[]
+    categories: Category[],
+    componentVisibility?: ComponentVisibility
   ){
     this.id = id;
     this.url = url;
@@ -43,6 +49,7 @@ export class StoreDetails {
     this.bannerURL = bannerURL;
     this.logoURL = logoURL;
     this.categories = categories;
+    this.componentVisibility = componentVisibility || DEFAULT_VISIBILITY;
   }
 
 }

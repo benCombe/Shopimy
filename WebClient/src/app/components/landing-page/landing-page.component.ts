@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { TopNavComponent } from "../top-nav/top-nav.component";
-import { FooterComponent } from "../footer/footer.component";
-import { LoadingOneComponent } from "../utilities/loading-one/loading-one.component";
 
 @Component({
   selector: 'app-landing-page',
-  imports: [TopNavComponent, FooterComponent, LoadingOneComponent],
+  standalone: true,
+  imports: [TopNavComponent],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css'
 })

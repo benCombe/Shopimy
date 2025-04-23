@@ -1,1 +1,4 @@
-<p>loading-two works!</p>
+<div class="loading-container" [class.fullscreen]="fullscreen">
+  <div class="loading-spinner"></div>
+  <div *ngIf="showText" class="loading-text">{{ loadingText }}</div>
+</div>

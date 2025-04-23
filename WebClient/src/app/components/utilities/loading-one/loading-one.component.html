@@ -1,13 +1,13 @@
-<div *ngIf="isLoading"  id="main" class="center">
-  <div id="animation-container" class="center-col">
-    <div id="top-bar" class="bar"></div>
-    <div id="icon-outer-band" class="center">
-      <div id="icon-inner-band">
+<div *ngIf="isLoading" class="loading-main center" role="alert" aria-busy="true" aria-label="Loading content, please wait">
+  <div class="animation-container center-col">
+    <div class="top-bar bar"></div>
+    <div class="icon-outer-band center">
+      <div class="icon-inner-band">
         <div class="icon-wrapper center" *ngFor="let i of icons; let idx = index" [style.animation-delay]="(idx*0.8)+'s'">
-          <i [class]="i"></i>
+          <i [class]="i" aria-hidden="true"></i>
         </div>
       </div>
     </div>
-    <div id="bottom-bar" class="bar"></div>
+    <div class="bottom-bar bar"></div>
   </div>
 </div>

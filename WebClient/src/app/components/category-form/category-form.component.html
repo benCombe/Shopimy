@@ -1,17 +1,69 @@
-<div>
-    <h2>{{ isEditMode ? 'Edit Category' : 'Create Category' }}</h2>
+<div [class.modal-content]="isModal" [class.container]="!isModal">
+  <div *ngIf="!isModal" class="section-header">
+    <h2>{{ isEditMode ? 'Edit Category' : 'Create New Category' }}</h2>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner" aria-hidden="true"></div>
+    <p>Loading...</p>
+  </div>
+
+  <div [class.dashboard-card]="!isModal" *ngIf="!loading">
     <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
-      <div>
-        <label>Name</label>
-        <input formControlName="name">
+      <div class="form-group">
+        <label for="name">Category Name</label>
+        <input 
+          id="name" 
+          type="text" 
+          formControlName="name" 
+          [class.error]="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched"
+          placeholder="Enter category name"
+          aria-required="true">
+        <div class="error-message" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+          <span *ngIf="categoryForm.get('name')?.errors?.['required']">Category name is required.</span>
+          <span *ngIf="categoryForm.get('name')?.errors?.['maxlength']">Category name cannot exceed 100 characters.</span>
+          <span *ngIf="categoryForm.get('name')?.errors?.['duplicateName']">A category with this name already exists.</span>
+        </div>
       </div>
-      <div>
-        <label>Parent Category (optional)</label>
-        <input formControlName="parentCategory" placeholder="Enter parent category id">
+
+      <div class="form-group">
+        <label for="parentCategory">Parent Category (optional)</label>
+        <select 
+          id="parentCategory" 
+          formControlName="parentCategory">
+          <option [ngValue]="null">None (Top Level Category)</option>
+          <option *ngFor="let category of allCategories" 
+                  [ngValue]="category.categoryId"
+                  [disabled]="isEditMode && category.categoryId === categoryId">
+            {{ category.name }}
+          </option>
+        </select>
+        <small class="helper-text"><i class="fa fa-info-circle" aria-hidden="true"></i> Selecting a parent category creates a hierarchical structure</small>
       </div>
-      <button type="submit" [disabled]="categoryForm.invalid">
-        {{ isEditMode ? 'Update' : 'Create' }}
-      </button>
+
+      <div class="form-actions">
+        <button type="button" (click)="navigateBack()" class="standard-button secondary">
+          <i class="fa fa-times" aria-hidden="true"></i> Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="standard-button primary" 
+          [disabled]="categoryForm.invalid || saving">
+          <span *ngIf="!saving">
+            <i class="fa" [ngClass]="isEditMode ? 'fa-check' : 'fa-plus'" aria-hidden="true"></i>
+            {{ isEditMode ? 'Update Category' : 'Create Category' }}
+          </span>
+          <span *ngIf="saving" class="saving-indicator">
+            <div class="spinner-small"></div> Saving...
+          </span>
+        </button>
+      </div>
     </form>
   </div>
+</div>
   

@@ -9,9 +9,12 @@ CREATE TABLE Users (
     dob DATE NOT NULL,
     password NVARCHAR(255) NOT NULL,
     verified BIT NOT NULL DEFAULT 0,
-    subscribed BIT NOT NULL DEFAULT 0
+    subscribed BIT NOT NULL DEFAULT 0,
+    city NVARCHAR(100) NULL,
+    state NVARCHAR(100) NULL,
+    postal_code NVARCHAR(20) NULL,
+    stripe_customer_id NVARCHAR(100) NULL
 );
-
 
 CREATE TABLE ActiveUsers (
     user_id INT NOT NULL,
@@ -38,21 +41,23 @@ CREATE TABLE StoreThemes (
     font_family VARCHAR(200) NOT NULL,
     banner_text varchar(50),
     logo_text varchar(50),
+    component_visibility NVARCHAR(MAX) NULL,
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE
 );
 
 CREATE TABLE StoreBanners (
     store_id INT NOT NULL,
     banner_url VARCHAR(200) NOT NULL,
+    PRIMARY KEY (store_id),
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
 );
 
 CREATE TABLE StoreLogos (
     store_id INT NOT NULL,
     logo_url VARCHAR(200) NOT NULL,
+    PRIMARY KEY (store_id),
     FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
 );
-
 
 CREATE TABLE Categories (
     category_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -74,7 +79,6 @@ CREATE TABLE ShoppingCarts (
 	FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION,
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
-
 
 CREATE VIEW ItemsView AS
     SELECT
@@ -132,3 +136,84 @@ create table ItemImages(
 	FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE NO ACTION,
 	FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION
 );
+
+
+CREATE TABLE OrderLog (
+	order_id INT IDENTITY(1,1) PRIMARY KEY,
+	store_id INT,
+	purchaser_id INT,
+	purchaser_email NVARCHAR(100) NOT NULL,
+	delivery_address NVARCHAR(255) NOT NULL,
+	stripe_token NVARCHAR(255),
+	order_date DATETIME NOT NULL,
+	order_status NVARCHAR(50),
+	FOREIGN KEY (store_id) REFERENCES Stores(store_id)
+);
+
+CREATE TABLE Orders (
+    order_id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    store_id INT NOT NULL,
+    order_date DATETIME2 DEFAULT SYSUTCDATETIME(),
+    total_amount DECIMAL(10,2) NOT NULL,
+    status NVARCHAR(50) NOT NULL DEFAULT 'Pending', -- 'Pending', 'Paid', 'Failed', 'Processing', 'Shipped', 'Cancelled' (Increased size for status)
+    stripe_session_id NVARCHAR(255) NULL, -- Added Stripe Session ID
+    shipping_address NVARCHAR(255) NULL,
+    shipping_city NVARCHAR(100) NULL,
+    shipping_state NVARCHAR(100) NULL,
+    shipping_postal_code NVARCHAR(20) NULL,
+    shipping_country NVARCHAR(100) NULL,
+    payment_method NVARCHAR(50) NULL,
+    payment_transaction_id NVARCHAR(100) NULL,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION,
+    FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE NO ACTION
+);
+
+CREATE TABLE OrderItems (
+    order_item_id INT IDENTITY(1,1) PRIMARY KEY,
+    order_id INT NOT NULL,
+    item_id INT NOT NULL, -- Renamed from product_id if needed, matches OrderItem model
+    product_name NVARCHAR(255) NOT NULL, -- Added ProductName
+    quantity INT NOT NULL,
+    price_paid DECIMAL(10,2) NOT NULL, -- Renamed from unit_price if needed, matches OrderItem model
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE NO ACTION -- Assuming item_id refers to Items table PK
+);
+
+-- New Store Visits table for tracking store visit analytics
+CREATE TABLE StoreVisits (
+    visit_id INT IDENTITY(1,1) PRIMARY KEY,
+    store_id INT NOT NULL,
+    user_id INT NULL, -- NULL for guest/unauthenticated visits
+    visit_timestamp DATETIME2 DEFAULT SYSUTCDATETIME(),
+    FOREIGN KEY (store_id) REFERENCES Stores(store_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE NO ACTION
+);
+
+-- Promotions table for store discount codes
+CREATE TABLE Promotions (
+    PromotionId INT IDENTITY(1,1) PRIMARY KEY,
+    StoreId INT NOT NULL,
+    Code NVARCHAR(50) NOT NULL,
+    Description NVARCHAR(255) NULL,
+    DiscountType NVARCHAR(20) NOT NULL, -- 'Percentage', 'FixedAmount'
+    DiscountValue DECIMAL(10,2) NOT NULL,
+    StartDate DATETIME2 NOT NULL,
+    EndDate DATETIME2 NULL,
+    IsActive BIT NOT NULL DEFAULT 1,
+    UsageLimit INT NULL,
+    FOREIGN KEY (StoreId) REFERENCES Stores(store_id) ON DELETE CASCADE,
+    CONSTRAINT UQ_StorePromotion UNIQUE (StoreId, Code)
+);
+
+CREATE TRIGGER Quantity ON dbo.Items 
+AFTER INSERT, UPDATE
+AS 
+	BEGIN
+		DECLARE @total int;
+		DECLARE @LId int;
+		SELECT @LId= list_id FROM INSERTED;
+		SELECT @total=SUM(i.quantity) FROM Items i WHERE i.list_id = @LId;
+		UPDATE Listing SET quantity=@total WHERE Listing.list_id =@LId;
+	END;
+

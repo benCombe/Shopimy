@@ -1,21 +1,155 @@
 <div id="main">
 
+  <div class="section">
+    <fieldset>
+      <legend>Account Information</legend>
+      
+      <!-- Success message display -->
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+      
+      <form [formGroup]="profileForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="FirstName"><h2>First Name</h2></label>
+            <input type="text" id="FirstName" formControlName="FirstName" [readonly]="!isEditing">
+            <div *ngIf="profileForm.get('FirstName')?.invalid && (profileForm.get('FirstName')?.dirty || profileForm.get('FirstName')?.touched)" class="error-message">
+              First name is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="LastName"><h2>Last Name</h2></label>
+            <input type="text" id="LastName" formControlName="LastName" [readonly]="!isEditing">
+            <div *ngIf="profileForm.get('LastName')?.invalid && (profileForm.get('LastName')?.dirty || profileForm.get('LastName')?.touched)" class="error-message">
+              Last name is required
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="Email"><h2>Email</h2></label>
+          <input type="text" id="Email" formControlName="Email" readonly>
+          <small>Email address cannot be changed</small>
+        </div>
+
+        <div class="form-group">
+          <label for="Phone"><h2>Phone</h2></label>
+          <input type="text" id="Phone" formControlName="Phone" [readonly]="!isEditing">
+          <div *ngIf="profileForm.get('Phone')?.invalid && (profileForm.get('Phone')?.dirty || profileForm.get('Phone')?.touched)" class="error-message">
+            Valid phone number is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="DOB"><h2>Date of Birth</h2></label>
+          <input type="date" id="DOB" formControlName="DOB" [readonly]="!isEditing">
+        </div>
+
+        <div class="form-group full-width">
+          <label for="Address"><h2>Address</h2></label>
+          <input type="text" id="Address" formControlName="Address" [readonly]="!isEditing">
+          <div *ngIf="profileForm.get('Address')?.invalid && (profileForm.get('Address')?.dirty || profileForm.get('Address')?.touched)" class="error-message">
+            Address is required
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="City"><h2>City</h2></label>
+            <input type="text" id="City" formControlName="City" [readonly]="!isEditing">
+            <div *ngIf="profileForm.get('City')?.invalid && (profileForm.get('City')?.dirty || profileForm.get('City')?.touched)" class="error-message">
+              City is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="State"><h2>State/Province</h2></label>
+            <input type="text" id="State" formControlName="State" [readonly]="!isEditing">
+            <div *ngIf="profileForm.get('State')?.invalid && (profileForm.get('State')?.dirty || profileForm.get('State')?.touched)" class="error-message">
+              State/Province is required
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="PostalCode"><h2>Postal/Zip Code</h2></label>
+            <input type="text" id="PostalCode" formControlName="PostalCode" [readonly]="!isEditing">
+            <div *ngIf="profileForm.get('PostalCode')?.invalid && (profileForm.get('PostalCode')?.dirty || profileForm.get('PostalCode')?.touched)" class="error-message">
+              Postal/Zip code is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="Country"><h2>Country</h2></label>
+            <input type="text" id="Country" formControlName="Country" [readonly]="!isEditing">
+            <div *ngIf="profileForm.get('Country')?.invalid && (profileForm.get('Country')?.dirty || profileForm.get('Country')?.touched)" class="error-message">
+              Country is required
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="Subscribed" [disabled]="!isEditing">
+            <span>Subscribe to newsletter and promotions</span>
+          </label>
+        </div>
+      </form>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <div class="button-group">
+        <button *ngIf="!isEditing" class="standard-button secondary" (click)="toggleEdit()">Edit</button>
+        <button *ngIf="isEditing" class="standard-button primary" (click)="saveProfile()" [disabled]="isSaving || profileForm.invalid">
+          <span *ngIf="isSaving">Saving...</span>
+          <span *ngIf="!isSaving">Save</span>
+        </button>
+        <button *ngIf="isEditing" class="standard-button secondary" (click)="toggleEdit()" [disabled]="isSaving">Cancel</button>
+      </div>
+    </fieldset>
+  </div>
 
   <div class="section">
     <fieldset>
-      <legend>Payment Info</legend>
-      <label for="creditCard"><h2>Credit Card</h2></label>
-      <input type="text" id="creditCard" name="creditCard" placeholder="Credit Card Number"><br><br>
-      <label for="Address"><h2>Address</h2></label>
-      <input type="text" id="Address" name="Address" placeholder="Address"><br><br>
-      <label for="Email"><h2>Email</h2></label>
-      <input type="text" id="Email" name="Email" placeholder="Email"><br><br>
-      <label for="Phone"><h2>Phone</h2></label>
-      <input type="text" id="Phone" name="Phone" placeholder="Phone"><br><br>
-      <label for="birthday"><h2>Birthday</h2></label>
-      <input type="date" id="birthday" name="birthday"><br><br>
-      <input type="submit" value="Submit" width="50px">
+      <legend>Payment Information</legend>
+      
+      <form [formGroup]="paymentForm">
+        <div class="form-group">
+          <label for="PaymentMethod"><h2>Payment Method</h2></label>
+          <select id="PaymentMethod" formControlName="PaymentMethod" [disabled]="true">
+            <option value="credit">Credit Card</option>
+            <option value="debit">Debit Card</option>
+            <option value="paypal">PayPal</option>
+          </select>
+          <small>Payment method can only be updated during checkout</small>
+        </div>
 
+        <div class="form-group">
+          <label for="CardNumber"><h2>Card Number</h2></label>
+          <input type="text" id="CardNumber" formControlName="CardNumber" readonly>
+          <small>For security reasons, only the last four digits are displayed</small>
+        </div>
+
+        <div class="form-group">
+          <label for="CardExpiryDate"><h2>Card Expiry Date</h2></label>
+          <input type="text" id="CardExpiryDate" formControlName="CardExpiryDate" readonly>
+        </div>
+      </form>
+      
+      <div class="payment-info-note">
+        <p>For security reasons, payment information cannot be directly edited here. 
+        To update your payment method, please use the checkout process for your next purchase.</p>
+      </div>
     </fieldset>
   </div>
+
+  <div class="section save-section">
+    <button class="standard-button primary" (click)="saveSettings()">Save All Settings</button>
+  </div>
+
 </div>

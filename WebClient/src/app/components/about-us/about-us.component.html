@@ -1,0 +1,77 @@
+<div class="global-container">
+  <div class="about-us-content">
+    <section class="about-section">
+      <h1>About Shopimy</h1>
+      <div class="global-card introduction-card">
+        <h2>Our Mission</h2>
+        <p>
+          Shopimy is a web-based platform designed to help social media sellers and small businesses create 
+          focused, customizable online stores. It allows for selling individual items or building entire 
+          catalogs with dedicated categories and personalization features.
+        </p>
+        <p>
+          This project emphasizes ease of use and simplicity, enabling businesses to expand their reach 
+          by providing intuitive tools and seamless social media integration.
+        </p>
+        <p>
+          Shopimy is a culmination project for the COSC 4P02 course at Brock University, developed using 
+          Agile principles.
+        </p>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h2>Key Features</h2>
+      <div class="features-grid">
+        <div class="global-card feature-card" *ngFor="let feature of features">
+          <p>{{ feature }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h2>Technology Stack</h2>
+      <div class="global-card tech-card">
+        <ul class="tech-list">
+          <li><strong>Frontend:</strong> Angular 19.0.7, TypeScript, RxJS, Stripe.js</li>
+          <li><strong>Backend:</strong> .NET 9.0.101 (C#), ASP.NET Core, Entity Framework Core</li>
+          <li><strong>Database:</strong> SQL Server</li>
+          <li><strong>Payments:</strong> Stripe</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h2>Our Team</h2>
+      <div class="team-container">
+        <table class="team-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Student ID</th>
+              <th>Brock Email</th>
+              <th>GitHub</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of teamMembers">
+              <td>{{ member.name }}</td>
+              <td>{{ member.role }}</td>
+              <td>{{ member.studentId }}</td>
+              <td>{{ member.email }}</td>
+              <td>{{ member.github }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h2>License</h2>
+      <div class="global-card license-card">
+        <p>This project is licensed under the Apache License, Version 2.0.</p>
+      </div>
+    </section>
+  </div>
+</div> 

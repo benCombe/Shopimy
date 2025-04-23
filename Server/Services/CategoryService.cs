@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 public interface ICategoryService
 {
     Task<IEnumerable<Category>> GetCategoriesForStoreAsync(int storeId);
-    Task<Category> GetCategoryByIdAsync(int storeId, int categoryId);
+    Task<Category?> GetCategoryByIdAsync(int storeId, int categoryId);
     Task<Category> CreateCategoryAsync(int storeId, Category model);
-    Task<Category> UpdateCategoryAsync(int storeId, int categoryId, Category model);
+    Task<Category?> UpdateCategoryAsync(int storeId, int categoryId, Category model);
     Task DeleteCategoryAsync(int storeId, int categoryId);
 }
 
@@ -30,7 +30,7 @@ public class CategoryService : ICategoryService
         return categories;
     }
 
-    public async Task<Category> GetCategoryByIdAsync(int storeId, int categoryId)
+    public async Task<Category?> GetCategoryByIdAsync(int storeId, int categoryId)
     {
         var category = await _repository.GetCategoryByStoreAndIdAsync(storeId, categoryId);
         return category;
@@ -38,7 +38,16 @@ public class CategoryService : ICategoryService
 
     public async Task<Category> CreateCategoryAsync(int storeId, Category model)
     {
-        // You can add any business rules or validations here.
+        // Check if a category with the same name already exists for this store
+        var categories = await _repository.GetCategoriesByStoreIdAsync(storeId);
+        var existingCategory = categories.FirstOrDefault(c => c.Name.Equals(model.Name, StringComparison.OrdinalIgnoreCase));
+
+        if (existingCategory != null)
+        {
+            throw new InvalidOperationException($"A category with the name '{model.Name}' already exists for this store.");
+        }
+
+        // Create new category
         var category = new Category
         {
             StoreId = storeId,
@@ -47,17 +56,16 @@ public class CategoryService : ICategoryService
         };
 
         await _repository.AddCategoryAsync(category);
-        // Optionally, if your repository saves changes automatically, return the created category.
         return category;
     }
 
-    public async Task<Category> UpdateCategoryAsync(int storeId, int categoryId, Category model)
+    public async Task<Category?> UpdateCategoryAsync(int storeId, int categoryId, Category model)
     {
         // Fetch the existing category.
         var category = await _repository.GetCategoryByStoreAndIdAsync(storeId, categoryId);
         if (category == null)
         {
-            throw new Exception("Category not found.");
+            return null;
         }
 
         // Update the fields.

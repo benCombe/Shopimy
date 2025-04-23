@@ -1,6 +1,8 @@
 import { StoreService } from './store.service';
 import { Injectable, Renderer2, RendererFactory2, OnInit } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
+import { StoreTheme } from '../models/store-theme.model';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available throughout the app
@@ -22,16 +24,26 @@ export class ThemeService {
    * @param theme - The complete theme object.
    * @param containerSelector - A CSS selector for the container to update.
    */
-  /* applyThemeToContainer(theme: StoreDetails, containerSelector: string): void {
+  applyThemeToContainer(theme: StoreTheme, containerSelector: string): void {
     const container = document.querySelector(containerSelector);
     if (container) {
-      this.renderer.setStyle(container, '--main-color', theme.theme_1);
-      this.renderer.setStyle(container, '--second-color', theme.theme_2);
-      this.renderer.setStyle(container, '--third-color', theme.theme_3);
-      this.renderer.setStyle(container, '--alt-color', theme.fontColor);
-      this.renderer.setStyle(container, '--main-font-fam', theme.fontFamily);
+      this.renderer.setStyle(container, '--main-color', theme.mainColor);
+      this.renderer.setStyle(container, '--second-color', theme.secondColor);
+      this.renderer.setStyle(container, '--third-color', theme.thirdColor);
+      this.renderer.setStyle(container, '--alt-color', theme.altColor);
+      this.renderer.setStyle(container, '--main-font-fam', theme.mainFontFam);
+
+      // Update store details
+      this.storeDetails.theme_1 = theme.mainColor;
+      this.storeDetails.theme_2 = theme.secondColor;
+      this.storeDetails.theme_3 = theme.thirdColor;
+      this.storeDetails.fontColor = theme.altColor;
+      this.storeDetails.fontFamily = theme.mainFontFam;
+
+      // Update store via service
+      this.storeService.updateStore(this.storeDetails).subscribe();
     }
-  } */
+  }
 
   setThemeOne(elemClass: string) {
     const elements = document.querySelectorAll(`.${elemClass}`);
@@ -125,6 +137,62 @@ export class ThemeService {
 
     // Return as RGB (since browsers convert colors to RGB)
     return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  /**
+   * Returns a list of available themes to choose from
+   * @returns Observable with array of themes
+   */
+  getAvailableThemes(): Observable<any[]> {
+    // For now, return predefined themes
+    // This could be replaced with an API call in the future
+    return of([
+      {
+        id: 'default',
+        name: 'Default Theme',
+        mainColor: '#393727',
+        secondColor: '#D0933D',
+        thirdColor: '#D3CEBB',
+        altColor: '#333333',
+        mainFontFam: 'sans-serif'
+      },
+      {
+        id: 'light',
+        name: 'Light Theme',
+        mainColor: '#ffffff',
+        secondColor: '#f5f5f5',
+        thirdColor: '#e0e0e0',
+        altColor: '#333333',
+        mainFontFam: 'Arial, sans-serif'
+      },
+      {
+        id: 'dark',
+        name: 'Dark Theme',
+        mainColor: '#1a1a1a',
+        secondColor: '#333333',
+        thirdColor: '#4d4d4d',
+        altColor: '#f5f5f5',
+        mainFontFam: 'Arial, sans-serif'
+      },
+      {
+        id: 'blue',
+        name: 'Blue Theme',
+        mainColor: '#1e3a8a',
+        secondColor: '#3b82f6',
+        thirdColor: '#93c5fd',
+        altColor: '#ffffff',
+        mainFontFam: 'Verdana, sans-serif'
+      },
+      {
+        id: 'hotdog',
+        name: 'Hotdog Stand',
+        mainColor: '#FF0000',
+        secondColor: '#FFFF00',
+        thirdColor: '#000000',
+        altColor: '#FFFFFF',
+        mainFontFam: 'sans-serif'
+      }
+    ]);
   }
 
 }

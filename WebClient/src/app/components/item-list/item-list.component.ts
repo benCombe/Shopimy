@@ -1,36 +1,53 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Item } from '../../models/item';
 import { ItemCardComponent } from '../item-card/item-card.component';
-import { TopNavComponent } from '../top-nav/top-nav.component';
+import { BasicItem } from '../../models/basic-item';
 
 @Component({
   selector: 'app-item-list',
-  templateUrl: './item-list.component.html',
   standalone: true,
-  imports: [CommonModule, RouterModule, ItemCardComponent, TopNavComponent]
+  imports: [CommonModule, RouterModule, ItemCardComponent],
+  templateUrl: './item-list.component.html',
+  styleUrls: ['./item-list.component.css']
 })
 export class ItemListComponent implements OnInit {
-  items: Item[] = [];
+  @Input() items: BasicItem[] = [];
+  @Input() categoryId?: string;
+  isLoading: boolean = false;
+
+  constructor() {}
 
   ngOnInit(): void {
-    // Replace this with an API call via ItemService when ready.
-    this.items = [
-      new Item({
-        Name: 'Joni Sweater (digital pattern)',
-        Id: 123,
-        OriginalPrice: 12.50,
-        SalePrice: 8.50,
-        OnSale: true,
-        Description: 'An intermediate knitting pattern...',
-        QuantityInStock: 100,
-        AvailFrom: '2025-02-01',
-        AvailTo: '2025-12-31',
-        CurrentRating: 4.5,
-        CategoryIds: [101, 102],
-        ImageUrl: 'assets/images/default.png'
-      })
-    ];
+    // If needed, fetch items here if categoryId is provided and items array is empty
+    if (this.categoryId && (!this.items || this.items.length === 0)) {
+      this.loadItems();
+    }
+  }
+
+  private loadItems(): void {
+    // Example loading implementation
+    this.isLoading = true;
+    
+    // Sample timeout to simulate loading - replace with actual service call
+    setTimeout(() => {
+      // This would be replaced with actual item loading logic
+      this.isLoading = false;
+    }, 1000);
+    
+    // Actual implementation would look like:
+    /*
+    this.itemService.getItemsByCategory(this.categoryId).subscribe(
+      (data) => {
+        this.items = data;
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error loading items:', error);
+        this.isLoading = false;
+      }
+    );
+    */
   }
 }

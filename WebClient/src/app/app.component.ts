@@ -1,27 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PopupComponent } from './components/utilities/popup/popup.component'; // Import PopupComponent
-import { WeatherExampleComponent } from './components/weather-example/weather-example.component';
-import { CommonModule } from '@angular/common';
 import { LandingPageComponent } from "./components/landing-page/landing-page.component";
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { StoreOwnerDashboardComponent } from "./components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component";
-import { TopNavComponent } from './components/top-nav/top-nav.component';
 import { ShoppingCartComponent } from "./components/customer-layout/shopping-cart/shopping-cart.component";
 import { CheckoutComponent } from "./components/customer-layout/checkout/checkout.component";
 import { LoadingOneComponent } from "./components/utilities/loading-one/loading-one.component";
+import { UserService } from './services/user.service';
+import { FooterComponent } from './components/footer/footer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,  // ✅ Standalone component
-  imports: [PopupComponent, LandingPageComponent, RouterOutlet, RouterLink, StoreOwnerDashboardComponent, ShoppingCartComponent, CheckoutComponent, LoadingOneComponent], // ✅ Import child components
+  imports: [RouterOutlet, LoadingOneComponent, FooterComponent], // ✅ Import only used components
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   showPopup = false;
   question = 'Do you want to continue?';
   responses = ['Yes', 'No', 'Maybe'];
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    // Initialize user state on application startup
+    // This ensures user authentication state persists through page reloads
+    this.userService.initializeUserState();
+  }
 
   handleResponse(response: string) {
     console.log('User selected:', response);

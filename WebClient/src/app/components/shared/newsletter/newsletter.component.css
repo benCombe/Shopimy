@@ -1,0 +1,120 @@
+.newsletter-container {
+  background-color: #fff;
+  padding: 2.5rem 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  margin: var(--spacing-md) 0;
+}
+
+.newsletter-content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section-heading {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.newsletter-description {
+  margin-bottom: 1.5rem;
+  color: var(--main-color, #333);
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.newsletter-form {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form-group {
+  flex: 1;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  background-color: #fff;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--main-color, #393727);
+  box-shadow: 0 0 0 3px rgba(57, 55, 39, 0.1);
+}
+
+.btn-subscribe {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--second-color, #D0933D);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-subscribe:hover:not(:disabled) {
+  background-color: var(--main-color, #393727);
+  transform: translateY(-2px);
+}
+
+.btn-subscribe:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  text-align: left;
+  position: absolute;
+}
+
+.success-message {
+  color: #28a745;
+  margin-top: 1rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+@media (max-width: 576px) {
+  .newsletter-form {
+    flex-direction: column;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .btn-subscribe {
+    width: 100%;
+  }
+} 
