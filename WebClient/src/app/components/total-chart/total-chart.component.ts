@@ -1,25 +1,25 @@
 import { Component, AfterViewInit, Injectable } from '@angular/core';
 import * as d3 from 'd3';
-import { QuantityService, VisitAnalytics } from '../../services/quantity.service';
+import { TotalService, VisitAnalytics } from '../../services/total.service';
 
 
 @Component({
-  selector: 'app-quantity-chart',
+  selector: 'app-total-chart',
   imports: [],
-  templateUrl: './quantity-chart.component.html',
-  styleUrl: './quantity-chart.component.css'
+  templateUrl: './total-chart.component.html',
+  styleUrl: './total-chart.component.css'
 })
 
 
 
-export class QuantityChartComponent implements AfterViewInit {
+export class TotalChartComponent implements AfterViewInit {
   items: VisitAnalytics[]= [];
   visitLabels: string="";
   visitData: number=0;
-  constructor(private qs: QuantityService) {}
+  constructor(private ts: TotalService) {}
 
   ngOnInit(){
-    this.qs.getItems().subscribe({
+    this.ts.getItems().subscribe({
       next: (data: VisitAnalytics[]) => {
         console.log('Typed data:', data);
         console.log("T");
@@ -36,6 +36,15 @@ export class QuantityChartComponent implements AfterViewInit {
   }
 
   private createBarChart(data: VisitAnalytics[]): void {
+    const aggregatedData = Array.from(
+      d3.rollup(
+        data,
+        v => d3.sum(v, d => d.totalPrice),
+        d => d.name
+      ),
+      ([name, totalPrice]) => ({ name, totalPrice })
+    );
+    console.log(aggregatedData);
     const svg = d3.select("#chart")
       .append("svg")
       .attr("width", 600)
@@ -49,22 +58,22 @@ export class QuantityChartComponent implements AfterViewInit {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const x = d3.scaleBand()
-      .domain(data.map(d => d.name))
+      .domain(aggregatedData.map(d => d.name))
       .range([0, width])
       .padding(0.2);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.totalQuantity)!])
+      .domain([0, d3.max(aggregatedData, d => d.totalPrice)!])
       .range([height, 0]);
 
     chart.selectAll("rect")
-      .data(data)
+      .data(aggregatedData)
       .enter()
       .append("rect")
       .attr("x", d => x(d.name)!)
-      .attr("y", d => y(d.totalQuantity))
+      .attr("y", d => y(d.totalPrice))
       .attr("width", x.bandwidth())
-      .attr("height", d => height - y(d.totalQuantity))
+      .attr("height", d => height - y(d.totalPrice))
       .attr("fill", "steelblue");
 
     chart.append("g")
@@ -73,21 +82,24 @@ export class QuantityChartComponent implements AfterViewInit {
 
     chart.append("g")
       .call(d3.axisLeft(y));
-      svg.append("text")
-      .attr("x", width / 2)
-      .attr("y", height + margin.bottom+20)
-      .attr("text-anchor", "middle")
-      .style("font-size", "14px")
-      .text("Product Name");
-  
-      svg.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", -margin.left + 15) // Push right from left edge
-      .attr("x", -height / 2)       // Center vertically
-      .attr("dy", "1em")            // Adjust vertical alignment
-      .attr("text-anchor", "middle")
-      .style("font-size", "14px")
-      .text("Total $");
+    // X Axis Label
+    svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height + margin.bottom+20)
+    .attr("text-anchor", "middle")
+    .style("font-size", "14px")
+    .text("Product Name");
+
+    svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -margin.left + 15) // Push right from left edge
+    .attr("x", -height / 2)       // Center vertically
+    .attr("dy", "1em")            // Adjust vertical alignment
+    .attr("text-anchor", "middle")
+    .style("font-size", "14px")
+    .text("Total $");
+
+
   }
 
 }

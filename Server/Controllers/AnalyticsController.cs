@@ -140,28 +140,11 @@ namespace Server.Controllers
 
         [HttpGet("item-quantity")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<Quantity>>> GetStoreVisits(int storeid)
+        public async Task<ActionResult<List<Quantity>>> GetItemQuantity(int storeid)
         {
             var authHeader = Request.Headers["Authorization"].ToString();
             
             authHeader= authHeader.Remove(0,7);
-            // Get user ID from the token claims
-            /*int userId = 0;
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out userId))
-            {
-                return Unauthorized("Invalid authentication token.");
-            }
-
-            // Get the store ID for this user
-            var store = await _context.Stores
-                .Where(s => s.StoreOwnerId == userId)
-                .FirstOrDefaultAsync();
-
-            if (store == null)
-            {
-                return NotFound("Store not found for this user.");
-            }*/
             storeid=10000005;
             var activeUser = await _context.ActiveUsers.FromSqlRaw(@"SELECT * from ActiveUsers au where au.token ={0}",authHeader).ToListAsync();
             var store = await _context.Stores
@@ -175,6 +158,29 @@ namespace Server.Controllers
                                                         where pl.store_id ={0}
                                                         group by l.name ;",store.StoreId).ToListAsync();
             return Ok(quality);
+        }
+
+        [HttpGet("item-total")]
+        [AllowAnonymous]
+        public async Task<ActionResult<List<Total>>> GetItemTotal(int storeid)
+        {
+            var authHeader = Request.Headers["Authorization"].ToString();
+            
+            authHeader= authHeader.Remove(0,7);
+            storeid=10000005;
+            var activeUser = await _context.ActiveUsers.FromSqlRaw(@"SELECT * from ActiveUsers au where au.token ={0}",authHeader).ToListAsync();
+            var store = await _context.Stores
+                .Where(s => s.StoreOwnerId == activeUser[0].UserId)
+                .FirstOrDefaultAsync();
+            
+            var total= await _context.Total.FromSqlRaw(@"select l.name as Name ,SUM(pl.quantity)*i.price AS TotalPrice
+                                                        from PurchaseLog pl
+                                                        join Items i on i.item_id =pl.item_id
+                                                        join Listing l on l.list_id = i.list_id
+                                                        where pl.store_id ={0}
+                                                        group by l.name,i.price ; 
+                                                        ",store.StoreId).ToListAsync();
+            return Ok(total);
         }
     }
 

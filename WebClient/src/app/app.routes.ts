@@ -16,6 +16,7 @@ import { CategoryPageComponent } from './components/customer-layout/category-pag
 import { ItemPageComponent } from './components/customer-layout/item-page/item-page.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { OrdersComponent } from './components/store-owner-layout/orders/orders.component';
+
 import { QuantityChartComponent } from './components/quantity-chart/quantity-chart.component';
 import { CreateStoreComponent } from './components/create-store/create-store.component';
 import { StoreOwnerGuard } from './guards/store-owner.guard';
