@@ -4,4 +4,5 @@
   width: 100%;
   min-height: 100vh;
   font-family: var(--main-font-fam);
+  background-color: var(--third-color);
 }

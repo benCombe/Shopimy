@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 100%;
   min-height: 100vh;
+  background-color: var(--third-color);
 }
 
 .create-store-container {
@@ -11,7 +12,7 @@
   align-items: center;
   min-height: calc(100vh - 70px); /* Adjust for top-nav height */
   padding: var(--spacing-lg, 24px);
-  background-color: var(--alt-color, #d5d5d5);
+  background-color: var(--third-color);
   flex-grow: 1;
 }
 

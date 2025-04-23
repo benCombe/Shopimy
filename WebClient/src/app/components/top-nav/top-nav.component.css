@@ -122,10 +122,36 @@
   overflow-y: auto;
   padding-top: 0;
   display: block;
+  scrollbar-width: thin;
+  scrollbar-color: var(--second-color) var(--main-color);
+}
+
+#mobile-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+#mobile-menu::-webkit-scrollbar-track {
+  background: var(--main-color);
+}
+
+#mobile-menu::-webkit-scrollbar-thumb {
+  background-color: var(--second-color);
+  border-radius: 6px;
+  border: 2px solid var(--main-color);
 }
 
 #mobile-menu.show-mobile-menu {
   transform: translateX(0);
+  animation: slide-in 0.3s ease-out;
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .mobile-menu-overlay {
@@ -196,6 +222,19 @@
   font-size: 1.1rem;
   font-weight: bold;
   font-family: var(--main-font-fam);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.mobile-section-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: var(--spacing-md);
+  width: 30px;
+  height: 2px;
+  background-color: var(--second-color);
 }
 
 .mobile-menu-divider {
@@ -215,39 +254,54 @@
   padding: var(--spacing-md) var(--spacing-lg);
   color: var(--third-color);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   font-size: 1rem;
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
   border-bottom: 1px solid rgba(217, 217, 217, 0.1);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
 }
 
-#mobile-menu .opt i {
+#mobile-menu .opt::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background-color: transparent;
+  transition: background-color 0.25s ease;
+}
+
+#mobile-menu .opt:hover::before {
+  background-color: var(--second-color);
+}
+
+#mobile-menu .opt.active {
+  background-color: rgba(208, 147, 61, 0.15);
+  border-left: none;
+}
+
+#mobile-menu .opt.active::before {
+  background-color: var(--second-color);
+}
+
+#mobile-menu .opt.active i {
   color: var(--second-color);
-  font-size: 1rem;
-  width: 20px;
-  text-align: center;
-  transition: all 0.3s ease;
+  transform: scale(1.1);
 }
 
 #mobile-menu .opt:hover {
-  background-color: rgba(208, 147, 61, 0.2);
+  background-color: rgba(208, 147, 61, 0.1);
   padding-left: calc(var(--spacing-lg) + 5px);
 }
 
 #mobile-menu .opt:hover i {
-  transform: translateX(2px);
-}
-
-#mobile-menu .opt:active {
-  background-color: var(--second-color);
-  color: white;
-}
-
-#mobile-menu .opt:active i {
-  color: white;
+  transform: translateX(3px);
+  color: var(--second-color);
 }
 
 /* Dropdown menu */
@@ -265,6 +319,7 @@
   color: var(--third-color);
   display: flex;
   align-items: center;
+  gap: var(--spacing-xs);
   transition: all 0.3s ease;
   position: relative;
   z-index: 2001;
@@ -274,19 +329,14 @@
   border-radius: 20px;
 }
 
-.dropdown-header:hover {
-  color: var(--second-color);
-  background-color: rgba(208, 147, 61, 0.1);
+.dropdown-header i {
+  transition: transform 0.3s ease;
 }
 
-.dropdown-header:focus {
-  outline: none;
-}
-
-.dropdown-header:focus-visible {
-  outline: 2px solid var(--second-color);
-  outline-offset: 2px;
-  border-radius: 4px;
+.dropdown-header:hover i, 
+.dropdown-header:focus i,
+.isUserMenuOpen .dropdown-header i {
+  transform: rotate(180deg);
 }
 
 .dropdown-options {
@@ -302,39 +352,42 @@
   box-shadow: var(--shadow-md);
   overflow: hidden;
   opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(-10px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   visibility: hidden;
   pointer-events: none;
+  border-left: 3px solid var(--second-color);
 }
 
 .dropdown-options.show {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
   visibility: visible;
   pointer-events: auto;
 }
 
 .opt {
-  display: block;
-  width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  color: var(--third-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
   text-decoration: none;
-  text-align: left;
+  color: var(--third-color);
   font-size: 1rem;
   transition: all 0.3s ease;
-  cursor: pointer;
   border: none;
-  background: none;
-  font-family: var(--main-font-fam);
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  position: relative;
 }
 
 .opt:hover,
 .opt:focus {
-  background-color: rgba(208, 147, 61, 0.2);
+  background-color: rgba(208, 147, 61, 0.1);
   color: var(--second-color);
-  outline: none;
+  padding-left: calc(var(--spacing-md) + 5px);
 }
 
 .opt:focus-visible {
@@ -343,8 +396,47 @@
 }
 
 .opt:active {
+  background-color: rgba(208, 147, 61, 0.2);
+}
+
+/* Add this new styling for active menu items */
+.opt.active {
+  background-color: rgba(208, 147, 61, 0.2);
+  color: var(--second-color);
+  font-weight: bold;
+  border-left: 3px solid var(--second-color);
+  position: relative;
+}
+
+.opt.active::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background-color: var(--second-color);
-  color: white;
+}
+
+.dropdown-options .opt {
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.dropdown-options .opt.active {
+  padding-left: calc(var(--spacing-md) + 5px);
+}
+
+/* Mobile menu specific styles */
+#mobile-menu .opt.active {
+  background-color: rgba(208, 147, 61, 0.15);
+}
+
+#mobile-menu .opt.active i {
+  color: var(--second-color);
+  transform: scale(1.1);
 }
 
 /* Responsive adjustments */

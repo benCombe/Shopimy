@@ -456,7 +456,7 @@ namespace Server.Controllers
                     string countQuery = @"
                         SELECT COUNT(*) 
                         FROM Orders 
-                        WHERE user_id = @userId";
+                        WHERE UserId = @userId";
 
                     using (SqlCommand countCommand = new SqlCommand(countQuery, connection))
                     {
@@ -466,12 +466,12 @@ namespace Server.Controllers
 
                     // Then get the paginated orders with their store names
                     string ordersQuery = @"
-                        SELECT o.order_id, o.order_date, o.total_amount, o.status, 
-                               s.name AS store_name
+                        SELECT o.Id AS order_id, o.CreatedAt AS order_date, o.TotalAmount AS total_amount, o.Status AS status, 
+                               s.Name AS store_name
                         FROM Orders o
-                        JOIN Stores s ON o.store_id = s.store_id
-                        WHERE o.user_id = @userId
-                        ORDER BY o.order_date DESC
+                        JOIN Stores s ON o.StoreId = s.StoreId
+                        WHERE o.UserId = @userId
+                        ORDER BY o.CreatedAt DESC
                         OFFSET @offset ROWS
                         FETCH NEXT @limit ROWS ONLY";
 
@@ -505,9 +505,9 @@ namespace Server.Controllers
                     foreach (var order in purchases)
                     {
                         string itemsQuery = @"
-                            SELECT oi.item_id, oi.product_name, oi.quantity, oi.price_paid
+                            SELECT oi.Id AS item_id, oi.ProductName AS product_name, oi.Quantity AS quantity, oi.UnitPrice AS price_paid
                             FROM OrderItems oi
-                            WHERE oi.order_id = @orderId";
+                            WHERE oi.OrderId = @orderId";
 
                         using (SqlCommand itemsCommand = new SqlCommand(itemsQuery, connection))
                         {

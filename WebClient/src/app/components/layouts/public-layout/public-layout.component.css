@@ -1,5 +1,11 @@
+:host {
+  display: block;
+  background-color: var(--third-color);
+}
+
 .content-container {
   min-height: calc(100vh - 160px); /* Adjust based on your header and footer height */
   display: flex;
   flex-direction: column;
+  background-color: var(--third-color); /* Add default background color */
 } 
