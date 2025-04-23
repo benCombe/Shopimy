@@ -53,7 +53,7 @@ The backend is built using .NET and exposes a RESTful API.
     *   `AccountController`: Handles user registration, login, logout, profile retrieval/update, and purchase history.
     *   `StoreController`: Fetches store details (including theme, components), creates/updates stores, logs store visits (`StoreVisits` table).
     *   `CategoriesController`: Manages product categories (CRUD), fetches item IDs by category/store.
-    *   `ItemController`: Handles product/listing/variant CRUD operations. Manages image URLs associated with variants. *(Note: Audit identified logic directly in controller, potential lack of dedicated ItemService)*.
+    *   `ItemController`: Handles product/listing/variant CRUD operations. Manages image URLs associated with variants. *(Note: Most logic resides directly in controller rather than in a dedicated ItemService)*.
     *   `ImageController`: Handles file upload for product images (currently saves to filesystem).
     *   `LogoController`: Handles file upload/delete for store logos.
     *   `PaymentController`: Server-side Stripe integration (Checkout Session creation, Webhook handling for `checkout.session.completed`, `payment_intent.payment_failed`, etc.).
@@ -63,6 +63,10 @@ The backend is built using .NET and exposes a RESTful API.
     *   `OrdersController`: Manages fetching orders for store owners and updating order status.
     *   `AnalyticsController`: Provides aggregated store performance analytics data (visits, sales, KPIs, top products).
     *   `PromotionsController`: Manages promotional codes (CRUD).
+    *   `ChekoutSession`: Additional controller for checkout functionality.
+    *   `StripeController`: Additional controller for handling specific Stripe operations.
+    *   `TestController`: Testing controller (likely for development purposes only).
+    *   `WeatherForecastController`: Example controller, potentially for testing or demonstration purposes.
 *   **Authentication & Authorization:** Uses JWT Bearer tokens (`Program.cs`, `AccountController.cs`). Tokens generated on login, validated for `[Authorize]` endpoints. `StoreClaimMiddleware` adds a `storeId` claim to the user's identity if they own a store.
 *   **Data Access:** Primarily uses Entity Framework Core (`Data/AppDbContext.cs`) for database interaction. Repositories (`Repositories/`) abstract data access for some entities (`CategoryRepository`, `ReviewRepository`). Some raw SQL is used in controllers (`ItemController`, `OrdersController`, `AnalyticsController`).
 *   **Service Layer:** Encapsulates business logic (`Services/`). Examples: `AnalyticsService`, `CategoryService`, `LogoService`, `PromotionsService`, `ReviewService`. *(Note: Item logic may reside directly in `ItemController`)*.

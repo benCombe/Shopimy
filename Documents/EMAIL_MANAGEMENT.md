@@ -24,7 +24,7 @@ The Shopimy application will need to send various types of emails, including but
 
 ## 3. Email Service Integration
 
-Currently, the specific email sending service is **not yet implemented** in the backend (`Server/`).
+The email service is **planned but not yet implemented** in the backend (`Server/`). The architecture includes commented placeholders for this functionality in `PaymentController.cs` and `AccountController.cs` with commented code in `Program.cs` for dependency injection registration.
 
 *   **Requirement:** An email service provider or an SMTP client configuration needs to be integrated into the .NET backend.
 *   **Potential Services:**
