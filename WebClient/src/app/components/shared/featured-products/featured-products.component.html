@@ -1,5 +1,5 @@
-<div class="featured-products-container" aria-labelledby="featured-products-heading">
-  <h3 id="featured-products-heading" class="section-heading">Featured Products</h3>
+<section class="featured-products-container" aria-labelledby="featured-products-heading">
+  <h2 id="featured-products-heading" class="section-heading">Featured Products</h2>
   
   <!-- Loading state -->
   <div *ngIf="loading" class="loading-container" aria-live="polite">
@@ -7,32 +7,35 @@
   </div>
   
   <!-- Empty state -->
-  <div *ngIf="!loading && (!itemIds || itemIds.length === 0) && !isPreview" class="empty-state" aria-live="polite">
+  <div *ngIf="!loading && (!itemIds || itemIds.length === 0) && !isPreview" class="empty-state" aria-live="polite" role="status">
     <p class="empty-message">No featured products available at this time</p>
   </div>
   
   <!-- Products display -->
-  <div *ngIf="!loading && itemIds && itemIds.length > 0 && !isPreview" class="product-grid">
-    <app-item-card 
-      *ngFor="let itemId of itemIds.slice(0, displayCount)" 
-      [itemId]="itemId">
-    </app-item-card>
-  </div>
+  <ul *ngIf="!loading && itemIds && itemIds.length > 0 && !isPreview" class="product-grid" role="list">
+    <li *ngFor="let itemId of itemIds.slice(0, displayCount)" class="product-item" role="listitem">
+      <app-item-card 
+        [itemId]="itemId">
+      </app-item-card>
+    </li>
+  </ul>
   
   <!-- For preview mode -->
-  <div class="product-grid" *ngIf="isPreview">
+  <ul class="product-grid" *ngIf="isPreview" role="list" aria-label="Sample product previews">
     <!-- Show sample product placeholders -->
-    <div class="product-card" *ngFor="let id of getSampleItemIds()">
-      <div class="product-image"></div>
-      <div class="product-details">
-        <h4 class="product-title">Product {{ id }}</h4>
-        <p class="product-price">${{ getSamplePrice(id) }}</p>
-        <button class="add-to-cart-btn">
-          Add to Cart
-        </button>
+    <li class="product-item" *ngFor="let id of getSampleItemIds()" role="listitem">
+      <div class="product-card">
+        <div class="product-image" aria-hidden="true"></div>
+        <div class="product-details">
+          <h3 class="product-title">Product {{ id }}</h3>
+          <p class="product-price">${{ getSamplePrice(id) }}</p>
+          <button class="add-to-cart-btn" [attr.aria-label]="'Add Product ' + id + ' to cart'">
+            Add to Cart
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
+    </li>
+  </ul>
   
   <!-- Load more button -->
   <div class="load-more-container" *ngIf="shouldShowLoadMoreButton()">
@@ -40,4 +43,4 @@
       Load More
     </button>
   </div>
-</div> 
+</section> 
