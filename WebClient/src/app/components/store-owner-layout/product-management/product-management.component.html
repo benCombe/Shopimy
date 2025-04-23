@@ -5,7 +5,9 @@
                 <h2>Product Management</h2>
             </div>
             <p class="section-description">Manage your products and inventory</p>
-            <button class="standard-button" (click)="showAddProductForm()" aria-label="Add new product" *ngIf="currentListId === null">+ Add New Product</button>
+            <button id="new-product-btn" (click)="showAddProductForm()" *ngIf="currentListId === null">
+                <span>Add New Product</span>
+            </button>
         </div>
 
         <!-- Product List -->
@@ -84,32 +86,32 @@
                 <!-- Basic Product Info -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="name">Product Name *</label>
+                        <label for="name">Product Name</label>
                         <input
                             id="name"
                             type="text"
                             formControlName="name"
                             placeholder="Enter product name"
-                            [class.error]="productForm.get('name')?.invalid && productForm.get('name')?.touched"
+                            [class.is-invalid]="productForm.get('name')?.invalid && productForm.get('name')?.touched"
                             aria-required="true">
-                        <div class="error-message" *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+                        <div class="invalid-feedback" *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
                             Product name is required
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="categoryId">Category *</label>
+                        <label for="categoryId">Category</label>
                         <select
                             id="categoryId"
                             formControlName="categoryId"
-                            [class.error]="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched"
+                            [class.is-invalid]="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched"
                             aria-required="true">
                             <option value="">Select a category</option>
                             <option *ngFor="let category of categories" [value]="category.categoryId">
                                 {{ category.name }}
                             </option>
                         </select>
-                        <div class="error-message" *ngIf="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched">
+                        <div class="invalid-feedback" *ngIf="productForm.get('categoryId')?.invalid && productForm.get('categoryId')?.touched">
                             Category is required
                         </div>
                     </div>
@@ -122,9 +124,9 @@
                         formControlName="description"
                         rows="4"
                         placeholder="Enter product description"
-                        [class.error]="productForm.get('description')?.invalid && productForm.get('description')?.touched">
+                        [class.is-invalid]="productForm.get('description')?.invalid && productForm.get('description')?.touched">
                     </textarea>
-                    <div class="error-message" *ngIf="productForm.get('description')?.errors?.['maxlength'] && productForm.get('description')?.touched">
+                    <div class="invalid-feedback" *ngIf="productForm.get('description')?.errors?.['maxlength'] && productForm.get('description')?.touched">
                         Description too long (max 1000 characters)
                     </div>
                 </div>
@@ -137,7 +139,7 @@
                             id="availFrom"
                             type="date"
                             formControlName="availFrom"
-                            [class.error]="productForm.get('availFrom')?.invalid && productForm.get('availFrom')?.touched">
+                            [class.is-invalid]="productForm.get('availFrom')?.invalid && productForm.get('availFrom')?.touched">
                         <small class="form-hint">Leave blank to keep product as Draft</small>
                     </div>
                     <div class="form-group">
@@ -146,7 +148,7 @@
                             id="availTo"
                             type="date"
                             formControlName="availTo"
-                            [class.error]="productForm.get('availTo')?.invalid && productForm.get('availTo')?.touched">
+                            [class.is-invalid]="productForm.get('availTo')?.invalid && productForm.get('availTo')?.touched">
                          <small class="form-hint">Leave blank for no end date</small>
                     </div>
                 </div>
@@ -155,7 +157,9 @@
                 <div class="variants-section">
                     <div class="section-header">
                         <h4>Product Variants</h4>
-                        <button type="button" class="standard-button small" (click)="addVariant()" aria-label="Add variant" [disabled]="isSaving">+ Add Variant</button>
+                        <button type="button" id="add-variant-btn" (click)="addVariant()" [disabled]="isSaving">
+                            <span>Add Variant</span>
+                        </button>
                     </div>
 
                     <div formArrayName="variants">
@@ -165,7 +169,9 @@
                                 <div class="variant-header">
                                     <h5>Variant #{{ i + 1 }}</h5>
                                     <!-- Remove button -->
-                                    <button type="button" class="remove-variant" (click)="removeVariant(i)" *ngIf="variants.length > 1" aria-label="Remove variant" [disabled]="isSaving">✕</button>
+                                    <button type="button" id="remove-variant-btn-{{i}}" class="remove-variant" (click)="removeVariant(i)" *ngIf="variants.length > 1" [disabled]="isSaving">
+                                        <span>✕</span>
+                                    </button>
                                 </div>
 
                                 <!-- Variant Image Section -->
@@ -175,7 +181,9 @@
                                         <!-- Preview -->
                                         <div class="image-preview-container" *ngIf="variantGroup.get('imagePreview')?.value as previewUrl; else noImageVariant">
                                             <img [src]="previewUrl" alt="Variant preview" class="image-preview">
-                                            <button type="button" class="remove-image-btn" (click)="removeSelectedImage(i)" aria-label="Remove variant image" [disabled]="isSaving">✕</button>
+                                            <button type="button" id="remove-image-btn-{{i}}" class="remove-image-btn" (click)="removeSelectedImage(i)" [disabled]="isSaving">
+                                                <span>✕</span>
+                                            </button>
                                         </div>
                                         <ng-template #noImageVariant>
                                             <div class="no-image-placeholder">
@@ -191,29 +199,24 @@
                                                 accept="image/png, image/jpeg, image/gif"
                                                 (change)="onFileSelected($event, i)"
                                                 style="display: none"
-                                                aria-label="Upload variant image"
                                                 #variantFileInput>
                                             <button
                                                 type="button"
-                                                class="standard-button small"
+                                                id="upload-image-btn-{{i}}"
                                                 (click)="variantFileInput.click()"
                                                 [disabled]="isSaving">
-                                                {{ variantGroup.get('imageUrl')?.value ? 'Change Image' : 'Upload Image' }}
+                                                <span>{{ variantGroup.get('imageUrl')?.value ? 'Change Image' : 'Upload Image' }}</span>
                                             </button>
-                                            <small class="image-hint">Max 2MB</small>
-                                            <!-- Optional: Show uploading indicator -->
-                                            <!-- <div *ngIf="variantGroup.get('isUploadingImage')?.value" class="spinner-small"></div> -->
+                                            <small class="form-hint">Max 2MB</small>
                                         </div>
                                     </div>
-                                    <!-- Hidden field might not be needed if we use getRawValue() -->
-                                    <!-- <input type="hidden" formControlName="imageUrl"> -->
                                 </div>
 
 
                                 <!-- Variant Fields -->
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label for="price-{{i}}">Price *</label>
+                                        <label for="price-{{i}}">Price</label>
                                         <input
                                             id="price-{{i}}"
                                             type="number"
@@ -221,10 +224,10 @@
                                             placeholder="0.00"
                                             min="0.01"
                                             step="0.01"
-                                            [class.error]="variantGroup.get('price')?.invalid && variantGroup.get('price')?.touched"
+                                            [class.is-invalid]="variantGroup.get('price')?.invalid && variantGroup.get('price')?.touched"
                                             aria-required="true">
-                                        <div class="error-message" *ngIf="variantGroup.get('price')?.invalid && variantGroup.get('price')?.touched">
-                                            Price (>0) required
+                                        <div class="invalid-feedback" *ngIf="variantGroup.get('price')?.invalid && variantGroup.get('price')?.touched">
+                                            Price is required and must be greater than zero
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -233,27 +236,27 @@
                                             id="salePrice-{{i}}"
                                             type="number"
                                             formControlName="salePrice"
-                                            placeholder="Optional"
+                                            placeholder="Optional sale price"
                                             min="0"
                                             step="0.01"
-                                            [class.error]="variantGroup.get('salePrice')?.invalid && variantGroup.get('salePrice')?.touched">
-                                        <div class="error-message" *ngIf="variantGroup.get('salePrice')?.errors?.['min'] && variantGroup.get('salePrice')?.touched">
-                                            Must be >= 0
+                                            [class.is-invalid]="variantGroup.get('salePrice')?.invalid && variantGroup.get('salePrice')?.touched">
+                                        <div class="invalid-feedback" *ngIf="variantGroup.get('salePrice')?.errors?.['min'] && variantGroup.get('salePrice')?.touched">
+                                            Sale price cannot be negative
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="quantity-{{i}}">Quantity *</label>
+                                        <label for="quantity-{{i}}">Quantity</label>
                                         <input
                                             id="quantity-{{i}}"
                                             type="number"
                                             formControlName="quantity"
-                                            placeholder="0"
+                                            placeholder="Enter quantity"
                                             min="0"
                                             step="1"
-                                            [class.error]="variantGroup.get('quantity')?.invalid && variantGroup.get('quantity')?.touched"
+                                            [class.is-invalid]="variantGroup.get('quantity')?.invalid && variantGroup.get('quantity')?.touched"
                                             aria-required="true">
-                                        <div class="error-message" *ngIf="variantGroup.get('quantity')?.invalid && variantGroup.get('quantity')?.touched">
-                                            Quantity (>=0) required
+                                        <div class="invalid-feedback" *ngIf="variantGroup.get('quantity')?.invalid && variantGroup.get('quantity')?.touched">
+                                            Quantity is required and must be greater than or equal to zero
                                         </div>
                                     </div>
                                 </div>
@@ -282,19 +285,19 @@
 
                 <!-- Form Actions -->
                 <div class="form-actions">
-                    <button type="button" class="standard-button secondary" (click)="cancelEdit()" [disabled]="isSaving">Cancel</button>
+                    <button type="button" class="cancel-button" (click)="cancelEdit()" [disabled]="isSaving">Cancel</button>
                     <!-- Save Draft Button -->
-                     <button type="button" class="standard-button secondary" (click)="saveProduct(false)" [disabled]="isSaving || productForm.invalid">
+                     <button type="button" id="save-draft-btn" (click)="saveProduct(false)" [disabled]="isSaving || productForm.invalid">
                         <span *ngIf="!isSaving">Save Draft</span>
-                        <span *ngIf="isSaving" class="saving-indicator">
-                            <div class="spinner-small"></div> Saving...
+                        <span *ngIf="isSaving">
+                            <i class="fas fa-spinner fa-spin"></i> Saving...
                         </span>
                     </button>
                     <!-- Publish/Update Button -->
-                    <button type="button" class="standard-button primary" (click)="saveProduct(true)" [disabled]="isSaving || productForm.invalid">
+                    <button type="button" id="publish-btn" (click)="saveProduct(true)" [disabled]="isSaving || productForm.invalid">
                         <span *ngIf="!isSaving">{{ isEditMode ? 'Update Product' : 'Publish Product' }}</span>
-                        <span *ngIf="isSaving" class="saving-indicator">
-                            <div class="spinner-small"></div> Saving...
+                        <span *ngIf="isSaving">
+                            <i class="fas fa-spinner fa-spin"></i> Saving...
                         </span>
                     </button>
                 </div>

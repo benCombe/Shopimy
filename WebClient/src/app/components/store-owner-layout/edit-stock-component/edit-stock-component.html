@@ -9,15 +9,16 @@
         formControlName="quantity" 
         aria-required="true"
         min="0" 
-        [class.error]="stockForm.get('quantity')?.invalid && stockForm.get('quantity')?.touched">
-      <div class="error-message" *ngIf="stockForm.get('quantity')?.invalid && stockForm.get('quantity')?.touched">
+        placeholder="Enter stock quantity"
+        [class.is-invalid]="stockForm.get('quantity')?.invalid && stockForm.get('quantity')?.touched">
+      <div class="invalid-feedback" *ngIf="stockForm.get('quantity')?.invalid && stockForm.get('quantity')?.touched">
         <span *ngIf="stockForm.get('quantity')?.errors?.['required']">Stock level is required.</span>
         <span *ngIf="stockForm.get('quantity')?.errors?.['min']">Stock level cannot be negative.</span>
       </div>
     </div>
     <div class="form-actions">
-      <button type="submit" class="standard-button primary" [disabled]="stockForm.invalid">
-        <i class="fa fa-check" aria-hidden="true"></i> Update Stock
+      <button type="submit" id="stock-btn" [disabled]="stockForm.invalid">
+        <span>Update Stock</span>
       </button>
     </div>
   </form>

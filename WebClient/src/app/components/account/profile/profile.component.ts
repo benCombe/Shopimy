@@ -225,8 +225,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   saveProfile(): void {
-    if (this.profileForm.valid && this.profileForm.dirty) {
+    console.log('saveProfile called, form valid:', this.profileForm.valid, 'form dirty:', this.profileForm.dirty);
+    
+    if (this.profileForm.valid) {
       this.isSavingProfile = true;
+      console.log('Setting isSavingProfile to true');
       
       // Format the date correctly if present
       let dateOfBirth = this.profileForm.value.dateOfBirth;
@@ -269,9 +272,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
       
       this.userService.updateUserProfile(updatedUser).subscribe({
         next: (success) => {
+          console.log('Profile update success:', success);
           if (success) {
             this.editMode = false;
-            this.isSavingProfile = false;
             
             // Update the local user object with the new values
             this.user = {
@@ -292,6 +295,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
             // Force refresh user data from server to ensure display is correct
             this.userService.checkSession();
           }
+          this.isSavingProfile = false;
+          console.log('Setting isSavingProfile to false after success');
         },
         error: (error) => {
           console.error('Error updating profile:', error);
@@ -300,8 +305,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
             console.error('Server error details:', error.error);
           }
           this.isSavingProfile = false;
+          console.log('Setting isSavingProfile to false after error');
         }
       });
+    } else {
+      // Mark form fields as touched to trigger validation messages
+      Object.keys(this.profileForm.controls).forEach(key => {
+        const control = this.profileForm.get(key);
+        control?.markAsTouched();
+      });
+      console.log('Form is invalid. Validation errors:', this.profileForm.errors);
     }
   }
 

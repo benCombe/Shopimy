@@ -32,9 +32,11 @@ h2 {
 
 .contact-form-card {
   background-color: var(--third-color);
-  padding: var(--spacing-lg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 650px;
+  margin: 0 auto;
 }
 
 .contact-info {
@@ -59,40 +61,74 @@ h2 {
   color: var(--main-color);
 }
 
+/* Form Styling based on login/register components */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
 .form-group {
-  margin-bottom: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-label {
-  display: block;
-  margin-bottom: var(--spacing-xs);
-  color: var(--main-color);
-  font-weight: bold;
-}
-
-.form-control {
-  width: 100%;
-  padding: var(--spacing-sm);
-  border: 1px solid var(--alt-color);
-  border-radius: var(--border-radius);
+.form-group label {
   font-family: var(--main-font-fam);
-  background-color: #fff;
+  font-weight: 500;
+  color: var(--main-color);
+  margin-bottom: 0;
 }
 
-.form-control:focus {
+.form-group input,
+.form-group textarea {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: var(--second-color);
-  box-shadow: 0 0 0 2px rgba(var(--second-color-rgb), 0.2);
+  box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2);
 }
 
-.form-control.is-invalid {
-  border-color: #dc3545;
+.form-group input.is-invalid,
+.form-group textarea.is-invalid {
+  border-color: #e02424;
 }
 
-.error-message {
-  color: #dc3545;
-  font-size: 0.85rem;
-  margin-top: var(--spacing-xs);
+.invalid-feedback {
+  color: #e02424;
+  font-size: 0.875rem;
+}
+
+#contact-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--main-color);
+  color: var(--second-color);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+#contact-btn:hover:not(:disabled) {
+  background-color: var(--second-color);
+  color: white;
+}
+
+#contact-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* Responsive styles */
@@ -116,8 +152,7 @@ label {
   h1 {
     font-size: 3rem;
   }
-
-  .contact-form-card,
+  
   .contact-info-card {
     padding: var(--spacing-xl);
   }

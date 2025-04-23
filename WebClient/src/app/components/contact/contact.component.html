@@ -30,10 +30,10 @@
               type="text" 
               id="name" 
               formControlName="name" 
-              class="form-control" 
+              placeholder="Enter your name"
               [class.is-invalid]="contactForm.get('name')?.invalid && (contactForm.get('name')?.touched || formSubmitted)"
             >
-            <div class="error-message" *ngIf="contactForm.get('name')?.invalid && (contactForm.get('name')?.touched || formSubmitted)">
+            <div class="invalid-feedback" *ngIf="contactForm.get('name')?.invalid && (contactForm.get('name')?.touched || formSubmitted)">
               Name is required
             </div>
           </div>
@@ -44,10 +44,10 @@
               type="email" 
               id="email" 
               formControlName="email" 
-              class="form-control"
+              placeholder="Enter your email"
               [class.is-invalid]="contactForm.get('email')?.invalid && (contactForm.get('email')?.touched || formSubmitted)"
             >
-            <div class="error-message" *ngIf="contactForm.get('email')?.invalid && (contactForm.get('email')?.touched || formSubmitted)">
+            <div class="invalid-feedback" *ngIf="contactForm.get('email')?.invalid && (contactForm.get('email')?.touched || formSubmitted)">
               <span *ngIf="contactForm.get('email')?.errors?.['required']">Email is required</span>
               <span *ngIf="contactForm.get('email')?.errors?.['email']">Please enter a valid email address</span>
             </div>
@@ -59,10 +59,10 @@
               type="text" 
               id="subject" 
               formControlName="subject" 
-              class="form-control"
+              placeholder="Enter message subject"
               [class.is-invalid]="contactForm.get('subject')?.invalid && (contactForm.get('subject')?.touched || formSubmitted)"
             >
-            <div class="error-message" *ngIf="contactForm.get('subject')?.invalid && (contactForm.get('subject')?.touched || formSubmitted)">
+            <div class="invalid-feedback" *ngIf="contactForm.get('subject')?.invalid && (contactForm.get('subject')?.touched || formSubmitted)">
               Subject is required
             </div>
           </div>
@@ -72,16 +72,16 @@
             <textarea 
               id="message" 
               formControlName="message" 
-              class="form-control" 
               rows="5"
+              placeholder="Type your message here"
               [class.is-invalid]="contactForm.get('message')?.invalid && (contactForm.get('message')?.touched || formSubmitted)"
             ></textarea>
-            <div class="error-message" *ngIf="contactForm.get('message')?.invalid && (contactForm.get('message')?.touched || formSubmitted)">
+            <div class="invalid-feedback" *ngIf="contactForm.get('message')?.invalid && (contactForm.get('message')?.touched || formSubmitted)">
               Message is required
             </div>
           </div>
           
-          <button type="submit" class="standard-button">Submit</button>
+          <button type="submit" id="contact-btn" [disabled]="contactForm.invalid && formSubmitted">Submit</button>
         </form>
       </div>
     </section>

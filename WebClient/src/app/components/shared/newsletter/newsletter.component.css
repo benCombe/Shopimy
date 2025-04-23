@@ -29,7 +29,7 @@
 .newsletter-form {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: 1rem;
   margin-bottom: 1rem;
   max-width: 500px;
   margin-left: auto;
@@ -38,8 +38,10 @@
 
 .form-group {
   flex: 1;
-  margin-bottom: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .visually-hidden {
@@ -53,49 +55,55 @@
   width: 1px;
 }
 
-.form-control {
+.form-group input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: var(--border-radius);
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
   font-size: 1rem;
+  transition: border-color 0.2s;
   background-color: #fff;
 }
 
-.form-control:focus {
+.form-group input:focus {
   outline: none;
-  border-color: var(--main-color, #393727);
-  box-shadow: 0 0 0 3px rgba(57, 55, 39, 0.1);
+  border-color: var(--second-color);
+  box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2);
 }
 
-.btn-subscribe {
+.form-group input.is-invalid {
+  border-color: #e02424;
+}
+
+.invalid-feedback {
+  color: #e02424;
+  font-size: 0.875rem;
+  text-align: left;
+  position: absolute;
+  top: 100%;
+}
+
+#newsletter-btn {
   padding: 0.75rem 1.5rem;
-  background-color: var(--second-color, #D0933D);
-  color: white;
+  background-color: var(--main-color);
+  color: var(--second-color);
   border: none;
-  border-radius: var(--border-radius);
-  font-weight: 500;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
+  transition: all 0.2s;
   white-space: nowrap;
 }
 
-.btn-subscribe:hover:not(:disabled) {
-  background-color: var(--main-color, #393727);
-  transform: translateY(-2px);
+#newsletter-btn:hover:not(:disabled) {
+  background-color: var(--second-color);
+  color: white;
 }
 
-.btn-subscribe:disabled {
-  opacity: 0.6;
+#newsletter-btn:disabled {
+  opacity: 0.7;
   cursor: not-allowed;
-}
-
-.error-message {
-  color: #dc3545;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-  text-align: left;
-  position: absolute;
 }
 
 .success-message {
@@ -111,10 +119,10 @@
   }
   
   .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
   
-  .btn-subscribe {
+  #newsletter-btn {
     width: 100%;
   }
 } 

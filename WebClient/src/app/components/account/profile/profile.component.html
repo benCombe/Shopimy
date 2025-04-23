@@ -111,7 +111,7 @@
         </div>
 
         <!-- Edit mode form -->
-        <form *ngIf="editMode" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <form *ngIf="editMode" [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
           <div class="form-group">
             <label for="firstName">First Name</label>
             <input 
@@ -120,9 +120,9 @@
               formControlName="firstName" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.FirstName || 'First name' : ''">
-            <div *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> First Name is required
+              placeholder="Enter your first name">
+            <div *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched" class="error-message">
+              First Name is required
             </div>
           </div>
           
@@ -134,9 +134,9 @@
               formControlName="lastName" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.LastName || 'Last name' : ''">
-            <div *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> Last Name is required
+              placeholder="Enter your last name">
+            <div *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched" class="error-message">
+              Last Name is required
             </div>
           </div>
 
@@ -148,10 +148,9 @@
               formControlName="email" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [value]="user?.Email || ''"
-              [attr.placeholder]="!editMode ? user?.Email || 'Email address' : ''">
-            <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> Please enter a valid email address
+              placeholder="Enter your email address">
+            <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="error-message">
+              Please enter a valid email address
             </div>
           </div>
 
@@ -163,9 +162,9 @@
               formControlName="phone" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.Phone || 'Phone number' : ''">
-            <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> Phone number is required
+              placeholder="Enter your phone number">
+            <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched" class="error-message">
+              Phone number is required
             </div>
           </div>
 
@@ -177,7 +176,10 @@
               formControlName="address" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.Address || 'Address' : ''">
+              placeholder="Enter your address">
+            <div *ngIf="profileForm.get('address')?.invalid && profileForm.get('address')?.touched" class="error-message">
+              Address is required
+            </div>
           </div>
 
           <div class="form-group">
@@ -249,7 +251,7 @@
 
           <!-- Edit Mode Buttons -->
           <div *ngIf="editMode" class="button-group">
-            <button type="submit" class="save-button" [disabled]="!profileForm.valid || isSavingProfile">
+            <button type="submit" class="save-button" [class.saving]="isSavingProfile" [disabled]="!profileForm.valid || isSavingProfile">
               <i class="fas" [class.fa-save]="!isSavingProfile" [class.fa-spinner]="isSavingProfile" [class.fa-spin]="isSavingProfile"></i>
               {{ isSavingProfile ? 'Saving...' : 'Save Changes' }}
             </button>
