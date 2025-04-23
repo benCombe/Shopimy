@@ -530,11 +530,11 @@ export class StoreService {
         0, // ID will be assigned by the server
         `${username}-${timestamp}`, // URL with timestamp to avoid conflicts
         `${username}'s Store`, // Name
-        '#232323', // theme_1
-        '#545454', // theme_2
-        '#E1E1E1', // theme_3
-        '#f6f6f6', // fontColor
-        'Cambria, Cochin', // fontFamily
+        '#393727', // theme_1 (main-color - Dark olive)
+        '#D0933D', // theme_2 (second-color - Mustard)
+        '#D3CEBB', // theme_3 (third-color - Light tan)
+        '#393727', // fontColor (color-text-on-surface - Dark text)
+        '"Inria Serif", serif', // fontFamily (main-font-fam)
         'Welcome to My Store', // bannerText
         `${username}'s Store`, // logoText
         '', // bannerURL

@@ -6,20 +6,20 @@ import { StoreDetails } from '../../models/store-details';
 import { DEFAULT_VISIBILITY } from '../../models/component-visibility.model';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TopNavComponent } from '../top-nav/top-nav.component';
 
 @Component({
   selector: 'app-create-store',
   templateUrl: './create-store.component.html',
   styleUrls: ['./create-store.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, TopNavComponent]
 })
 export class CreateStoreComponent implements OnInit {
   storeForm: FormGroup;
   loading = false;
   error = '';
   returnUrl: string = '/';
-  quickCreateMode = false;
 
   constructor(
     private fb: FormBuilder,
@@ -58,11 +58,11 @@ export class CreateStoreComponent implements OnInit {
       0, // ID will be assigned by server
       this.storeForm.value.storeUrl,
       this.storeForm.value.storeName,
-      '#232323', // theme_1
-      '#545454', // theme_2
-      '#E1E1E1', // theme_3
-      '#f6f6f6', // fontColor
-      'Cambria, Cochin', // fontFamily
+      '#393727', // theme_1 (main-color - Dark olive)
+      '#D0933D', // theme_2 (second-color - Mustard)
+      '#D3CEBB', // theme_3 (third-color - Light tan)
+      '#393727', // fontColor (color-text-on-surface - Dark text)
+      '"Inria Serif", serif', // fontFamily (main-font-fam)
       'Welcome to My Store', // bannerText
       this.storeForm.value.storeName, // logoText
       '', // bannerURL

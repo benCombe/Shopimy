@@ -1,13 +1,14 @@
-<div class="create-store-container">
-  <div class="create-store-card">
-    <h2>Create Your Store</h2>
-    <p class="subtitle">Set up your online store to start selling products</p>
+<div id="container">
+  <app-top-nav [hideAccountDropdown]="true"></app-top-nav>
+  <div class="create-store-container">
+    <div class="create-store-card global-card">
+      <h2>Create Your Store</h2>
+      <p class="subtitle">Set up your online store to start selling products</p>
 
-    <div *ngIf="error" class="alert alert-danger">
-      {{ error }}
-    </div>
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
 
-    <div *ngIf="!quickCreateMode">
       <form [formGroup]="storeForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label for="storeName">Store Name</label>
@@ -43,32 +44,19 @@
             <div *ngIf="storeForm.get('storeUrl')?.errors?.['minlength']">URL must be at least 3 characters</div>
             <div *ngIf="storeForm.get('storeUrl')?.errors?.['maxlength']">URL cannot exceed 30 characters</div>
           </div>
-          <small class="form-text text-muted">Choose a simple, memorable URL for your store</small>
+          <small class="form-text">Choose a simple, memorable URL for your store</small>
         </div>
 
-        <div class="button-group">
-          <button type="submit" class="btn btn-primary" [disabled]="storeForm.invalid || loading">
+        <div class="action-buttons">
+          <button type="submit" class="standard-button" [disabled]="storeForm.invalid || loading">
             <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             Create Store
           </button>
-          <button type="button" class="btn btn-link" (click)="quickCreateMode = true">
+          <button type="button" class="standard-button secondary" (click)="quickCreate()">
             Quick Setup
           </button>
         </div>
       </form>
-    </div>
-
-    <div *ngIf="quickCreateMode" class="quick-create">
-      <p>We'll set up a store for you with default settings that you can customize later.</p>
-      <div class="button-group">
-        <button class="btn btn-primary" (click)="quickCreate()" [disabled]="loading">
-          <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          Create Default Store
-        </button>
-        <button class="btn btn-link" (click)="quickCreateMode = false">
-          Custom Setup
-        </button>
-      </div>
     </div>
   </div>
 </div> 

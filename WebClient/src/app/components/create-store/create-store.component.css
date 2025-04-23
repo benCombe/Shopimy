@@ -1,143 +1,173 @@
+#container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+}
+
 .create-store-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
-  padding: 20px;
-  background-color: #f8f9fa;
+  min-height: calc(100vh - 70px); /* Adjust for top-nav height */
+  padding: var(--spacing-lg, 24px);
+  background-color: var(--alt-color, #d5d5d5);
+  flex-grow: 1;
 }
 
 .create-store-card {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  border-radius: var(--border-radius, 8px);
+  box-shadow: var(--shadow-md, 0 4px 8px rgba(0, 0, 0, 0.1));
+  padding: var(--spacing-xl, 32px);
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
+  margin: auto;
 }
 
 h2 {
   font-size: 24px;
-  margin-bottom: 10px;
-  color: #333;
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs, 4px);
+  color: var(--color-text-on-surface, #393727);
+  font-family: var(--main-font-fam, "Inria Serif", serif);
 }
 
 .subtitle {
-  color: #666;
-  margin-bottom: 25px;
+  color: var(--color-text-light, #6b7280);
+  margin-bottom: var(--spacing-lg, 24px);
+  font-size: 16px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-lg, 24px);
 }
 
 label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: var(--spacing-xs, 4px);
   font-weight: 500;
+  color: var(--color-text-on-surface, #393727);
 }
 
 .form-control {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  border: 1px solid var(--border-color, #d1d5db);
+  border-radius: var(--border-radius, 8px);
   font-size: 16px;
+  height: 44px;
+  background-color: white;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--second-color, #D0933D);
+  box-shadow: var(--shadow-focus, 0 0 0 2px rgba(208, 147, 61, 0.2));
 }
 
 .url-input-group {
   display: flex;
   align-items: center;
+  border-radius: var(--border-radius, 8px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid var(--border-color, #d1d5db);
 }
 
 .url-prefix {
-  background-color: #e9ecef;
-  border: 1px solid #ddd;
-  border-right: 0;
-  padding: 10px;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-  color: #666;
+  background-color: var(--third-color, #D3CEBB);
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  color: var(--color-text-on-surface, #393727);
+  height: 44px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  border: none;
+  border-right: 1px solid var(--border-color, #d1d5db);
 }
 
 .url-input-group .form-control {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.is-invalid {
+  border-color: var(--color-error, #e02424);
 }
 
 .invalid-feedback {
   display: block;
-  color: #dc3545;
+  color: var(--color-error, #e02424);
   font-size: 14px;
-  margin-top: 5px;
+  margin-top: var(--spacing-xs, 4px);
 }
 
 .form-text {
-  color: #6c757d;
+  color: var(--color-text-light, #6b7280);
   font-size: 14px;
-  margin-top: 5px;
+  margin-top: var(--spacing-xs, 4px);
 }
 
-.button-group {
+.action-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 30px;
+  margin-top: var(--spacing-xl, 32px);
+  gap: var(--spacing-md, 16px);
 }
 
-.btn {
-  display: inline-block;
-  font-weight: 400;
+/* Standard button styles based on the screenshots */
+.standard-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
   text-align: center;
   white-space: nowrap;
-  vertical-align: middle;
-  user-select: none;
-  border: 1px solid transparent;
-  padding: 10px 20px;
+  border: none;
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
   font-size: 16px;
   line-height: 1.5;
-  border-radius: 4px;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  border-radius: 30px;
+  cursor: pointer;
+  height: 44px;
+  min-width: 120px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  background-color: #c0c0c0;
+  color: var(--color-text-on-surface, #393727);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  flex: 1;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+.standard-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md, 0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
-.btn-primary:hover {
-  background-color: #0069d9;
-  border-color: #0062cc;
+.standard-button.secondary {
+  background-color: var(--second-color, #D0933D);
+  color: var(--color-text-on-primary, #FFFFFF);
 }
 
-.btn-primary:disabled {
+.standard-button:disabled {
   opacity: 0.65;
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.btn-link {
-  color: #007bff;
-  background-color: transparent;
-  border: none;
-  text-decoration: underline;
-}
-
-.quick-create {
-  text-align: center;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .alert {
-  padding: 12px;
-  margin-bottom: 20px;
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  margin-bottom: var(--spacing-md, 16px);
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: var(--border-radius, 8px);
 }
 
 .alert-danger {
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
+  color: var(--color-error, #e02424);
+  background-color: var(--color-error-light, #fde8e8);
+  border-color: var(--color-error, #e02424);
 }
 
 .spinner-border {
@@ -148,9 +178,25 @@ label {
   border-right-color: transparent;
   border-radius: 50%;
   animation: spinner-border .75s linear infinite;
-  margin-right: 8px;
+  margin-right: var(--spacing-xs, 4px);
 }
 
 @keyframes spinner-border {
   to { transform: rotate(360deg); }
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  .create-store-card {
+    max-width: 100%;
+    margin: 0 15px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .standard-button {
+    margin-bottom: 10px;
+  }
 } 
