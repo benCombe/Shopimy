@@ -28,7 +28,6 @@ import { TermsOfServiceComponent } from './components/terms-of-service/terms-of-
 import { DocsComponent } from './components/docs/docs.component';
 import { SupportComponent } from './components/support/support.component';
 
-
 export const appRoutes: Routes = [
   // Main pages
   { path: '', component: LandingPageComponent },
