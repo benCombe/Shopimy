@@ -1,69 +1,133 @@
 <!-- Main store navigation -->
 <nav id="main" class="store-nav theme-primary" [ngStyle]="{'background-color': storeDetails?.theme_1}" aria-label="Store navigation">
-  <!-- Store name/logo -->
-  <h1 id="store-name" class="store-title" [ngStyle]="{'color': storeDetails?.fontColor}" (click)="navigateToHome()" tabindex="0" role="button">
-    {{storeDetails?.name}}
-  </h1>
+  <!-- Store name/logo with logo -->
+  <div class="store-brand" (click)="navigateToHome()">
+    <div class="nav-logo-wrapper">
+      <img *ngIf="storeDetails?.logoURL" class="nav-logo" [src]="storeDetails?.logoURL" [alt]="storeDetails?.name + ' logo'" />
+      <ng-template [ngIf]="!storeDetails?.logoURL">
+        <div class="default-nav-logo" [style.color]="storeDetails?.fontColor" [style.background-color]="storeDetails?.theme_2">
+          {{ storeDetails?.name?.[0]?.toUpperCase() }}
+        </div>
+      </ng-template>
+    </div>
+    <h1 id="store-name" class="store-title" [style.color]="storeDetails?.fontColor">
+      {{ storeDetails?.name }}
+    </h1>
+  </div>
   
   <!-- Categories and cart wrapper -->
   <div id="categories-wrapper" class="nav-container">
-    <!-- Categories section -->
-    <ul id="categories" class="category-list" [ngStyle]="{'color': storeDetails?.fontColor}" *ngIf="categories && categories.length">
-      <li *ngFor="let c of categories" class="category-item">
-        <span class="category-link" (click)="navigateToCategory(c.name)" role="button" tabindex="0" 
-              [attr.aria-haspopup]="c.subCategories && c.subCategories.length">
-          {{ c.name }}
-        </span>
-        <ul class="dropdown theme-tertiary" *ngIf="c.subCategories && c.subCategories.length" 
-            [attr.aria-label]="'Subcategories for ' + c.name">
-          <li *ngFor="let sub of c.subCategories" class="subcategory-item"
-              [ngStyle]="{'background-color': hoverStates[sub.categoryId] ? '#F1F1F1': storeDetails?.theme_1, 
-                         'color': hoverStates[sub.categoryId] ? storeDetails?.theme_1: storeDetails?.fontColor}"
-              (mouseenter)="setHover(sub.categoryId, true)"
-              (mouseleave)="setHover(sub.categoryId, false)"
-              (click)="navigateToCategory(sub.name)"
-              role="button"
-              tabindex="0">
-            {{ sub.name }}
-          </li>
-        </ul>
-      </li>
-    </ul>
-
-    <!-- Shopping cart button -->
+    <!-- Shopping cart button - always visible -->
     <div id="cart-btn-wrapper" class="cart-container">
-      <div id="num-item-indicator" class="cart-badge" *ngIf="numCartItems > 0" 
-           [attr.aria-label]="numCartItems + ' items in cart'">{{numCartItems}}</div>
+      <div *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</div>
       <button id="cart-btn" class="cart-button" [ngStyle]="{'color': storeDetails?.fontColor}" 
-              (click)="navigateToCart()" aria-label="View shopping cart">
+              (click)="navigateToCart()" aria-label="View shopping cart" 
+              (keydown.enter)="navigateToCart()" (keydown.space)="navigateToCart()">
         <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+        <span class="sr-only">Shopping Cart</span>
       </button>
     </div>
-    
-    <!-- Hamburger Menu (Shown only on small screens) -->
-    <div *ngIf="isMobile" id="hamburger-menu" class="mobile-menu-container">
-      <button id="menu-icon" class="menu-toggle" (click)="toggleMenu()" 
+        
+    <!-- Hamburger Menu (Always visible regardless of viewport) -->
+    <div id="hamburger-menu" class="mobile-menu-container">
+      <button id="menu-icon" class="menu-toggle" (click)="toggleMobileMenu()" 
               [ngStyle]="{'color': storeDetails?.fontColor}" 
-              [attr.aria-expanded]="menuOpen" aria-label="Toggle mobile menu">
-        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+              [attr.aria-expanded]="isMobileMenuOpen" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
       </button>
-      <nav id="mobile-dropdown" class="mobile-nav" *ngIf="menuOpen" aria-label="Mobile navigation">
-        <ul class="mobile-menu-list">
-          <li *ngFor="let c of categories" class="mobile-category-item">
-            <span class="mobile-category-link" (click)="navigateToCategory(c.name); toggleMenu()" 
-                  role="button" tabindex="0">{{ c.name }}</span>
-            <ul *ngIf="c.subCategories.length" class="mobile-subcategories" 
-                [attr.aria-label]="'Mobile subcategories for ' + c.name">
-              <li *ngFor="let sub of c.subCategories" class="mobile-subcategory-item"
-                  (click)="navigateToCategory(sub.name); toggleMenu()"
-                  role="button"
-                  tabindex="0">
-                {{ sub.name }}
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
     </div>
   </div>
 </nav>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()" aria-hidden="true"></div>
+
+<!-- Dropdown menu (for both mobile and desktop) -->
+<div *ngIf="isMobileMenuOpen" class="mobile-nav" [style.background-color]="storeDetails?.theme_3 || '#f9f9f9'">
+  <!-- Mobile Menu Search Bar -->
+  <div class="search-container">
+    <div class="search-wrapper">
+      <i class="fas fa-search search-icon"></i>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Search products..." 
+        aria-label="Search products"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="searchProducts()">
+    </div>
+  </div>
+  
+  <div class="mobile-menu-divider"></div>
+  
+  <!-- Mobile Menu Cart Link -->
+  <ul class="mobile-menu-list">
+    <li class="mobile-resource-item">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="navigateToCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Cart {{ cartItemCount > 0 ? '(' + cartItemCount + ')' : '' }}</span>
+      </div>
+    </li>
+  </ul>
+  
+  <!-- Mobile Menu Categories Section -->
+  <div class="mobile-menu-header">Categories</div>
+  <ul class="mobile-menu-list">
+    <li class="mobile-category-item" *ngFor="let category of categories">
+      <div class="mobile-category-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="navigateToCategory(category)">
+        <span>{{ category.name }}</span>
+      </div>
+      <div class="mobile-subcategories" *ngIf="category.subCategories && category.subCategories.length > 0">
+        <div class="mobile-subcategory-item" 
+             *ngFor="let subcategory of category.subCategories" 
+             [style.color]="storeDetails?.fontColor"
+             (click)="navigateToSubcategory(category, subcategory)">
+          {{ subcategory.name }}
+        </div>
+      </div>
+    </li>
+  </ul>
+  
+  <div class="mobile-menu-divider"></div>
+  
+  <!-- Mobile Menu Resources Section -->
+  <div class="mobile-menu-header">Resources</div>
+  <ul class="mobile-menu-list">
+    <li class="mobile-resource-item" *ngFor="let resource of resourceOptions">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           [routerLink]="resource.route">
+        <i *ngIf="resource.icon" [class]="'fas ' + resource.icon"></i>
+        <span>{{ resource.title }}</span>
+      </div>
+    </li>
+  </ul>
+  
+  <div class="mobile-menu-divider"></div>
+  
+  <!-- Mobile Menu Account Actions -->
+  <ul class="mobile-menu-list">
+    <!-- Login Option -->
+    <li class="mobile-resource-item" *ngIf="!isLoggedIn">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="navigateToLogin()">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Login</span>
+      </div>
+    </li>
+    <!-- Logout Option -->
+    <li class="mobile-resource-item" *ngIf="isLoggedIn">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </div>
+    </li>
+  </ul>
+</div>

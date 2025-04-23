@@ -1,0 +1,43 @@
+/* Standardized section heading styles */
+.section-heading {
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  font-size: 1.125rem;
+  position: relative;
+  padding-bottom: var(--spacing-xs);
+  color: var(--main-color);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Centered underline */
+.section-heading:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background-color: var(--second-color);
+  border-radius: 1px;
+}
+
+/* Left-aligned underline variant */
+.section-heading.left-align:after {
+  left: 0;
+  transform: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .section-heading {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-heading {
+    font-size: 0.95rem;
+  }
+} 

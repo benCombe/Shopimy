@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Dynamic;
+using System.Linq;
 
 namespace Server.Controllers
 {
@@ -28,6 +29,22 @@ namespace Server.Controllers
             _configuration = configuration;
         }
 
+        // Helper method to validate password strength
+        private bool ValidatePassword(string password)
+        {
+            // Check length
+            if (password.Length < 8 || password.Length > 20)
+                return false;
+                
+            // Check for uppercase, lowercase, number, and symbol
+            bool hasUpper = password.Any(char.IsUpper);
+            bool hasLower = password.Any(char.IsLower);
+            bool hasDigit = password.Any(char.IsDigit);
+            bool hasSymbol = password.Any(c => !char.IsLetterOrDigit(c));
+            
+            return hasUpper && hasLower && hasDigit && hasSymbol;
+        }
+
         // POST: api/account/register
         [HttpPost("register")]
         [AllowAnonymous]
@@ -43,31 +60,63 @@ namespace Server.Controllers
                 return BadRequest("Email already exists.");
             }
 
+            // Validate password strength
+            if (!ValidatePassword(registration.Password))
+            {
+                return BadRequest("Password does not meet security requirements.");
+            }
+
             // Hash the password with a salt
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registration.Password, workFactor: 10);
 
-            // Create a new user object
-            var newUser = new User
+            // Parse address components
+            string[] addressParts = registration.Address.Split(',', 3);
+            string mainAddress = addressParts[0].Trim();
+            string city = addressParts.Length > 1 ? addressParts[1].Trim() : null;
+            string stateZip = addressParts.Length > 2 ? addressParts[2].Trim() : null;
+
+            // Using a transaction to ensure atomicity
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                FirstName = registration.FirstName,
-                LastName = registration.LastName,
-                Email = registration.Email,
-                Phone = registration.Phone,
-                Address = registration.Address,
-                Country = registration.Country,
-                Password = hashedPassword,  // Store hashed password
-                Verified = false, // Default to not verified
-                Subscribed = registration.Subscribed,
-                DOB = registration.DOB
-            };
+                try {
+                    // Create a new user object
+                    var newUser = new User
+                    {
+                        FirstName = registration.FirstName,
+                        LastName = registration.LastName,
+                        Email = registration.Email,
+                        Phone = registration.Phone,
+                        Address = mainAddress,
+                        City = city,
+                        State = stateZip,
+                        Country = registration.Country,
+                        Password = hashedPassword,  // Store hashed password
+                        Verified = false, // Default to not verified
+                        Subscribed = registration.Subscribed,
+                        DOB = registration.DOB
+                    };
 
-            _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
+                    _context.Users.Add(newUser);
+                    await _context.SaveChangesAsync();
 
+                    // Here is where to insert email validation using an email service
+                    /*
+                    // Generate verification token and save it
+                    string token = Guid.NewGuid().ToString();
+                    
+                    // TODO: When EmailService is implemented:
+                    // await _emailService.SendEmailVerificationAsync(newUser.Email, token);
+                    */
 
-            //Here is where to insert email validation using an email service
-
-            return Ok(true);
+                    await transaction.CommitAsync();
+                    return Ok(true);
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, "An error occurred during registration: " + ex.Message);
+                }
+            }
         }
 
         // POST: api/account/login
@@ -107,7 +156,7 @@ namespace Server.Controllers
             var activeUser = new ActiveUser
             {
                 UserId = user.Id,
-                LoginDate = DateTime.UtcNow,
+                LoginDate = DateTime.UtcNow, 
                 Token = token
             };
 

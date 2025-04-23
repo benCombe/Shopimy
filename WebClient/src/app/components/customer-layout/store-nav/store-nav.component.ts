@@ -1,5 +1,7 @@
-import { Component, EventEmitter, HostListener, OnInit, Output, AfterViewInit } from '@angular/core';
-import { NgFor, NgIf, NgStyle } from '@angular/common';
+import { Component, EventEmitter, HostListener, OnInit, Output, AfterViewInit, OnDestroy } from '@angular/core';
+import { NgFor, NgIf, NgStyle, CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from '../../../models/category';
 import { StoreDetails } from '../../../models/store-details';
@@ -7,24 +9,48 @@ import { ThemeService } from '../../../services/theme.service';
 import { StoreService } from '../../../services/store.service';
 import { StoreNavService } from '../../../services/store-nav.service';
 import { ShoppingService } from '../../../services/shopping.service';
+import { UserService } from '../../../services/user.service';
+import { Subscription } from 'rxjs';
+
+interface ResourceOption {
+  title: string;
+  route: string;
+  icon?: string;
+}
 
 @Component({
   selector: 'app-store-nav',
   standalone: true,
-  imports: [NgFor, NgIf, NgStyle],
+  imports: [NgFor, NgIf, NgStyle, CommonModule, RouterModule, FormsModule],
   templateUrl: './store-nav.component.html',
   styleUrl: './store-nav.component.css'
 })
-export class StoreNavComponent implements AfterViewInit, OnInit {
+export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
   @Output() ViewChanged = new EventEmitter<string>();
 
   storeDetails: StoreDetails | null = null;
   categories: Category[] = [];
-  hoverStates: { [key: number]: boolean } = {};
+  hoveredCategory: Category | null = null;
   storeUrl = "";
   isMobile = false;
-  menuOpen = false;
-  numCartItems = 0;
+  isMobileMenuOpen = false;
+  cartItemCount = 0;
+  showResourcesDropdown = false;
+  searchQuery = '';
+  usingCustomTheme = true;
+  storeId: number | undefined;
+  primaryColor: string | undefined;
+  secondaryColor: string | undefined;
+  tertiaryColor: string | undefined;
+  isLoggedIn: boolean = false;
+  private authSubscription: Subscription | undefined;
+
+  resourceOptions: ResourceOption[] = [
+    { title: 'Blog', route: '/blog', icon: 'fa-newspaper' },
+    { title: 'Documentation', route: '/docs', icon: 'fa-book' },
+    { title: 'Support', route: '/support', icon: 'fa-headset' },
+    { title: 'FAQs', route: '/faqs', icon: 'fa-question-circle' }
+  ];
 
   constructor(
     private themeService: ThemeService,
@@ -32,7 +58,8 @@ export class StoreNavComponent implements AfterViewInit, OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private storeNavService: StoreNavService,
-    private shoppingService: ShoppingService
+    private shoppingService: ShoppingService,
+    private userService: UserService
   ) {}
 
   /**
@@ -41,18 +68,61 @@ export class StoreNavComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.checkScreenSize();
     
-    this.storeService.activeStore$.subscribe(store => {
-      this.storeDetails = store;
-      this.categories = this.mapCategories(store.categories);
+    this.authSubscription = this.userService.loggedIn$.subscribe(status => {
+      this.isLoggedIn = status;
+      console.log('Login status updated in nav:', this.isLoggedIn);
     });
+
+    this.storeService.activeStore$.subscribe(
+      store => {
+        if (store) {
+          this.storeDetails = store;
+          this.storeId = store.id;
+          this.primaryColor = store.theme_1;
+          this.secondaryColor = store.theme_2;
+          this.tertiaryColor = store.theme_3;
+          this.categories = this.mapCategories(store.categories);
+          this.usingCustomTheme = !!store.theme_1;
+        }
+      },
+      error => {
+        console.error('Error fetching active store:', error);
+      }
+    );
     
     this.route.params.subscribe(params => {
       this.storeUrl = params['storeUrl'];
     });
 
     this.shoppingService.Cart$.subscribe(cart => {
-      this.numCartItems = cart.length;
+      this.cartItemCount = cart.length;
     });
+
+    document.addEventListener('click', (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const menuContainer = document.querySelector('.mobile-nav');
+      const hamburgerButton = document.querySelector('.menu-toggle');
+      
+      if (menuContainer && hamburgerButton && 
+          !menuContainer.contains(target) && 
+          !hamburgerButton.contains(target) && 
+          this.isMobileMenuOpen) {
+        this.closeMobileMenu();
+      }
+
+      const resourcesContainer = document.querySelector('.resources-container');
+      if (this.showResourcesDropdown && 
+          resourcesContainer && 
+          !resourcesContainer.contains(target)) {
+        this.showResourcesDropdown = false;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
   /**
@@ -68,30 +138,25 @@ export class StoreNavComponent implements AfterViewInit, OnInit {
     });
   }
 
-  /**
-   * Set hover state for a category
-   * @param categoryId - ID of the category
-   * @param isHovered - Whether the category is being hovered over
-   */
-  setHover(categoryId: number, isHovered: boolean): void {
-    this.hoverStates = { ...this.hoverStates, [categoryId]: isHovered };
+  hoverCategory(category: Category): void {
+    this.hoveredCategory = category;
   }
 
-  /**
-   * Maps flat category list to hierarchical structure
-   * @param cats - List of categories to map
-   * @returns Array of top-level categories with subcategories nested
-   */
+  unhoverCategory(): void {
+    this.hoveredCategory = null;
+  }
+
   mapCategories(cats: Category[]): Category[] {
     const categoryMap = new Map<number, Category>();
     const rootCategories: Category[] = [];
 
-    // Step 1: Create a map of categories
     cats.forEach(category => {
-      categoryMap.set(category.categoryId, { ...category, subCategories: [] });
+      categoryMap.set(category.categoryId, { 
+        ...category, 
+        subCategories: [] 
+      });
     });
 
-    // Step 2: Assign subcategories to their parents
     categoryMap.forEach(category => {
       if (category.parentCategory !== null) {
         const parent = categoryMap.get(category.parentCategory);
@@ -99,67 +164,69 @@ export class StoreNavComponent implements AfterViewInit, OnInit {
           parent.subCategories.push(category);
         }
       } else {
-        rootCategories.push(category); // Top-level categories
+        rootCategories.push(category);
       }
     });
 
-    return rootCategories.reverse(); // Reverse for proper order if needed
+    return rootCategories;
   }
 
-  /**
-   * Navigates to a specific category
-   * @param segment - URL segment for the category
-   */
-  navigateToCategory(segment: string): void {
-    this.storeNavService.changeView(segment);
+  navigateToCategory(category: Category): void {
+    this.router.navigate(['/category', category.name]);
+    this.closeMobileMenu();
   }
 
-  /**
-   * Navigates to the store home page
-   */
+  navigateToSubcategory(category: Category, subcategory: Category): void {
+    this.router.navigate(['/category', category.name, subcategory.name]);
+    this.closeMobileMenu();
+  }
+
   navigateToHome(): void {
     this.storeNavService.toStoreHome();
+    this.closeMobileMenu();
   }
 
-  /**
-   * Navigates to the shopping cart
-   */
   navigateToCart(): void {
     this.router.navigate(['cart'], { relativeTo: this.route });
+    this.closeMobileMenu();
   }
 
-  /**
-   * Inverts a hex color
-   * @param origColor - Original hex color (format: #RRGGBB)
-   * @returns Inverted hex color
-   */
-  invertColor(origColor: string): string {
-    // Ensure the input is a valid hex color
-    if (!/^#([0-9A-Fa-f]{6})$/.test(origColor)) {
-      return origColor; // Return original if invalid format
+  toggleResourcesDropdown(): void {
+    this.showResourcesDropdown = !this.showResourcesDropdown;
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
+  }
+
+  searchProducts(): void {
+    if (this.searchQuery.trim()) {
+      this.router.navigate(['/search'], { queryParams: { q: this.searchQuery } });
+      this.closeMobileMenu();
+      this.searchQuery = '';
     }
-
-    // Remove the "#" and convert to an array of two-character hex values
-    const inverted = origColor.substring(1)
-      .match(/.{2}/g) // Split into ["F0", "F0", "F0"]
-      ?.map(hex => (255 - parseInt(hex, 16)).toString(16).padStart(2, '0')) // Invert each channel
-      .join(""); // Recombine to form the final color
-
-    return `#${inverted}`;
   }
 
-  /**
-   * Checks screen size and updates isMobile flag
-   */
   @HostListener('window:resize', [])
   checkScreenSize(): void {
     this.isMobile = window.innerWidth < 900;
+    if (!this.isMobile) {
+      this.closeMobileMenu();
+    }
   }
 
-  /**
-   * Toggles the mobile menu open/closed state
-   */
-  toggleMenu(): void {
-    this.menuOpen = !this.menuOpen;
+  navigateToLogin(): void {
+    this.router.navigate(['/account/login']);
+    this.closeMobileMenu();
+  }
+
+  logout(): void {
+    this.userService.logout();
+    this.closeMobileMenu();
+    this.router.navigate(['/']);
   }
 }

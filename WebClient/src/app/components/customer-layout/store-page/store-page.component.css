@@ -1,8 +1,7 @@
-/* Standardized Store Page Component */
-/* Container styling */
+/* Store Layout Component */
 #container {
   width: 100%;
-  font-family: var(--main-font-fam);
+  font-family: var(--main-font-fam, sans-serif);
   overflow-x: hidden;
 }
 
@@ -12,8 +11,29 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  font-family: var(--main-font-fam);
-  background-color: var(--third-color);
+  font-family: var(--main-font-fam, sans-serif);
+  background-color: var(--third-color, #D3CEBB);
+  padding-bottom: var(--spacing-xl, 3rem);
+  gap: var(--spacing-lg, 2rem);
+  width: 100%;
+}
+
+/* Accessibility: Visually hidden elements for screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Each component should take up to 95% width on larger screens */
+#store-page > * {
+  width: 90%;
+  max-width: 1200px;
 }
 
 /* Banner styling */
@@ -70,6 +90,8 @@
   justify-content: center;
   box-shadow: var(--shadow-sm);
   background-color: var(--third-color);
+  position: relative;
+  z-index: 10;
 }
 
 #logo-wrapper {
@@ -122,13 +144,20 @@
   padding: var(--spacing-md);
   border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   border-radius: var(--border-radius);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: white;
 }
 
 .product:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-md);
+}
+
+/* Focus state for keyboard navigation */
+.product:focus-visible {
+  outline: 2px solid var(--main-color, #393727);
+  outline-offset: 2px;
+  transform: translateY(-5px);
 }
 
 /* Load more button styling */
@@ -158,6 +187,12 @@
   color: white;
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+#load-more-btn:focus-visible {
+  outline: 2px solid var(--main-color, #393727);
+  outline-offset: 2px;
+  transform: translateY(-2px);
 }
 
 /* Testimonials section styling */
@@ -240,13 +275,14 @@
 }
 
 .newsletter-form button {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: none;
+  padding: var(--spacing-sm) var(--spacing-lg);
   background-color: var(--main-color);
-  color: var(--second-color);
-  font-weight: 600;
-  cursor: pointer;
+  color: var(--alt-color);
+  border: none;
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
   transition: all 0.3s ease;
 }
 
@@ -254,45 +290,34 @@
   background-color: var(--second-color);
   color: white;
   transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.newsletter-form button:focus-visible {
+  outline: 2px solid var(--main-color, #393727);
+  outline-offset: 2px;
 }
 
 /* Footer section styling */
 #footer-section {
   width: 100%;
   padding: var(--spacing-lg);
+  margin-top: auto;
   background-color: var(--main-color);
+  color: var(--alt-color);
   text-align: center;
-  margin-top: var(--spacing-xl);
+  border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
 }
 
 #footer-section p {
-  color: var(--third-color);
+  margin: var(--spacing-sm) 0;
   font-size: 0.9rem;
-  margin: 0;
 }
 
-.center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Responsive styles */
-@media only screen and (max-width: 1200px) {
-  #banner-text {
-    font-size: 2rem;
-    max-width: 40%;
-  }
-  
-  #logo-container {
-    width: 70%;
-  }
-  
-  #logo-text {
-    font-size: 1.5rem;
-  }
-  
+/* Responsive Styles */
+@media only screen and (max-width: 1024px) {
   #product-container {
+    grid-template-columns: repeat(2, 1fr);
     width: 80%;
   }
   
@@ -303,102 +328,72 @@
 }
 
 @media only screen and (max-width: 768px) {
+  #store-page {
+    padding: 0 0 var(--spacing-lg);
+  }
+  
+  #store-page > * {
+    width: 95%;
+  }
+
   #banner-text {
-    font-size: 1.5rem;
-    max-width: 60%;
-    top: 20%;
-    left: 20%;
-    height: 60%;
-  }
-  
-  #logo-container {
-    width: 90%;
-    flex-direction: column;
-    height: auto;
-    padding: var(--spacing-md);
-  }
-  
-  #logo-wrapper {
-    width: 50%;
-    margin-left: 0;
-  }
-  
-  #logo-text-wrapper {
-    width: 100%;
-  }
-  
-  #logo-text {
-    font-size: 1.25rem;
+    max-width: 50%;
+    font-size: 1.75rem;
   }
   
   #product-container {
+    padding: var(--spacing-sm);
     width: 90%;
-    grid-template-columns: repeat(2, 1fr);
   }
   
-  #testimonials-section,
-  #newsletter-section {
-    width: 90%;
-  }
-
   .newsletter-form {
     flex-direction: column;
+    width: 90%;
   }
-
-  .newsletter-form input,
-  .newsletter-form button {
-    width: 100%;
+  
+  .newsletter-form input {
     border-radius: var(--border-radius);
     margin-bottom: var(--spacing-sm);
+  }
+  
+  .newsletter-form button {
+    border-radius: var(--border-radius);
+    width: 100%;
   }
 }
 
 @media only screen and (max-width: 480px) {
   #store-page {
-    height: auto;
+    gap: var(--spacing-md);
   }
   
-  #banner {
-    height: 20vh;
-  }
-  
-  #banner-text {
-    font-size: 1.25rem;
-    max-width: 80%;
-    top: 15%;
-    left: 10%;
-    height: 70%;
-  }
-  
-  #logo-section {
-    height: auto;
-    padding: var(--spacing-md) 0;
-  }
-  
-  #logo-container {
-    padding: var(--spacing-sm);
-  }
-  
-  #logo-wrapper {
-    width: 70%;
-  }
-  
-  #logo-text {
-    font-size: 1rem;
-  }
-  
-  #testimonials-section h3,
-  #newsletter-section h3 {
-    font-size: 1.4rem;
-  }
-  
-  .testimonial-text {
-    font-size: 0.9rem;
+  #store-page > * {
+    width: 100%;
   }
   
   #product-container {
     grid-template-columns: 1fr;
-    padding: var(--spacing-sm);
+    width: 95%;
+    gap: var(--spacing-md);
+  }
+  
+  #banner-text {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%;
+    font-size: 1.5rem;
+  }
+
+  #testimonials-section,
+  #newsletter-section {
+    width: 95%;
+    padding: var(--spacing-md);
+  }
+  
+  #testimonials-section h3,
+  #newsletter-section h3 {
+    font-size: 1.5rem;
   }
 }
 

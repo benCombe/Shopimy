@@ -2,6 +2,7 @@ import { StoreService } from './store.service';
 import { Injectable, Renderer2, RendererFactory2, OnInit } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
 import { StoreTheme } from '../models/store-theme.model';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available throughout the app
@@ -136,6 +137,53 @@ export class ThemeService {
 
     // Return as RGB (since browsers convert colors to RGB)
     return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  /**
+   * Returns a list of available themes to choose from
+   * @returns Observable with array of themes
+   */
+  getAvailableThemes(): Observable<any[]> {
+    // For now, return predefined themes
+    // This could be replaced with an API call in the future
+    return of([
+      {
+        id: 'default',
+        name: 'Default Theme',
+        mainColor: '#393727',
+        secondColor: '#D0933D',
+        thirdColor: '#D3CEBB',
+        altColor: '#333333',
+        mainFontFam: 'sans-serif'
+      },
+      {
+        id: 'light',
+        name: 'Light Theme',
+        mainColor: '#ffffff',
+        secondColor: '#f5f5f5',
+        thirdColor: '#e0e0e0',
+        altColor: '#333333',
+        mainFontFam: 'Arial, sans-serif'
+      },
+      {
+        id: 'dark',
+        name: 'Dark Theme',
+        mainColor: '#1a1a1a',
+        secondColor: '#333333',
+        thirdColor: '#4d4d4d',
+        altColor: '#f5f5f5',
+        mainFontFam: 'Arial, sans-serif'
+      },
+      {
+        id: 'blue',
+        name: 'Blue Theme',
+        mainColor: '#1e3a8a',
+        secondColor: '#3b82f6',
+        thirdColor: '#93c5fd',
+        altColor: '#ffffff',
+        mainFontFam: 'Verdana, sans-serif'
+      }
+    ]);
   }
 
 }

@@ -1,0 +1,100 @@
+.testimonials-section {
+  padding: var(--spacing-md);
+  margin: 0 var(--spacing-md);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  width: auto;
+  max-width: 100%;
+  background-color: var(--testimonials-bg, var(--third-color));
+  text-align: center;
+}
+
+.testimonials-section h3 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  font-size: 1.125rem;
+  position: relative;
+  padding-bottom: var(--spacing-xs);
+  color: var(--testimonials-text-color, var(--main-color));
+}
+
+.testimonials-section h3:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background-color: var(--testimonials-text-color, var(--main-color));
+  border-radius: 1px;
+}
+
+.testimonial {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.testimonial-text {
+  font-style: italic;
+  margin-bottom: var(--spacing-sm);
+  color: var(--testimonials-text-color, var(--main-color));
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.testimonial-text::before,
+.testimonial-text::after {
+  color: var(--testimonials-text-color, var(--main-color));
+  opacity: 0.5;
+}
+
+.testimonial-author {
+  text-align: right;
+  font-weight: 600;
+  color: var(--testimonials-text-color, var(--main-color));
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .testimonials-section {
+    padding: var(--spacing-sm);
+    margin: 0;
+  }
+  
+  .testimonial {
+    padding: var(--spacing-sm);
+  }
+  
+  .testimonial-text {
+    font-size: 0.875rem;
+  }
+}
+
+.empty-state {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  text-align: center;
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var(--spacing-md) 0;
+  box-shadow: var(--shadow-xs);
+}
+
+.empty-message {
+  color: var(--testimonials-text-color, var(--main-color));
+  font-style: italic;
+  opacity: 0.8;
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 80%;
+  margin: 0 auto;
+} 

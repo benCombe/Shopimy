@@ -140,7 +140,7 @@ namespace Server.Controllers
 
         [HttpGet("item-quantity")]
         [AllowAnonymous]
-        public async Task<ActionResult<VisitAnalyticsResponse>> GetStoreVisits(int storeid)
+        public async Task<ActionResult<List<Quantity>>> GetStoreVisits(int storeid)
         {
             var authHeader = Request.Headers["Authorization"].ToString();
             

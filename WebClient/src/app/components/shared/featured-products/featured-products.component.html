@@ -1,0 +1,46 @@
+<section class="featured-products-container" aria-labelledby="featured-products-heading">
+  <h2 id="featured-products-heading" class="section-heading">Featured Products</h2>
+  
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading-container" aria-live="polite">
+    <app-loading-one></app-loading-one>
+  </div>
+  
+  <!-- Empty state -->
+  <div *ngIf="!loading && (!itemIds || itemIds.length === 0) && !isPreview" class="empty-state" aria-live="polite" role="status">
+    <p class="empty-message">No featured products available at this time</p>
+  </div>
+  
+  <!-- Products display -->
+  <ul *ngIf="!loading && itemIds && itemIds.length > 0 && !isPreview" class="product-grid" role="list">
+    <li *ngFor="let itemId of itemIds.slice(0, displayCount)" class="product-item" role="listitem">
+      <app-item-card 
+        [itemId]="itemId">
+      </app-item-card>
+    </li>
+  </ul>
+  
+  <!-- For preview mode -->
+  <ul class="product-grid" *ngIf="isPreview" role="list" aria-label="Sample product previews">
+    <!-- Show sample product placeholders -->
+    <li class="product-item" *ngFor="let id of getSampleItemIds()" role="listitem">
+      <div class="product-card">
+        <div class="product-image" aria-hidden="true"></div>
+        <div class="product-details">
+          <h3 class="product-title">Product {{ id }}</h3>
+          <p class="product-price">${{ getSamplePrice(id) }}</p>
+          <button class="add-to-cart-btn" [attr.aria-label]="'Add Product ' + id + ' to cart'">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </li>
+  </ul>
+  
+  <!-- Load more button -->
+  <div class="load-more-container" *ngIf="shouldShowLoadMoreButton()">
+    <button class="load-more-btn" (click)="loadMore()" aria-label="Load more products">
+      Load More
+    </button>
+  </div>
+</section> 

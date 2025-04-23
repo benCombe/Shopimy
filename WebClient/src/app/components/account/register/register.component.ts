@@ -36,6 +36,10 @@ export class RegisterComponent implements OnInit {
   subscribed: boolean = false;
   acceptTAC: boolean = false;
 
+  // Registration status
+  registrationSuccess: boolean = false;
+  registrationError: string = "";
+
   // Password check
   hasValidLength: boolean = false;
   hasUpperLower: boolean = false;
@@ -105,6 +109,26 @@ export class RegisterComponent implements OnInit {
     return this.isPhoneValid;
   }
 
+  // Format phone number as user types
+  formatPhoneNumber(event: any): void {
+    // Get input value and remove all non-digits
+    let input = event.target.value.replace(/\D/g, '');
+    
+    // Check if we have enough digits to format
+    if (input.length > 0) {
+      // Format the phone number as ###-###-####
+      if (input.length <= 3) {
+        this.phone = input;
+      } else if (input.length <= 6) {
+        this.phone = `${input.slice(0, 3)}-${input.slice(3)}`;
+      } else {
+        this.phone = `${input.slice(0, 3)}-${input.slice(3, 6)}-${input.slice(6, 10)}`;
+      }
+    } else {
+      this.phone = input;
+    }
+  }
+
   // Date of Birth Validation: Must be at least 18 years old
   validateDOB(): boolean {
     if (!this.dob) {
@@ -161,6 +185,8 @@ export class RegisterComponent implements OnInit {
   register(): void {
     if (this.isFormValid()) {
       this.isLoading = true;
+      this.registrationSuccess = false;
+      this.registrationError = "";
       
       const user = new RegistrationDetails(
         this.firstname, 
@@ -176,12 +202,18 @@ export class RegisterComponent implements OnInit {
 
       this.userService.register(user).subscribe({
         next: () => {
-          console.log('Registration Successful, Logging in...');
-          this.router.navigate(['/dashboard']);
+          console.log('Registration Successful');
+          this.registrationSuccess = true;
           this.isLoading = false;
+          
+          // Wait 3 seconds then redirect to login page
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 3000);
         },
         error: err => {
           console.error("Registration Failed", err);
+          this.registrationError = err.error || "Registration failed. Please try again.";
           this.isLoading = false;
         }
       });

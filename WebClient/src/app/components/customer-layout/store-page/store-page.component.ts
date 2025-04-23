@@ -1,19 +1,24 @@
-import { CommonModule, NgFor, NgIf, NgStyle } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { ThemeService } from '../../../services/theme.service';
 import { StoreService } from '../../../services/store.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StoreDetails } from '../../../models/store-details';
-import { Category } from '../../../models/category';
 import { LoadingService } from '../../../services/loading.service';
 import { ShoppingCartComponent } from "../shopping-cart/shopping-cart.component";
 import { CheckoutComponent } from "../checkout/checkout.component";
 import { StoreNavService } from '../../../services/store-nav.service';
 import { CategoryPageComponent } from '../category-page/category-page.component';
-import { ItemCardComponent } from "../../item-card/item-card.component";
-import { ItemPageComponent } from "../item-page/item-page.component";
 import { ItemDetailComponent } from "../../item-detail/item-detail.component";
+
+// Import the new shared components
+import { HeroBannerComponent } from "../../shared/hero-banner/hero-banner.component";
+import { StoreHeaderComponent } from "../../shared/store-header/store-header.component";
+import { FeaturedProductsComponent } from "../../shared/featured-products/featured-products.component";
+import { TestimonialsComponent } from "../../shared/testimonials/testimonials.component";
+import { NewsletterComponent } from "../../shared/newsletter/newsletter.component";
+import { StoreFooterComponent } from "../../shared/store-footer/store-footer.component";
 
 // Using a more flexible type that allows category names while maintaining type safety for known values
 type ViewType = 'store-page' | 'cart' | 'checkout' | string;
@@ -21,9 +26,23 @@ type ViewType = 'store-page' | 'cart' | 'checkout' | string;
 @Component({
   selector: 'app-store-page',
   standalone: true,
-  imports: [CommonModule, StoreNavComponent, ShoppingCartComponent, CheckoutComponent, CategoryPageComponent, ItemCardComponent, ItemDetailComponent],
+  imports: [
+    CommonModule, 
+    StoreNavComponent, 
+    ShoppingCartComponent, 
+    CheckoutComponent, 
+    CategoryPageComponent, 
+    ItemDetailComponent,
+    // Add the new shared components
+    HeroBannerComponent,
+    StoreHeaderComponent,
+    FeaturedProductsComponent,
+    TestimonialsComponent,
+    NewsletterComponent,
+    StoreFooterComponent
+  ],
   templateUrl: './store-page.component.html',
-  styleUrl: './store-page.component.css'
+  styleUrls: ['./store-page.component.css']
 })
 
 export class StorePageComponent implements AfterViewInit, OnInit{
@@ -35,9 +54,6 @@ export class StorePageComponent implements AfterViewInit, OnInit{
 
   loadingStore: boolean = false;
 
-  itemIds: number[] = [];
-  displayCount: number = 9;
-  storePageHeight: number = 175;
   isMobile: boolean = false;
   initialLoad: boolean = true;
 
@@ -62,14 +78,7 @@ export class StorePageComponent implements AfterViewInit, OnInit{
 
   @HostListener('window:resize', [])
   checkScreenSize() {
-    if(window.innerWidth < 900){
-      this.storePageHeight = 400;
-      this.isMobile = true;
-    }
-    else{
-      this.storePageHeight = 400;
-      this.isMobile = false;
-    }
+    this.isMobile = window.innerWidth < 900;
   }
 
   ngOnInit(): void {
@@ -116,7 +125,6 @@ export class StorePageComponent implements AfterViewInit, OnInit{
               console.log("CURRENT VIEW: " + this.currentView);
             });
 
-            this.fetchItemIds(this.storeData.id);
             console.log("STORE DATA: " + data);
           },
           error: (err) => console.error('Failed to load store:', err)
@@ -194,24 +202,6 @@ export class StorePageComponent implements AfterViewInit, OnInit{
     }
 
     return 'store-page'; // Default to store-page if no view is specified
-  }
-
-  fetchItemIds(storeId: number): void {
-    this.storeService.getRandomItemIdsByStore(storeId).subscribe({
-      next: (ids) => {
-        this.itemIds = ids;
-        //console.log('Received item IDs:', this.itemIds);
-      },
-      error: (err) => console.error('Error fetching item IDs:', err)
-    });
-  }
-
-
-  loadMore(){
-    if (this.displayCount < this.itemIds.length){
-      this.displayCount = Math.min(this.displayCount + 9, this.itemIds.length);
-      this.storePageHeight += this.isMobile ? 300 : 100;
-    }
   }
 
   // Helper methods to check currentView type

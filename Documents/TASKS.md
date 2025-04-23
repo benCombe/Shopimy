@@ -12,6 +12,7 @@ This document tracks pending tasks, potential improvements, and areas needing at
 ## 🔥 Core Features & Bug Fixes
 
 ### Authentication & User Management
+-   [X] 🔥 **End-to-End Review and Audit of Registration & Store Creation:** Comprehensive audit of user registration and store creation, leading to multiple fixes and improvements in data validation, security, user experience, and database schema. Results documented in `Documents/TASKS/REGISTRATION_STORE_CREATION_AUDIT_RESULTS.md`. (`REGISTRATION_STORE_CREATION_AUDIT.md`)
 -   [ ] 🔥 **Implement Email Sending Service:** Integrate a service (SendGrid, Mailgun, SMTP) for sending transactional emails. (`EMAIL_MANAGEMENT.md`, `Program.cs`)
 -   [ ] ⚠️ **Define IEmailService Interface:** Create the `IEmailService` interface in `Server/Services/IEmailService.cs` with necessary methods (e.g., `Task SendOrderConfirmationEmailAsync(User user, Order order);`).
 -   [ ] ⚠️ **Implement EmailService:** Create the `EmailService` class in `Server/Services/EmailService.cs` implementing `IEmailService`. Include logic for connecting to the chosen email provider and handling configuration/secrets. (Depends on choosing a provider in the task above).
@@ -71,6 +72,9 @@ This document tracks pending tasks, potential improvements, and areas needing at
         *   Comprehensive manual test cases executed and passed.
         *   Detailed automated test plan implemented (Unit, Integration, E2E).
 -   [ ] ⚠️ **Verify Customer Product View Filtering:** Ensure customer-facing views (store page, category pages) correctly filter out draft (`availFrom IS NULL`) and future-scheduled (`availFrom > GETDATE()`) products based on backend logic. (Requires checking relevant frontend components and potentially backend query adjustments).
+-   [X] 🔥 **Refactor Store Preview Component / Align Live Store with Preview:** Modified `StorePreviewComponent` to dynamically render Angular components. Also refactored `StorePageComponent` to use these same shared components, ensuring the live store matches the editor preview.
+    -   **Description:** Replaced the static iframe preview with dynamic Angular component rendering. Created reusable components (`StoreHeaderComponent`, `HeroBannerComponent`, `FeaturedProductsComponent`, `TestimonialsComponent`, `NewsletterComponent`, `StoreFooterComponent`) within `WebClient/src/app/components/shared/`. Both `StorePreviewComponent` and `StorePageComponent` now use these shared components, controlled by `componentVisibility` settings and styled consistently with theme data. This aligns the live store appearance (`/:storeUrl`) with the preview shown in the store editor.
+    -   **Files Updated:** `StorePreviewComponent.ts/html/css`, `StorePageComponent.ts/html/css`, `StoreEditorComponent.ts`, `ThemesComponent.ts`. **New Files:** Components in `WebClient/src/app/components/shared/` (hero-banner, store-header, featured-products, testimonials, newsletter, store-footer).
 -   [X] 🔥 **Refactor Store Preview Component:** Modify `StorePreviewComponent` to dynamically render Angular components based on its `theme`, `selectedComponents`, and `storeData` inputs, instead of using a static iframe (`assets/preview.html`) and `postMessage`.
     -   **Description:** The current preview uses a static HTML file and relies on `postMessage` to update content. This should be replaced with direct Angular rendering for a more integrated and accurate preview.
     -   **Steps:**
@@ -232,3 +236,21 @@ This document tracks pending tasks, potential improvements, and areas needing at
 -   [ ] 🧊 **Improve Mobile Responsiveness:** Test thoroughly on various mobile devices and refine styles where needed.
 -   [x] ⚠️ **Standardize Dashboard Component Styles:**
     -   **Description:** Refactor the CSS/SCSS for components within the `StoreOwnerDashboardComponent`
+
+## Completed Tasks
+
+### Refactor StorePageComponent to Match StorePreviewComponent
+**Status:** Completed
+**Description:** Refactored `StorePageComponent` to use the same structure, styling, and reusable Angular components as the `StorePreviewComponent`. Created shared components that are now used in both the live store page and the preview in the editor. This ensures consistency between what the user sees in the preview and what visitors see on the actual store.
+
+**Implementation Details:**
+- Created reusable components: StoreHeaderComponent, HeroBannerComponent, FeaturedProductsComponent, TestimonialsComponent, NewsletterComponent, and StoreFooterComponent
+- Updated StorePageComponent to use these components
+- Updated StorePreviewComponent to use the same components
+- Ensured components are styled consistently
+- Added responsive design improvements
+- Added documentation for the shared components in README-COMPONENTS.md
+
+## In-Progress Tasks
+
+## Planned Tasks
