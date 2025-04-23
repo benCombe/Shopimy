@@ -47,6 +47,11 @@
         <i *ngIf="option.icon" class="fa-solid {{option.icon}}" aria-hidden="true"></i> {{ option.label }}
       </a>
     </li>
+    <li role="menuitem">
+      <a class="opt" routerLink="/blog" (click)="navigateAndCloseMenu('/blog')">
+        <i class="fa-solid fa-blog" aria-hidden="true"></i> Blog
+      </a>
+    </li>
   </ul>
   
   <!-- Quick Actions Section -->
@@ -56,6 +61,11 @@
     <li role="menuitem">
       <a class="opt" routerLink="/" (click)="navigateAndCloseMenu('/')">
         <i class="fa-solid fa-home" aria-hidden="true"></i> Home
+      </a>
+    </li>
+    <li role="menuitem">
+      <a class="opt" routerLink="/blog" (click)="navigateAndCloseMenu('/blog')">
+        <i class="fa-solid fa-blog" aria-hidden="true"></i> Blog
       </a>
     </li>
     <li role="menuitem" *ngIf="isLoggedIn">

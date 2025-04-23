@@ -19,11 +19,15 @@ import { OrdersComponent } from './components/store-owner-layout/orders/orders.c
 import { QuantityChartComponent } from './components/quantity-chart/quantity-chart.component';
 import { CreateStoreComponent } from './components/create-store/create-store.component';
 import { StoreOwnerGuard } from './guards/store-owner.guard';
+import { AboutUsComponent } from './components/about-us/about-us.component';
+import { BlogComponent } from './components/blog/blog.component';
 
 export const appRoutes: Routes = [
   { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
   { path: 'landing', component: LandingPageComponent },
   { path: 'home', component: LandingPageComponent },
+  { path: 'about', component: AboutUsComponent }, // New About Us route
+  { path: 'blog', component: BlogComponent }, // New Blog route
 
   { path: 'register', component: RegisterComponent},
   { path: 'login', component: LoginComponent },
