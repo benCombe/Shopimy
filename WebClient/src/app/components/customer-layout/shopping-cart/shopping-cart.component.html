@@ -23,12 +23,12 @@
           </div>
           <div class="quantity-container">
             <div class="quantity center" role="group" [attr.aria-label]="'Item quantity controls'">
-              <button class="less center" (click)="decreaseQuantity(i.item)" [attr.aria-label]="'Decrease quantity for ' + i.item.name">-</button>
+              <button class="less center standard-button small" (click)="decreaseQuantity(i.item)" [attr.aria-label]="'Decrease quantity for ' + i.item.name">-</button>
               <div class="amount center" aria-live="polite" [attr.aria-label]="'Quantity: ' + i.quantity">{{i.quantity}}</div>
-              <button class="more center" (click)="increaseQuantity(i.item)" [attr.aria-label]="'Increase quantity for ' + i.item.name">+</button>
+              <button class="more center standard-button small" (click)="increaseQuantity(i.item)" [attr.aria-label]="'Increase quantity for ' + i.item.name">+</button>
             </div>
           </div>
-          <button class="remove-item center" (click)="removeFromCart(i.item)" [attr.aria-label]="'Remove ' + i.item.name + ' from cart'">
+          <button class="remove-item center standard-button small" (click)="removeFromCart(i.item)" [attr.aria-label]="'Remove ' + i.item.name + ' from cart'">
             <i class="fa-solid fa-x" aria-hidden="true"></i>
           </button>
         </div>
@@ -42,7 +42,10 @@
         <app-order-summary [storeDetails]="storeDetails"></app-order-summary>
         <div class="promo-code">
           <label for="promo">Apply Promo Code:</label>
-          <input type="text" name="promo" id="promo" placeholder="Enter code" [attr.aria-label]="'Promo code'">
+          <div class="promo-input-group">
+            <input type="text" name="promo" id="promo" placeholder="Enter code" [attr.aria-label]="'Promo code'">
+            <button class="apply-promo-btn standard-button small" (click)="applyPromoCode()" [attr.aria-label]="'Apply promo code'">Apply</button>
+          </div>
         </div>
       </div>
     </div>

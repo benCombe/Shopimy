@@ -43,7 +43,9 @@ export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
   secondaryColor: string | undefined;
   tertiaryColor: string | undefined;
   isLoggedIn: boolean = false;
+  userStore: StoreDetails | null = null;
   private authSubscription: Subscription | undefined;
+  private userStoreSubscription: Subscription | undefined;
 
   resourceOptions: ResourceOption[] = [
     { title: 'Blog', route: '/blog', icon: 'fa-newspaper' },
@@ -71,6 +73,13 @@ export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
     this.authSubscription = this.userService.loggedIn$.subscribe(status => {
       this.isLoggedIn = status;
       console.log('Login status updated in nav:', this.isLoggedIn);
+      
+      // Fetch user's store when logged in
+      if (this.isLoggedIn) {
+        this.loadUserStore();
+      } else {
+        this.userStore = null;
+      }
     });
 
     this.storeService.activeStore$.subscribe(
@@ -119,9 +128,33 @@ export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Load the user's store if they are logged in
+   */
+  private loadUserStore(): void {
+    this.userStoreSubscription = this.storeService.getCurrentUserStore().subscribe(
+      store => {
+        // Only set the userStore if it has a valid ID
+        if (store && store.id && store.id > 0) {
+          this.userStore = store;
+          console.log('User store loaded:', this.userStore);
+        } else {
+          this.userStore = null;
+        }
+      },
+      error => {
+        console.error('Error loading user store:', error);
+        this.userStore = null;
+      }
+    );
+  }
+
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
+    }
+    if (this.userStoreSubscription) {
+      this.userStoreSubscription.unsubscribe();
     }
   }
 
@@ -228,5 +261,13 @@ export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
     this.userService.logout();
     this.closeMobileMenu();
     this.router.navigate(['/']);
+  }
+
+  /**
+   * Navigate to the user's store management dashboard
+   */
+  navigateToMyStore(): void {
+    this.router.navigate(['/dashboard']);
+    this.closeMobileMenu();
   }
 }

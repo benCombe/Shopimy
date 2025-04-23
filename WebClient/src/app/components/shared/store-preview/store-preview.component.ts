@@ -7,7 +7,6 @@ import { StoreHeaderComponent } from '../store-header/store-header.component';
 import { FeaturedProductsComponent } from '../featured-products/featured-products.component';
 import { TestimonialsComponent } from '../testimonials/testimonials.component';
 import { NewsletterComponent } from '../newsletter/newsletter.component';
-import { StoreFooterComponent } from '../store-footer/store-footer.component';
 
 @Component({
   selector: 'app-store-preview',
@@ -18,8 +17,7 @@ import { StoreFooterComponent } from '../store-footer/store-footer.component';
     StoreHeaderComponent,
     FeaturedProductsComponent,
     TestimonialsComponent,
-    NewsletterComponent,
-    StoreFooterComponent
+    NewsletterComponent
   ],
   templateUrl: './store-preview.component.html',
   styleUrls: ['./store-preview.component.css']

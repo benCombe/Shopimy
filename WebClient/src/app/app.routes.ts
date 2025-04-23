@@ -17,30 +17,55 @@ import { ItemPageComponent } from './components/customer-layout/item-page/item-p
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { OrdersComponent } from './components/store-owner-layout/orders/orders.component';
 
+import { QuantityChartComponent } from './components/quantity-chart/quantity-chart.component';
+import { CreateStoreComponent } from './components/create-store/create-store.component';
+import { StoreOwnerGuard } from './guards/store-owner.guard';
+import { AboutUsComponent } from './components/about-us/about-us.component';
+import { BlogComponent } from './components/blog/blog.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
+import { TermsOfServiceComponent } from './components/terms-of-service/terms-of-service.component';
+import { DocsComponent } from './components/docs/docs.component';
+import { SupportComponent } from './components/support/support.component';
+
+
 export const appRoutes: Routes = [
-  { path: '', component: LandingPageComponent }, // Base URL -> Landing Page
-  { path: 'landing', component: LandingPageComponent },
-  { path: 'home', component: LandingPageComponent },
+  // Main pages
+  { path: '', component: LandingPageComponent },
+  { path: 'landing', redirectTo: '', pathMatch: 'full' },
+  { path: 'home', redirectTo: '', pathMatch: 'full' },
+  
+  // Information pages
+  { path: 'about', component: AboutUsComponent },
+  { path: 'blog', component: BlogComponent },
+  { path: 'contact', component: ContactComponent },
+  { path: 'privacy', component: PrivacyPolicyComponent },
+  { path: 'terms', component: TermsOfServiceComponent },
+  { path: 'docs', component: DocsComponent },
+  { path: 'support', component: SupportComponent },
 
-  { path: 'register', component: RegisterComponent},
+  // Account routes
+  { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-
+  { path: 'create-store', component: CreateStoreComponent },
   { path: 'profile', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: StoreOwnerDashboardComponent },
+  { path: 'dashboard', component: StoreOwnerDashboardComponent, canActivate: [StoreOwnerGuard] },
+  
+  // Error pages
   { path: '404', component: PageNotFoundComponent },
 
+  // Store routes
   {
     path: ':storeUrl',
     component: StorePageComponent,
     children: [
       { path: 'cart', component: ShoppingCartComponent },
       { path: 'checkout', component: CheckoutComponent },
-      { path: 'item/:id', component: ItemDetailComponent},
+      { path: 'item/:id', component: ItemDetailComponent },
       { path: ':category', component: CategoryPageComponent },
     ]
   },
-  { path: '**', redirectTo: '/' } // Handle unknown routes
-
+  
+  // Fallback route
+  { path: '**', redirectTo: '/404' }
 ];
-
-export const appRouterProvider = provideRouter(appRoutes);

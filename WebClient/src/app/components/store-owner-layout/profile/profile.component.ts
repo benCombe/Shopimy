@@ -8,6 +8,8 @@ import { PaymentService } from '../../../services/payment.service';
 import { PurchaseService, OrderHistoryItemDTO } from '../../../services/purchase.service';
 import { DeliveryDetails } from '../../../models/delivery-details';
 import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
+import { Subscription, of, timer } from 'rxjs';
+import { catchError, finalize, switchMap, timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -55,6 +57,12 @@ export class ProfileComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalPages: number = 0;
+  
+  // Subscription for user data
+  private userSubscription: Subscription | null = null;
+
+  // Loading state for user profile
+  isLoadingProfile: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -67,29 +75,119 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForms();
     this.loadStripe();
+    this.loadUserData();
+  }
 
-    this.userService.activeUser$.subscribe(u => {
-      this.user = u;
-      this.initializeForms();
-      
-      // Only load addresses and payment methods if we have a valid user (not guest)
-      if (this.user && this.user.Id > 0) {
-        this.loadDeliveryAddresses(this.user.Id);
-        this.loadPaymentMethods(this.user.Id);
+  ngOnDestroy(): void {
+    // Clean up subscription to prevent memory leaks
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
+  loadUserData(): void {
+    this.isLoadingProfile = true;
+    this.profileError = null;
+
+    // First, check if we already have a user from the input binding
+    if (this.user && this.user.Id > 0) {
+      this.updateProfileForm();
+      this.loadDeliveryAddresses(this.user.Id);
+      this.loadPaymentMethods(this.user.Id);
+    }
+
+    // Subscribe to the activeUser$ observable from UserService
+    this.userSubscription = this.userService.activeUser$.subscribe({
+      next: (userData) => {
+        if (userData && userData.Id > 0) {
+          this.user = userData;
+          // Update form with the latest user data
+          this.updateProfileForm();
+          
+          // Only load addresses and payment methods if we have a valid user (not guest)
+          this.loadDeliveryAddresses(userData.Id);
+          this.loadPaymentMethods(userData.Id);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading user data:', error);
+        this.handleProfileError('Failed to load user profile data.');
       }
-      console.log('User updated:', this.user);
     });
+
+    // Always fetch full user profile from the backend to ensure we have the most up-to-date data
+    if (this.userService.isLoggedIn()) {
+      // Use switchMap with timeout to handle API requests that take too long
+      timer(0).pipe(
+        switchMap(() => this.userService.getUserProfile().pipe(
+          timeout(10000), // 10 second timeout
+          catchError(err => {
+            if (err.name === 'TimeoutError') {
+              this.handleProfileError('Profile data request timed out. Please try again.');
+            } else {
+              this.handleProfileError('Failed to fetch profile data: ' + this.getErrorMessage(err));
+            }
+            return of(null);
+          })
+        )),
+        finalize(() => {
+          this.isLoadingProfile = false;
+        })
+      ).subscribe({
+        next: (profileData: any) => {
+          if (profileData && profileData.Id > 0) {
+            this.user = profileData;
+            this.updateProfileForm();
+            // Since we have fresh data from the API, trigger loading of dependent data
+            this.loadDeliveryAddresses(profileData.Id);
+            this.loadPaymentMethods(profileData.Id);
+          }
+          this.isLoadingProfile = false;
+        }
+      });
+    } else {
+      this.isLoadingProfile = false;
+    }
+  }
+
+  updateProfileForm(): void {
+    if (this.profileForm) {
+      this.profileForm.patchValue({
+        Email: this.user?.Email || '',
+        FirstName: this.user?.FirstName || '',
+        LastName: this.user?.LastName || '',
+        Phone: this.user?.Phone || '',
+        Address: this.user?.Address || '',
+        City: this.user?.City || '',
+        State: this.user?.State || '',
+        PostalCode: this.user?.PostalCode || '',
+        Country: this.user?.Country || '',
+        DOB: this.user?.DOB || '',
+        Subscribed: this.user?.Subscribed || false
+      });
+    }
   }
 
   initializeForms(): void {
-    // Initialize profile form
+    // Get current user data from service if available
+    const currentUser = this.user || this.userService.getActiveUser();
+
+    // Initialize profile form with all fields from the User model
     this.profileForm = this.fb.group({
-      FirstName: [this.user?.FirstName || '', Validators.required],
-      LastName: [this.user?.LastName || '', Validators.required],
-      Phone: [this.user?.Phone || '', Validators.required],
-      Address: [this.user?.Address || '', Validators.required],
-      Country: [this.user?.Country || '', Validators.required]
+      Email: [{ value: currentUser?.Email || '', disabled: true }],
+      FirstName: [currentUser?.FirstName || '', Validators.required],
+      LastName: [currentUser?.LastName || '', Validators.required],
+      Phone: [currentUser?.Phone || '', Validators.required],
+      Address: [currentUser?.Address || '', Validators.required],
+      City: [currentUser?.City || ''],
+      State: [currentUser?.State || ''],
+      PostalCode: [currentUser?.PostalCode || ''],
+      Country: [currentUser?.Country || '', Validators.required],
+      DOB: [currentUser?.DOB || ''],
+      Subscribed: [currentUser?.Subscribed || false]
     });
+
+    console.log('Profile form initialized with user data:', currentUser);
 
     // Initialize delivery form (existing code)
     this.deliveryForm = this.fb.group({
@@ -133,11 +231,17 @@ export class ProfileComponent implements OnInit {
     this.editMode = !this.editMode;
     if (this.editMode) {
       this.profileForm.setValue({
+        Email: this.user?.Email || '',
         FirstName: this.user?.FirstName || '',
         LastName: this.user?.LastName || '',
         Phone: this.user?.Phone || '',
         Address: this.user?.Address || '',
-        Country: this.user?.Country || ''
+        City: this.user?.City || '',
+        State: this.user?.State || '',
+        PostalCode: this.user?.PostalCode || '',
+        Country: this.user?.Country || '',
+        DOB: this.user?.DOB || '',
+        Subscribed: this.user?.Subscribed || false
       });
     } else {
       this.profileError = null;
@@ -149,14 +253,19 @@ export class ProfileComponent implements OnInit {
       this.isSavingProfile = true;
       this.profileError = null;
 
-      // Create updated user object
+      // Create updated user object with all fields from the form
       const updatedUser: User = {
         ...this.user,
         FirstName: this.profileForm.value.FirstName,
         LastName: this.profileForm.value.LastName,
         Phone: this.profileForm.value.Phone,
         Address: this.profileForm.value.Address,
-        Country: this.profileForm.value.Country
+        City: this.profileForm.value.City,
+        State: this.profileForm.value.State,
+        PostalCode: this.profileForm.value.PostalCode,
+        Country: this.profileForm.value.Country,
+        DOB: this.profileForm.value.DOB,
+        Subscribed: this.profileForm.value.Subscribed
       };
 
       this.userService.updateUserProfile(updatedUser).subscribe({
@@ -182,13 +291,7 @@ export class ProfileComponent implements OnInit {
     this.editMode = false;
     this.profileError = null;
     // Reset form to original values
-    this.profileForm.reset({
-      FirstName: this.user?.FirstName || '',
-      LastName: this.user?.LastName || '',
-      Phone: this.user?.Phone || '',
-      Address: this.user?.Address || '',
-      Country: this.user?.Country || ''
-    });
+    this.updateProfileForm();
   }
 
   loadStripe(): void {
@@ -404,5 +507,37 @@ export class ProfileComponent implements OnInit {
       this.cardElement = null;
       this.cardError = null;
     }
+  }
+
+  // Helper method to extract meaningful error messages
+  private getErrorMessage(error: any): string {
+    if (!error) {
+      return 'Unknown error';
+    }
+    
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      return `Client error: ${error.error.message}`;
+    } else if (error.status) {
+      // Server-side error
+      return `Server error: ${error.status} - ${error.statusText || ''} ${error.error?.message || ''}`;
+    }
+    
+    return error.message || 'Unknown error';
+  }
+  
+  // Helper method to handle profile errors
+  private handleProfileError(message: string): void {
+    this.profileError = message;
+    this.isLoadingProfile = false;
+  }
+
+  // Public methods to access UserService functionality from the template
+  public isUserLoggedIn(): boolean {
+    return this.userService.isLoggedIn();
+  }
+
+  public isUserGuest(): boolean {
+    return this.userService.isGuest();
   }
 }

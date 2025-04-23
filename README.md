@@ -1,3 +1,4 @@
+// README.md
 # Shopimy
 
 **Shop Builder for Social Media Sellers**
@@ -16,15 +17,18 @@ This is a culmination project for the COSC 4P02 course at Brock University, deve
 *   **Integrated Payments:** Securely process payments using Stripe.
 *   **Delivery Management:** Collect shipping addresses for physical goods and provide access for digital items.
 *   **Ratings & Reviews:** Allow customers to rate and review products.
-*   **Analytics Dashboard:** Track shop performance, sales trends, and buyer behavior.
+*   **Analytics Dashboard:** Track shop performance, sales trends, and buyer behavior with KPIs and charts.
 *   **Store Customization:** Personalize shops with logos, color schemes, and banners.
 *   **Mobile-Friendly Design:** Fully responsive interface for desktops, tablets, and mobile devices.
 *   **Secure Authentication:** JWT-based user registration, login, and profile management.
+*   **Promotions Management:** Create and manage discount codes (percentage or fixed amount).
+*   **Blog Page:** Dedicated section for blog posts and articles.
+*   **Consistent Store Preview:** Store editor preview accurately reflects the live store page using shared components.
 
 ## 🛠️ Technology Stack
 
-*   **Frontend:** Angular 19.0.7, TypeScript, RxJS, Stripe.js
-*   **Backend:** .NET 9.0.101 (C#), ASP.NET Core, Entity Framework Core
+*   **Frontend:** Angular `19.0.7`, TypeScript, RxJS, Stripe.js (`^6.1.0`), Chart.js (`^4.4.9`)
+*   **Backend:** .NET `9.0.101` (C#), ASP.NET Core, Entity Framework Core
 *   **Database:** SQL Server
 *   **Payments:** Stripe
 
@@ -93,9 +97,9 @@ Open `http://localhost:4200` in your browser.
 
 Shopimy uses a standard Client-Server architecture:
 
-*   **Frontend:** Angular SPA (`WebClient/`) handling UI and client-side logic.
+*   **Frontend:** Angular SPA (`WebClient/`) handling UI and client-side logic. Uses shared components for store sections.
 *   **Backend:** .NET RESTful API (`Server/`) handling business logic, data access, and external integrations.
-*   **Database:** SQL Server for persistent storage.
+*   **Database:** SQL Server for persistent storage. Includes tables for users, stores, products, orders, analytics (`StoreVisits`), promotions, etc.
 *   **External Services:** Stripe for payments.
 
 *(For a detailed breakdown, see [Documents/ARCHITECTURE.md](Documents/ARCHITECTURE.md))*

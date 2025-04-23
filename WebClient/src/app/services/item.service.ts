@@ -4,6 +4,7 @@ import { Observable, of, tap, catchError } from 'rxjs';
 import { Item } from '../models/item';
 import { environment } from '../../environments/environment';
 import { BasicItem } from '../models/basic-item';
+import { CookieService } from './cookie.service';
 
 // Interface for product creation/update
 export interface ProductCreatePayload {
@@ -94,7 +95,10 @@ export class ItemService {
   // Base URL for the items endpoint
   private apiUrl = `${environment.apiUrl}/api/Item`;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private cookieService: CookieService
+  ) {}
 
   // Retrieves a single item by its ID
   getItemById(id: number): Observable<BasicItem> {
@@ -133,7 +137,12 @@ export class ItemService {
 
   // Create a new product with variants
   createProduct(product: ProductCreatePayload): Observable<any> {
-    return this.http.post(this.apiUrl, product).pipe(
+    // Get authentication token
+    const token = this.cookieService.get('auth_token');
+    // Add authorization header
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    return this.http.post(this.apiUrl, product, { headers }).pipe(
       catchError(error => {
         console.error('Error creating product:', error);
         throw error;
@@ -143,7 +152,12 @@ export class ItemService {
 
   // Update an existing product
   updateProduct(productId: number, product: ProductUpdatePayload): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${productId}`, product).pipe(
+    // Get authentication token
+    const token = this.cookieService.get('auth_token');
+    // Add authorization header
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    return this.http.put(`${this.apiUrl}/${productId}`, product, { headers }).pipe(
       catchError(error => {
         console.error(`Error updating product ${productId}:`, error);
         throw error;
@@ -153,7 +167,12 @@ export class ItemService {
 
   // Delete a product
   deleteProduct(productId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${productId}`).pipe(
+    // Get authentication token
+    const token = this.cookieService.get('auth_token');
+    // Add authorization header
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    return this.http.delete(`${this.apiUrl}/${productId}`, { headers }).pipe(
       catchError(error => {
         console.error(`Error deleting product ${productId}:`, error);
         throw error;
@@ -164,8 +183,13 @@ export class ItemService {
   // Upload a product image (base64)
   uploadProductImage(imageData: string): Observable<ImageUploadResponse> {
     const payload: ImageUploadRequest = { imageData };
-    // Point to the new ImageController endpoint
-    return this.http.post<ImageUploadResponse>(`${environment.apiUrl}/api/image/upload`, payload).pipe(
+    // Get authentication token
+    const token = this.cookieService.get('auth_token');
+    // Add authorization header
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    // Point to the new ImageController endpoint with auth headers
+    return this.http.post<ImageUploadResponse>(`${environment.apiUrl}/api/image/upload`, payload, { headers }).pipe(
       catchError(error => {
         console.error('Error uploading image:', error);
         throw error;

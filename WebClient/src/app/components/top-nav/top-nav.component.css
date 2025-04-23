@@ -14,17 +14,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #shopimy-logo {
   color: var(--second-color);
   font-family: var(--main-font-fam);
   font-weight: bold;
-  font-size: 3rem;
+  font-size: 2.5rem;
   cursor: pointer;
   padding: var(--spacing-xs) 0;
   margin: 0;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
   text-decoration: none;
 }
 
@@ -66,20 +67,27 @@
   position: relative;
   z-index: 2005;
   display: flex;
-  justify-content: flex-end;
-  margin-left: 0;
-  width: auto;
+  justify-content: center;
+  align-items: center;
+  width: 42px;
+  height: 42px;
   cursor: pointer;
   background: transparent;
   border: none;
   color: var(--third-color);
   padding: var(--spacing-xs);
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 #hamburger i {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: var(--third-color);
   transition: color 0.3s ease;
+}
+
+#hamburger:hover {
+  background-color: rgba(208, 147, 61, 0.2);
 }
 
 #hamburger:hover i {
@@ -89,6 +97,13 @@
 #nav-wrapper div:hover {
   transform: scale(1.1);
   color: var(--second-color);
+}
+
+/* Hide hamburger button when mobile menu is open */
+.mobile-menu #hamburger,
+#mobile-menu.show-mobile-menu ~ #main #hamburger {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Mobile Menu */
@@ -105,7 +120,7 @@
   transform: translateX(100%);
   transition: transform 0.3s ease-out;
   overflow-y: auto;
-  padding-top: 60px;
+  padding-top: 0;
   display: block;
 }
 
@@ -134,19 +149,59 @@
 
 .mobile-menu-header {
   padding: var(--spacing-md);
-  margin-bottom: var(--spacing-sm);
   color: var(--second-color);
   font-size: 1.5rem;
   font-weight: bold;
   font-family: var(--main-font-fam);
   border-bottom: 1px solid rgba(217, 217, 217, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  height: 70px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.mobile-menu-title {
+  font-size: 1.4rem;
+  margin-right: 20px;
+  flex: 1;
   text-align: left;
+}
+
+.mobile-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--third-color);
+  font-size: 1.3rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.mobile-close-btn:hover {
+  background-color: rgba(208, 147, 61, 0.2);
+  color: var(--second-color);
+}
+
+.mobile-section-header {
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
+  color: var(--second-color);
+  font-size: 1.1rem;
+  font-weight: bold;
+  font-family: var(--main-font-fam);
 }
 
 .mobile-menu-divider {
   height: 1px;
   background-color: rgba(217, 217, 217, 0.3);
-  margin: var(--spacing-sm) 0;
+  margin: var(--spacing-md) 0;
 }
 
 #mobile-menu ul {
@@ -166,18 +221,24 @@
   align-items: center;
   gap: var(--spacing-md);
   border-bottom: 1px solid rgba(217, 217, 217, 0.1);
+  text-decoration: none;
 }
 
 #mobile-menu .opt i {
   color: var(--second-color);
-  font-size: 0.85rem;
-  width: 16px;
+  font-size: 1rem;
+  width: 20px;
   text-align: center;
+  transition: all 0.3s ease;
 }
 
 #mobile-menu .opt:hover {
   background-color: rgba(208, 147, 61, 0.2);
-  padding-left: calc(var(--spacing-md) + 5px);
+  padding-left: calc(var(--spacing-lg) + 5px);
+}
+
+#mobile-menu .opt:hover i {
+  transform: translateX(2px);
 }
 
 #mobile-menu .opt:active {
@@ -204,21 +265,18 @@
   color: var(--third-color);
   display: flex;
   align-items: center;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   position: relative;
   z-index: 2001;
   padding: var(--spacing-xs) var(--spacing-sm);
   background: transparent;
   border: none;
-}
-
-.dropdown-header i {
-  margin-left: var(--spacing-xs);
-  transition: transform 0.3s ease;
+  border-radius: 20px;
 }
 
 .dropdown-header:hover {
   color: var(--second-color);
+  background-color: rgba(208, 147, 61, 0.1);
 }
 
 .dropdown-header:focus {
@@ -292,7 +350,7 @@
 /* Responsive adjustments */
 @media only screen and (max-width: 1200px) {
   #shopimy-logo {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
   
   #nav-wrapper div {
@@ -322,7 +380,7 @@
   }
   
   #login-btn, #user-menu {
-    margin-right: var(--spacing-sm);
+    margin-right: var(--spacing-md);
   }
   
   #hamburger {
@@ -330,7 +388,11 @@
   }
   
   #mobile-menu {
-    width: 100%;
+    width: 85%;
+  }
+  
+  .auth-buttons {
+    display: none;
   }
 }
 
@@ -338,12 +400,49 @@
   #shopimy-logo {
     font-size: 1.8rem;
   }
-
+  
   #nav-wrapper div {
-    padding: var(--spacing-xs);
+    font-size: 0.9rem;
   }
-
+  
   .dropdown-header {
     font-size: 0.9rem;
   }
+  
+  #hamburger {
+    width: 35px;
+    height: 35px;
+  }
+  
+  #mobile-menu {
+    width: 100%;
+  }
+}
+
+.auth-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+#login-btn, #register-btn {
+  text-decoration: none;
+  font-family: var(--main-font-fam);
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+#register-btn {
+  background-color: transparent;
+  color: var(--second-color);
+  border: 1px solid var(--second-color);
+}
+
+#register-btn:hover {
+  background-color: rgba(208, 147, 61, 0.1);
+  transform: translateY(-2px);
+}
+
+#login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

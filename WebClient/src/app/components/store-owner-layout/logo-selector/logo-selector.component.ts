@@ -126,9 +126,11 @@ export class LogoSelectorComponent implements OnInit, OnDestroy {
   uploadLogo(): void {
     if (!this.selectedFile) {
       this.errorMessage = 'Please select a file first.';
+      console.error('Upload attempted without file selection');
       return;
     }
     
+    console.log('Starting logo upload process for file:', this.selectedFile.name);
     this.isUploading = true;
     this.errorMessage = '';
     this.successMessage = '';
@@ -136,29 +138,38 @@ export class LogoSelectorComponent implements OnInit, OnDestroy {
     const sub = this.logoService.uploadLogo(this.selectedFile)
       .pipe(
         catchError(error => {
+          console.error('Logo upload error:', error);
           this.errorMessage = error.message || 'Error uploading logo';
           return of('');
         }),
         finalize(() => {
           this.isUploading = false;
+          console.log('Logo upload process completed');
         })
       )
       .subscribe(logoUrl => {
         if (logoUrl) {
-          // After upload, reload the image from API
+          console.log('Logo uploaded successfully, URL:', logoUrl);
+          
+          // Update the current logo URL first
+          this.currentLogoUrl = logoUrl;
           this.logoLoadError = false;
+          
+          // After upload, reload the image from API
           this.loadCurrentLogo();
           this.successMessage = 'Logo uploaded successfully!';
           this.selectedFile = null;
           this.logoPreviewUrl = null;
           
-          // Inform store service about the update
-          this.storeService.getCurrentUserStore().subscribe();
+          // Inform store service about the update - more robust approach
+          this.updateStoreWithLogo(logoUrl);
           
           // Auto-hide success message after 3 seconds
           setTimeout(() => {
             this.successMessage = '';
           }, 3000);
+        } else {
+          console.warn('Logo upload completed but no URL was returned');
         }
       });
     
@@ -212,14 +223,39 @@ export class LogoSelectorComponent implements OnInit, OnDestroy {
   
   // Update the store details with the new logo URL
   private updateStoreWithLogo(logoUrl: string): void {
+    console.log('Updating store with new logo URL:', logoUrl);
+    
     // Get current store from service
     const currentStore = this.storeService.activeStoreSubject.value;
     if (currentStore) {
-      // Update the store's logo URL
-      currentStore.logoURL = logoUrl;
+      // Create a deep copy to avoid direct mutation
+      // Make sure we're preserving all properties exactly as they are
+      const updatedStore = { 
+        ...currentStore,
+        logoURL: logoUrl,
+        // Ensure these critical properties are correctly set
+        id: currentStore.id,
+        url: currentStore.url,
+        name: currentStore.name,
+        // Make sure componentVisibility is properly copied
+        componentVisibility: currentStore.componentVisibility ? 
+          { ...currentStore.componentVisibility } : 
+          currentStore.componentVisibility
+      };
       
-      // Push the updated store back to the subject
-      this.storeService.activeStoreSubject.next(currentStore);
+      // Update the store via service to ensure backend synchronization
+      this.storeService.updateStore(updatedStore).subscribe({
+        next: (response) => {
+          console.log('Store updated with new logo URL:', response);
+        },
+        error: (err) => {
+          console.error('Failed to update store with new logo:', err);
+          // Still update the local subject to maintain UI consistency
+          this.storeService.activeStoreSubject.next(updatedStore);
+        }
+      });
+    } else {
+      console.error('Cannot update store: no active store available');
     }
   }
 }

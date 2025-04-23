@@ -351,17 +351,28 @@ namespace Server.Controllers
                             {
                                 for (int i = 0; i < variant.Images.Count; i++)
                                 {
-                                    using (SqlCommand command = new SqlCommand(@"
-                                        INSERT INTO ItemImages (store_id, user_id, item_id, item_index, blob)
-                                        VALUES (@storeId, @userId, @itemId, @itemIndex, @blob)", connection, transaction))
+                                    // Log the image URL being used
+                                    Console.WriteLine($"Inserting image: {variant.Images[i]}");
+                                    
+                                    try 
                                     {
-                                        command.Parameters.AddWithValue("@storeId", request.StoreId);
-                                        command.Parameters.AddWithValue("@userId", GetCurrentUserId());
-                                        command.Parameters.AddWithValue("@itemId", itemId);
-                                        command.Parameters.AddWithValue("@itemIndex", i);
-                                        command.Parameters.AddWithValue("@blob", variant.Images[i]);
-                                        
-                                        await command.ExecuteNonQueryAsync();
+                                        using (SqlCommand command = new SqlCommand(@"
+                                            INSERT INTO ItemImages (store_id, user_id, item_id, item_index, blob)
+                                            VALUES (@storeId, @userId, @itemId, @itemIndex, @blob)", connection, transaction))
+                                        {
+                                            command.Parameters.AddWithValue("@storeId", request.StoreId);
+                                            command.Parameters.AddWithValue("@userId", GetCurrentUserId());
+                                            command.Parameters.AddWithValue("@itemId", itemId);
+                                            command.Parameters.AddWithValue("@itemIndex", i);
+                                            command.Parameters.AddWithValue("@blob", variant.Images[i]);
+                                            
+                                            await command.ExecuteNonQueryAsync();
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine($"Error inserting image: {ex.Message}");
+                                        throw; // Rethrow to be caught by the outer exception handler
                                     }
                                 }
                             }
@@ -737,37 +748,77 @@ namespace Server.Controllers
 
         private int GetCurrentStoreId()
         {
-            // This retrieves the current store's ID from the authenticated user's claims
-            var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext == null) return 0;
-
-            var user = httpContext.User;
-            if (user == null) return 0;
-
-            var storeIdClaim = user.FindFirst("storeId");
-            if (storeIdClaim == null || !int.TryParse(storeIdClaim.Value, out int storeId))
+            // Get user ID first
+            int userId = GetCurrentUserId();
+            if (userId <= 0)
             {
+                Console.WriteLine("ERROR: Could not get valid user ID");
                 return 0;
             }
 
-            return storeId;
+            Console.WriteLine($"Looking up store for user ID: {userId}");
+
+            // Look up the store ID for this user
+            try
+            {
+                var store = _context.Stores
+                    .FirstOrDefault(s => s.StoreOwnerId == userId);
+
+                if (store == null)
+                {
+                    Console.WriteLine($"ERROR: No store found for user ID {userId}");
+                    return 0;
+                }
+
+                Console.WriteLine($"Found store ID: {store.StoreId} for user ID: {userId}");
+                return store.StoreId;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR looking up store: {ex.Message}");
+                return 0;
+            }
         }
 
         private int GetCurrentUserId()
         {
             // This retrieves the current user's ID from the authenticated user's claims
             var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext == null) return 0;
-
-            var user = httpContext.User;
-            if (user == null) return 0;
-
-            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            if (httpContext == null)
             {
+                Console.WriteLine("ERROR: HttpContext is null");
                 return 0;
             }
 
+            var user = httpContext.User;
+            if (user == null)
+            {
+                Console.WriteLine("ERROR: User is null");
+                return 0;
+            }
+
+            // Log all claims for debugging
+            Console.WriteLine("=== User Claims ===");
+            foreach (var claim in user.Claims)
+            {
+                Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
+            }
+            Console.WriteLine("===================");
+
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                Console.WriteLine("ERROR: NameIdentifier claim not found");
+                return 0;
+            }
+
+            if (!int.TryParse(userIdClaim.Value, out int userId))
+            {
+                Console.WriteLine($"ERROR: Failed to parse user ID from claim value: {userIdClaim.Value}");
+                return 0;
+            }
+
+            Console.WriteLine($"User ID found: {userId}");
             return userId;
         }
 

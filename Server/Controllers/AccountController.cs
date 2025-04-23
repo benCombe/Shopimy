@@ -181,6 +181,82 @@ namespace Server.Controllers
             });
         }
 
+        // POST: api/account/refresh-token
+        [HttpPost("refresh-token")]
+        [Authorize]
+        public async Task<ActionResult<object>> RefreshToken()
+        {
+            try
+            {
+                // Get user ID from current token
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+                {
+                    return Unauthorized("Invalid token. User ID not found.");
+                }
+
+                // Get the user
+                var user = await _context.Users.FindAsync(userId);
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                // Get the current token from Authorization header
+                var authHeader = Request.Headers["Authorization"].ToString();
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+                {
+                    return Unauthorized("Invalid Authorization header.");
+                }
+
+                var currentToken = authHeader.Substring("Bearer ".Length).Trim();
+
+                // Generate a new token with updated claims
+                string newToken = GenerateJwtToken(user);
+
+                // Update the ActiveUsers table
+                var activeUser = await _context.ActiveUsers.FirstOrDefaultAsync(au => au.Token == currentToken);
+                if (activeUser != null)
+                {
+                    activeUser.Token = newToken;
+                    activeUser.LoginDate = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    // If no active session found, create a new one
+                    _context.ActiveUsers.Add(new ActiveUser
+                    {
+                        UserId = userId,
+                        LoginDate = DateTime.UtcNow,
+                        Token = newToken
+                    });
+                    await _context.SaveChangesAsync();
+                }
+
+                // Return the new token
+                return Ok(new
+                {
+                    Token = newToken,
+                    User = new
+                    {
+                        user.Id,
+                        user.FirstName,
+                        user.LastName,
+                        user.Email,
+                        user.Phone,
+                        user.Address,
+                        user.Country,
+                        user.Verified
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         // POST: api/account/logout
         [HttpPost("logout")]
         [AllowAnonymous] // Allows unauthenticated users to call this endpoint
@@ -248,6 +324,9 @@ namespace Server.Controllers
                 user.Email,
                 user.Phone,
                 user.Address,
+                user.City,
+                user.State,
+                user.PostalCode,
                 user.Country,
                 user.DOB,
                 user.Verified,
@@ -457,8 +536,8 @@ namespace Server.Controllers
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is not configured")));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // Make sure we're using the correct claim types and values
-            var claims = new[]
+            // Create a list of claims that we'll add to
+            var claimsList = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), // Use ID as subject
                 new Claim(JwtRegisteredClaimNames.Email, user.Email ?? throw new InvalidOperationException("User email is null")), // Store email in a different claim
@@ -466,10 +545,25 @@ namespace Server.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) // Ensure this is the user ID as string
             };
 
+            // Look up the user's store (if any) and add the storeId claim
+            var store = _context.Stores
+                .FirstOrDefault(s => s.StoreOwnerId == user.Id);
+            
+            if (store != null)
+            {
+                // Add the storeId as a custom claim
+                claimsList.Add(new Claim("storeId", store.StoreId.ToString()));
+                Console.WriteLine($"Adding storeId claim: {store.StoreId} for user: {user.Id}");
+            }
+            else
+            {
+                Console.WriteLine($"No store found for user: {user.Id}");
+            }
+
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Issuer"],
-                claims,
+                claimsList,
                 expires: DateTime.UtcNow.AddDays(3), // Expires after 3 days
                 signingCredentials: credentials
             );

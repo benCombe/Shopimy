@@ -46,13 +46,6 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.BasicItem", b =>
                 {
-                    b.Property<int>("ListId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("list_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ListId"));
-
                     b.Property<DateTime?>("AvailFrom")
                         .HasColumnType("datetime2")
                         .HasColumnName("availFrom");
@@ -68,6 +61,14 @@ namespace Server.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int")
                         .HasColumnName("category");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("item_id");
+
+                    b.Property<int>("ListId")
+                        .HasColumnType("int")
+                        .HasColumnName("list_id");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -90,9 +91,62 @@ namespace Server.Migrations
                         .HasColumnType("int")
                         .HasColumnName("quantity");
 
-                    b.HasKey("ListId");
+                    b.ToTable("BasicItem");
+                });
 
-                    b.ToTable("Listing", (string)null);
+            modelBuilder.Entity("Server.Models.DetailItem", b =>
+                {
+                    b.Property<string>("AvailFrom")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AvailTo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Blob")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Colour")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CurrentRating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ListId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SalePrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("DetailItem");
                 });
 
             modelBuilder.Entity("Server.Models.Order", b =>
@@ -214,6 +268,63 @@ namespace Server.Migrations
                     b.HasKey("OrderId");
 
                     b.ToTable("OrderLog", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.Promotion", b =>
+                {
+                    b.Property<int>("PromotionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PromotionId"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsageLimit")
+                        .HasColumnType("int");
+
+                    b.HasKey("PromotionId");
+
+                    b.ToTable("Promotions", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.Quantity", b =>
+                {
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalQuantity")
+                        .HasColumnType("int");
+
+                    b.ToTable("Quantity");
                 });
 
             modelBuilder.Entity("Server.Models.Review", b =>
@@ -366,6 +477,36 @@ namespace Server.Migrations
                     b.ToTable("StoreThemes", (string)null);
                 });
 
+            modelBuilder.Entity("Server.Models.StoreVisit", b =>
+                {
+                    b.Property<int>("VisitId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("visit_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VisitId"));
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int")
+                        .HasColumnName("store_id");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTime>("VisitTimestamp")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("visit_timestamp");
+
+                    b.HasKey("VisitId");
+
+                    b.HasIndex("StoreId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("StoreVisits", (string)null);
+                });
+
             modelBuilder.Entity("Server.Models.TestItem", b =>
                 {
                     b.Property<int>("Id")
@@ -399,6 +540,10 @@ namespace Server.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("address");
 
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("city");
+
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("country");
@@ -426,6 +571,14 @@ namespace Server.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("phone");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("postal_code");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("state");
 
                     b.Property<string>("StripeCustomerId")
                         .HasColumnType("nvarchar(max)")
@@ -525,6 +678,23 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Server.Models.StoreVisit", b =>
+                {
+                    b.HasOne("Server.Models.Store", "Store")
+                        .WithMany()
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Store");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Server.Models.Order", b =>

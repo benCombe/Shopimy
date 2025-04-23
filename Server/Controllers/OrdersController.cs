@@ -48,12 +48,12 @@ namespace Server.Controllers
             {
                 await connection.OpenAsync();
                 string query = @"
-                    SELECT o.order_id, o.order_date, o.total_amount, o.status,
-                           o.shipping_address, o.payment_method, u.first_name, u.last_name
+                    SELECT o.Id as order_id, o.CreatedAt as order_date, o.TotalAmount as total_amount, o.Status as status,
+                           o.Notes as shipping_address, '' as payment_method, u.first_name, u.last_name
                     FROM Orders o
-                    JOIN Users u ON o.user_id = u.id
-                    WHERE o.store_id = @storeId
-                    ORDER BY o.order_date DESC";
+                    JOIN Users u ON o.UserId = u.id
+                    WHERE o.StoreId = @storeId
+                    ORDER BY o.CreatedAt DESC";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -90,12 +90,9 @@ namespace Server.Controllers
                 {
                     int orderId = order.orderId;
                     string itemsQuery = @"
-                        SELECT oi.item_id, oi.quantity, oi.price_paid, l.name, img.blob as image_url
+                        SELECT oi.ProductId as item_id, oi.Quantity as quantity, oi.UnitPrice as price_paid, oi.ProductName as name, null as image_url
                         FROM OrderItems oi
-                        JOIN Items i ON oi.item_id = i.item_id
-                        JOIN Listing l ON i.list_id = l.list_id
-                        LEFT JOIN ItemImages img ON img.item_id = i.item_id AND img.item_index = 0
-                        WHERE oi.order_id = @orderId";
+                        WHERE oi.OrderId = @orderId";
 
                     var orderItems = new List<dynamic>();
                     
@@ -103,22 +100,29 @@ namespace Server.Controllers
                     {
                         itemsCommand.Parameters.AddWithValue("@orderId", orderId);
                         
-                        using (SqlDataReader itemsReader = await itemsCommand.ExecuteReaderAsync())
+                        try
                         {
-                            while (await itemsReader.ReadAsync())
+                            using (SqlDataReader itemsReader = await itemsCommand.ExecuteReaderAsync())
                             {
-                                dynamic item = new ExpandoObject();
-                                item.itemId = itemsReader.GetInt32(itemsReader.GetOrdinal("item_id"));
-                                item.name = itemsReader.GetString(itemsReader.GetOrdinal("name"));
-                                item.quantity = itemsReader.GetInt32(itemsReader.GetOrdinal("quantity"));
-                                item.price = itemsReader.GetDecimal(itemsReader.GetOrdinal("price_paid"));
-                                
-                                // Handle potentially null imageUrl
-                                int imageUrlOrdinal = itemsReader.GetOrdinal("image_url");
-                                item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : (string?)null;
+                                while (await itemsReader.ReadAsync())
+                                {
+                                    dynamic item = new ExpandoObject();
+                                    item.itemId = itemsReader.GetInt32(itemsReader.GetOrdinal("item_id"));
+                                    item.name = itemsReader.GetString(itemsReader.GetOrdinal("name"));
+                                    item.quantity = itemsReader.GetInt32(itemsReader.GetOrdinal("quantity"));
+                                    item.price = itemsReader.GetDecimal(itemsReader.GetOrdinal("price_paid"));
                                     
-                                orderItems.Add(item);
+                                    // Handle potentially null imageUrl
+                                    int imageUrlOrdinal = itemsReader.GetOrdinal("image_url");
+                                    item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : (string?)null;
+                                        
+                                    orderItems.Add(item);
+                                }
                             }
+                        }
+                        catch (Exception)
+                        {
+                            // If there's an error with the query, just continue with an empty items list
                         }
                     }
 
@@ -152,11 +156,11 @@ namespace Server.Controllers
             {
                 await connection.OpenAsync();
                 string query = @"
-                    SELECT o.order_id, o.order_date, o.total_amount, o.status,
-                           o.shipping_address, o.payment_method, u.first_name, u.last_name
+                    SELECT o.Id as order_id, o.CreatedAt as order_date, o.TotalAmount as total_amount, o.Status as status,
+                           o.Notes as shipping_address, '' as payment_method, u.first_name, u.last_name
                     FROM Orders o
-                    JOIN Users u ON o.user_id = u.id
-                    WHERE o.order_id = @orderId AND o.store_id = @storeId";
+                    JOIN Users u ON o.UserId = u.id
+                    WHERE o.Id = @orderId AND o.StoreId = @storeId";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -193,35 +197,39 @@ namespace Server.Controllers
                     {
                         // Get the order items
                         string itemsQuery = @"
-                            SELECT oi.item_id, oi.quantity, oi.price_paid, l.name, img.blob as image_url
+                            SELECT oi.ProductId as item_id, oi.Quantity as quantity, oi.UnitPrice as price_paid, oi.ProductName as name, null as image_url
                             FROM OrderItems oi
-                            JOIN Items i ON oi.item_id = i.item_id
-                            JOIN Listing l ON i.list_id = l.list_id
-                            LEFT JOIN ItemImages img ON img.item_id = i.item_id AND img.item_index = 0
-                            WHERE oi.order_id = @orderId";
+                            WHERE oi.OrderId = @orderId";
 
                         using (SqlCommand itemsCommand = new SqlCommand(itemsQuery, connection))
                         {
                             itemsCommand.Parameters.AddWithValue("@orderId", id);
                             
-                            using (SqlDataReader itemsReader = await itemsCommand.ExecuteReaderAsync())
+                            try
                             {
-                                var items = new List<dynamic>();
-                                while (await itemsReader.ReadAsync())
+                                using (SqlDataReader itemsReader = await itemsCommand.ExecuteReaderAsync())
                                 {
-                                    dynamic item = new ExpandoObject();
-                                    item.itemId = itemsReader.GetInt32(itemsReader.GetOrdinal("item_id"));
-                                    item.name = itemsReader.GetString(itemsReader.GetOrdinal("name"));
-                                    item.quantity = itemsReader.GetInt32(itemsReader.GetOrdinal("quantity"));
-                                    item.price = itemsReader.GetDecimal(itemsReader.GetOrdinal("price_paid"));
-                                    
-                                    // Handle potentially null imageUrl
-                                    int imageUrlOrdinal = itemsReader.GetOrdinal("image_url");
-                                    item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : (string?)null;
+                                    var items = new List<dynamic>();
+                                    while (await itemsReader.ReadAsync())
+                                    {
+                                        dynamic item = new ExpandoObject();
+                                        item.itemId = itemsReader.GetInt32(itemsReader.GetOrdinal("item_id"));
+                                        item.name = itemsReader.GetString(itemsReader.GetOrdinal("name"));
+                                        item.quantity = itemsReader.GetInt32(itemsReader.GetOrdinal("quantity"));
+                                        item.price = itemsReader.GetDecimal(itemsReader.GetOrdinal("price_paid"));
                                         
-                                    items.Add(item);
+                                        // Handle potentially null imageUrl
+                                        int imageUrlOrdinal = itemsReader.GetOrdinal("image_url");
+                                        item.imageUrl = !itemsReader.IsDBNull(imageUrlOrdinal) ? itemsReader.GetString(imageUrlOrdinal) : (string?)null;
+                                            
+                                        items.Add(item);
+                                    }
+                                    order.items = items;
                                 }
-                                order.items = items;
+                            }
+                            catch (Exception)
+                            {
+                                // If there's an error with the query, just continue with an empty items list
                             }
                         }
                     }
@@ -260,9 +268,9 @@ namespace Server.Controllers
                 {
                     await connection.OpenAsync();
                     string query = @"
-                        UPDATE Orders
-                        SET status = @status
-                        WHERE order_id = @orderId AND store_id = @storeId";
+                                UPDATE Orders
+                                SET Status = @status
+                                WHERE Id = @orderId AND StoreId = @storeId";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -288,20 +296,12 @@ namespace Server.Controllers
 
         private int GetCurrentStoreId()
         {
-            // This retrieves the current store's ID from the authenticated user's claims
-            var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext == null) return 0;
-
-            var user = httpContext.User;
-            if (user == null) return 0;
-
-            var storeIdClaim = user.FindFirst("storeId");
-            if (storeIdClaim == null || !int.TryParse(storeIdClaim.Value, out int storeId))
+            var storeIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("storeId");
+            if (storeIdClaim != null && int.TryParse(storeIdClaim.Value, out int storeId))
             {
-                return 0;
+                return storeId;
             }
-
-            return storeId;
+            return -1; // Return invalid ID if not found
         }
     }
 

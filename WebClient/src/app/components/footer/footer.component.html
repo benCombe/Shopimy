@@ -1,36 +1,37 @@
-<footer class="footer-container" role="contentinfo">
+<footer class="footer-container" role="contentinfo" [ngStyle]="getFooterStyles()">
   <div class="footer-content">
     <section class="footer-section">
-      <h3 class="footer-heading">About Shopimy</h3>
+      <h3 class="footer-heading" [ngStyle]="getHeadingStyles()">About Shopimy</h3>
       <p>Shopimy is an e-commerce platform that makes it easy to create and manage your online store.</p>
     </section>
 
     <section class="footer-section">
-      <h3 class="footer-heading">Quick Links</h3>
+      <h3 class="footer-heading" [ngStyle]="getHeadingStyles()">Quick Links</h3>
       <nav aria-label="Footer navigation">
         <ul class="footer-links">
-          <li><a routerLink="/" aria-label="Home page">Home</a></li>
-          <li><a routerLink="/about" aria-label="About us page">About Us</a></li>
-          <li><a routerLink="/contact" aria-label="Contact page">Contact</a></li>
-          <li><a routerLink="/privacy" aria-label="Privacy policy page">Privacy Policy</a></li>
-          <li><a routerLink="/terms" aria-label="Terms of service page">Terms of Service</a></li>
+          <li><a routerLink="/" aria-label="Home page" [ngStyle]="getLinkStyles()">Home</a></li>
+          <li><a routerLink="/about" aria-label="About us page" [ngStyle]="getLinkStyles()">About Us</a></li>
+          <li><a routerLink="/contact" aria-label="Contact page" [ngStyle]="getLinkStyles()">Contact</a></li>
+          <li><a routerLink="/support" aria-label="Support page" [ngStyle]="getLinkStyles()">Support</a></li>
+          <li><a routerLink="/privacy" aria-label="Privacy policy page" [ngStyle]="getLinkStyles()">Privacy Policy</a></li>
+          <li><a routerLink="/terms" aria-label="Terms of service page" [ngStyle]="getLinkStyles()">Terms of Service</a></li>
         </ul>
       </nav>
     </section>
 
     <section class="footer-section">
-      <h3 class="footer-heading">Connect With Us</h3>
+      <h3 class="footer-heading" [ngStyle]="getHeadingStyles()">Connect With Us</h3>
       <div class="social-icons">
-        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Visit our Facebook page">
+        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Visit our Facebook page" [ngStyle]="getLinkStyles()">
           <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
         </a>
-        <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Visit our Twitter page">
+        <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Visit our Twitter page" [ngStyle]="getLinkStyles()">
           <i class="fa-brands fa-twitter" aria-hidden="true"></i>
         </a>
-        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Visit our Instagram page">
+        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Visit our Instagram page" [ngStyle]="getLinkStyles()">
           <i class="fa-brands fa-instagram" aria-hidden="true"></i>
         </a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="Visit our LinkedIn page">
+        <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="Visit our LinkedIn page" [ngStyle]="getLinkStyles()">
           <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
         </a>
       </div>
@@ -38,6 +39,7 @@
   </div>
 
   <div class="footer-bottom">
-    <p>&copy; {{currentYear}} Shopimy. All rights reserved.</p>
+    <p *ngIf="isStoreContext && storeData">&copy; {{currentYear}} {{ storeData.name }}. All rights reserved.</p>
+    <p *ngIf="!isStoreContext">&copy; {{currentYear}} Shopimy. All rights reserved.</p>
   </div>
 </footer>
