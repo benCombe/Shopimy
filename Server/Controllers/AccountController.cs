@@ -469,7 +469,7 @@ namespace Server.Controllers
                         SELECT o.Id AS order_id, o.CreatedAt AS order_date, o.TotalAmount AS total_amount, o.Status AS status, 
                                s.Name AS store_name
                         FROM Orders o
-                        JOIN Stores s ON o.StoreId = s.StoreId
+                        JOIN Stores s ON o.StoreId = s.store_id
                         WHERE o.UserId = @userId
                         ORDER BY o.CreatedAt DESC
                         OFFSET @offset ROWS

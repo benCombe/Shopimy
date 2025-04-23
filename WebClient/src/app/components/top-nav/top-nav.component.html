@@ -2,11 +2,6 @@
   <a id="shopimy-logo" routerLink="" aria-label="Shopimy homepage">Shopimy</a>
 
   <div id="nav-wrapper" class="center" [ngClass]="{ 'mobile-menu': isMobileMenuOpen }">
-    <!-- Auth Buttons for not logged in users -->
-    <div *ngIf="!isLoggedIn" class="auth-buttons">
-      <a id="register-btn" routerLink="/register" class="standard-button outline small">Register</a>
-      <a id="login-btn" routerLink="/login" class="standard-button primary small">Log In</a>
-    </div>
 
     <!-- Hamburger Menu Button -->
     <button id="hamburger" (click)="toggleMobileMenu()" 
