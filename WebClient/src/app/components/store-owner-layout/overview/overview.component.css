@@ -693,6 +693,16 @@
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
   box-shadow: var(--shadow-sm);
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-wrapper canvas {
+  margin: 0 auto;
+  width: 90% !important;
+  max-width: 800px !important;
 }
 
 .chart-summary {
@@ -848,6 +858,10 @@
   margin-bottom: var(--spacing-lg);
   padding-bottom: var(--spacing-md);
   position: relative;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 800px;
+  padding: 0 var(--spacing-md) var(--spacing-md) var(--spacing-md);
 }
 
 /* Horizontal grid lines for the fallback chart */
@@ -878,12 +892,15 @@
   position: relative;
   margin: 0 3px;
   z-index: 1;
+  flex: 0 1 auto;
+  max-width: 50px;
+  min-width: 20px;
 }
 
 .fallback-bar {
   width: 18px;
-  max-width: 100%;
-  background-color: rgba(208, 147, 61, 0.7); /* --second-color with opacity */
+  max-width: 80%;
+  background-color: rgba(208, 147, 61, 0.7);
   border-radius: 4px 4px 0 0;
   transition: all 0.5s ease;
   min-height: 3px;
@@ -926,10 +943,17 @@
 @media (max-width: 768px) {
   .fallback-bars-container {
     height: 150px;
+    width: 95%;
+  }
+  
+  .fallback-bar-wrapper {
+    min-width: 15px;
+    max-width: 40px;
   }
   
   .fallback-bar {
     width: 10px;
+    max-width: 90%;
   }
   
   .fallback-bar-label {
@@ -955,7 +979,12 @@
   }
   
   .fallback-bars-container {
-    height: 120px;
+    width: 100%;
+  }
+  
+  .fallback-bar-wrapper {
+    min-width: 10px;
+    max-width: 30px;
   }
   
   .fallback-chart-header {

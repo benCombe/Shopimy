@@ -206,6 +206,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
               borderRadius: 4,
               maxBarThickness: 35,
               minBarLength: 3,
+              barPercentage: 0.8, // Controls the width of the bar relative to the category width
+              categoryPercentage: 0.7, // Controls the width of the category (affects space between bars)
               hoverBackgroundColor: secondColor,
               hoverBorderColor: mainColor,
               hoverBorderWidth: 2
@@ -314,7 +316,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
                   },
                   maxRotation: 45,
                   minRotation: 0,
-                  padding: 8
+                  padding: 8,
+                  autoSkip: true,
+                  maxTicksLimit: 10 // Limit the number of ticks displayed
                 }
               }
             },
@@ -329,9 +333,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             layout: {
               padding: {
                 top: 10,
-                right: 10,
+                right: 25, // Added more right padding
                 bottom: 10,
-                left: 10
+                left: 25  // Added more left padding
               }
             },
             interaction: {
