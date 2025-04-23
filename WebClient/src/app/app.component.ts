@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PopupComponent } from './components/utilities/popup/popup.component'; // Import PopupComponent
 import { LandingPageComponent } from "./components/landing-page/landing-page.component";
 import { RouterOutlet } from '@angular/router';
@@ -7,6 +7,7 @@ import { StoreOwnerDashboardComponent } from "./components/store-owner-layout/st
 import { ShoppingCartComponent } from "./components/customer-layout/shopping-cart/shopping-cart.component";
 import { CheckoutComponent } from "./components/customer-layout/checkout/checkout.component";
 import { LoadingOneComponent } from "./components/utilities/loading-one/loading-one.component";
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -15,10 +16,18 @@ import { LoadingOneComponent } from "./components/utilities/loading-one/loading-
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   showPopup = false;
   question = 'Do you want to continue?';
   responses = ['Yes', 'No', 'Maybe'];
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    // Initialize user state on application startup
+    // This ensures user authentication state persists through page reloads
+    this.userService.initializeUserState();
+  }
 
   handleResponse(response: string) {
     console.log('User selected:', response);

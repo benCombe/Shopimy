@@ -39,11 +39,15 @@ export class UserService {
   public loggedIn$ : Observable<boolean> = this.loggedInSubject.asObservable();
 
   constructor(private http: HttpClient, private cookieService: CookieService) {
-
-    // Check if user is logged in on service initialization
-    this.checkSession();
+    // We'll move the session check to a separate method that can be called
+    // explicitly by AppComponent during initialization
   }
 
+  // Initialize user state - should be called by AppComponent on init
+  initializeUserState(): void {
+    // Check if user is logged in using token from cookies
+    this.checkSession();
+  }
 
   //Register
   register(user: RegistrationDetails): Observable<boolean>{
@@ -68,7 +72,7 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         if (response && response.token && response.user) {
-          console.log("Successful Login! Token received.");
+          // Successful login
           this.cookieService.set('auth_token', response.token, 3, '/'); // 3 days expiry
           
           const loggedInUser = new User(
@@ -186,14 +190,11 @@ export class UserService {
 
   checkSession(): void {
     const token = this.cookieService.get('auth_token');
-   // console.log("Token Fetched: " + token);
 
     if (token) {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.http.get<User>(`${this.apiUrl}/profile`, { headers }).subscribe({
         next: user => {
-          console.log("User data received from API:", user);
-          
           // Ensure email is properly set
           if (!user.Email && (user as any).email) {
             user.Email = (user as any).email;
@@ -201,18 +202,14 @@ export class UserService {
           
           this.activeUserSubject.next(user);
           this.loggedInSubject.next(true);
-          console.log("User session checked and updated:", user);
         },
         error: err => {
-          this.activeUserSubject.next(this.defaultUser);
-          this.loggedInSubject.next(false);
-          this.cookieService.delete('auth_token', '/');
           console.error("Error checking user session", err);
+          this.clearSession();
         }
       });
     } else {
-      this.activeUserSubject.next(this.defaultUser);
-      this.loggedInSubject.next(false);
+      this.clearSession();
     }
   }
 
@@ -237,6 +234,12 @@ export class UserService {
   //getUserPurchaseHistory
   //getUserPaymentMethods
   //getUserWishlists
+
+  // Helper method to check if current user is a guest
+  isGuest(): boolean {
+    const currentUser = this.activeUserSubject.getValue();
+    return !currentUser || currentUser.Id === 0;
+  }
 }
 
 

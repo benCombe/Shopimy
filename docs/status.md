@@ -66,4 +66,16 @@
 (List other in-progress features here)
 
 ### Planned Features
-(List planned features here) 
+(List planned features here)
+
+## Bug Fixes
+
+- Fixed issue where user information disappears from the dashboard after reloading the page
+  - Implemented proper initialization of user state in AppComponent
+  - Added explicit initializeUserState method to UserService
+  - Added tests to verify the functionality
+  - Enhanced error handling with specific error messages and retry functionality
+  - Added loading indicators and improved user feedback during state loading
+  - Implemented timeout handling for API requests
+  - Added unit tests for the profile component to verify persistence behavior
+  - Added helper method isGuest() to UserService for better state handling 

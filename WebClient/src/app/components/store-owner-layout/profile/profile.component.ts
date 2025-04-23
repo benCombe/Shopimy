@@ -8,7 +8,8 @@ import { PaymentService } from '../../../services/payment.service';
 import { PurchaseService, OrderHistoryItemDTO } from '../../../services/purchase.service';
 import { DeliveryDetails } from '../../../models/delivery-details';
 import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
-import { Subscription } from 'rxjs';
+import { Subscription, of, timer } from 'rxjs';
+import { catchError, finalize, switchMap, timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -60,6 +61,9 @@ export class ProfileComponent implements OnInit {
   // Subscription for user data
   private userSubscription: Subscription | null = null;
 
+  // Loading state for user profile
+  isLoadingProfile: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -82,36 +86,68 @@ export class ProfileComponent implements OnInit {
   }
 
   loadUserData(): void {
+    this.isLoadingProfile = true;
+    this.profileError = null;
+
+    // First, check if we already have a user from the input binding
+    if (this.user && this.user.Id > 0) {
+      this.updateProfileForm();
+      this.loadDeliveryAddresses(this.user.Id);
+      this.loadPaymentMethods(this.user.Id);
+    }
+
     // Subscribe to the activeUser$ observable from UserService
     this.userSubscription = this.userService.activeUser$.subscribe({
       next: (userData) => {
-        this.user = userData;
-        // Update form with the latest user data
-        this.updateProfileForm();
-        
-        // Only load addresses and payment methods if we have a valid user (not guest)
-        if (this.user && this.user.Id > 0) {
-          this.loadDeliveryAddresses(this.user.Id);
-          this.loadPaymentMethods(this.user.Id);
+        if (userData && userData.Id > 0) {
+          this.user = userData;
+          // Update form with the latest user data
+          this.updateProfileForm();
+          
+          // Only load addresses and payment methods if we have a valid user (not guest)
+          this.loadDeliveryAddresses(userData.Id);
+          this.loadPaymentMethods(userData.Id);
         }
       },
       error: (error) => {
         console.error('Error loading user data:', error);
-        this.profileError = 'Failed to load user profile data.';
+        this.handleProfileError('Failed to load user profile data.');
       }
     });
 
-    // Fetch full user profile from the backend and update form data
-    this.userService.getUserProfile().subscribe({
-      next: (profileData: any) => {
-        this.user = profileData;
-        this.updateProfileForm();
-      },
-      error: (err: any) => {
-        console.error('Error fetching full profile data:', err);
-        this.profileError = 'Failed to fetch full profile data.';
-      }
-    });
+    // Always fetch full user profile from the backend to ensure we have the most up-to-date data
+    if (this.userService.isLoggedIn()) {
+      // Use switchMap with timeout to handle API requests that take too long
+      timer(0).pipe(
+        switchMap(() => this.userService.getUserProfile().pipe(
+          timeout(10000), // 10 second timeout
+          catchError(err => {
+            if (err.name === 'TimeoutError') {
+              this.handleProfileError('Profile data request timed out. Please try again.');
+            } else {
+              this.handleProfileError('Failed to fetch profile data: ' + this.getErrorMessage(err));
+            }
+            return of(null);
+          })
+        )),
+        finalize(() => {
+          this.isLoadingProfile = false;
+        })
+      ).subscribe({
+        next: (profileData: any) => {
+          if (profileData && profileData.Id > 0) {
+            this.user = profileData;
+            this.updateProfileForm();
+            // Since we have fresh data from the API, trigger loading of dependent data
+            this.loadDeliveryAddresses(profileData.Id);
+            this.loadPaymentMethods(profileData.Id);
+          }
+          this.isLoadingProfile = false;
+        }
+      });
+    } else {
+      this.isLoadingProfile = false;
+    }
   }
 
   updateProfileForm(): void {
@@ -133,20 +169,25 @@ export class ProfileComponent implements OnInit {
   }
 
   initializeForms(): void {
+    // Get current user data from service if available
+    const currentUser = this.user || this.userService.getActiveUser();
+
     // Initialize profile form with all fields from the User model
     this.profileForm = this.fb.group({
-      Email: [{ value: this.user?.Email || '', disabled: true }],
-      FirstName: [this.user?.FirstName || '', Validators.required],
-      LastName: [this.user?.LastName || '', Validators.required],
-      Phone: [this.user?.Phone || '', Validators.required],
-      Address: [this.user?.Address || '', Validators.required],
-      City: [this.user?.City || ''],
-      State: [this.user?.State || ''],
-      PostalCode: [this.user?.PostalCode || ''],
-      Country: [this.user?.Country || '', Validators.required],
-      DOB: [this.user?.DOB || ''],
-      Subscribed: [this.user?.Subscribed || false]
+      Email: [{ value: currentUser?.Email || '', disabled: true }],
+      FirstName: [currentUser?.FirstName || '', Validators.required],
+      LastName: [currentUser?.LastName || '', Validators.required],
+      Phone: [currentUser?.Phone || '', Validators.required],
+      Address: [currentUser?.Address || '', Validators.required],
+      City: [currentUser?.City || ''],
+      State: [currentUser?.State || ''],
+      PostalCode: [currentUser?.PostalCode || ''],
+      Country: [currentUser?.Country || '', Validators.required],
+      DOB: [currentUser?.DOB || ''],
+      Subscribed: [currentUser?.Subscribed || false]
     });
+
+    console.log('Profile form initialized with user data:', currentUser);
 
     // Initialize delivery form (existing code)
     this.deliveryForm = this.fb.group({
@@ -466,5 +507,37 @@ export class ProfileComponent implements OnInit {
       this.cardElement = null;
       this.cardError = null;
     }
+  }
+
+  // Helper method to extract meaningful error messages
+  private getErrorMessage(error: any): string {
+    if (!error) {
+      return 'Unknown error';
+    }
+    
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      return `Client error: ${error.error.message}`;
+    } else if (error.status) {
+      // Server-side error
+      return `Server error: ${error.status} - ${error.statusText || ''} ${error.error?.message || ''}`;
+    }
+    
+    return error.message || 'Unknown error';
+  }
+  
+  // Helper method to handle profile errors
+  private handleProfileError(message: string): void {
+    this.profileError = message;
+    this.isLoadingProfile = false;
+  }
+
+  // Public methods to access UserService functionality from the template
+  public isUserLoggedIn(): boolean {
+    return this.userService.isLoggedIn();
+  }
+
+  public isUserGuest(): boolean {
+    return this.userService.isGuest();
   }
 }
