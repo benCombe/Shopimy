@@ -1,7 +1,7 @@
 <div class="dashboard-card">
   <div class="card-header">
     <h2>Promotional Codes</h2>
-    <button class="standard-button primary" (click)="openAddForm()">
+    <button class="standard-button secondary" (click)="openAddForm()">
       <i class="fa-solid fa-plus"></i> Add Promotion
     </button>
   </div>
@@ -18,7 +18,7 @@
     <!-- Promotions List -->
     <div *ngIf="!isLoading && promotions.length === 0" class="empty-state">
       <p>No promotions found. Create your first promotional code!</p>
-      <button class="standard-button primary" (click)="openAddForm()">
+      <button class="standard-button secondary" (click)="openAddForm()">
         <i class="fa-solid fa-plus"></i> Create Promotion
       </button>
     </div>
@@ -28,7 +28,7 @@
       <div *ngFor="let promotion of promotions" class="promotion-card">
         <div class="promotion-header">
           <span class="promo-code">{{ promotion.code }}</span>
-          <span class="status-badge" [class.badge-active]="promotion.isActive" [class.badge-inactive]="!promotion.isActive">
+          <span class="status-badge" [ngClass]="promotion.isActive ? 'badge-active' : 'badge-inactive'">
             {{ promotion.isActive ? 'Active' : 'Inactive' }}
           </span>
         </div>

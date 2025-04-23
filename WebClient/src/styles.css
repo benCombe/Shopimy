@@ -10,7 +10,9 @@
 
 :root{
   --main-color: #393727;
+  --main-color-rgb: 57, 55, 39; /* RGB for #393727 */
   --second-color: #D0933D;
+  --second-color-rgb: 208, 147, 61; /* RGB for #D0933D */
   --third-color: #D3CEBB;
   --alt-color: #d5d5d5;
   --main-font-fam: "Inria Serif", serif;
@@ -29,6 +31,7 @@
   --scrollbar-border-radius: 4px;
 
   /* Spacing variables */
+  --spacing-xxs: 2px;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;

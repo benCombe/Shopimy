@@ -285,16 +285,34 @@ export class StoreService {
   }
 
   updateStore(store: StoreDetails): Observable<StoreDetails> {
-    // Update the local BehaviorSubject
-    this.activeStoreSubject.next(store);
-
+    console.log('Updating store with data:', store);
+    
+    // Validate essential properties before sending to API
+    if (!store || !store.id || store.id <= 0) {
+      console.error('Invalid store data: Missing or invalid ID', store);
+      return throwError(() => new Error('Store data is invalid: Missing store ID'));
+    }
+    
+    if (!store.name || store.name.trim() === '') {
+      console.error('Invalid store data: Missing name', store);
+      return throwError(() => new Error('Store data is invalid: Missing store name'));
+    }
+    
+    if (!store.url || store.url.trim() === '') {
+      console.error('Invalid store data: Missing URL', store);
+      return throwError(() => new Error('Store data is invalid: Missing store URL'));
+    }
+    
+    // Prepare store data for API with proper validation
+    const preparedStore = this.prepareStoreDataForApi(store);
+    
     //TODO NEED TO ADD THIS
     const token = this.cookieService.get('auth_token');
     if (!token) return new Observable(observer => observer.error('No token found'));
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // Send update to backend
-    return this.http.put<StoreDetails>(`${this.apiUrl}/update`, store, { headers }).pipe( // Add headers to request
+    return this.http.put<StoreDetails>(`${this.apiUrl}/update`, preparedStore, { headers }).pipe( // Add headers to request
       map(response => this.deserializeStore(response)),
       tap(updatedStore => {
         // Update the BehaviorSubject with the response from the server
@@ -437,5 +455,55 @@ export class StoreService {
       console.error('Error parsing token or creating default store:', error);
       return throwError(() => new Error('Failed to create default store.'));
     }
+  }
+
+  // Upload store logo
+  uploadLogo(file: File): Observable<{ logoURL: string }> {
+    const token = this.cookieService.get('auth_token');
+    if (!token) {
+      console.error('Authentication token not found. Cannot upload logo.');
+      return throwError(() => new Error('Authentication required.'));
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const formData = new FormData();
+    formData.append('logo', file);
+
+    return this.http.post<{ logoURL: string }>(`${this.apiUrl}/logo`, formData, { headers }).pipe(
+      tap(response => {
+        // Update the active store with the new logo URL
+        const currentStore = this.activeStoreSubject.value;
+        currentStore.logoURL = response.logoURL;
+        this.activeStoreSubject.next(currentStore);
+      }),
+      catchError(error => {
+        console.error('Error uploading logo:', error);
+        return throwError(() => new Error('Failed to upload logo.'));
+      })
+    );
+  }
+
+  // Remove store logo
+  removeLogo(): Observable<any> {
+    const token = this.cookieService.get('auth_token');
+    if (!token) {
+      console.error('Authentication token not found. Cannot remove logo.');
+      return throwError(() => new Error('Authentication required.'));
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.delete(`${this.apiUrl}/logo`, { headers }).pipe(
+      tap(() => {
+        // Update the active store by removing the logo URL
+        const currentStore = this.activeStoreSubject.value;
+        currentStore.logoURL = '';
+        this.activeStoreSubject.next(currentStore);
+      }),
+      catchError(error => {
+        console.error('Error removing logo:', error);
+        return throwError(() => new Error('Failed to remove logo.'));
+      })
+    );
   }
 }

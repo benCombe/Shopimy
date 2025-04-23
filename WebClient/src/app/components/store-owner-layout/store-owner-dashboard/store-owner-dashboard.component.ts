@@ -50,6 +50,7 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
   currentPage: string = "Overview"; // default page
   hasStore: boolean = false;
   showCreateStorePrompt: boolean = false;
+  themeLogoTab: string = 'themes'; // Default selected tab for Themes & Logos
 
   constructor(
     private userService: UserService,

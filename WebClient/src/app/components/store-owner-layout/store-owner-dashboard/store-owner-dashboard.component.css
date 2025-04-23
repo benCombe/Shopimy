@@ -463,3 +463,75 @@
   justify-content: center;
   margin-top: var(--spacing-xl);
 }
+
+/* Themes & Logos Tab Styling */
+.themes-logos-container {
+  width: 100%;
+  background-color: var(--third-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.tabs-container {
+  display: flex;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: var(--third-color);
+}
+
+.tab {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--main-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-family: var(--main-font-fam);
+}
+
+.tab:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.tab.active {
+  color: var(--second-color);
+  font-weight: 600;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--second-color);
+}
+
+.tab-content {
+  padding: 0;
+}
+
+/* Responsive adjustments for tabs */
+@media (max-width: 768px) {
+  .tab {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabs-container {
+    flex-direction: column;
+  }
+  
+  .tab {
+    text-align: center;
+    padding: var(--spacing-sm);
+  }
+  
+  .tab.active::after {
+    height: 2px;
+  }
+}
