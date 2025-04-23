@@ -67,27 +67,32 @@ export class UserService {
   login(credentials: LoginDetails): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        if (response && response.token) {
-          console.log("Successful Login! ", response.token); //TODO REMOVE THIS IN PROD
+        if (response && response.token && response.user) {
+          console.log("Successful Login! Token received.");
           this.cookieService.set('auth_token', response.token, 3, '/'); // 3 days expiry
-          const rUser = new User(
-            response.user.id,
-            response.user.firstName,
-            response.user.lastName,
-            response.user.email,
-            response.user.phone,
-            response.user.address,
-            response.user.country,
-            null, //No Stored Password
-            response.user.verified,
-            response.user.city,
-            response.user.province,
-            response.user.postalCode,
-            response.user.countryCode,
-            response.user.phoneCode
+          
+          const loggedInUser = new User(
+            response.user.Id,
+            response.user.FirstName,
+            response.user.LastName,
+            response.user.Email,
+            response.user.Phone,
+            response.user.Address,
+            response.user.Country,
+            null,
+            response.user.Verified,
+            '',
+            '',
+            '',
+            null,
+            null,
+            null
           );
-          this.activeUserSubject.next(rUser);
+          
+          this.activeUserSubject.next(loggedInUser);
           this.loggedInSubject.next(true);
+        } else {
+          console.error("Login response missing token or user data.", response);
         }
       })
     );
@@ -120,9 +125,12 @@ export class UserService {
       State: user.State,
       PostalCode: user.PostalCode,
       Country: user.Country,
-      DOB: (user as any).DOB,
-      Subscribed: (user as any).Subscribed
+      // Convert empty string to null for DOB
+      DOB: user.DOB === "" ? null : user.DOB,
+      Subscribed: user.Subscribed
     };
+
+    console.log('Sending profile update payload:', profileUpdate);
 
     return this.http.put<boolean>(`${this.apiUrl}/profile`, profileUpdate, { headers }).pipe(
       tap(success => {
@@ -139,8 +147,8 @@ export class UserService {
             State: user.State,
             PostalCode: user.PostalCode,
             Country: user.Country,
-            DOB: (user as any).DOB,
-            Subscribed: (user as any).Subscribed
+            DOB: user.DOB === "" ? null : user.DOB,
+            Subscribed: user.Subscribed
           };
           this.activeUserSubject.next(updatedUser as User);
         }
@@ -184,9 +192,16 @@ export class UserService {
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       this.http.get<User>(`${this.apiUrl}/profile`, { headers }).subscribe({
         next: user => {
+          console.log("User data received from API:", user);
+          
+          // Ensure email is properly set
+          if (!user.Email && (user as any).email) {
+            user.Email = (user as any).email;
+          }
+          
           this.activeUserSubject.next(user);
           this.loggedInSubject.next(true);
-          console.log("User session checked: ", user);
+          console.log("User session checked and updated:", user);
         },
         error: err => {
           this.activeUserSubject.next(this.defaultUser);

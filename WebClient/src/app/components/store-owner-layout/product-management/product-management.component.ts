@@ -276,9 +276,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       price: v.price,
       salePrice: v.salePrice ?? 0,
       quantity: v.quantity,
-      type: v.type || undefined,
-      size: v.size || undefined,
-      colour: v.colour || undefined,
+      type: v.type || '',
+      size: v.size || '',
+      colour: v.colour || '',
       images: v.imageUrl ? [v.imageUrl] : []
     }));
 
@@ -328,7 +328,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   private handleSaveSuccess(): void {
     this.isSaving = false;
-    alert(`Product ${this.isEditMode ? 'updated' : 'saved'} successfully!`);
+    const message = `Product ${this.isEditMode ? 'updated' : 'saved'} successfully!`;
+    console.log(message);
     this.cancelEdit();
     this.loadProducts();
   }
@@ -337,7 +338,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     console.error(`Error ${action} product:`, error);
     this.isSaving = false;
     const message = error?.error?.message || `Failed to ${action} product. Please try again.`;
-    alert(message);
+    console.error(message);
+    // TODO: Replace with proper notification service when available
   }
 
   deleteProduct(listId: number): void {
@@ -349,7 +351,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
           console.log('Product deleted:', listId);
           this.products = this.products.filter(p => p.listId !== listId);
           this.isLoading = false;
-          alert('Product deleted successfully.');
+          console.log('Product deleted successfully.');
+          // TODO: Replace with proper notification service when available
           if (this.isEditMode && this.currentListId === listId) {
             this.cancelEdit();
           }
@@ -357,7 +360,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Error deleting product:', error);
           this.isLoading = false;
-          alert('Failed to delete product. Please try again.');
+          console.error('Failed to delete product. Please try again.');
+          // TODO: Replace with proper notification service when available
         }
       });
       this.subscriptions.push(deleteSub);
@@ -404,7 +408,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error(`Error uploading image for variant ${variantIndex}:`, error);
-        alert(`Failed to upload image for variant ${variantIndex + 1}. Please try again.`);
+        console.error(`Failed to upload image for variant ${variantIndex + 1}. Please try again.`);
+        // TODO: Replace with proper notification service when available
         variantFormGroup.patchValue({
           imagePreview: null,
           imageFile: null

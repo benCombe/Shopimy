@@ -30,8 +30,20 @@
       </div>
     </div>
 
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Loading profile information...</span>
+    </div>
+
+    <!-- Not Logged In State -->
+    <div *ngIf="!isLoading && !user?.Id" class="not-logged-in-container">
+      <i class="fas fa-exclamation-circle"></i>
+      <p>Please log in to view your profile information.</p>
+    </div>
+
     <!-- Profile Information -->
-    <div class="tab-content" *ngIf="activeTab === 'profile'">
+    <div class="tab-content" *ngIf="!isLoading && user?.Id && activeTab === 'profile'">
       <div class="section-container">
         <h2>Account Info</h2>
         <p>Manage your personal information and contact details.</p>
@@ -40,7 +52,66 @@
           <i class="fas fa-edit"></i> Edit Profile
         </button>
 
-        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <!-- Display view (non-edit mode) - showing values directly from user object -->
+        <div *ngIf="!editMode" class="user-info-display">
+          <div class="field-display">
+            <label>First Name</label>
+            <div class="value">{{ user?.FirstName }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>Last Name</label>
+            <div class="value">{{ user?.LastName }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>Email</label>
+            <div class="value">{{ user?.Email }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>Phone Number</label>
+            <div class="value">{{ user?.Phone }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>Address</label>
+            <div class="value">{{ user?.Address }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>City</label>
+            <div class="value">{{ user?.City }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>State/Province</label>
+            <div class="value">{{ user?.State }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>Postal Code</label>
+            <div class="value">{{ user?.PostalCode }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>Country</label>
+            <div class="value">{{ user?.Country }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>Date of Birth</label>
+            <div class="value">{{ user?.DOB | date }}</div>
+          </div>
+          
+          <div class="field-display">
+            <label>Subscription Status</label>
+            <div class="value">{{ user?.Subscribed ? 'Subscribed' : 'Not Subscribed' }}</div>
+          </div>
+        </div>
+
+        <!-- Edit mode form -->
+        <form *ngIf="editMode" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
           <div class="form-group">
             <label for="firstName">First Name</label>
             <input 
@@ -48,7 +119,8 @@
               id="firstName" 
               formControlName="firstName" 
               [readonly]="!editMode"
-              [class.disabled-input]="!editMode">
+              [class.disabled-input]="!editMode"
+              [attr.placeholder]="!editMode ? user?.FirstName || 'First name' : ''">
             <div *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched" class="error">
               <i class="fas fa-exclamation-circle"></i> First Name is required
             </div>
@@ -61,7 +133,8 @@
               id="lastName" 
               formControlName="lastName" 
               [readonly]="!editMode"
-              [class.disabled-input]="!editMode">
+              [class.disabled-input]="!editMode"
+              [attr.placeholder]="!editMode ? user?.LastName || 'Last name' : ''">
             <div *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched" class="error">
               <i class="fas fa-exclamation-circle"></i> Last Name is required
             </div>
@@ -73,11 +146,15 @@
               type="email" 
               id="email" 
               formControlName="email" 
-              readonly
-              class="disabled-input">
-            <div class="field-hint">Email cannot be changed as it's used for account identification</div>
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode"
+              [value]="user?.Email || ''"
+              [attr.placeholder]="!editMode ? user?.Email || 'Email address' : ''">
+            <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="error">
+              <i class="fas fa-exclamation-circle"></i> Please enter a valid email address
+            </div>
           </div>
-          
+
           <div class="form-group">
             <label for="phone">Phone Number</label>
             <input 
@@ -85,10 +162,55 @@
               id="phone" 
               formControlName="phone" 
               [readonly]="!editMode"
-              [class.disabled-input]="!editMode">
+              [class.disabled-input]="!editMode"
+              [attr.placeholder]="!editMode ? user?.Phone || 'Phone number' : ''">
             <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> Phone Number is required
+              <i class="fas fa-exclamation-circle"></i> Phone number is required
             </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address">Address</label>
+            <input 
+              type="text" 
+              id="address" 
+              formControlName="address" 
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode"
+              [attr.placeholder]="!editMode ? user?.Address || 'Address' : ''">
+          </div>
+
+          <div class="form-group">
+            <label for="city">City</label>
+            <input 
+              type="text" 
+              id="city" 
+              formControlName="city" 
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode"
+              [attr.placeholder]="!editMode ? user?.City || 'City' : ''">
+          </div>
+
+          <div class="form-group">
+            <label for="state">State/Province</label>
+            <input 
+              type="text" 
+              id="state" 
+              formControlName="state" 
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode"
+              [attr.placeholder]="!editMode ? user?.State || 'State/Province' : ''">
+          </div>
+
+          <div class="form-group">
+            <label for="postalCode">Postal Code</label>
+            <input 
+              type="text" 
+              id="postalCode" 
+              formControlName="postalCode" 
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode"
+              [attr.placeholder]="!editMode ? user?.PostalCode || 'Postal Code' : ''">
           </div>
 
           <div class="form-group">
@@ -98,21 +220,41 @@
               id="country" 
               formControlName="country" 
               [readonly]="!editMode"
-              [class.disabled-input]="!editMode">
-            <div *ngIf="profileForm.get('country')?.invalid && profileForm.get('country')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> Country is required
-            </div>
+              [class.disabled-input]="!editMode"
+              [attr.placeholder]="!editMode ? user?.Country || 'Country' : ''">
           </div>
-          
-          <div class="form-actions" *ngIf="editMode">
-            <button type="button" class="cancel-button" (click)="cancelEdit()">
-              <i class="fas fa-times"></i>
-              Cancel
-            </button>
-            <button type="submit" class="save-button" [disabled]="profileForm.invalid || !profileForm.dirty || isSavingProfile">
-              <i class="fas fa-save" *ngIf="!isSavingProfile"></i>
-              <span class="loading-spinner" *ngIf="isSavingProfile"></span>
+
+          <div class="form-group">
+            <label for="dateOfBirth">Date of Birth</label>
+            <input 
+              type="date" 
+              id="dateOfBirth" 
+              formControlName="dateOfBirth" 
+              [readonly]="!editMode"
+              [class.disabled-input]="!editMode"
+              placeholder="YYYY-MM-DD">
+            <div class="field-hint">Format: YYYY-MM-DD</div>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label for="subscribed">
+              <input 
+                type="checkbox" 
+                id="subscribed" 
+                formControlName="subscribed"
+                [disabled]="!editMode">
+              Subscribe to newsletters
+            </label>
+          </div>
+
+          <!-- Edit Mode Buttons -->
+          <div *ngIf="editMode" class="button-group">
+            <button type="submit" class="save-button" [disabled]="!profileForm.valid || isSavingProfile">
+              <i class="fas" [class.fa-save]="!isSavingProfile" [class.fa-spinner]="isSavingProfile" [class.fa-spin]="isSavingProfile"></i>
               {{ isSavingProfile ? 'Saving...' : 'Save Changes' }}
+            </button>
+            <button type="button" class="cancel-button" (click)="cancelEdit()">
+              <i class="fas fa-times"></i> Cancel
             </button>
           </div>
         </form>

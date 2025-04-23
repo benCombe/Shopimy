@@ -8,6 +8,7 @@ import { PaymentService } from '../../../services/payment.service';
 import { PurchaseService, OrderHistoryItemDTO } from '../../../services/purchase.service';
 import { DeliveryDetails } from '../../../models/delivery-details';
 import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -55,6 +56,9 @@ export class ProfileComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalPages: number = 0;
+  
+  // Subscription for user data
+  private userSubscription: Subscription | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -67,28 +71,81 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForms();
     this.loadStripe();
+    this.loadUserData();
+  }
 
-    this.userService.activeUser$.subscribe(u => {
-      this.user = u;
-      this.initializeForms();
-      
-      // Only load addresses and payment methods if we have a valid user (not guest)
-      if (this.user && this.user.Id > 0) {
-        this.loadDeliveryAddresses(this.user.Id);
-        this.loadPaymentMethods(this.user.Id);
+  ngOnDestroy(): void {
+    // Clean up subscription to prevent memory leaks
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
+  loadUserData(): void {
+    // Subscribe to the activeUser$ observable from UserService
+    this.userSubscription = this.userService.activeUser$.subscribe({
+      next: (userData) => {
+        this.user = userData;
+        // Update form with the latest user data
+        this.updateProfileForm();
+        
+        // Only load addresses and payment methods if we have a valid user (not guest)
+        if (this.user && this.user.Id > 0) {
+          this.loadDeliveryAddresses(this.user.Id);
+          this.loadPaymentMethods(this.user.Id);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading user data:', error);
+        this.profileError = 'Failed to load user profile data.';
       }
-      console.log('User updated:', this.user);
+    });
+
+    // Fetch full user profile from the backend and update form data
+    this.userService.getUserProfile().subscribe({
+      next: (profileData: any) => {
+        this.user = profileData;
+        this.updateProfileForm();
+      },
+      error: (err: any) => {
+        console.error('Error fetching full profile data:', err);
+        this.profileError = 'Failed to fetch full profile data.';
+      }
     });
   }
 
+  updateProfileForm(): void {
+    if (this.profileForm) {
+      this.profileForm.patchValue({
+        Email: this.user?.Email || '',
+        FirstName: this.user?.FirstName || '',
+        LastName: this.user?.LastName || '',
+        Phone: this.user?.Phone || '',
+        Address: this.user?.Address || '',
+        City: this.user?.City || '',
+        State: this.user?.State || '',
+        PostalCode: this.user?.PostalCode || '',
+        Country: this.user?.Country || '',
+        DOB: this.user?.DOB || '',
+        Subscribed: this.user?.Subscribed || false
+      });
+    }
+  }
+
   initializeForms(): void {
-    // Initialize profile form
+    // Initialize profile form with all fields from the User model
     this.profileForm = this.fb.group({
+      Email: [{ value: this.user?.Email || '', disabled: true }],
       FirstName: [this.user?.FirstName || '', Validators.required],
       LastName: [this.user?.LastName || '', Validators.required],
       Phone: [this.user?.Phone || '', Validators.required],
       Address: [this.user?.Address || '', Validators.required],
-      Country: [this.user?.Country || '', Validators.required]
+      City: [this.user?.City || ''],
+      State: [this.user?.State || ''],
+      PostalCode: [this.user?.PostalCode || ''],
+      Country: [this.user?.Country || '', Validators.required],
+      DOB: [this.user?.DOB || ''],
+      Subscribed: [this.user?.Subscribed || false]
     });
 
     // Initialize delivery form (existing code)
@@ -133,11 +190,17 @@ export class ProfileComponent implements OnInit {
     this.editMode = !this.editMode;
     if (this.editMode) {
       this.profileForm.setValue({
+        Email: this.user?.Email || '',
         FirstName: this.user?.FirstName || '',
         LastName: this.user?.LastName || '',
         Phone: this.user?.Phone || '',
         Address: this.user?.Address || '',
-        Country: this.user?.Country || ''
+        City: this.user?.City || '',
+        State: this.user?.State || '',
+        PostalCode: this.user?.PostalCode || '',
+        Country: this.user?.Country || '',
+        DOB: this.user?.DOB || '',
+        Subscribed: this.user?.Subscribed || false
       });
     } else {
       this.profileError = null;
@@ -149,14 +212,19 @@ export class ProfileComponent implements OnInit {
       this.isSavingProfile = true;
       this.profileError = null;
 
-      // Create updated user object
+      // Create updated user object with all fields from the form
       const updatedUser: User = {
         ...this.user,
         FirstName: this.profileForm.value.FirstName,
         LastName: this.profileForm.value.LastName,
         Phone: this.profileForm.value.Phone,
         Address: this.profileForm.value.Address,
-        Country: this.profileForm.value.Country
+        City: this.profileForm.value.City,
+        State: this.profileForm.value.State,
+        PostalCode: this.profileForm.value.PostalCode,
+        Country: this.profileForm.value.Country,
+        DOB: this.profileForm.value.DOB,
+        Subscribed: this.profileForm.value.Subscribed
       };
 
       this.userService.updateUserProfile(updatedUser).subscribe({
@@ -182,13 +250,7 @@ export class ProfileComponent implements OnInit {
     this.editMode = false;
     this.profileError = null;
     // Reset form to original values
-    this.profileForm.reset({
-      FirstName: this.user?.FirstName || '',
-      LastName: this.user?.LastName || '',
-      Phone: this.user?.Phone || '',
-      Address: this.user?.Address || '',
-      Country: this.user?.Country || ''
-    });
+    this.updateProfileForm();
   }
 
   loadStripe(): void {

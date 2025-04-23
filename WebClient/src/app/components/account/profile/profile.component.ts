@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
@@ -9,6 +9,7 @@ import { DeliveryDetails } from '../../../models/delivery-details';
 import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 import { PurchaseService, PurchaseHistoryResponse } from '../../../services/purchase.service';
 import { WishListService, WishList } from '../../../services/wishlist.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -17,7 +18,7 @@ import { WishListService, WishList } from '../../../services/wishlist.service';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   user!: User;
   deliveryAddresses: DeliveryDetails[] = [];
   paymentMethods: any[] = [];
@@ -31,6 +32,9 @@ export class ProfileComponent implements OnInit {
   showAddDelivery: boolean = false;
   showAddPayment: boolean = false;
   editMode: boolean = false;
+  
+  // Add loading state
+  isLoading: boolean = true;
   
   // Pagination
   currentPage: number = 1;
@@ -52,6 +56,8 @@ export class ProfileComponent implements OnInit {
   isPurchaseHistoryLoading: boolean = false;
   purchaseHistoryError: string | null = null;
   
+  private userServiceSubscription: Subscription = new Subscription();
+
   constructor(
     private userService: UserService,
     private deliveryService: DeliveryService,
@@ -60,38 +66,83 @@ export class ProfileComponent implements OnInit {
     private wishListService: WishListService,
     private fb: FormBuilder
   ) {
-    this.profileForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      country: ['']
-    });
+    // Remove form initialization from constructor since we'll do it in loadUserData
+    this.initializeEmptyForms();
 
-    this.deliveryForm = this.fb.group({
-      address: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      country: ['', Validators.required],
-      postalCode: ['', Validators.required],
-      phone: ['', Validators.required],
-      isDefault: [false]
+    // Subscribe to user service changes
+    this.userServiceSubscription = this.userService.activeUser$.subscribe(user => {
+      if (user && user.Id !== 0) { // Check if we have real user data
+        console.log('User data from subscription:', user);
+        console.log('Email value:', user.Email);
+        
+        this.user = user;
+        
+        // Format the date value if it exists
+        let dateValue = user.DOB;
+        if (dateValue && typeof dateValue === 'string') {
+          // Try to format to YYYY-MM-DD if it's not already
+          if (!dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            try {
+              const date = new Date(dateValue);
+              dateValue = date.toISOString().split('T')[0];
+            } catch (e) {
+              console.error('Error formatting date:', e);
+              dateValue = null;
+            }
+          }
+        }
+        
+        // Make sure email is properly handled
+        const email = user.Email || '';
+        console.log('Setting email value in form:', email);
+        
+        this.profileForm.patchValue({
+          firstName: user.FirstName,
+          lastName: user.LastName,
+          email: email,
+          phone: user.Phone,
+          address: user.Address,
+          city: user.City,
+          state: user.State,
+          postalCode: user.PostalCode,
+          country: user.Country || 'Canada', // Default value
+          dateOfBirth: dateValue,
+          subscribed: user.Subscribed || false
+        });
+
+        // Load additional user data
+        this.loadDeliveryAddresses(user.Id);
+        this.loadPaymentMethods();
+        this.loadPurchaseHistory(this.currentPage);
+        this.loadWishLists(user.Id);
+      }
+      this.isLoading = false;
     });
   }
 
   ngOnInit(): void {
-    this.initializeForms();
     this.loadUserData();
     this.loadStripe();
   }
 
-  initializeForms(): void {
+  ngOnDestroy(): void {
+    // Unsubscribe from user service when component is destroyed
+    this.userServiceSubscription.unsubscribe();
+  }
+
+  initializeEmptyForms(): void {
     this.profileForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
-      country: ['']
+      address: [''],
+      city: [''],
+      state: [''],
+      postalCode: [''],
+      country: [''],
+      dateOfBirth: [''],
+      subscribed: [false]
     });
 
     this.deliveryForm = this.fb.group({
@@ -123,23 +174,16 @@ export class ProfileComponent implements OnInit {
   }
 
   loadUserData(): void {
-    this.userService.activeUser$.subscribe(user => {
-      this.user = user;
-      this.profileForm.patchValue({
-        firstName: user.FirstName,
-        lastName: user.LastName,
-        email: user.Email,
-        phone: user.Phone,
-        country: user.Country || 'Canada' // Default value
-      });
-
-      if (user.Id > 0) {
-        this.loadDeliveryAddresses(user.Id);
-        this.loadPaymentMethods();
-        this.loadPurchaseHistory(this.currentPage);
-        this.loadWishLists(user.Id);
-      }
-    });
+    this.isLoading = true;
+    
+    // First check if user is logged in
+    if (!this.userService.isLoggedIn()) {
+      this.isLoading = false;
+      return;
+    }
+    
+    // Force a server check for updated user data
+    this.userService.checkSession();
   }
 
   loadDeliveryAddresses(userId: number): void {
@@ -183,24 +227,78 @@ export class ProfileComponent implements OnInit {
   saveProfile(): void {
     if (this.profileForm.valid && this.profileForm.dirty) {
       this.isSavingProfile = true;
+      
+      // Format the date correctly if present
+      let dateOfBirth = this.profileForm.value.dateOfBirth;
+      if (dateOfBirth && dateOfBirth.trim() !== '') {
+        // If it's already a Date object, format it as YYYY-MM-DD
+        if (dateOfBirth instanceof Date) {
+          dateOfBirth = dateOfBirth.toISOString().split('T')[0];
+        }
+        // If it's a string but not in YYYY-MM-DD format, try to convert it
+        else if (typeof dateOfBirth === 'string' && !dateOfBirth.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          try {
+            const date = new Date(dateOfBirth);
+            dateOfBirth = date.toISOString().split('T')[0];
+          } catch (e) {
+            console.error('Error formatting date:', e);
+            dateOfBirth = null;
+          }
+        }
+      } else {
+        // Empty string or whitespace should be null
+        dateOfBirth = null;
+      }
+
       const updatedUser: User = {
         ...this.user,
         FirstName: this.profileForm.value.firstName,
         LastName: this.profileForm.value.lastName,
         Email: this.profileForm.value.email,
         Phone: this.profileForm.value.phone,
-        Country: this.profileForm.value.country
+        Address: this.profileForm.value.address,
+        City: this.profileForm.value.city,
+        State: this.profileForm.value.state,
+        PostalCode: this.profileForm.value.postalCode,
+        Country: this.profileForm.value.country,
+        DOB: dateOfBirth,
+        Subscribed: this.profileForm.value.subscribed
       };
+      
+      console.log('Updating user profile with:', updatedUser);
       
       this.userService.updateUserProfile(updatedUser).subscribe({
         next: (success) => {
           if (success) {
             this.editMode = false;
             this.isSavingProfile = false;
+            
+            // Update the local user object with the new values
+            this.user = {
+              ...this.user,
+              FirstName: this.profileForm.value.firstName,
+              LastName: this.profileForm.value.lastName,
+              Email: this.profileForm.value.email,
+              Phone: this.profileForm.value.phone,
+              Address: this.profileForm.value.address,
+              City: this.profileForm.value.city,
+              State: this.profileForm.value.state,
+              PostalCode: this.profileForm.value.postalCode,
+              Country: this.profileForm.value.country,
+              DOB: dateOfBirth,
+              Subscribed: this.profileForm.value.subscribed
+            };
+            
+            // Force refresh user data from server to ensure display is correct
+            this.userService.checkSession();
           }
         },
         error: (error) => {
           console.error('Error updating profile:', error);
+          // Log more detailed error information
+          if (error.error) {
+            console.error('Server error details:', error.error);
+          }
           this.isSavingProfile = false;
         }
       });
@@ -383,7 +481,13 @@ export class ProfileComponent implements OnInit {
         lastName: this.user.LastName,
         email: this.user.Email,
         phone: this.user.Phone,
-        country: this.user.Country
+        address: this.user.Address,
+        city: this.user.City,
+        state: this.user.State,
+        postalCode: this.user.PostalCode,
+        country: this.user.Country,
+        dateOfBirth: this.user.DOB,
+        subscribed: this.user.Subscribed
       });
     }
   }
@@ -391,13 +495,21 @@ export class ProfileComponent implements OnInit {
   cancelEdit(): void {
     this.editMode = false;
     // Reset form to original values
-    this.profileForm.patchValue({
-      firstName: this.user.FirstName,
-      lastName: this.user.LastName,
-      email: this.user.Email,
-      phone: this.user.Phone,
-      country: this.user.Country
-    });
+    if (this.user) {
+      this.profileForm.patchValue({
+        firstName: this.user.FirstName,
+        lastName: this.user.LastName,
+        email: this.user.Email,
+        phone: this.user.Phone,
+        address: this.user.Address,
+        city: this.user.City,
+        state: this.user.State,
+        postalCode: this.user.PostalCode,
+        country: this.user.Country,
+        dateOfBirth: this.user.DOB,
+        subscribed: this.user.Subscribed
+      });
+    }
   }
 
   mountCardElement(): void {

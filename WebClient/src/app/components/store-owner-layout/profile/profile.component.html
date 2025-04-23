@@ -62,8 +62,28 @@
         <div class="field-value">{{ user?.Address }}</div>
       </div>
       <div class="field-group">
+        <label>City</label>
+        <div class="field-value">{{ user?.City }}</div>
+      </div>
+      <div class="field-group">
+        <label>State/Province</label>
+        <div class="field-value">{{ user?.State }}</div>
+      </div>
+      <div class="field-group">
+        <label>Postal Code</label>
+        <div class="field-value">{{ user?.PostalCode }}</div>
+      </div>
+      <div class="field-group">
         <label>Country</label>
         <div class="field-value">{{ user?.Country }}</div>
+      </div>
+      <div class="field-group">
+        <label>Date of Birth</label>
+        <div class="field-value">{{ user?.DOB | date }}</div>
+      </div>
+      <div class="field-group">
+        <label>Subscription Status</label>
+        <div class="field-value">{{ user?.Subscribed ? 'Subscribed' : 'Not Subscribed' }}</div>
       </div>
     </div>
 
@@ -85,8 +105,8 @@
       </div>
       <div class="field-group">
         <label for="email">Email</label>
-        <!-- Email is read-only -->
-        <input type="email" id="email" [value]="user?.Email" disabled class="disabled-input" placeholder="Your email address">
+        <!-- Email is read-only - controlled by form state -->
+        <input type="email" id="email" formControlName="Email" class="disabled-input" placeholder="Your email address">
         <div class="field-hint">Email cannot be changed as it's used for account identification</div>
       </div>
       <div class="field-group">
@@ -104,11 +124,31 @@
         </div>
       </div>
       <div class="field-group">
+        <label for="city">City</label>
+        <input type="text" id="city" formControlName="City" placeholder="Enter your city">
+      </div>
+      <div class="field-group">
+        <label for="state">State/Province</label>
+        <input type="text" id="state" formControlName="State" placeholder="Enter your state or province">
+      </div>
+      <div class="field-group">
+        <label for="postalCode">Postal Code</label>
+        <input type="text" id="postalCode" formControlName="PostalCode" placeholder="Enter your postal code">
+      </div>
+      <div class="field-group">
         <label for="country">Country</label>
         <input type="text" id="country" formControlName="Country" required placeholder="Enter your country">
         <div *ngIf="profileForm.get('Country')?.invalid && profileForm.get('Country')?.touched" class="error">
           Country is required
         </div>
+      </div>
+      <div class="field-group">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" formControlName="DOB" placeholder="Select your date of birth">
+      </div>
+      <div class="field-group checkbox">
+        <input type="checkbox" id="subscribed" formControlName="Subscribed">
+        <label for="subscribed">Subscription Status</label>
       </div>
     </form>
   </div>
