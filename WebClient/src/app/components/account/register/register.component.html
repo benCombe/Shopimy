@@ -3,7 +3,18 @@
   <div id="main" class="center">
     <div id="register-card">
       <h1>Create Account</h1>
-      <form id="register-form" (ngSubmit)="register()" #registerForm="ngForm">
+      
+      <!-- Success message -->
+      <div class="alert alert-success" *ngIf="registrationSuccess">
+        Registration successful! You will be redirected to the login page shortly.
+      </div>
+      
+      <!-- Error message -->
+      <div class="alert alert-danger" *ngIf="registrationError">
+        {{ registrationError }}
+      </div>
+      
+      <form id="register-form" (ngSubmit)="register()" #registerForm="ngForm" *ngIf="!registrationSuccess">
         <!-- Name Section -->
         <div class="form-row">
           <div class="form-group">
@@ -71,6 +82,7 @@
               #phoneInput="ngModel"
               [class.is-invalid]="!isPhoneValid && phoneInput.touched"
               placeholder="123-456-7890"
+              (input)="formatPhoneNumber($event)"
               (blur)="validatePhone()">
             <div class="invalid-feedback" *ngIf="!isPhoneValid && phoneInput.touched">
               Format: 123-456-7890
@@ -256,6 +268,12 @@
           <i *ngIf="isLoading" class="fa-solid fa-spinner fa-spin"></i>
         </button>
       </form>
+
+      <!-- Loading indicator -->
+      <div class="loading-spinner" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Processing registration...</p>
+      </div>
 
       <div class="login-prompt">
         Already have an account? <a routerLink="/login">Log in</a>

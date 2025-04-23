@@ -363,4 +363,14 @@ export class StoreService {
   getAvailableComponents() {
     return this.http.get<any[]>(`${this.apiUrl}/components`);
   }
+
+  // Check URL availability
+  checkUrlAvailability(url: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/check-url/${url}`).pipe(
+      catchError(error => {
+        console.error('Error checking URL availability:', error);
+        return of(false); // Assume URL is not available in case of error
+      })
+    );
+  }
 }

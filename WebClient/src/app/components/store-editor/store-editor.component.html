@@ -1,0 +1,160 @@
+<div class="store-editor-container">
+  <!-- Add loading and notification elements at the top of the form -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Processing...</p>
+  </div>
+
+  <!-- Success message -->
+  <div class="alert alert-success" *ngIf="showSuccessMessage">
+    Store saved successfully! Redirecting...
+  </div>
+
+  <!-- Error message -->
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <h2>{{ isCreateMode ? 'Create New Store' : 'Edit Store' }}</h2>
+
+  <!-- Tab navigation for different sections -->
+  <div class="section-tabs">
+    <button 
+      [class.active]="activeSection === 'basic-info'"
+      (click)="setActiveSection('basic-info')">
+      Basic Information
+    </button>
+    <button 
+      [class.active]="activeSection === 'theme'"
+      (click)="setActiveSection('theme')">
+      Theme Settings
+    </button>
+    <button 
+      [class.active]="activeSection === 'components'"
+      (click)="setActiveSection('components')">
+      Components
+    </button>
+  </div>
+
+  <form *ngIf="store" (ngSubmit)="saveStore()">
+    <!-- Basic Information Section -->
+    <div class="section" *ngIf="activeSection === 'basic-info'">
+      <h3>Basic Information</h3>
+      
+      <div class="form-group">
+        <label for="storeName">Store Name</label>
+        <input 
+          type="text" 
+          id="storeName" 
+          name="storeName" 
+          [(ngModel)]="store.name" 
+          [class.is-invalid]="!isNameValid"
+          (blur)="validateStoreName()"
+          placeholder="My Store">
+        <small class="form-text text-danger" *ngIf="!isNameValid">{{ nameErrorMessage }}</small>
+      </div>
+
+      <div class="form-group">
+        <label for="storeUrl">Store URL</label>
+        <input 
+          type="text" 
+          id="storeUrl" 
+          name="storeUrl" 
+          [(ngModel)]="store.url" 
+          [class.is-invalid]="!isUrlValid || !isUrlAvailable"
+          (input)="onUrlChange($event.target.value)"
+          placeholder="your-store-url">
+        <small class="form-text" [class.text-danger]="!isUrlValid || !isUrlAvailable">
+          <span *ngIf="isCheckingUrl">Checking availability...</span>
+          <span *ngIf="!isUrlValid || !isUrlAvailable">{{ urlErrorMessage }}</span>
+          <span *ngIf="isUrlValid && isUrlAvailable && !isCheckingUrl" class="text-success">URL is available</span>
+        </small>
+        <small class="form-text text-muted">Your store will be available at: {{store.url}}</small>
+      </div>
+
+      <div class="form-group">
+        <label for="bannerText">Banner Text</label>
+        <input 
+          type="text" 
+          id="bannerText" 
+          name="bannerText" 
+          [(ngModel)]="store.bannerText" 
+          placeholder="Welcome to our store">
+      </div>
+
+      <div class="form-group">
+        <label for="logoText">Logo Text</label>
+        <input 
+          type="text" 
+          id="logoText" 
+          name="logoText" 
+          [(ngModel)]="store.logoText" 
+          placeholder="Store Name">
+      </div>
+      
+      <div class="form-group">
+        <label for="bannerURL">Banner Image URL</label>
+        <input 
+          type="text" 
+          id="bannerURL" 
+          name="bannerURL" 
+          [(ngModel)]="store.bannerURL" 
+          placeholder="https://example.com/banner.jpg">
+      </div>
+      
+      <div class="form-group">
+        <label for="logoURL">Logo Image URL</label>
+        <input 
+          type="text" 
+          id="logoURL" 
+          name="logoURL" 
+          [(ngModel)]="store.logoURL" 
+          placeholder="https://example.com/logo.jpg">
+      </div>
+    </div>
+
+    <!-- Theme Settings Section -->
+    <div class="section" *ngIf="activeSection === 'theme'">
+      <h3>Theme Settings</h3>
+      <app-themes 
+        [theme]="{ 
+          mainColor: store.theme_1, 
+          secondColor: store.theme_2, 
+          thirdColor: store.theme_3, 
+          altColor: store.fontColor, 
+          mainFontFam: store.fontFamily 
+        }"
+        (updateTheme)="updateStoreTheme($event)">
+      </app-themes>
+    </div>
+
+    <!-- Component Settings Section -->
+    <div class="section" *ngIf="activeSection === 'components'">
+      <h3>Component Visibility</h3>
+      <p>Select which components to display on your store page:</p>
+      
+      <div class="component-list">
+        <div class="component-item" *ngFor="let component of availableComponents">
+          <label>
+            <input 
+              type="checkbox" 
+              [(ngModel)]="component.isSelected" 
+              [name]="'component_' + component.name">
+            {{ component.label }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form buttons at the bottom -->
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" routerLink="/store-owner">Cancel</button>
+      <button 
+        type="submit" 
+        class="btn-primary" 
+        [disabled]="isLoading || (!isUrlValid || !isUrlAvailable || !isNameValid)">
+        {{ isCreateMode ? 'Create Store' : 'Save Changes' }}
+      </button>
+    </div>
+  </form>
+</div> 

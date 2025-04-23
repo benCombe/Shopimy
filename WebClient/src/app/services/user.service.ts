@@ -50,7 +50,13 @@ export class UserService {
     return this.http.post<boolean>(`${this.apiUrl}/register`, user).pipe(
       tap(success => {
         if (success) {
+          // Don't auto-login the user
+          /* Original auto-login code, commented out:
           this.login(new LoginDetails(user.Email, user.Password)).subscribe(); //Login user if successful registration
+          */
+          
+          // Instead, just return success
+          console.log('Registration successful');
         }
       })
     )
