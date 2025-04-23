@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { CookieService } from './cookie.service';
 
 // Interface for store visit data
 export interface VisitAnalytics {
@@ -15,7 +16,7 @@ export interface VisitAnalytics {
 export class QuantityService {
   private apiUrl = `${environment.apiUrl}/analytics`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private cookieService: CookieService) { }
 
   /**
    * Get store visit analytics data
@@ -27,9 +28,10 @@ export class QuantityService {
     // Set up query parameters
     let params = new HttpParams()
       .set('storeid', 5);
-
+    const token = this.cookieService.get('auth_token');
+    console.log(this.cookieService.get('auth_token'));
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`)
     // Make authenticated GET request to the analytics endpoint
-    console.log("weat");
-    return this.http.get<VisitAnalytics[]>(`${this.apiUrl}/item-quantity`, { params });
+    return this.http.get<VisitAnalytics[]>(`${this.apiUrl}/item-quantity`, { params,headers });
   }
 }
