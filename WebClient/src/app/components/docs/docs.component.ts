@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule, MarkdownService, provideMarkdown } from 'ngx-markdown';
+import { SecurityContext } from '@angular/core';
 
 interface DocSection {
   title: string;
@@ -15,7 +16,13 @@ interface DocSection {
   standalone: true,
   imports: [CommonModule, MarkdownModule],
   templateUrl: './docs.component.html',
-  styleUrls: ['./docs.component.css']
+  styleUrls: ['./docs.component.css'],
+  providers: [
+    MarkdownService,
+    provideMarkdown({
+      sanitize: SecurityContext.HTML
+    })
+  ]
 })
 export class DocsComponent implements OnInit {
   activeTab: string = 'README';
