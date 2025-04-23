@@ -1,0 +1,72 @@
+.blog-posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+}
+
+.blog-post {
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  background-color: var(--third-color);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-post:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.blog-post h2 {
+  margin-bottom: var(--spacing-xs);
+  color: var(--main-color);
+}
+
+.blog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  color: var(--main-color);
+  opacity: 0.8;
+}
+
+.blog-post p {
+  margin-bottom: var(--spacing-md);
+  line-height: 1.6;
+}
+
+.pagination {
+  margin-top: var(--spacing-xl);
+  gap: var(--spacing-xs);
+}
+
+.pagination-item {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-round);
+  border: 1px solid var(--main-color);
+  color: var(--main-color);
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination-item:hover:not(.active) {
+  background-color: var(--second-color);
+  color: white;
+}
+
+.pagination-item.active {
+  background-color: var(--main-color);
+  color: white;
+  cursor: default;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .blog-posts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+  }
+} 

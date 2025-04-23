@@ -182,6 +182,15 @@ export class ThemeService {
         thirdColor: '#93c5fd',
         altColor: '#ffffff',
         mainFontFam: 'Verdana, sans-serif'
+      },
+      {
+        id: 'hotdog',
+        name: 'Hotdog Stand',
+        mainColor: '#FF0000',
+        secondColor: '#FFFF00',
+        thirdColor: '#000000',
+        altColor: '#FFFFFF',
+        mainFontFam: 'sans-serif'
       }
     ]);
   }

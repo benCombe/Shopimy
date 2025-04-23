@@ -1,17 +1,76 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { StoreService } from '../../services/store.service';
+import { StoreDetails } from '../../models/store-details';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css'
 })
-export class FooterComponent {
+export class FooterComponent implements OnInit, OnDestroy {
   currentYear: number;
+  storeData: StoreDetails | null = null;
+  private destroy$ = new Subject<void>();
+  isStoreContext = false;
 
-  constructor() {
+  constructor(
+    private storeService: StoreService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.currentYear = new Date().getFullYear();
+  }
+
+  ngOnInit(): void {
+    this.storeService.activeStore$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(store => {
+        // Only set store data if we have a valid store ID
+        if (store && store.id > 0) {
+          this.storeData = store;
+          this.isStoreContext = true;
+        } else {
+          this.storeData = null;
+          this.isStoreContext = false;
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  getFooterStyles(): { [key: string]: string } {
+    if (this.isStoreContext && this.storeData) {
+      return {
+        'background-color': this.storeData.theme_1 || 'var(--main-color)',
+        'color': this.storeData.fontColor || 'var(--third-color)'
+      };
+    }
+    return {};
+  }
+
+  getHeadingStyles(): { [key: string]: string } {
+    if (this.isStoreContext && this.storeData) {
+      return {
+        'color': this.storeData.theme_2 || 'var(--second-color)'
+      };
+    }
+    return {};
+  }
+
+  getLinkStyles(): { [key: string]: string } {
+    if (this.isStoreContext && this.storeData) {
+      return {
+        'color': this.storeData.fontColor || 'var(--third-color)'
+      };
+    }
+    return {};
   }
 }

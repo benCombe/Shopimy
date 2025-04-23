@@ -1,0 +1,106 @@
+<div class="global-container">
+  <div class="content-wrapper">
+    <h1 class="page-title">Support Center</h1>
+    
+    <!-- Support Introduction -->
+    <div class="global-card">
+      <h2>How Can We Help?</h2>
+      <p>Welcome to the Shopimy Support Center. Here you'll find resources to help you make the most of our platform.</p>
+    </div>
+    
+    <!-- FAQs Section -->
+    <div class="global-card">
+      <h2><i class="fa-solid fa-question-circle"></i> Frequently Asked Questions</h2>
+      
+      <div class="faq-list">
+        <div *ngFor="let faq of faqs" class="faq-item">
+          <div class="faq-question" (click)="toggleFAQ(faq)">
+            <h3>{{ faq.question }}</h3>
+            <i class="fa-solid" [ngClass]="faq.expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </div>
+          <div class="faq-answer" [ngClass]="{'expanded': faq.expanded}">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Documentation Section -->
+    <div class="global-card">
+      <h2><i class="fa-solid fa-book"></i> Documentation</h2>
+      <p>Explore our comprehensive documentation to learn more about using Shopimy:</p>
+      
+      <div class="docs-list">
+        <a routerLink="/docs" class="doc-link">
+          <i class="fa-solid fa-file-lines"></i>
+          <span>Project Overview</span>
+        </a>
+        <a routerLink="/docs" [queryParams]="{doc: 'README-STYLES.md'}" class="doc-link">
+          <i class="fa-solid fa-palette"></i>
+          <span>Style Guide</span>
+        </a>
+        <a routerLink="/docs" [queryParams]="{doc: 'ARCHITECTURE.md'}" class="doc-link">
+          <i class="fa-solid fa-sitemap"></i>
+          <span>Architecture</span>
+        </a>
+        <a routerLink="/docs" [queryParams]="{doc: 'DEVELOPMENT_GUIDELINES.md'}" class="doc-link">
+          <i class="fa-solid fa-code"></i>
+          <span>Development Guidelines</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Contact Support Section -->
+    <div class="global-card">
+      <h2><i class="fa-solid fa-headset"></i> Contact Support</h2>
+      <p>Need more help? Our support team is ready to assist you.</p>
+      
+      <div class="contact-methods">
+        <div class="contact-method">
+          <i class="fa-solid fa-envelope"></i>
+          <div class="contact-details">
+            <h3>Email Support</h3>
+            <p>For general inquiries: <a href="mailto:support&#64;shopimy.com">support&#64;shopimy.com</a></p>
+            <p>For technical issues: <a href="mailto:tech&#64;shopimy.com">tech&#64;shopimy.com</a></p>
+          </div>
+        </div>
+        
+        <div class="contact-method">
+          <i class="fa-solid fa-phone"></i>
+          <div class="contact-details">
+            <h3>Phone Support</h3>
+            <p>Customer Service: <a href="tel:+18005551234">(800) 555-1234</a></p>
+            <p>Available Monday-Friday, 9am-5pm EST</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Troubleshooting Section -->
+    <div class="global-card">
+      <h2><i class="fa-solid fa-wrench"></i> Troubleshooting</h2>
+      
+      <div class="troubleshooting-steps">
+        <div class="step">
+          <h3>1. Check Your Connection</h3>
+          <p>Ensure you have a stable internet connection.</p>
+        </div>
+        
+        <div class="step">
+          <h3>2. Clear Browser Cache</h3>
+          <p>Clearing your browser's cache and cookies can resolve many common issues.</p>
+        </div>
+        
+        <div class="step">
+          <h3>3. Update Your Browser</h3>
+          <p>Make sure you're using the latest version of your web browser.</p>
+        </div>
+        
+        <div class="step">
+          <h3>4. Try Incognito Mode</h3>
+          <p>If issues persist, try using your browser's incognito/private mode.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

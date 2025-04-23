@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "copy-docs": "node copy-docs.js",
+    "prestart": "npm run copy-docs",
+    "prebuild": "npm run copy-docs",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
@@ -19,6 +22,8 @@
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
     "d3": "^7.9.0",
+    "marked": "^9.1.5",
+    "ngx-markdown": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

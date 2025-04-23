@@ -97,6 +97,15 @@
   <!-- Mobile Menu Resources Section -->
   <div class="mobile-menu-header">Resources</div>
   <ul class="mobile-menu-list">
+    <!-- My Store link (when logged in and has a store) -->
+    <li class="mobile-resource-item" *ngIf="isLoggedIn && userStore">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="navigateToMyStore()">
+        <i class="fas fa-store"></i>
+        <span>My Store</span>
+      </div>
+    </li>
     <li class="mobile-resource-item" *ngFor="let resource of resourceOptions">
       <div class="mobile-resource-link" 
            [style.color]="storeDetails?.fontColor"

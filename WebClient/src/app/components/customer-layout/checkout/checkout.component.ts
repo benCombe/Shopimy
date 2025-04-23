@@ -23,21 +23,22 @@ import { StoreDetails } from '../../../models/store-details';
 export class CheckoutComponent implements OnInit {
 
   shippingForm: FormGroup;
+  paymentForm: FormGroup;
   storeUrl: string = '';
   storeId: number = 0;
-  storeDetails: StoreDetails | null = null;
   checkoutItems: CheckoutItem[] = [];
   isLoading: boolean = false;
-
-  private fb = inject(FormBuilder);
-  private themeService = inject(ThemeService);
-  private paymentService = inject(PaymentService);
-  private shoppingService = inject(ShoppingService);
-  private route = inject(ActivatedRoute);
-  private storeService = inject(StoreService);
-
-  constructor() {
-    this.shippingForm = this.fb.group({
+  storeDetails: StoreDetails | null = null;
+  
+  private formBuilder = inject(FormBuilder);
+  
+  constructor(
+    private route: ActivatedRoute,
+    private storeService: StoreService,
+    private shoppingService: ShoppingService,
+    private paymentService: PaymentService
+  ) {
+    this.shippingForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       address: ['', Validators.required],
@@ -46,9 +47,16 @@ export class CheckoutComponent implements OnInit {
       country: ['', Validators.required],
       postalCode: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10,15}$')]], // Allow 10-15 digit phone numbers
+      phone: ['', Validators.required]
+    });
+
+    this.paymentForm = this.formBuilder.group({
+      cardNumber: ['', Validators.required],
+      expiration: ['', Validators.required],
+      cvv: ['', Validators.required]
     });
   }
+  
 
   ngOnInit(): void {
     this.loadCheckoutData();
@@ -96,24 +104,21 @@ export class CheckoutComponent implements OnInit {
 
   proceedToPayment(): void {
     if (this.shippingForm.valid && this.storeDetails) {
-      // TODO: Replace placeholders with actual order details from your cart/order service
-      // Example: Inject a CartService and get items/total
-      // const cartTotal = this.cartService.getTotal(); // Get total amount
-      // const cartItemsDescription = this.cartService.getItemsDescription(); // Get a description (e.g., "Order #12345" or summary)
-
-      // const amount = 50.00; // Example amount - REPLACE with cartTotal
-      // const productName = `Order for ${this.storeDetails.name}`; // Example product name - REPLACE with cartItemsDescription or similar
+      // Show loading state
+      this.isLoading = true;
 
       // --- Consolidate checks --- //
       if (!this.storeUrl || this.storeId === 0) {
         console.error('Store URL or ID is missing.');
         alert('Cannot proceed to payment: Store information is missing.');
+        this.isLoading = false;
         return;
       }
 
       if (!this.storeDetails || !this.storeDetails.name) {
         console.error('Store details are missing or invalid.');
         alert('Cannot proceed to payment: Store details are invalid.');
+        this.isLoading = false;
         return;
       }
 
@@ -128,14 +133,15 @@ export class CheckoutComponent implements OnInit {
       if (!this.checkoutItems || this.checkoutItems.length === 0) {
         console.error('Cart is empty.');
         alert('Cannot proceed to payment with an empty cart.');
+        this.isLoading = false;
         return;
       }
 
       if (this.shippingForm.valid) {
-        this.isLoading = true;
         this.paymentService.createCheckoutSession(this.checkoutItems, this.storeUrl, this.storeId)
           .subscribe({
             next: (response) => {
+              this.isLoading = false;
               window.location.href = response.sessionUrl;
             },
             error: (error) => {
@@ -148,13 +154,16 @@ export class CheckoutComponent implements OnInit {
         this.shippingForm.markAllAsTouched();
         console.error('Shipping form is invalid.');
         alert('Please fill in all required shipping information.');
+        this.isLoading = false;
       }
     }
   }
 
   placeOrder() {
-    const email = this.shippingForm.get('email')?.value;
-    const deliveryAddress = this.shippingForm.get("firstName")?.value
+    if (this.shippingForm.valid) {
+      this.isLoading = true;
+      const email = this.shippingForm.get('email')?.value;
+      const deliveryAddress = this.shippingForm.get("firstName")?.value
                    + " " + this.shippingForm.get('lastName')?.value
                    + ", " + this.shippingForm.get('address')?.value
                    + ", " + this.shippingForm.get('city')?.value
@@ -162,16 +171,20 @@ export class CheckoutComponent implements OnInit {
                    + ", " + this.shippingForm.get('country')?.value
                    + ", " + this.shippingForm.get('postalCode')?.value;
 
-    this.shoppingService.placeOrder(email, deliveryAddress).subscribe({
-      next: (orderId: any) => {
-        console.log("Order placed successfully (Placeholder - verify flow), Order ID:", orderId);
-        // TODO: Likely need to clear cart, navigate to confirmation page, etc.
-      },
-      error: (err: any) => {
-        console.error("Error placing order (Placeholder):", err);
-        alert("Failed to place order. Please contact support.");
-      }
-    });
+      this.shoppingService.placeOrder(email, deliveryAddress).subscribe({
+        next: (orderId: any) => {
+          console.log("Order placed successfully (Placeholder - verify flow), Order ID:", orderId);
+          // TODO: Likely need to clear cart, navigate to confirmation page, etc.
+          this.isLoading = false;
+        },
+        error: (err: any) => {
+          console.error("Error placing order (Placeholder):", err);
+          alert("Failed to place order. Please contact support.");
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.shippingForm.markAllAsTouched();
+    }
   }
-
 }

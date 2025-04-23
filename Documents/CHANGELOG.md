@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Store visit statistics with time period filtering
   - Data caching to improve performance and reduce database load
   - Fallback sample data for development environment when no real data exists
+- Blog page accessible at /blog route
+- Initial blog layout with placeholder posts
+- Responsive design for blog content
 
 ### Changed
 - *(Add changes to existing functionality here)*

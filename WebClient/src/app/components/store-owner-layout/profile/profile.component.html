@@ -15,102 +15,168 @@
     <h2 id="account-info-heading">Account Info</h2>
     <p class="section-description">Manage your personal information and contact details.</p>
 
-    <div class="action-buttons">
-      <!-- Edit button - only shown when not in edit mode -->
-      <button *ngIf="!editMode" id="edit-btn" class="standard-button primary full-width" aria-label="Edit Account Information" (click)="toggleEditMode()">
-        <i class="fa-solid fa-pencil" aria-hidden="true"></i> Edit Profile
+    <!-- Loading indicator when profile data is loading -->
+    <div *ngIf="isLoadingProfile" class="loading-state">
+      <p><i class="fa-solid fa-spinner fa-spin"></i> Loading your profile information...</p>
+    </div>
+
+    <!-- Error state with retry option -->
+    <div *ngIf="profileError && !isLoadingProfile" class="error-state">
+      <div class="error-message" role="alert">
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> {{ profileError }}
+      </div>
+      <button class="standard-button secondary" (click)="loadUserData()">
+        <i class="fa-solid fa-rotate" aria-hidden="true"></i> Retry
       </button>
-      <!-- Save/Cancel buttons - only shown when in edit mode -->
-      <div *ngIf="editMode" class="button-group">
-        <button class="standard-button primary full-width" [disabled]="isSavingProfile || profileForm.invalid" (click)="saveProfile()">
-          <span *ngIf="!isSavingProfile"><i class="fa-solid fa-save" aria-hidden="true"></i> Save Changes</span>
-          <span *ngIf="isSavingProfile">
-            <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Saving...
-          </span>
+    </div>
+
+    <!-- Content when loaded -->
+    <div *ngIf="!isLoadingProfile && !profileError && user && user.Id > 0">
+      <div class="action-buttons">
+        <!-- Edit button - only shown when not in edit mode -->
+        <button *ngIf="!editMode" id="edit-btn" class="standard-button primary full-width" aria-label="Edit Account Information" (click)="toggleEditMode()">
+          <i class="fa-solid fa-pencil" aria-hidden="true"></i> Edit Profile
         </button>
-        <button class="standard-button secondary full-width" (click)="cancelEdit()">
-          <i class="fa-solid fa-times" aria-hidden="true"></i> Cancel
-        </button>
+        <!-- Save/Cancel buttons - only shown when in edit mode -->
+        <div *ngIf="editMode" class="button-group">
+          <button class="standard-button primary full-width" [disabled]="isSavingProfile || profileForm.invalid" (click)="saveProfile()">
+            <span *ngIf="!isSavingProfile"><i class="fa-solid fa-save" aria-hidden="true"></i> Save Changes</span>
+            <span *ngIf="isSavingProfile">
+              <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Saving...
+            </span>
+          </button>
+          <button class="standard-button secondary full-width" (click)="cancelEdit()">
+            <i class="fa-solid fa-times" aria-hidden="true"></i> Cancel
+          </button>
+        </div>
       </div>
+
+      <!-- Non-edit mode display -->
+      <div *ngIf="!editMode" class="info-container">
+        <div class="field-group">
+          <label>First Name</label>
+          <div class="field-value">{{ user?.FirstName || 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>Last Name</label>
+          <div class="field-value">{{ user?.LastName || 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>Email</label>
+          <div class="field-value">{{ user?.Email || 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>Phone Number</label>
+          <div class="field-value">{{ user?.Phone || 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>Address</label>
+          <div class="field-value">{{ user?.Address || 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>City</label>
+          <div class="field-value">{{ user?.City || 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>State/Province</label>
+          <div class="field-value">{{ user?.State || 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>Postal Code</label>
+          <div class="field-value">{{ user?.PostalCode || 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>Country</label>
+          <div class="field-value">{{ user?.Country || 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>Date of Birth</label>
+          <div class="field-value">{{ user?.DOB ? (user?.DOB | date) : 'Not provided' }}</div>
+        </div>
+        <div class="field-group">
+          <label>Subscription Status</label>
+          <div class="field-value">{{ user?.Subscribed ? 'Subscribed' : 'Not Subscribed' }}</div>
+        </div>
+      </div>
+
+      <!-- Edit mode form -->
+      <form *ngIf="editMode" [formGroup]="profileForm" class="profile-form">
+        <div class="field-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" formControlName="FirstName" required placeholder="Enter your first name">
+          <div *ngIf="profileForm.get('FirstName')?.invalid && profileForm.get('FirstName')?.touched" class="error">
+            First Name is required
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" formControlName="LastName" required placeholder="Enter your last name">
+          <div *ngIf="profileForm.get('LastName')?.invalid && profileForm.get('LastName')?.touched" class="error">
+            Last Name is required
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="email">Email</label>
+          <!-- Email is read-only - controlled by form state -->
+          <input type="email" id="email" formControlName="Email" class="disabled-input" placeholder="Your email address">
+          <div class="field-hint">Email cannot be changed as it's used for account identification</div>
+        </div>
+        <div class="field-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" formControlName="Phone" required placeholder="Enter your phone number">
+          <div *ngIf="profileForm.get('Phone')?.invalid && profileForm.get('Phone')?.touched" class="error">
+            Phone Number is required
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" formControlName="Address" required placeholder="Enter your address">
+          <div *ngIf="profileForm.get('Address')?.invalid && profileForm.get('Address')?.touched" class="error">
+            Address is required
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="city">City</label>
+          <input type="text" id="city" formControlName="City" placeholder="Enter your city">
+        </div>
+        <div class="field-group">
+          <label for="state">State/Province</label>
+          <input type="text" id="state" formControlName="State" placeholder="Enter your state or province">
+        </div>
+        <div class="field-group">
+          <label for="postalCode">Postal Code</label>
+          <input type="text" id="postalCode" formControlName="PostalCode" placeholder="Enter your postal code">
+        </div>
+        <div class="field-group">
+          <label for="country">Country</label>
+          <input type="text" id="country" formControlName="Country" required placeholder="Enter your country">
+          <div *ngIf="profileForm.get('Country')?.invalid && profileForm.get('Country')?.touched" class="error">
+            Country is required
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" formControlName="DOB" placeholder="Select your date of birth">
+        </div>
+        <div class="field-group checkbox">
+          <input type="checkbox" id="subscribed" formControlName="Subscribed">
+          <label for="subscribed">Subscription Status</label>
+        </div>
+      </form>
     </div>
 
-    <!-- Error message if profile update fails -->
-    <div *ngIf="profileError" class="error-message" role="alert">
-      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> {{ profileError }}
+    <!-- Empty state when user is logged in but no user data available -->
+    <div *ngIf="!isLoadingProfile && !profileError && (!user || user.Id === 0) && isUserLoggedIn()" class="empty-state">
+      <p>Unable to load your profile information. You may need to log in again.</p>
+      <button class="standard-button primary" (click)="loadUserData()">
+        <i class="fa-solid fa-rotate" aria-hidden="true"></i> Retry
+      </button>
     </div>
 
-    <!-- Non-edit mode display -->
-    <div *ngIf="!editMode" class="info-container">
-      <div class="field-group">
-        <label>First Name</label>
-        <div class="field-value">{{ user?.FirstName }}</div>
-      </div>
-      <div class="field-group">
-        <label>Last Name</label>
-        <div class="field-value">{{ user?.LastName }}</div>
-      </div>
-      <div class="field-group">
-        <label>Email</label>
-        <div class="field-value">{{ user?.Email }}</div>
-      </div>
-      <div class="field-group">
-        <label>Phone Number</label>
-        <div class="field-value">{{ user?.Phone }}</div>
-      </div>
-      <div class="field-group">
-        <label>Address</label>
-        <div class="field-value">{{ user?.Address }}</div>
-      </div>
-      <div class="field-group">
-        <label>Country</label>
-        <div class="field-value">{{ user?.Country }}</div>
-      </div>
+    <!-- Guest state -->
+    <div *ngIf="!isLoadingProfile && !profileError && isUserGuest() && !isUserLoggedIn()" class="empty-state">
+      <p>You're not logged in. Please log in to view your profile information.</p>
     </div>
-
-    <!-- Edit mode form -->
-    <form *ngIf="editMode" [formGroup]="profileForm" class="profile-form">
-      <div class="field-group">
-        <label for="firstName">First Name</label>
-        <input type="text" id="firstName" formControlName="FirstName" required placeholder="Enter your first name">
-        <div *ngIf="profileForm.get('FirstName')?.invalid && profileForm.get('FirstName')?.touched" class="error">
-          First Name is required
-        </div>
-      </div>
-      <div class="field-group">
-        <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" formControlName="LastName" required placeholder="Enter your last name">
-        <div *ngIf="profileForm.get('LastName')?.invalid && profileForm.get('LastName')?.touched" class="error">
-          Last Name is required
-        </div>
-      </div>
-      <div class="field-group">
-        <label for="email">Email</label>
-        <!-- Email is read-only -->
-        <input type="email" id="email" [value]="user?.Email" disabled class="disabled-input" placeholder="Your email address">
-        <div class="field-hint">Email cannot be changed as it's used for account identification</div>
-      </div>
-      <div class="field-group">
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" formControlName="Phone" required placeholder="Enter your phone number">
-        <div *ngIf="profileForm.get('Phone')?.invalid && profileForm.get('Phone')?.touched" class="error">
-          Phone Number is required
-        </div>
-      </div>
-      <div class="field-group">
-        <label for="address">Address</label>
-        <input type="text" id="address" formControlName="Address" required placeholder="Enter your address">
-        <div *ngIf="profileForm.get('Address')?.invalid && profileForm.get('Address')?.touched" class="error">
-          Address is required
-        </div>
-      </div>
-      <div class="field-group">
-        <label for="country">Country</label>
-        <input type="text" id="country" formControlName="Country" required placeholder="Enter your country">
-        <div *ngIf="profileForm.get('Country')?.invalid && profileForm.get('Country')?.touched" class="error">
-          Country is required
-        </div>
-      </div>
-    </form>
   </div>
 
   <!-- Payment Methods Section -->

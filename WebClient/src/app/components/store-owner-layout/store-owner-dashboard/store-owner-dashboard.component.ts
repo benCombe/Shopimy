@@ -50,6 +50,7 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
   currentPage: string = "Overview"; // default page
   hasStore: boolean = false;
   showCreateStorePrompt: boolean = false;
+  themeLogoTab: string = 'themes'; // Default selected tab for Themes & Logos
 
   constructor(
     private userService: UserService,
@@ -61,9 +62,18 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.loadingService.setIsLoading(true);
     
-    // Subscribe to user
+    // Subscribe to user with improved handling
     this.userService.activeUser$.subscribe(u => {
       this.user = u;
+      
+      // If the user is a guest (not logged in), call initializeUserState
+      // This helps recover from scenarios where the state wasn't properly loaded
+      if (!u || u.Id === 0) {
+        // Check if there's a token but the user data wasn't loaded
+        if (this.userService.isLoggedIn()) {
+          this.reloadUserData();
+        }
+      }
     });
     
     // Default to "Overview" page
@@ -114,5 +124,11 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
     if (this.sideNav) {
       this.sideNav.setActive(newPage);
     }
+  }
+
+  // Method to force reload user data
+  reloadUserData(): void {
+    // Initialize user state to reload user data
+    this.userService.initializeUserState();
   }
 }

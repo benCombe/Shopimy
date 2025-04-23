@@ -4,6 +4,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { RouterLink, Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { LoadingService } from '../../../services/loading.service';
+import { StoreService } from '../../../services/store.service';
 
 @Component({
   selector: 'app-side-nav',
@@ -30,11 +31,11 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
   navItems = [
     {name: 'Account', subNav: ['Profile', 'Settings'], open: false},
-    {name: 'My Store', subNav: ['Products', 'Categories', 'Orders', 'Themes & Logos', 'Store Editor', 'Promotions'], open: false},
+    {name: 'My Store', subNav: ['Visit Store', 'Products', 'Categories', 'Orders', 'Themes & Logos', 'Store Editor', 'Promotions'], open: false},
     {name: 'Analytics', subNav: ['Traffic & Sales'], open: false}
   ]
 
-  constructor(private userService: UserService, private router: Router, private loadingService: LoadingService) {}
+  constructor(private userService: UserService, private router: Router, private loadingService: LoadingService, private storeService: StoreService) {}
 
   ngOnInit() {
     this.checkScreenSize();
@@ -96,6 +97,23 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
   setActive(item: string, event?: Event) {
     this.activeNav = item;
+    
+    // For "Visit Store", navigate to the store URL
+    if (item === 'Visit Store') {
+      // Get the active store from the service
+      const activeStore = this.storeService.activeStoreSubject.getValue();
+      if (activeStore && activeStore.url) {
+        // Navigate to the store page
+        this.router.navigate(['/' + activeStore.url]);
+        
+        // Prevent further navigation handling for this item
+        if (event) {
+          event.stopPropagation();
+        }
+        return;
+      }
+    }
+    
     // Only emit pageChange event on user-triggered interaction
     if (event) {
       this.pageChange.emit(item);

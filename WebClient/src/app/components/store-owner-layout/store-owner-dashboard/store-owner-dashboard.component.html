@@ -35,8 +35,23 @@
       <app-orders></app-orders>
     </div>
     <div *ngIf="currentPage === 'Themes & Logos'" id="themes" class="page">
-      <app-themes></app-themes>
-      <app-logo-selector></app-logo-selector>
+      <div class="themes-logos-container">
+        <!-- Tabs for Themes and Logos -->
+        <div class="tabs-container">
+          <div class="tab" [class.active]="themeLogoTab === 'themes'" (click)="themeLogoTab = 'themes'">
+            Store Appearance
+          </div>
+          <div class="tab" [class.active]="themeLogoTab === 'logos'" (click)="themeLogoTab = 'logos'">
+            Brand Logo
+          </div>
+        </div>
+        
+        <!-- Content based on selected tab -->
+        <div class="tab-content">
+          <app-themes *ngIf="themeLogoTab === 'themes'"></app-themes>
+          <app-logo-selector *ngIf="themeLogoTab === 'logos'"></app-logo-selector>
+        </div>
+      </div>
     </div>
     <div *ngIf="currentPage === 'Store Editor'" id="store-editor" class="page">
       <app-store-editor></app-store-editor>

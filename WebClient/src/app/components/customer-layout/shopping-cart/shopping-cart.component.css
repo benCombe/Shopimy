@@ -4,6 +4,8 @@
   width: 100%;
   min-height: 100vh;
   font-family: var(--main-font-fam);
+  display: flex;
+  flex-direction: column;
 }
 
 #main {
@@ -11,7 +13,10 @@
   flex-grow: 1;
   width: 100%;
   min-height: 85vh;
-  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  background-color: var(--third-color);
 }
 
 #main h2 {
@@ -30,6 +35,7 @@
   align-items: flex-start;
   padding: var(--spacing-md);
   gap: var(--spacing-lg);
+  flex: 1 0 auto;
 }
 
 /* Cart items section */
@@ -42,7 +48,7 @@
   box-shadow: var(--shadow-sm);
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
-  background-color: var(--third-color);
+  background-color: var(--second-color);
   border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
 }
 
@@ -164,16 +170,23 @@
   transition: all 0.2s ease;
 }
 
-.less, .more {
-  background-color: var(--main-color);
-  color: var(--color-text-on-primary, #FFFFFF);
-  cursor: pointer;
-  border: none;
+/* Override standard-button within quantity controls */
+.quantity .standard-button {
+  margin: 0;
   padding: 0;
+  border-radius: 0;
 }
 
-.less:hover, .more:hover {
+.quantity .standard-button.less, 
+.quantity .standard-button.more {
+  background-color: var(--main-color);
+  color: var(--color-text-on-primary, #FFFFFF);
+}
+
+.quantity .standard-button.less:hover, 
+.quantity .standard-button.more:hover {
   background-color: var(--second-color);
+  transform: none;
 }
 
 .amount {
@@ -196,6 +209,7 @@
   opacity: 0.6;
   background: transparent;
   border: none;
+  margin: 0;
   padding: 0;
 }
 
@@ -204,6 +218,8 @@
   color: var(--color-error, #e02424);
   transform: scale(1.1);
   opacity: 1;
+  box-shadow: none;
+  background-color: transparent;
 }
 
 /* Order summary container */
@@ -219,7 +235,7 @@
   flex-direction: column;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  background-color: var(--third-color);
+  background-color: var(--second-color);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--shadow-sm);
@@ -243,7 +259,27 @@
 #promo:focus {
   outline: none;
   border-color: var(--second-color);
-  box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2);
+  box-shadow: var(--shadow-focus);
+}
+
+/* Promo code apply button */
+.apply-promo-btn {
+  margin-top: var(--spacing-sm);
+  background-color: var(--main-color);
+  color: var(--color-text-on-primary);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.apply-promo-btn:hover {
+  background-color: var(--second-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Empty state styling */
@@ -372,4 +408,26 @@
   .promo-code label, #promo {
     font-size: 0.9rem;
   }
+}
+
+/* Add this near the promo code section */
+
+.promo-input-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.promo-input-group input {
+  flex: 1;
+}
+
+.apply-promo-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  min-width: 80px;
+}
+
+/* Override button margin for this specific case */
+.promo-input-group .standard-button.small {
+  margin: 0;
 }

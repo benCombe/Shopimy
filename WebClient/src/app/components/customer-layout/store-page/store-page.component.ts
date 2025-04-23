@@ -18,7 +18,6 @@ import { StoreHeaderComponent } from "../../shared/store-header/store-header.com
 import { FeaturedProductsComponent } from "../../shared/featured-products/featured-products.component";
 import { TestimonialsComponent } from "../../shared/testimonials/testimonials.component";
 import { NewsletterComponent } from "../../shared/newsletter/newsletter.component";
-import { StoreFooterComponent } from "../../shared/store-footer/store-footer.component";
 
 // Using a more flexible type that allows category names while maintaining type safety for known values
 type ViewType = 'store-page' | 'cart' | 'checkout' | string;
@@ -38,8 +37,7 @@ type ViewType = 'store-page' | 'cart' | 'checkout' | string;
     StoreHeaderComponent,
     FeaturedProductsComponent,
     TestimonialsComponent,
-    NewsletterComponent,
-    StoreFooterComponent
+    NewsletterComponent
   ],
   templateUrl: './store-page.component.html',
   styleUrls: ['./store-page.component.css']

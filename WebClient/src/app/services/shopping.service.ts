@@ -57,6 +57,7 @@ export class ShoppingService {
   storeToDB: boolean = false;
   currentStore: string = '';
   currentStoreId: number = 0;
+  currentUserEmail: string = '';
 
   // Updated CartSubject type to store item and quantity
   CartSubject: BehaviorSubject<{ item: BasicItem, quantity: number }[]> = new BehaviorSubject<{ item: BasicItem, quantity: number }[]>([]);
@@ -64,6 +65,9 @@ export class ShoppingService {
 
   SubTotalSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   SubTotal$ = this.SubTotalSubject.asObservable();
+
+  // Track if a discount has been applied and the amount
+  private discountRate: number = 0;
 
   constructor(
     private storeService: StoreService,
@@ -111,9 +115,20 @@ export class ShoppingService {
 
   private updateTotal(): void {
     const cart = this.CartSubject.getValue();
-    const total = parseFloat(cart.reduce((sum, cartItem) =>
-      sum + Math.min(cartItem.item.price, cartItem.item.salePrice) * cartItem.quantity, 0).toFixed(2));
-    this.SubTotalSubject.next(total);
+    let total = 0;
+
+    cart.forEach(item => {
+      // Use sale price if available and lower than the regular price
+      const price = Math.min(item.item.price, item.item.salePrice);
+      total += price * item.quantity;
+    });
+
+    // Apply discount if one exists
+    if (this.discountRate > 0) {
+      total = total * (1 - this.discountRate);
+    }
+
+    this.SubTotalSubject.next(Math.round(total * 100) / 100);
   }
 
   addToCart(item: BasicItem): void {
@@ -261,6 +276,19 @@ export class ShoppingService {
         error: (err) => console.error("Error clearing cart in database:", err)
       });
     }
+  }
+
+  // Apply a discount rate to the cart
+  applyDiscount(rate: number): void {
+    if (rate >= 0 && rate <= 1) {
+      this.discountRate = rate;
+      this.updateTotal(); // Recalculate total with the new discount
+    }
+  }
+
+  // Get the current discount rate
+  getDiscountRate(): number {
+    return this.discountRate;
   }
 }
 

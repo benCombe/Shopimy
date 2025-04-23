@@ -95,21 +95,32 @@
 
 .card-action-btn {
   background: none;
-  border: none;
+  border: 1px solid transparent;
   color: var(--main-color);
   opacity: 0.6;
   cursor: pointer;
-  transition: opacity 0.2s ease;
-  font-size: 1.1rem;
-  padding: var(--spacing-xs);
+  transition: 
+    opacity 0.2s ease, 
+    color 0.2s ease, 
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  font-size: 0.9rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: var(--border-radius);
 }
 
-.card-action-btn:hover {
+.card-action-btn:hover, .card-action-btn.active {
   opacity: 1;
   color: var(--second-color);
+  background-color: rgba(208, 147, 61, 0.1);
+  border-color: var(--second-color);
+}
+
+.card-action-btn.active {
+  font-weight: 600;
 }
 
 /* Card Content */
@@ -682,6 +693,16 @@
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
   box-shadow: var(--shadow-sm);
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-wrapper canvas {
+  margin: 0 auto;
+  width: 90% !important;
+  max-width: 800px !important;
 }
 
 .chart-summary {
@@ -703,6 +724,304 @@
   font-size: 0.9rem;
   color: var(--main-color);
   opacity: 0.7;
+}
+
+.visits-stats {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: var(--spacing-md) 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: var(--spacing-md);
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.total-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--second-color);
+  line-height: 1;
+  margin-bottom: var(--spacing-xs);
+}
+
+.total-label {
+  font-size: 0.9rem;
+  color: var(--main-color);
+  opacity: 0.7;
+}
+
+.avg-count {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--main-color);
+  line-height: 1;
+  margin-bottom: var(--spacing-xs);
+}
+
+.avg-label {
+  font-size: 0.85rem;
+  color: var(--main-color);
+  opacity: 0.7;
+}
+
+.stat-change {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: var(--spacing-xs);
+}
+
+.stat-period {
+  font-size: 0.85rem;
+  color: var(--main-color);
+  opacity: 0.7;
+}
+
+.stat-change.positive {
+  color: var(--color-success, #16a34a);
+}
+
+.stat-change.negative {
+  color: var(--color-error, #dc2626);
+}
+
+.stat-change.neutral {
+  color: var(--main-color);
+  opacity: 0.7;
+}
+
+/* Responsive adjustments for visits stats */
+@media (max-width: 768px) {
+  .visits-stats {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+  }
+  
+  .stats-item {
+    width: 100%;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .stats-item:last-child {
+    border-bottom: none;
+  }
+}
+
+/* Fallback chart styles */
+.fallback-chart-wrapper {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+.fallback-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chart-title {
+  font-weight: 600;
+  color: var(--main-color);
+  font-size: 1.1rem;
+}
+
+.chart-period {
+  color: var(--main-color);
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.fallback-bars-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 200px;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  position: relative;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 800px;
+  padding: 0 var(--spacing-md) var(--spacing-md) var(--spacing-md);
+}
+
+/* Horizontal grid lines for the fallback chart */
+.fallback-bars-container::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(57, 55, 39, 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 100% 50px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.fallback-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  margin: 0 3px;
+  z-index: 1;
+  flex: 0 1 auto;
+  max-width: 50px;
+  min-width: 20px;
+}
+
+.fallback-bar {
+  width: 18px;
+  max-width: 80%;
+  background-color: rgba(208, 147, 61, 0.7);
+  border-radius: 4px 4px 0 0;
+  transition: all 0.5s ease;
+  min-height: 3px;
+  border: 1px solid var(--second-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.fallback-bar-wrapper:hover .fallback-bar {
+  background-color: var(--second-color);
+  transform: scaleY(1.03);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.fallback-bar-label {
+  font-size: 0.75rem;
+  color: var(--main-color);
+  opacity: 0.8;
+  margin-top: 8px;
+  text-align: center;
+  max-width: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fallback-bar-value {
+  position: absolute;
+  top: -20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--main-color);
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.fallback-bar-wrapper:hover .fallback-bar-value {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .fallback-bars-container {
+    height: 150px;
+    width: 95%;
+  }
+  
+  .fallback-bar-wrapper {
+    min-width: 15px;
+    max-width: 40px;
+  }
+  
+  .fallback-bar {
+    width: 10px;
+    max-width: 90%;
+  }
+  
+  .fallback-bar-label {
+    font-size: 0.7rem;
+    transform: rotate(-45deg);
+    transform-origin: top center;
+    white-space: nowrap;
+    width: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 12px;
+  }
+  
+  .fallback-bars-container::before {
+    background-size: 100% 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fallback-chart-wrapper {
+    height: auto;
+    min-height: 300px;
+  }
+  
+  .fallback-bars-container {
+    width: 100%;
+  }
+  
+  .fallback-bar-wrapper {
+    min-width: 10px;
+    max-width: 30px;
+  }
+  
+  .fallback-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .chart-period {
+    margin-top: 4px;
+  }
+}
+
+/* Add animations for the fallback bars */
+@keyframes growUp {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+.fallback-bar {
+  transform-origin: bottom;
+  animation: growUp 0.8s ease-out forwards;
+  animation-delay: calc(var(--index, 0) * 0.1s);
+}
+
+/* Chart action buttons styling improvements */
+.card-action-btn {
+  border: 1px solid transparent;
+  transition: 
+    opacity 0.2s ease, 
+    color 0.2s ease, 
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.card-action-btn.active {
+  border-color: var(--second-color);
+  background-color: rgba(208, 147, 61, 0.1);
 }
 
 
