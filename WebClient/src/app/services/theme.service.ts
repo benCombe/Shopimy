@@ -1,5 +1,5 @@
 import { StoreService } from './store.service';
-import { Injectable, Renderer2, RendererFactory2, OnInit } from '@angular/core';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
 import { StoreTheme } from '../models/store-theme.model';
 import { Observable, of } from 'rxjs';
@@ -9,134 +9,112 @@ import { Observable, of } from 'rxjs';
 })
 export class ThemeService {
   private renderer: Renderer2;
-
-  storeDetails: StoreDetails = new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "",[]); //Get via API
+  private readonly defaultTheme: StoreTheme = {
+    mainColor: '#393727',
+    secondColor: '#D0933D',
+    thirdColor: '#D3CEBB',
+    altColor: '#FFFFFF',
+    mainFontFam: 'Cambria, Cochin'
+  };
 
   constructor(rendererFactory: RendererFactory2, private storeService: StoreService) {
     this.renderer = rendererFactory.createRenderer(null, null);
-    this.storeService.activeStore$.subscribe(s => {
-      this.storeDetails = s;
-    })
   }
 
   /**
-   * Applies the complete theme to a specific container element.
-   * @param theme - The complete theme object.
-   * @param containerSelector - A CSS selector for the container to update.
+   * Applies the base theme to the application
+   * This is used for general Shopimy platform pages
    */
-  applyThemeToContainer(theme: StoreTheme, containerSelector: string): void {
-    const container = document.querySelector(containerSelector);
-    if (container) {
-      this.renderer.setStyle(container, '--main-color', theme.mainColor);
-      this.renderer.setStyle(container, '--second-color', theme.secondColor);
-      this.renderer.setStyle(container, '--third-color', theme.thirdColor);
-      this.renderer.setStyle(container, '--alt-color', theme.altColor);
-      this.renderer.setStyle(container, '--main-font-fam', theme.mainFontFam);
+  applyBaseTheme(): void {
+    this.applyThemeToRootElement({
+      mainColor: getComputedStyle(document.documentElement).getPropertyValue('--main-color').trim() || this.defaultTheme.mainColor,
+      secondColor: getComputedStyle(document.documentElement).getPropertyValue('--second-color').trim() || this.defaultTheme.secondColor,
+      thirdColor: getComputedStyle(document.documentElement).getPropertyValue('--third-color').trim() || this.defaultTheme.thirdColor,
+      altColor: getComputedStyle(document.documentElement).getPropertyValue('--alt-color').trim() || this.defaultTheme.altColor,
+      mainFontFam: getComputedStyle(document.documentElement).getPropertyValue('--main-font-fam').trim() || this.defaultTheme.mainFontFam
+    });
+  }
 
-      // Update store details
-      this.storeDetails.theme_1 = theme.mainColor;
-      this.storeDetails.theme_2 = theme.secondColor;
-      this.storeDetails.theme_3 = theme.thirdColor;
-      this.storeDetails.fontColor = theme.altColor;
-      this.storeDetails.fontFamily = theme.mainFontFam;
+  /**
+   * Applies a store-specific theme to the application
+   * @param store - The store details containing theme information
+   */
+  applyStoreTheme(store: StoreDetails): void {
+    if (!store) return;
+    
+    this.applyThemeToRootElement({
+      mainColor: store.theme_1 || this.defaultTheme.mainColor,
+      secondColor: store.theme_2 || this.defaultTheme.secondColor,
+      thirdColor: store.theme_3 || this.defaultTheme.thirdColor,
+      altColor: store.fontColor || this.defaultTheme.altColor,
+      mainFontFam: store.fontFamily || this.defaultTheme.mainFontFam
+    });
+  }
 
-      // Update store via service
-      this.storeService.updateStore(this.storeDetails).subscribe();
+  /**
+   * Applies the provided theme object directly 
+   * @param theme - The theme object to apply
+   */
+  applyTheme(theme: StoreTheme): void {
+    if (!theme) return;
+    this.applyThemeToRootElement(theme);
+  }
+
+  /**
+   * Core method to apply theme variables to root element
+   * @param theme - The theme object with color and font values
+   */
+  private applyThemeToRootElement(theme: StoreTheme): void {
+    const rootElement = document.documentElement;
+    
+    this.renderer.setStyle(rootElement, '--main-color', theme.mainColor);
+    this.renderer.setStyle(rootElement, '--second-color', theme.secondColor);
+    this.renderer.setStyle(rootElement, '--third-color', theme.thirdColor);
+    this.renderer.setStyle(rootElement, '--alt-color', theme.altColor);
+    this.renderer.setStyle(rootElement, '--main-font-fam', theme.mainFontFam);
+    
+    // Also set RGB variants for main and second colors for rgba usage
+    const mainColorRgb = this.hexToRgb(theme.mainColor);
+    const secondColorRgb = this.hexToRgb(theme.secondColor);
+    
+    if (mainColorRgb) {
+      this.renderer.setStyle(rootElement, '--main-color-rgb', mainColorRgb);
+    }
+    
+    if (secondColorRgb) {
+      this.renderer.setStyle(rootElement, '--second-color-rgb', secondColorRgb);
     }
   }
 
-  setThemeOne(elemClass: string) {
-    const elements = document.querySelectorAll(`.${elemClass}`);
-    elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.theme_1);
-    });
-  }
-
-  setThemeTwo(elemClass: string) {
-    const elements = document.querySelectorAll(`.${elemClass}`);
-    elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.theme_2);
-    });
-  }
-
-
-  setThemeThree(elemClass: string) {
-    const elements = document.querySelectorAll(`.${elemClass}`);
-    elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'background-color', this.storeDetails.theme_3);
-    });
-  }
-
-
-  setFontColor(elemClass: string) {
-    const elements = document.querySelectorAll(`.${elemClass}`);
-    elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'color', this.storeDetails.fontColor);
-    });
-  }
-
-  setFontFamily(element: string) {
-    const elements = document.querySelectorAll(`${element}`);
-    elements.forEach((element) => {
-      this.renderer.setStyle(element as HTMLElement, 'font-family', this.storeDetails.fontFamily);
-    });
-  }
-
-  setButtonHoverColor(elemClass: string) {
-    const elements = document.querySelectorAll(`.${elemClass}`);
-
-    elements.forEach((element) => {
-      const el = element as HTMLElement;
-
-      // Get the original background color, considering CSS styles
-      const computedStyle = window.getComputedStyle(el);
-      const originalColor = computedStyle.backgroundColor; // This gets the actual background color
-
-      el.addEventListener("mouseover", () => {
-        this.renderer.setStyle(el, "background-color", this.lighten(originalColor, 20));
-      });
-
-      el.addEventListener("mouseout", () => {
-        this.renderer.setStyle(el, "background-color", originalColor); // Restore original color
-      });
-    });
-  }
-
-
-
-  private lighten(color: string, percent: number): string{
-    let r: number, g: number, b: number;
-
-    if (color.startsWith("#")) {
-        // Convert HEX to RGB
-        if (!/^#([0-9A-F]{6})$/i.test(color)) {
-            throw new Error("Invalid HEX color format. Expected #RRGGBB.");
-        }
-
-        r = parseInt(color.slice(1, 3), 16);
-        g = parseInt(color.slice(3, 5), 16);
-        b = parseInt(color.slice(5, 7), 16);
-    } else if (color.startsWith("rgb")) {
-        // Extract RGB values from "rgb(r, g, b)" format
-        const match = color.match(/\d+/g);
-        if (!match || match.length < 3) {
-            throw new Error("Invalid RGB color format. Expected rgb(r, g, b).");
-        }
-
-        r = parseInt(match[0]);
-        g = parseInt(match[1]);
-        b = parseInt(match[2]);
+  /**
+   * Helper function to convert hex color to RGB format
+   * @param hex - The hex color code to convert
+   * @returns RGB values as a string (e.g., "255, 255, 255")
+   */
+  private hexToRgb(hex: string): string | null {
+    // Check if color is in hex format
+    if (!hex || !hex.startsWith('#')) return null;
+    
+    // Remove # if present
+    hex = hex.replace(/^#/, '');
+    
+    // Parse hex to RGB
+    let r, g, b;
+    if (hex.length === 3) {
+      // For 3-digit hex codes
+      r = parseInt(hex.charAt(0) + hex.charAt(0), 16);
+      g = parseInt(hex.charAt(1) + hex.charAt(1), 16);
+      b = parseInt(hex.charAt(2) + hex.charAt(2), 16);
+    } else if (hex.length === 6) {
+      // For 6-digit hex codes
+      r = parseInt(hex.substring(0, 2), 16);
+      g = parseInt(hex.substring(2, 4), 16);
+      b = parseInt(hex.substring(4, 6), 16);
     } else {
-        throw new Error("Unsupported color format. Use HEX (#RRGGBB) or RGB (rgb(r, g, b)).");
+      return null;
     }
-
-    // Lighten each color channel
-    r = Math.min(255, Math.round(r + (255 - r) * (percent / 100)));
-    g = Math.min(255, Math.round(g + (255 - g) * (percent / 100)));
-    b = Math.min(255, Math.round(b + (255 - b) * (percent / 100)));
-
-    // Return as RGB (since browsers convert colors to RGB)
-    return `rgb(${r}, ${g}, ${b})`;
+    
+    return `${r}, ${g}, ${b}`;
   }
 
   /**
@@ -194,5 +172,4 @@ export class ThemeService {
       }
     ]);
   }
-
 }

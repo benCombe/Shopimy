@@ -3,9 +3,28 @@
   background-color: var(--third-color);
 }
 
-.content-container {
-  min-height: calc(100vh - 160px); /* Adjust based on your header and footer height */
+.public-layout {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--third-color); /* Add default background color */
-} 
+  background-color: var(--third-color);
+  color: var(--main-color);
+  font-family: var(--main-font-fam);
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.content-container {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive adjustments 
+@media (max-width: 768px) {
+  .content-container {
+    padding: 10px;
+  }
+} */

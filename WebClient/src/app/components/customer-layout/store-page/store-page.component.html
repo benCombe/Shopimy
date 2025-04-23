@@ -1,4 +1,4 @@
-<main id="store-container" class="store-layout" aria-labelledby="store-name">
+<main class="store-layout" aria-labelledby="store-name">
   <app-store-nav (ViewChanged)="changeView($event)" aria-label="Store navigation"></app-store-nav>
   
   <div id="store-page" class="store-content" *ngIf="isStorePageView()">
@@ -59,4 +59,7 @@
                       [storeDetails]="storeData">
     </app-category-page>
   </ng-container>
+  
+  <!-- Footer -->
+  <app-footer></app-footer>
 </main>

@@ -11,6 +11,7 @@ import { CheckoutComponent } from "../checkout/checkout.component";
 import { StoreNavService } from '../../../services/store-nav.service';
 import { CategoryPageComponent } from '../category-page/category-page.component';
 import { ItemDetailComponent } from "../../item-detail/item-detail.component";
+import { FooterComponent } from "../../footer/footer.component";
 
 // Import the new shared components
 import { HeroBannerComponent } from "../../shared/hero-banner/hero-banner.component";
@@ -32,6 +33,7 @@ type ViewType = 'store-page' | 'cart' | 'checkout' | string;
     CheckoutComponent, 
     CategoryPageComponent, 
     ItemDetailComponent,
+    FooterComponent,
     // Add the new shared components
     HeroBannerComponent,
     StoreHeaderComponent,
@@ -159,21 +161,8 @@ export class StorePageComponent implements AfterViewInit, OnInit{
     // Update theme service with store details
     if (!storeData) return;
 
-    // Apply theme to root elements with CSS classes
-    this.themeService.setThemeOne('theme1');
-    this.themeService.setThemeTwo('theme2');
-    this.themeService.setThemeThree('theme3');
-    this.themeService.setFontColor('fc');
-    this.themeService.setButtonHoverColor('hover');
-    this.themeService.setFontFamily('body');
-
-    // Also apply theme variables to :root for global CSS access
-    const rootStyle = document.documentElement.style;
-    rootStyle.setProperty('--main-color', storeData.theme_1);
-    rootStyle.setProperty('--second-color', storeData.theme_2);
-    rootStyle.setProperty('--third-color', storeData.theme_3);
-    rootStyle.setProperty('--alt-color', storeData.fontColor);
-    rootStyle.setProperty('--main-font-fam', storeData.fontFamily);
+    // Apply theme using ThemeService
+    this.themeService.applyStoreTheme(storeData);
   }
 
   changeView(v: string): void{

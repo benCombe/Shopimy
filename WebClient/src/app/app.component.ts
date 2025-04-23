@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injector } from '@angular/core';
 import { PopupComponent } from './components/utilities/popup/popup.component'; // Import PopupComponent
 import { LandingPageComponent } from "./components/landing-page/landing-page.component";
 import { RouterOutlet } from '@angular/router';
@@ -9,6 +9,7 @@ import { CheckoutComponent } from "./components/customer-layout/checkout/checkou
 import { LoadingOneComponent } from "./components/utilities/loading-one/loading-one.component";
 import { UserService } from './services/user.service';
 import { FooterComponent } from './components/footer/footer.component';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -22,12 +23,22 @@ export class AppComponent implements OnInit {
   question = 'Do you want to continue?';
   responses = ['Yes', 'No', 'Maybe'];
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private themeService: ThemeService,
+    private injector: Injector
+  ) {
+    // Create a global injector instance to make services accessible
+    (window as any)['appInjector'] = this.injector;
+  }
 
   ngOnInit(): void {
     // Initialize user state on application startup
     // This ensures user authentication state persists through page reloads
     this.userService.initializeUserState();
+    
+    // Apply base theme initially
+    this.themeService.applyBaseTheme();
   }
 
   handleResponse(response: string) {

@@ -46,31 +46,17 @@ export class FooterComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  // The following methods are kept for backward compatibility
+  // but they should eventually be removed since we're using CSS variables
   getFooterStyles(): { [key: string]: string } {
-    if (this.isStoreContext && this.storeData) {
-      return {
-        'background-color': this.storeData.theme_1 || 'var(--main-color)',
-        'color': this.storeData.fontColor || 'var(--third-color)'
-      };
-    }
-    return {};
+    return {}; // Return empty object as styles are now handled via CSS variables
   }
 
   getHeadingStyles(): { [key: string]: string } {
-    if (this.isStoreContext && this.storeData) {
-      return {
-        'color': this.storeData.theme_2 || 'var(--second-color)'
-      };
-    }
-    return {};
+    return {}; // Return empty object as styles are now handled via CSS variables
   }
 
   getLinkStyles(): { [key: string]: string } {
-    if (this.isStoreContext && this.storeData) {
-      return {
-        'color': this.storeData.fontColor || 'var(--third-color)'
-      };
-    }
-    return {};
+    return {}; // Return empty object as styles are now handled via CSS variables
   }
 }

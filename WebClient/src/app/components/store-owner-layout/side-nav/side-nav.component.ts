@@ -23,7 +23,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
   // Hamburger position tracking
   hamburgerPosition = { 
     y: 15, 
-    right: 15 
+    right: 15  // Set initial position to top-right corner
   };
   private isDragging = false;
   private dragStartPos = { x: 0, y: 0 };
@@ -157,7 +157,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
       
       // Calculate the new position
       let newY = this.initialPos.y + deltaY;
-      let newRight = this.initialPos.right - deltaX;
+      let newRight = this.initialPos.right - deltaX;  // Inverse relationship for right positioning
       
       // Ensure the button stays within viewport bounds
       // Get viewport dimensions
@@ -216,7 +216,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
       
       // Calculate the new position
       let newY = this.initialPos.y + deltaY;
-      let newRight = this.initialPos.right - deltaX;
+      let newRight = this.initialPos.right - deltaX;  // Inverse relationship for right positioning
       
       // Ensure the button stays within viewport bounds
       // Get viewport dimensions

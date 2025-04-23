@@ -62,6 +62,16 @@
 7.  **Pattern Consistency:** Adhere to established project patterns. Don't introduce new ones without discussion/explicit instruction. If replacing an old pattern, ensure the old implementation is fully removed.
 8.  **File Naming:** Use clear, descriptive names. Avoid "temp", "refactored", "improved", etc., in permanent file names.
 9.  **No One-Time Scripts:** Do not commit one-time utility scripts into the main codebase.
+10. **Style Guide:** Follow the styling guidelines documented in `README-STYLES.md` for consistent component styling and UI patterns.
+
+## 🎨 Stylization
+
+1. **Design System Adherence:** Follow the design system and styling guidelines documented in `README-STYLES.md` for consistent UI/UX across the application.
+2. **Component Styling:** Use the project's established styling methodology (CSS modules, styled-components, etc.) consistently as documented in `README-STYLES.md`.
+3. **Responsive Design:** Ensure all UI components are fully responsive according to the breakpoints defined in the style guide.
+4. **Accessibility:** Follow the accessibility standards outlined in the style guide. Maintain appropriate contrast ratios, semantic HTML, and keyboard navigation.
+5. **Theme Consistency:** Use design tokens and theme variables from the style system rather than hardcoded colors or measurements.
+6. **UI/UX Patterns:** Adhere to established UI patterns for forms, buttons, cards, and other interface elements as documented in `README-STYLES.md`.
 
 ## ♻️ Refactoring
 
