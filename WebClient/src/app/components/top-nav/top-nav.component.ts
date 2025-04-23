@@ -3,11 +3,16 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
 
-// Define an interface for the navigation options
+// Define interfaces for the navigation categories and options
 interface NavOption {
   label: string;
   link: string;
   icon?: string; // Optional icon property
+}
+
+interface NavCategory {
+  name: string;
+  options: NavOption[];
 }
 
 @Component({
@@ -26,21 +31,32 @@ export class TopNavComponent implements OnInit {
   isLoggedIn: boolean = false;
   isUserMenuOpen: boolean = false;
 
-  // Update options to use the NavOption interface and include icons
-  options: NavOption[] = [
-    // Example Resources (adjust as needed)
-    { label: 'Blog', link: '/blog', icon: 'fa-newspaper' },
-    { label: 'Documentation', link: '/docs', icon: 'fa-book' },
-    { label: 'Support', link: '/support', icon: 'fa-headset' },
-    // --- Other Example Links (adjust or remove as needed) ---
-    //{ label: 'Register', link: '/register', icon: 'fa-user-plus' },
-    //{ label: 'Dashboard', link: '/dashboard', icon: 'fa-tachometer-alt' },
-    //{ label: 'Items', link: '/items' }, // Example without icon
-    //{ label: 'Categories', link: '/categories' },
-    //{ label: 'Cart', link: '/cart', icon: 'fa-shopping-cart' },
-    //{ label: 'Checkout', link: '/checkout', icon: 'fa-credit-card' },
-    //{ label: 'Store', link: '/store' }
+  // Organized navigation by categories
+  navCategories: NavCategory[] = [
+    {
+      name: 'Resources',
+      options: [
+        { label: 'Blog', link: '/blog', icon: 'fa-blog' },
+        { label: 'Documentation', link: '/docs', icon: 'fa-book' },
+        { label: 'Support', link: '/support', icon: 'fa-headset' },
+        { label: 'Contact', link: '/contact', icon: 'fa-envelope' }
+      ]
+    },
+    {
+      name: 'Quick Actions',
+      options: [
+        { label: 'Home', link: '/', icon: 'fa-home' },
+        { label: 'About', link: '/about', icon: 'fa-info-circle' },
+        { label: 'Dashboard', link: '/dashboard', icon: 'fa-gauge' },
+        { label: 'Create Store', link: '/create-store', icon: 'fa-store' }
+      ]
+    }
   ];
+
+  // Legacy options array for backward compatibility
+  get options(): NavOption[] {
+    return this.navCategories[0].options;
+  }
 
   get filteredOptions() {
     return this.isLoggedIn ? this.options.slice(1) : this.options;  // Remove first option if logged in

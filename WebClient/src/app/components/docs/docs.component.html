@@ -1,0 +1,60 @@
+<div class="docs-container global-container">
+  <div class="docs-header center-spaced">
+    <h1>Project Documentation</h1>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="center-col loading-state">
+    <div class="spinner"></div>
+    <p>Loading documentation...</p>
+  </div>
+
+  <!-- Main content when loaded -->
+  <div *ngIf="!loading" class="docs-content">
+    <!-- Tabs for main documentation -->
+    <div class="tabs-container">
+      <div class="tabs">
+        <button 
+          *ngFor="let doc of mainDocs" 
+          [class.active]="isTabActive(doc.file.split('.')[0])" 
+          (click)="setActiveTab(doc.file.split('.')[0])">
+          {{ doc.title }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Main documentation content -->
+    <div class="main-doc markdown-content">
+      <!-- README -->
+      <div *ngIf="isTabActive('README')" class="doc-section">
+        <markdown [data]="mainDocs[0].content"></markdown>
+      </div>
+
+      <!-- README-STYLES -->
+      <div *ngIf="isTabActive('README-STYLES')" class="doc-section">
+        <markdown [data]="mainDocs[1].content"></markdown>
+      </div>
+
+      <!-- ARCHITECTURE -->
+      <div *ngIf="isTabActive('ARCHITECTURE')" class="doc-section">
+        <markdown [data]="mainDocs[2].content"></markdown>
+      </div>
+    </div>
+
+    <!-- Additional documentation section -->
+    <div class="additional-docs">
+      <h2>Additional Documentation</h2>
+      <div class="docs-list">
+        <div *ngFor="let doc of additionalDocs" class="doc-item">
+          <div class="doc-header" (click)="toggleExpand(doc)">
+            <h3>{{ doc.title }}</h3>
+            <span class="expander">{{ doc.expanded ? '▼' : '▶' }}</span>
+          </div>
+          <div class="doc-content" [class.expanded]="doc.expanded">
+            <markdown *ngIf="doc.expanded" [data]="doc.content"></markdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

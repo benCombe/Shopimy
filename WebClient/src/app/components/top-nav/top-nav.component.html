@@ -39,46 +39,23 @@
     </button>
   </div>
   
-  <!-- Resources Section -->
-  <div class="mobile-section-header">Resources</div>
-  <ul role="menu" aria-label="Mobile Resources Menu">
-    <li *ngFor="let option of options" role="menuitem">
-      <a class="opt" [routerLink]="option.link" (click)="navigateAndCloseMenu(option.link)">
-        <i *ngIf="option.icon" class="fa-solid {{option.icon}}" aria-hidden="true"></i> {{ option.label }}
-      </a>
-    </li>
-    <li role="menuitem">
-      <a class="opt" routerLink="/blog" (click)="navigateAndCloseMenu('/blog')">
-        <i class="fa-solid fa-blog" aria-hidden="true"></i> Blog
-      </a>
-    </li>
-  </ul>
-  
-  <!-- Quick Actions Section -->
-  <div class="mobile-menu-divider"></div>
-  <div class="mobile-section-header">Quick Actions</div>
-  <ul role="menu" aria-label="Quick Actions Menu">
-    <li role="menuitem">
-      <a class="opt" routerLink="/" (click)="navigateAndCloseMenu('/')">
-        <i class="fa-solid fa-home" aria-hidden="true"></i> Home
-      </a>
-    </li>
-    <li role="menuitem">
-      <a class="opt" routerLink="/blog" (click)="navigateAndCloseMenu('/blog')">
-        <i class="fa-solid fa-blog" aria-hidden="true"></i> Blog
-      </a>
-    </li>
-    <li role="menuitem" *ngIf="isLoggedIn">
-      <a class="opt" routerLink="/dashboard" (click)="navigateAndCloseMenu('/dashboard')">
-        <i class="fa-solid fa-gauge" aria-hidden="true"></i> Dashboard
-      </a>
-    </li>
-    <li role="menuitem">
-      <a class="opt" routerLink="/create-store" (click)="navigateAndCloseMenu('/create-store')">
-        <i class="fa-solid fa-store" aria-hidden="true"></i> Create Store
-      </a>
-    </li>
-  </ul>
+  <!-- Dynamic Navigation Categories -->
+  <ng-container *ngFor="let category of navCategories; let i = index">
+    <!-- Add divider except for the first category -->
+    <div class="mobile-menu-divider" *ngIf="i > 0"></div>
+    <div class="mobile-section-header">{{category.name}}</div>
+    <ul role="menu" [attr.aria-label]="'Mobile ' + category.name + ' Menu'">
+      <li *ngFor="let option of category.options" role="menuitem">
+        <!-- Dashboard should only appear when logged in -->
+        <a *ngIf="option.link !== '/dashboard' || isLoggedIn" 
+           class="opt" 
+           [routerLink]="option.link" 
+           (click)="navigateAndCloseMenu(option.link)">
+          <i *ngIf="option.icon" class="fa-solid {{option.icon}}" aria-hidden="true"></i> {{ option.label }}
+        </a>
+      </li>
+    </ul>
+  </ng-container>
   
   <!-- Authentication Section - Always show account section with appropriate options -->
   <div class="mobile-menu-divider"></div>
@@ -99,7 +76,7 @@
   <!-- Options for logged in users -->
   <ul *ngIf="isLoggedIn" role="menu" aria-label="Mobile Account Menu">
     <li role="menuitem">
-      <a class="opt" routerLink="/dashboard" (click)="navigateAndCloseMenu('/dashboard')">
+      <a class="opt" routerLink="/profile" (click)="navigateAndCloseMenu('/profile')">
         <i class="fa-solid fa-user" aria-hidden="true"></i> Profile
       </a>
     </li>
