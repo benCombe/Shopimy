@@ -2,37 +2,27 @@
   <a id="shopimy-logo" routerLink="" aria-label="Shopimy homepage">Shopimy</a>
 
   <div id="nav-wrapper" class="center" [ngClass]="{ 'mobile-menu': isMobileMenuOpen }">
-
-    <!-- Navigation Items -->
-    <div id="dropdown" class="dropdown" *ngIf="!isMobile">
-      <button class="dropdown-header" (click)="toggleDropdown()" aria-haspopup="true" [attr.aria-expanded]="isDropdownOpen">
-        Resources <i class="fa-solid fa-angle-down" aria-hidden="true"></i>
-      </button>
-      <ul class="dropdown-options" [ngClass]="{ 'show': isDropdownOpen }" role="menu" aria-label="Resource Options">
-        <li *ngFor="let option of options" role="menuitem">
-          <a class="opt" [routerLink]="option.link" (click)="closeDropdown()">
-            {{ option.label }}
-          </a>
-        </li>
-      </ul>
+    <!-- Auth Buttons for not logged in users -->
+    <div *ngIf="!isLoggedIn" class="auth-buttons">
+      <a id="register-btn" routerLink="/register" class="standard-button outline small">Register</a>
+      <a id="login-btn" routerLink="/login" class="standard-button primary small">Log In</a>
     </div>
-
-    <a *ngIf="!isLoggedIn" id="login-btn" routerLink="/login" class="standard-button primary small">Log In</a>
     
     <!-- User Menu for logged in users -->
-    <div *ngIf="isLoggedIn" id="user-menu" class="dropdown">
+    <div *ngIf="isLoggedIn && !hideAccountDropdown" id="user-menu" class="dropdown">
       <button class="dropdown-header" (click)="toggleUserMenu()" aria-haspopup="true" [attr.aria-expanded]="isUserMenuOpen">
         My Account <i class="fa-solid fa-angle-down" aria-hidden="true"></i>
       </button>
       <ul class="dropdown-options" [ngClass]="{ 'show': isUserMenuOpen }" role="menu" aria-label="Account Options">
         <li role="menuitem"><a class="opt" routerLink="/profile">Profile</a></li>
+        <li role="menuitem"><a class="opt" routerLink="/dashboard">Dashboard</a></li>
         <li role="menuitem"><button class="opt" (click)="logout()">Logout</button></li>
       </ul>
     </div>
 
     <!-- Hamburger Menu Button -->
-    <button id="hamburger" (click)="toggleMobileMenu()" *ngIf="isMobile" aria-label="Toggle mobile menu" [attr.aria-expanded]="isMobileMenuOpen">
-      <i class="fa-solid" [ngClass]="{'fa-bars': !isMobileMenuOpen, 'fa-xmark': isMobileMenuOpen}" aria-hidden="true"></i>
+    <button id="hamburger" (click)="toggleMobileMenu()" aria-label="Toggle mobile menu" [attr.aria-expanded]="isMobileMenuOpen">
+      <i class="fa-solid fa-bars" aria-hidden="true"></i>
     </button>
   </div>
 </nav>
@@ -42,7 +32,15 @@
 
 <!-- Mobile Menu Dropdown -->
 <nav id="mobile-menu" [class.show-mobile-menu]="isMobileMenuOpen" aria-label="Mobile navigation" *ngIf="isMobileMenuOpen">
-  <div class="mobile-menu-header">Resources</div>
+  <div class="mobile-menu-header">
+    <span class="mobile-menu-title">Menu</span>
+    <button class="mobile-close-btn" (click)="closeMobileMenu()" aria-label="Close menu">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  
+  <!-- Resources Section -->
+  <div class="mobile-section-header">Resources</div>
   <ul role="menu" aria-label="Mobile Resources Menu">
     <li *ngFor="let option of options" role="menuitem">
       <a class="opt" [routerLink]="option.link" (click)="navigateAndCloseMenu(option.link)">
@@ -50,17 +48,48 @@
       </a>
     </li>
   </ul>
+  
+  <!-- Quick Actions Section -->
   <div class="mobile-menu-divider"></div>
+  <div class="mobile-section-header">Quick Actions</div>
+  <ul role="menu" aria-label="Quick Actions Menu">
+    <li role="menuitem">
+      <a class="opt" routerLink="/" (click)="navigateAndCloseMenu('/')">
+        <i class="fa-solid fa-home" aria-hidden="true"></i> Home
+      </a>
+    </li>
+    <li role="menuitem" *ngIf="isLoggedIn">
+      <a class="opt" routerLink="/dashboard" (click)="navigateAndCloseMenu('/dashboard')">
+        <i class="fa-solid fa-gauge" aria-hidden="true"></i> Dashboard
+      </a>
+    </li>
+    <li role="menuitem">
+      <a class="opt" routerLink="/create-store" (click)="navigateAndCloseMenu('/create-store')">
+        <i class="fa-solid fa-store" aria-hidden="true"></i> Create Store
+      </a>
+    </li>
+  </ul>
+  
+  <!-- Authentication Section - Always show account section with appropriate options -->
+  <div class="mobile-menu-divider"></div>
+  <div class="mobile-section-header">Account</div>
+  <!-- Options for logged out users -->
   <ul *ngIf="!isLoggedIn" role="menu" aria-label="Mobile Authentication Menu">
     <li role="menuitem">
       <a class="opt" routerLink="/login" (click)="navigateAndCloseMenu('/login')">
         <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i> Log In
       </a>
     </li>
+    <li role="menuitem">
+      <a class="opt" routerLink="/register" (click)="navigateAndCloseMenu('/register')">
+        <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Register
+      </a>
+    </li>
   </ul>
+  <!-- Options for logged in users -->
   <ul *ngIf="isLoggedIn" role="menu" aria-label="Mobile Account Menu">
     <li role="menuitem">
-      <a class="opt" routerLink="/profile" (click)="navigateAndCloseMenu('/profile')">
+      <a class="opt" routerLink="/dashboard" (click)="navigateAndCloseMenu('/dashboard')">
         <i class="fa-solid fa-user" aria-hidden="true"></i> Profile
       </a>
     </li>

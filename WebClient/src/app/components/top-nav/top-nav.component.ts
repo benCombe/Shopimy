@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
@@ -18,6 +18,7 @@ interface NavOption {
   standalone: true
 })
 export class TopNavComponent implements OnInit {
+  @Input() hideAccountDropdown: boolean = false;
 
   isDropdownOpen: boolean = false;
   isMobileMenuOpen: boolean = false;
@@ -63,6 +64,7 @@ export class TopNavComponent implements OnInit {
     this.isDropdownOpen = !this.isDropdownOpen;
     if (this.isDropdownOpen) {
       this.isUserMenuOpen = false;
+      this.closeMobileMenu();
     }
   }
 
@@ -70,6 +72,7 @@ export class TopNavComponent implements OnInit {
     this.isUserMenuOpen = !this.isUserMenuOpen;
     if (this.isUserMenuOpen) {
       this.isDropdownOpen = false;
+      this.closeMobileMenu();
     }
   }
 
@@ -119,15 +122,10 @@ export class TopNavComponent implements OnInit {
   handleClickOutside(event: Event) {
     const clickedElement = event.target as HTMLElement;
 
-    if (!clickedElement.closest('.dropdown-header') && !clickedElement.closest('.dropdown-options')) {
-      const resourcesDropdown = document.querySelector('#nav-wrapper .dropdown:not(#user-menu)');
-      if (resourcesDropdown && !resourcesDropdown.contains(clickedElement)){
-        this.isDropdownOpen = false;
-      }
-      const userMenuDropdown = document.querySelector('#user-menu');
-      if (userMenuDropdown && !userMenuDropdown.contains(clickedElement)){
-        this.isUserMenuOpen = false;
-      }
+    if (!clickedElement.closest('.dropdown-header') && !clickedElement.closest('.dropdown-options') && 
+        !clickedElement.closest('#hamburger') && !clickedElement.closest('#mobile-menu')) {
+      this.isDropdownOpen = false;
+      this.isUserMenuOpen = false;
     }
   }
 
