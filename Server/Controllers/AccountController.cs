@@ -156,7 +156,7 @@ namespace Server.Controllers
             var activeUser = new ActiveUser
             {
                 UserId = user.Id,
-                LoginDate = DateTime.UtcNow,
+                LoginDate = DateTime.UtcNow, 
                 Token = token
             };
 
