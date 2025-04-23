@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { delay } from 'rxjs/operators'; // For simulating async operations
 import { ComponentVisibility, DEFAULT_VISIBILITY } from '../models/component-visibility.model';
 import { CookieService } from './cookie.service'; // Import CookieService
+import { StoreTheme } from '../models/store-theme.model';
 
 // Define an interface for API serialization that extends StoreDetails
 interface StoreDetailsForApi extends Omit<StoreDetails, 'componentVisibility'> {
@@ -20,6 +21,15 @@ interface Response {
   details: StoreDetails;
   categories: Category[];
 }
+
+// Default theme constants
+export const DEFAULT_THEME: StoreTheme = {
+  mainColor: '#393727',
+  secondColor: '#D0933D',
+  thirdColor: '#D3CEBB',
+  altColor: '#333333',
+  mainFontFam: 'Cambria, Cochin'
+};
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +42,17 @@ export class StoreService {
   // private itemBaseUrl = '/api/items';
   // private categoryBaseUrl = '/api/categories';
 
-  activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(new StoreDetails(0, "DEFAULT", "DEFAULT", "#232323", "#545454", "#E1E1E1",  "#f6f6f6", "Cambria, Cochin", "BANNER TEXT", "LOGO TEXT", "", "", []));
+  activeStoreSubject: BehaviorSubject<StoreDetails> = new BehaviorSubject<StoreDetails>(
+    new StoreDetails(
+      0, "DEFAULT", "DEFAULT", 
+      DEFAULT_THEME.mainColor, 
+      DEFAULT_THEME.secondColor, 
+      DEFAULT_THEME.thirdColor, 
+      DEFAULT_THEME.altColor, 
+      DEFAULT_THEME.mainFontFam, 
+      "BANNER TEXT", "LOGO TEXT", "", "", []
+    )
+  );
   activeStore$: Observable<StoreDetails> = this.activeStoreSubject.asObservable();
 
   constructor(
@@ -98,7 +118,15 @@ export class StoreService {
           return this.deserializeStore(store);
         } else {
           console.error("Invalid store data returned from API:", store);
-          return new StoreDetails(0, '', '', '#393727', '#D0933D', '#D3CEBB', '#333333', 'sans-serif', '', '', '', '', [], DEFAULT_VISIBILITY);
+          return new StoreDetails(
+            0, '', '', 
+            DEFAULT_THEME.mainColor, 
+            DEFAULT_THEME.secondColor, 
+            DEFAULT_THEME.thirdColor, 
+            DEFAULT_THEME.altColor, 
+            DEFAULT_THEME.mainFontFam, 
+            '', '', '', '', [], DEFAULT_VISIBILITY
+          );
         }
       }),
       tap(store => {
@@ -109,7 +137,15 @@ export class StoreService {
         if (error.status === 404) {
           // Special handling for 404 - user doesn't have a store yet
           console.log('User has no store yet, returning empty store details');
-          const emptyStore = new StoreDetails(0, '', '', '#393727', '#D0933D', '#D3CEBB', '#333333', 'sans-serif', '', '', '', '', [], DEFAULT_VISIBILITY);
+          const emptyStore = new StoreDetails(
+            0, '', '', 
+            DEFAULT_THEME.mainColor, 
+            DEFAULT_THEME.secondColor, 
+            DEFAULT_THEME.thirdColor, 
+            DEFAULT_THEME.altColor, 
+            DEFAULT_THEME.mainFontFam, 
+            '', '', '', '', [], DEFAULT_VISIBILITY
+          );
           this.activeStoreSubject.next(emptyStore);
           return of(emptyStore);
         }
@@ -180,14 +216,14 @@ export class StoreService {
     };
 
     // Validate and fix all color values
-    storeDataCopy.theme_1 = validateAndFixColor(storeDataCopy.theme_1, "#393727");
-    storeDataCopy.theme_2 = validateAndFixColor(storeDataCopy.theme_2, "#D0933D");
-    storeDataCopy.theme_3 = validateAndFixColor(storeDataCopy.theme_3, "#D3CEBB");
-    storeDataCopy.fontColor = validateAndFixColor(storeDataCopy.fontColor, "#333333");
+    storeDataCopy.theme_1 = validateAndFixColor(storeDataCopy.theme_1, DEFAULT_THEME.mainColor);
+    storeDataCopy.theme_2 = validateAndFixColor(storeDataCopy.theme_2, DEFAULT_THEME.secondColor);
+    storeDataCopy.theme_3 = validateAndFixColor(storeDataCopy.theme_3, DEFAULT_THEME.thirdColor);
+    storeDataCopy.fontColor = validateAndFixColor(storeDataCopy.fontColor, DEFAULT_THEME.altColor);
 
     // Ensure font family is set
     if (!storeDataCopy.fontFamily) {
-      storeDataCopy.fontFamily = "'Roboto', sans-serif";
+      storeDataCopy.fontFamily = DEFAULT_THEME.mainFontFam;
     }
 
     // Validate and format URLs
@@ -250,7 +286,15 @@ export class StoreService {
   private deserializeStore(store: any): StoreDetails {
     if (!store) {
       console.error("Trying to deserialize null or undefined store");
-      return new StoreDetails(0, '', '', '#393727', '#D0933D', '#D3CEBB', '#333333', 'sans-serif', '', '', '', '', []);
+      return new StoreDetails(
+        0, '', '', 
+        DEFAULT_THEME.mainColor, 
+        DEFAULT_THEME.secondColor, 
+        DEFAULT_THEME.thirdColor, 
+        DEFAULT_THEME.altColor, 
+        DEFAULT_THEME.mainFontFam, 
+        '', '', '', '', []
+      );
     }
 
     try {
@@ -275,11 +319,11 @@ export class StoreService {
         store.id || 0,
         store.url || '',
         store.name || '',
-        store.theme_1 || '#393727',
-        store.theme_2 || '#D0933D',
-        store.theme_3 || '#D3CEBB',
-        store.fontColor || '#333333',
-        store.fontFamily || 'sans-serif',
+        store.theme_1 || DEFAULT_THEME.mainColor,
+        store.theme_2 || DEFAULT_THEME.secondColor,
+        store.theme_3 || DEFAULT_THEME.thirdColor,
+        store.fontColor || DEFAULT_THEME.altColor,
+        store.fontFamily || DEFAULT_THEME.mainFontFam,
         store.bannerText || '',
         store.logoText || '',
         store.bannerURL || '',
@@ -290,7 +334,15 @@ export class StoreService {
       );
     } catch (error) {
       console.error("Error deserializing store:", error);
-      return new StoreDetails(0, '', '', '#393727', '#D0933D', '#D3CEBB', '#333333', 'sans-serif', '', '', '', '', []);
+      return new StoreDetails(
+        0, '', '', 
+        DEFAULT_THEME.mainColor, 
+        DEFAULT_THEME.secondColor, 
+        DEFAULT_THEME.thirdColor, 
+        DEFAULT_THEME.altColor, 
+        DEFAULT_THEME.mainFontFam, 
+        '', '', '', '', []
+      );
     }
   }
 
@@ -530,11 +582,11 @@ export class StoreService {
         0, // ID will be assigned by the server
         `${username}-${timestamp}`, // URL with timestamp to avoid conflicts
         `${username}'s Store`, // Name
-        '#393727', // theme_1 (main-color - Dark olive)
-        '#D0933D', // theme_2 (second-color - Mustard)
-        '#D3CEBB', // theme_3 (third-color - Light tan)
-        '#393727', // fontColor (color-text-on-surface - Dark text)
-        '"Inria Serif", serif', // fontFamily (main-font-fam)
+        DEFAULT_THEME.mainColor, // theme_1 (main-color)
+        DEFAULT_THEME.secondColor, // theme_2 (second-color)
+        DEFAULT_THEME.thirdColor, // theme_3 (third-color)
+        DEFAULT_THEME.altColor, // fontColor (color-text-on-surface)
+        DEFAULT_THEME.mainFontFam, // fontFamily (main-font-fam)
         'Welcome to My Store', // bannerText
         `${username}'s Store`, // logoText
         '', // bannerURL
