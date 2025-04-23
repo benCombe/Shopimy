@@ -280,16 +280,14 @@ export class StoreService {
   updateStore(store: StoreDetails): Observable<StoreDetails> {
     // Update the local BehaviorSubject
     this.activeStoreSubject.next(store);
-    var storeDataForApi = store; //TODO FIX
 
-    var headers: HttpHeaders | { [header: string]: string | string[]; } | undefined = undefined; //TODO this.cookieService.get('auth_token'); // Get token from CookieService
-    /*if (!headers) {
-      console.error('Authentication token not found. Cannot update store.');
-      return throwError(() => new Error('Authentication required.'));
-    }*/
+    //TODO NEED TO ADD THIS
+    const token = this.cookieService.get('auth_token');
+    if (!token) return new Observable(observer => observer.error('No token found'));
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // Send update to backend
-    return this.http.put<StoreDetails>(`${this.apiUrl}/update`, storeDataForApi, { headers }).pipe( // Add headers to request
+    return this.http.put<StoreDetails>(`${this.apiUrl}/update`, store, { headers }).pipe( // Add headers to request
       map(response => this.deserializeStore(response)),
       tap(updatedStore => {
         // Update the BehaviorSubject with the response from the server
@@ -319,9 +317,9 @@ export class StoreService {
       console.error('Authentication token not found. Cannot save theme settings.');
       return throwError(() => new Error('Authentication required.'));
     }
-    
+
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
+
     return this.http.put<StoreDetails>(`${this.apiUrl}/theme`, themeData, { headers }).pipe(
       tap(updatedStore => {
         // Update the active store with the new theme settings
@@ -359,7 +357,7 @@ export class StoreService {
   getStoreById(id: string) {
     return this.getCurrentUserStore();
   }
-  
+
   getAvailableComponents() {
     return this.http.get<any[]>(`${this.apiUrl}/components`);
   }
