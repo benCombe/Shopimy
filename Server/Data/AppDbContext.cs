@@ -35,6 +35,7 @@ namespace Server.Data
         public DbSet<StoreVisit> StoreVisits { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Quantity> Quantity{get; set;}
+        public DbSet<Total> Total{get; set;}
 
 
         // Ensure table names match conventions  
@@ -92,6 +93,7 @@ namespace Server.Data
             modelBuilder.Entity<BasicItem>().HasNoKey();
             modelBuilder.Entity<DetailItem>().HasNoKey();
             modelBuilder.Entity<Quantity>().HasNoKey();
+            modelBuilder.Entity<Total>().HasNoKey();
             modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCarts");
             modelBuilder.Entity<ActiveUser>().ToTable("ActiveUsers");
             modelBuilder.Entity<TestItem>().ToTable("TestTable");

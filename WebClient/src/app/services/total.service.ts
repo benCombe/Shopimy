@@ -7,13 +7,13 @@ import { CookieService } from './cookie.service';
 // Interface for store visit data
 export interface VisitAnalytics {
   name: string;
-  totalQuantity: number;
+  totalPrice: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class QuantityService {
+export class TotalService {
   private apiUrl = `${environment.apiUrl}/api/analytics`;
 
   constructor(private http: HttpClient,private cookieService: CookieService) { }
@@ -31,6 +31,6 @@ export class QuantityService {
     const token = this.cookieService.get('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`)
     // Make authenticated GET request to the analytics endpoint
-    return this.http.get<VisitAnalytics[]>(`${this.apiUrl}/item-quantity`, { params,headers });
+    return this.http.get<VisitAnalytics[]>(`${this.apiUrl}/item-total`, { params,headers });
   }
 }
