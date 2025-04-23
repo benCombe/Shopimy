@@ -71,6 +71,14 @@ export class ThemesComponent implements OnInit {
       thirdColor: '#F3EEE8',
       altColor: '#333333',
       mainFontFam: 'sans-serif'
+    },
+    {
+      name: 'Hotdog Stand',
+      mainColor: '#FF0000',
+      secondColor: '#FFFF00',
+      thirdColor: '#000000',
+      altColor: '#FFFFFF',
+      mainFontFam: 'sans-serif'
     }
   ];
 

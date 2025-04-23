@@ -248,41 +248,50 @@ export class StoreService {
 
   // Helper function to deserialize store data from the API
   private deserializeStore(store: any): StoreDetails {
-    // Parse component visibility if it's a string
-    let componentVisibility: ComponentVisibility | undefined;
-    if (store.componentVisibility) {
-      try {
-        if (typeof store.componentVisibility === 'string') {
-          componentVisibility = JSON.parse(store.componentVisibility);
-        } else {
-          componentVisibility = store.componentVisibility as ComponentVisibility;
-        }
-      } catch (e) {
-        console.error('Error parsing component visibility', e);
-        componentVisibility = DEFAULT_VISIBILITY;
-      }
-    } else {
-      componentVisibility = DEFAULT_VISIBILITY;
+    if (!store) {
+      console.error("Trying to deserialize null or undefined store");
+      return new StoreDetails(0, '', '', '#393727', '#D0933D', '#D3CEBB', '#333333', 'sans-serif', '', '', '', '', []);
     }
 
-    return new StoreDetails(
-      store.id,
-      store.url,
-      store.name,
-      store.theme_1,
-      store.theme_2,
-      store.theme_3,
-      store.fontColor,
-      store.fontFamily,
-      store.bannerText,
-      store.logoText,
-      store.bannerURL,
-      store.logoURL,
-      store.categories?.map((cat: any) =>
-        new Category(cat.categoryId, cat.storeId, cat.name, cat.parentCategory)
-      ) || [],
-      componentVisibility
-    );
+    try {
+      let componentVisibility: ComponentVisibility = DEFAULT_VISIBILITY;
+      
+      // Handle component visibility deserialization
+      if (store.componentVisibility) {
+        if (typeof store.componentVisibility === 'string') {
+          try {
+            componentVisibility = JSON.parse(store.componentVisibility);
+          } catch (error) {
+            console.error("Failed to parse componentVisibility JSON:", error);
+            componentVisibility = DEFAULT_VISIBILITY;
+          }
+        } else if (typeof store.componentVisibility === 'object') {
+          componentVisibility = store.componentVisibility as ComponentVisibility;
+        }
+      }
+
+      // Map API response to StoreDetails model
+      return new StoreDetails(
+        store.id || 0,
+        store.url || '',
+        store.name || '',
+        store.theme_1 || '#393727',
+        store.theme_2 || '#D0933D',
+        store.theme_3 || '#D3CEBB',
+        store.fontColor || '#333333',
+        store.fontFamily || 'sans-serif',
+        store.bannerText || '',
+        store.logoText || '',
+        store.bannerURL || '',
+        store.logoURL || '',
+        store.categories || [],
+        componentVisibility,
+    
+      );
+    } catch (error) {
+      console.error("Error deserializing store:", error);
+      return new StoreDetails(0, '', '', '#393727', '#D0933D', '#D3CEBB', '#333333', 'sans-serif', '', '', '', '', []);
+    }
   }
 
   getCategoryByName(name: string): Category | null {
@@ -587,6 +596,33 @@ export class StoreService {
       catchError(error => {
         console.error('Error removing logo:', error);
         return throwError(() => new Error('Failed to remove logo.'));
+      })
+    );
+  }
+
+  // Update social media links
+  updateSocialLinks(socialLinks: {
+    facebookLink?: string,
+    twitterLink?: string,
+    instagramLink?: string,
+    linkedInLink?: string
+  }): Observable<StoreDetails> {
+    const token = this.cookieService.get('auth_token');
+    if (!token) {
+      console.error('Authentication token not found. Cannot update social links.');
+      return throwError(() => new Error('Authentication required.'));
+    }
+    
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    return this.http.put<StoreDetails>(`${this.apiUrl}/social`, socialLinks, { headers }).pipe(
+      map(response => this.deserializeStore(response)),
+      tap(storeDetails => {
+        this.activeStoreSubject.next(storeDetails);
+      }),
+      catchError(error => {
+        console.error('Error updating social links:', error);
+        return throwError(() => new Error('Failed to update social links.'));
       })
     );
   }
