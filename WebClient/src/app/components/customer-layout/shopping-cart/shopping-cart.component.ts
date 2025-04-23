@@ -27,6 +27,7 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
   cartItems: { item: BasicItem, quantity: number }[] = [];
   subtotal: number = 0.00;
   shippingCost: number = 0;
+  promoCode: string = '';
 
  // tempImages: string[] = ["resources/images/sweater-sample.jpg", "resources/images/sweater-sample2.jpg"]
 
@@ -89,6 +90,27 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
     this.shopService.updateItemQuantity(item, -1);
   }
 
-
+  applyPromoCode(): void {
+    const promoInput = document.getElementById('promo') as HTMLInputElement;
+    if (promoInput && promoInput.value) {
+      this.promoCode = promoInput.value;
+      
+      // Simple validation example - in a real app, this would call a service
+      if (this.promoCode === 'WELCOME10') {
+        // Apply 10% discount
+        this.shopService.applyDiscount(0.10);
+        alert('Promo code applied: 10% discount!');
+      } else if (this.promoCode === 'FREESHIP') {
+        // Make shipping free
+        this.shippingCost = 0;
+        alert('Promo code applied: Free shipping!');
+      } else {
+        alert('Invalid promo code');
+      }
+      
+      // Clear the input after processing
+      promoInput.value = '';
+    }
+  }
 
 }

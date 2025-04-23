@@ -1,7 +1,7 @@
 #order-summary {
   width: 100%;
   padding: var(--spacing-md);
-  border: 1px solid var(--border-color-light);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-md);
   font-family: var(--main-font-fam);
@@ -13,7 +13,7 @@
   color: var(--main-color);
   font-weight: 600;
   padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--border-color-light);
+  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
 }
 
 .summary-item-container {
@@ -40,7 +40,7 @@
 }
 
 #total {
-  border-top: 1px solid var(--border-color-light);
+  border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   margin-top: var(--spacing-sm);
   padding-top: var(--spacing-sm);
   font-size: 1.2rem;
@@ -52,6 +52,7 @@
   margin-top: var(--spacing-md);
 }
 
+/* Using standard button class with checkout-btn styling */
 .checkout-btn {
   width: 80%;
   padding: var(--spacing-sm) var(--spacing-md);
@@ -60,12 +61,24 @@
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
 }
 
 .checkout-btn:hover {
-  cursor: pointer;
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
+}
+
+.checkout-btn:focus {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.checkout-btn:disabled {
+  background-color: var(--color-text-light);
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 @media only screen and (max-width: 992px) {
@@ -101,5 +114,13 @@
   
   .summary-item {
     font-size: 0.9rem;
+  }
+}
+
+/* For reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .checkout-btn:hover {
+    transform: none;
+    transition: none;
   }
 }
