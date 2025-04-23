@@ -276,8 +276,29 @@ export class StoreService {
       // Set default component visibility if missing
       storeDataCopy.componentVisibility = JSON.stringify(DEFAULT_VISIBILITY);
     } else if (typeof storeDataCopy.componentVisibility !== 'string') {
-      storeDataCopy.componentVisibility = JSON.stringify(storeDataCopy.componentVisibility);
+      try {
+        // Always stringify the object to ensure it's sent as a JSON string
+        storeDataCopy.componentVisibility = JSON.stringify(storeDataCopy.componentVisibility);
+      } catch (error) {
+        console.error('Failed to stringify componentVisibility:', error);
+        // Fallback to default if JSON stringify fails
+        storeDataCopy.componentVisibility = JSON.stringify(DEFAULT_VISIBILITY);
+      }
+    } else {
+      // If it's already a string, validate it's valid JSON
+      try {
+        JSON.parse(storeDataCopy.componentVisibility as string);
+        // No need to modify, it's already a valid JSON string
+      } catch (error) {
+        console.error('Invalid JSON string in componentVisibility:', error);
+        // Fallback to default if current value isn't valid JSON
+        storeDataCopy.componentVisibility = JSON.stringify(DEFAULT_VISIBILITY);
+      }
     }
+
+    // Log the prepared data with Component Visibility to help debug
+    console.log('ComponentVisibility after preparation:', storeDataCopy.componentVisibility);
+    console.log('ComponentVisibility type:', typeof storeDataCopy.componentVisibility);
 
     return storeDataCopy as StoreDetailsForApi;
   }
@@ -392,51 +413,37 @@ export class StoreService {
   }
 
   updateStore(store: StoreDetails): Observable<StoreDetails> {
-    console.log('Updating store with data:', store);
+    // Clone the store object to avoid modifying the original
+    const storeClone = { ...store };
     
-    // Validate essential properties before sending to API
-    if (!store || !store.id || store.id <= 0) {
-      console.error('Invalid store data: Missing or invalid ID', store);
+    // Add defensive null/undefined checks for critical properties
+    if (!storeClone.id || storeClone.id <= 0) {
+      console.error('Invalid store data: Missing or invalid ID', storeClone);
       return throwError(() => new Error('Store data is invalid: Missing store ID'));
     }
     
-    if (!store.name || store.name.trim() === '') {
-      console.error('Invalid store data: Missing name', store);
-      return throwError(() => new Error('Store data is invalid: Missing store name'));
+    if (!storeClone.name) {
+      storeClone.name = "My Store"; // Provide default instead of failing
+      console.warn('Store name was missing, using default: "My Store"');
     }
     
-    if (!store.url || store.url.trim() === '') {
-      console.error('Invalid store data: Missing URL', store);
-      return throwError(() => new Error('Store data is invalid: Missing store URL'));
+    if (!storeClone.url) {
+      storeClone.url = "my-store"; // Provide default instead of failing
+      console.warn('Store URL was missing, using default: "my-store"');
     }
     
-    // Validate theme colors
-    const validateHexColor = (color: string) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
-    
-    if (!validateHexColor(store.theme_1)) {
-      console.error('Invalid theme_1 color format:', store.theme_1);
-      return throwError(() => new Error('Invalid primary color format. Must be a valid hex color.'));
+    // Ensure componentVisibility is present and valid
+    if (!storeClone.componentVisibility) {
+      storeClone.componentVisibility = DEFAULT_VISIBILITY;
+      console.warn('componentVisibility was missing, using default visibility settings');
     }
     
-    if (!validateHexColor(store.theme_2)) {
-      console.error('Invalid theme_2 color format:', store.theme_2);
-      return throwError(() => new Error('Invalid secondary color format. Must be a valid hex color.'));
-    }
+    // Serialize component visibility if it's an object
+    const preparedStore = this.prepareStoreDataForApi(storeClone);
     
-    if (!validateHexColor(store.theme_3)) {
-      console.error('Invalid theme_3 color format:', store.theme_3);
-      return throwError(() => new Error('Invalid accent color format. Must be a valid hex color.'));
-    }
+    // Log the prepared data for debugging
+    console.log('Store payload being sent to server:', JSON.stringify(preparedStore, null, 2));
     
-    if (!validateHexColor(store.fontColor)) {
-      console.error('Invalid fontColor format:', store.fontColor);
-      return throwError(() => new Error('Invalid text color format. Must be a valid hex color.'));
-    }
-    
-    // Prepare store data for API with proper validation
-    const preparedStore = this.prepareStoreDataForApi(store);
-    
-    //TODO NEED TO ADD THIS
     const token = this.cookieService.get('auth_token');
     if (!token) return throwError(() => new Error('Authentication required. Please log in and try again.'));
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);

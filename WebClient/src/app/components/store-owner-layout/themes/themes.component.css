@@ -242,7 +242,6 @@ input[type="color"] {
   height: 40px;
   border-radius: var(--border-radius);
   cursor: pointer;
-  padding: 0;
   margin-right: var(--spacing-md);
 }
 

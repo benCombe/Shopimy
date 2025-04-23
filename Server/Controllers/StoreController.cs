@@ -13,7 +13,12 @@ using System.Text.Json;
 using System.Linq; // Add this for LINQ operations on claims
 // Add for Execution Strategy
 using Microsoft.EntityFrameworkCore.Storage;
-
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using System.Text.Json.Serialization;
 
 namespace Server.Controllers
 {
@@ -545,14 +550,43 @@ namespace Server.Controllers
                             theme = new StoreTheme { StoreId = store.StoreId };
                             _context.StoreThemes.Add(theme);
                         }
-                        theme.Theme_1 = storeDetails.Theme_1 ?? theme.Theme_1; // Keep existing if null
+                        theme.Theme_1 = storeDetails.Theme_1 ?? theme.Theme_1;
                         theme.Theme_2 = storeDetails.Theme_2 ?? theme.Theme_2;
                         theme.Theme_3 = storeDetails.Theme_3 ?? theme.Theme_3;
                         theme.FontColor = storeDetails.FontColor ?? theme.FontColor;
                         theme.FontFamily = storeDetails.FontFamily ?? theme.FontFamily;
                         theme.BannerText = storeDetails.BannerText ?? theme.BannerText; // Allow empty string
                         theme.LogoText = storeDetails.LogoText ?? theme.LogoText; // Allow empty string
-                        theme.ComponentVisibility = storeDetails.ComponentVisibility ?? theme.ComponentVisibility;
+                        
+                        // Add safe handling for ComponentVisibility
+                        if (storeDetails.ComponentVisibility != null)
+                        {
+                            // Validate it's proper JSON before saving
+                            try 
+                            {
+                                // Attempt to parse and reserialize to ensure valid JSON
+                                var jsonObj = System.Text.Json.JsonDocument.Parse(storeDetails.ComponentVisibility);
+                                
+                                // Reserialize to ensure it's valid and well-formatted
+                                theme.ComponentVisibility = System.Text.Json.JsonSerializer.Serialize(
+                                    System.Text.Json.JsonSerializer.Deserialize<object>(storeDetails.ComponentVisibility)
+                                );
+                                
+                                Console.WriteLine("ComponentVisibility is valid JSON: " + theme.ComponentVisibility);
+                            }
+                            catch (System.Text.Json.JsonException ex)
+                            {
+                                Console.WriteLine("Invalid ComponentVisibility JSON: " + ex.Message);
+                                Console.WriteLine("Original value: " + storeDetails.ComponentVisibility);
+                                // If invalid JSON, use empty object as fallback
+                                theme.ComponentVisibility = "{}";
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("ComponentVisibility is null, using default empty object");
+                            theme.ComponentVisibility = "{}";
+                        }
 
                         // Update Banner settings
                         var banner = await _context.StoreBanners.FirstOrDefaultAsync(b => b.StoreID == store.StoreId);
@@ -579,29 +613,74 @@ namespace Server.Controllers
                         }
 
                         // Update Categories (More complex: requires handling additions, deletions, updates)
-                        // Simple approach: Replace existing categories with provided ones
-                        // WARNING: This deletes existing categories not present in the request.
-                        // A better approach might involve tracking changes or specific add/delete endpoints.
                         if (storeDetails.Categories != null)
                         {
                             var existingCategories = await _context.Categories.Where(c => c.StoreId == store.StoreId).ToListAsync();
-                            _context.Categories.RemoveRange(existingCategories); // Remove old ones
+                            
+                            // Instead of removing all categories, check which ones can be safely deleted
+                            foreach (var existingCategory in existingCategories)
+                            {
+                                // Check if category has listings using raw SQL since there might not be a DbSet<Listing>
+                                string checkQuery = "SELECT COUNT(1) FROM Listing WHERE category = @categoryId";
+                                bool hasListings = false;
+                                
+                                using (var command = _context.Database.GetDbConnection().CreateCommand())
+                                {
+                                    command.CommandText = checkQuery;
+                                    var parameter = command.CreateParameter();
+                                    parameter.ParameterName = "@categoryId";
+                                    parameter.Value = existingCategory.CategoryId;
+                                    command.Parameters.Add(parameter);
+                                    
+                                    // Associate the command with the current transaction
+                                    command.Transaction = transaction.GetDbTransaction();
+                                    
+                                    if (command.Connection.State != System.Data.ConnectionState.Open)
+                                        await command.Connection.OpenAsync();
+                                    
+                                    var result = await command.ExecuteScalarAsync();
+                                    hasListings = Convert.ToInt32(result) > 0;
+                                }
+                                
+                                // If the category is not in the new list and has no listings, delete it
+                                bool keepCategory = storeDetails.Categories.Any(c => 
+                                    !string.IsNullOrWhiteSpace(c.Name) && 
+                                    c.Name.Trim().Equals(existingCategory.Name, StringComparison.OrdinalIgnoreCase));
+                                
+                                if (!keepCategory && !hasListings)
+                                {
+                                    _context.Categories.Remove(existingCategory);
+                                }
+                            }
 
+                            // Add new categories
                             List<Category> updatedCategories = new List<Category>();
                             foreach (var catInput in storeDetails.Categories)
                             {
                                 if (!string.IsNullOrWhiteSpace(catInput.Name))
                                 {
-                                    // Create Category without Description
-                                    var newCat = new Category
+                                    string normalizedName = catInput.Name.Trim();
+                                    
+                                    // Check if this category already exists (case-insensitive)
+                                    var existingCategory = existingCategories.FirstOrDefault(c => 
+                                        c.Name.Equals(normalizedName, StringComparison.OrdinalIgnoreCase));
+                                    
+                                    if (existingCategory != null)
                                     {
-                                        StoreId = store.StoreId,
-                                        Name = catInput.Name.Trim()
-                                        // Description = catInput.Description?.Trim() ?? "" // Removed Description
-                                        // Preserve ID if frontend sends it for updates? Requires more logic.
-                                    };
-                                    _context.Categories.Add(newCat);
-                                    updatedCategories.Add(newCat);
+                                        // Keep existing category
+                                        updatedCategories.Add(existingCategory);
+                                    }
+                                    else
+                                    {
+                                        // Create new category
+                                        var newCat = new Category
+                                        {
+                                            StoreId = store.StoreId,
+                                            Name = normalizedName
+                                        };
+                                        _context.Categories.Add(newCat);
+                                        updatedCategories.Add(newCat);
+                                    }
                                 }
                             }
                             storeDetails.Categories = updatedCategories; // Reflect changes in response DTO
@@ -645,6 +724,17 @@ namespace Server.Controllers
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Error updating store: {ex.ToString()}");
+                        Console.WriteLine($"Exception type: {ex.GetType().FullName}");
+                        Console.WriteLine($"Exception message: {ex.Message}");
+                        Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                        
+                        if (ex.InnerException != null)
+                        {
+                            Console.WriteLine($"Inner exception type: {ex.InnerException.GetType().FullName}");
+                            Console.WriteLine($"Inner exception message: {ex.InnerException.Message}");
+                            Console.WriteLine($"Inner exception stack trace: {ex.InnerException.StackTrace}");
+                        }
+                        
                         // Transaction rolls back via using block
                         return new ObjectResult("An error occurred while updating the store.") { StatusCode = 500 };
                     }
