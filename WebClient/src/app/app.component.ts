@@ -8,11 +8,12 @@ import { ShoppingCartComponent } from "./components/customer-layout/shopping-car
 import { CheckoutComponent } from "./components/customer-layout/checkout/checkout.component";
 import { LoadingOneComponent } from "./components/utilities/loading-one/loading-one.component";
 import { UserService } from './services/user.service';
+import { FooterComponent } from './components/footer/footer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,  // ✅ Standalone component
-  imports: [RouterOutlet, LoadingOneComponent], // ✅ Import only used components
+  imports: [RouterOutlet, LoadingOneComponent, FooterComponent], // ✅ Import only used components
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

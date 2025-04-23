@@ -151,39 +151,85 @@ export class StoreService {
       storeDataCopy.url = "my-store";
     }
 
-    // Validate color formats - ensure they start with #
-    if (!storeDataCopy.theme_1 || !storeDataCopy.theme_1.startsWith('#')) {
-      storeDataCopy.theme_1 = "#393727";
-    }
-    if (!storeDataCopy.theme_2 || !storeDataCopy.theme_2.startsWith('#')) {
-      storeDataCopy.theme_2 = "#D0933D";
-    }
-    if (!storeDataCopy.theme_3 || !storeDataCopy.theme_3.startsWith('#')) {
-      storeDataCopy.theme_3 = "#D3CEBB";
-    }
-    if (!storeDataCopy.fontColor || !storeDataCopy.fontColor.startsWith('#')) {
-      storeDataCopy.fontColor = "#333333";
-    }
+    // Function to validate and fix color formats
+    const validateAndFixColor = (color: string | undefined, defaultColor: string): string => {
+      // If color is missing, use default
+      if (!color) return defaultColor;
+      
+      // If doesn't start with #, add it
+      if (!color.startsWith('#')) {
+        color = '#' + color;
+      }
+      
+      // Check if it's a valid hex color with either 3 or 6 digits
+      const isValidHex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+      if (!isValidHex) {
+        console.warn(`Invalid color format detected: ${color}, using default: ${defaultColor}`);
+        return defaultColor;
+      }
+      
+      // If it's a 3-digit hex, convert to 6-digit format for consistency
+      if (color.length === 4) {
+        const r = color[1];
+        const g = color[2];
+        const b = color[3];
+        color = `#${r}${r}${g}${g}${b}${b}`;
+      }
+      
+      return color;
+    };
+
+    // Validate and fix all color values
+    storeDataCopy.theme_1 = validateAndFixColor(storeDataCopy.theme_1, "#393727");
+    storeDataCopy.theme_2 = validateAndFixColor(storeDataCopy.theme_2, "#D0933D");
+    storeDataCopy.theme_3 = validateAndFixColor(storeDataCopy.theme_3, "#D3CEBB");
+    storeDataCopy.fontColor = validateAndFixColor(storeDataCopy.fontColor, "#333333");
 
     // Ensure font family is set
     if (!storeDataCopy.fontFamily) {
-      storeDataCopy.fontFamily = "sans-serif";
+      storeDataCopy.fontFamily = "'Roboto', sans-serif";
     }
 
     // Validate and format URLs
     if (storeDataCopy.logoURL && storeDataCopy.logoURL.trim() !== '') {
-      // If URL doesn't start with http:// or https://, prepend https://
-      if (!storeDataCopy.logoURL.match(/^https?:\/\//)) {
-        storeDataCopy.logoURL = `https://${storeDataCopy.logoURL}`;
+      try {
+        // Try to create a URL object to validate it
+        new URL(storeDataCopy.logoURL);
+      } catch (e) {
+        // If URL doesn't start with http:// or https://, prepend https://
+        if (!storeDataCopy.logoURL.match(/^https?:\/\//)) {
+          storeDataCopy.logoURL = `https://${storeDataCopy.logoURL}`;
+        }
+      }
+      
+      // Final check - if it's still not a valid URL after our fix attempts, set to empty
+      try {
+        new URL(storeDataCopy.logoURL);
+      } catch (e) {
+        console.warn('Invalid logoURL format even after fixing, setting to empty string');
+        storeDataCopy.logoURL = '';
       }
     } else {
       storeDataCopy.logoURL = ''; // Empty string if no URL
     }
 
     if (storeDataCopy.bannerURL && storeDataCopy.bannerURL.trim() !== '') {
-      // If URL doesn't start with http:// or https://, prepend https://
-      if (!storeDataCopy.bannerURL.match(/^https?:\/\//)) {
-        storeDataCopy.bannerURL = `https://${storeDataCopy.bannerURL}`;
+      try {
+        // Try to create a URL object to validate it
+        new URL(storeDataCopy.bannerURL);
+      } catch (e) {
+        // If URL doesn't start with http:// or https://, prepend https://
+        if (!storeDataCopy.bannerURL.match(/^https?:\/\//)) {
+          storeDataCopy.bannerURL = `https://${storeDataCopy.bannerURL}`;
+        }
+      }
+      
+      // Final check - if it's still not a valid URL after our fix attempts, set to empty
+      try {
+        new URL(storeDataCopy.bannerURL);
+      } catch (e) {
+        console.warn('Invalid bannerURL format even after fixing, setting to empty string');
+        storeDataCopy.bannerURL = '';
       }
     } else {
       storeDataCopy.bannerURL = ''; // Empty string if no URL
@@ -303,12 +349,35 @@ export class StoreService {
       return throwError(() => new Error('Store data is invalid: Missing store URL'));
     }
     
+    // Validate theme colors
+    const validateHexColor = (color: string) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+    
+    if (!validateHexColor(store.theme_1)) {
+      console.error('Invalid theme_1 color format:', store.theme_1);
+      return throwError(() => new Error('Invalid primary color format. Must be a valid hex color.'));
+    }
+    
+    if (!validateHexColor(store.theme_2)) {
+      console.error('Invalid theme_2 color format:', store.theme_2);
+      return throwError(() => new Error('Invalid secondary color format. Must be a valid hex color.'));
+    }
+    
+    if (!validateHexColor(store.theme_3)) {
+      console.error('Invalid theme_3 color format:', store.theme_3);
+      return throwError(() => new Error('Invalid accent color format. Must be a valid hex color.'));
+    }
+    
+    if (!validateHexColor(store.fontColor)) {
+      console.error('Invalid fontColor format:', store.fontColor);
+      return throwError(() => new Error('Invalid text color format. Must be a valid hex color.'));
+    }
+    
     // Prepare store data for API with proper validation
     const preparedStore = this.prepareStoreDataForApi(store);
     
     //TODO NEED TO ADD THIS
     const token = this.cookieService.get('auth_token');
-    if (!token) return new Observable(observer => observer.error('No token found'));
+    if (!token) return throwError(() => new Error('Authentication required. Please log in and try again.'));
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // Send update to backend
@@ -323,8 +392,23 @@ export class StoreService {
         // Show the actual backend error message
         if (error.error) {
           console.error('Backend Error Details:', error.error);
+          
+          // Extract validation errors if available
+          if (error.error.errors) {
+            const errorMessages = Object.entries(error.error.errors)
+              .map(([field, message]) => `${field}: ${message}`)
+              .join('; ');
+            return throwError(() => new Error(`Validation errors: ${errorMessages}`));
+          }
+          
+          // If there's a title or detail field in the error
+          if (error.error.title) {
+            return throwError(() => new Error(`${error.error.title} ${error.error.detail || ''}`));
+          }
         }
-        return throwError(() => new Error('Failed to update store configuration.'));
+        
+        // Generic error if we couldn't extract anything specific
+        return throwError(() => new Error('Failed to update store configuration. Please try again.'));
       })
     );
   }

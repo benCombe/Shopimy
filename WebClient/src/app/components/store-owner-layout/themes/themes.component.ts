@@ -92,6 +92,7 @@ export class ThemesComponent implements OnInit {
   saveError = false;
   errorMessage = '';
   successMessage = '';
+  errorDetails = ''; // New property for detailed error information
 
   // Add storeData property to store the active store details
   storeData: StoreDetails | null = null;
@@ -272,6 +273,7 @@ export class ThemesComponent implements OnInit {
     this.saveError = false;
     this.errorMessage = '';
     this.successMessage = '';
+    this.errorDetails = '';
     
     if (!this.currentStore) {
       this.isLoading = false;
@@ -281,11 +283,35 @@ export class ThemesComponent implements OnInit {
       return;
     }
 
+    // Validate color values - ensure they are valid hex colors
+    const isValidHex = (hex: string) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+    
+    let mainColor = this.customTheme.mainColor;
+    let secondColor = this.customTheme.secondColor;
+    let thirdColor = this.customTheme.thirdColor;
+    let altColor = this.customTheme.altColor;
+    
+    // Add # if missing
+    if (!mainColor.startsWith('#')) mainColor = '#' + mainColor;
+    if (!secondColor.startsWith('#')) secondColor = '#' + secondColor;
+    if (!thirdColor.startsWith('#')) thirdColor = '#' + thirdColor;
+    if (!altColor.startsWith('#')) altColor = '#' + altColor;
+    
+    // Validate all colors
+    if (!isValidHex(mainColor) || !isValidHex(secondColor) || 
+        !isValidHex(thirdColor) || !isValidHex(altColor)) {
+      this.isLoading = false;
+      this.saveError = true;
+      this.errorMessage = 'One or more color values are invalid. Please select valid colors.';
+      console.error('Theme save failed: Invalid color format');
+      return;
+    }
+    
     console.log('Saving theme with values:', {
-      mainColor: this.customTheme.mainColor,
-      secondColor: this.customTheme.secondColor,
-      thirdColor: this.customTheme.thirdColor,
-      altColor: this.customTheme.altColor,
+      mainColor: mainColor,
+      secondColor: secondColor,
+      thirdColor: thirdColor,
+      altColor: altColor,
       fontFamily: this.customTheme.mainFontFam
     });
     
@@ -293,25 +319,46 @@ export class ThemesComponent implements OnInit {
     // Clone the current store to avoid mutating the original
     const updatedStore = { 
       ...this.currentStore,
-      theme_1: this.customTheme.mainColor,
-      theme_2: this.customTheme.secondColor,
-      theme_3: this.customTheme.thirdColor,
-      fontColor: this.customTheme.altColor,
+      theme_1: mainColor,
+      theme_2: secondColor,
+      theme_3: thirdColor,
+      fontColor: altColor,
       fontFamily: this.customTheme.mainFontFam
     };
     
-    // Make sure all properties are valid before updating
-    if (!updatedStore.theme_1?.startsWith('#')) {
-      updatedStore.theme_1 = '#' + updatedStore.theme_1;
+    // Make sure required fields are present
+    if (!updatedStore.id) {
+      this.isLoading = false;
+      this.saveError = true;
+      this.errorMessage = 'Store ID is missing. Cannot update store.';
+      console.error('Theme save failed: Missing store ID');
+      return;
     }
-    if (!updatedStore.theme_2?.startsWith('#')) {
-      updatedStore.theme_2 = '#' + updatedStore.theme_2;
+    
+    // Ensure fontFamily is properly formatted and not too long
+    if (!updatedStore.fontFamily || updatedStore.fontFamily.length > 100) {
+      updatedStore.fontFamily = "'Roboto', sans-serif";
     }
-    if (!updatedStore.theme_3?.startsWith('#')) {
-      updatedStore.theme_3 = '#' + updatedStore.theme_3;
+    
+    // Ensure URL fields are valid or empty
+    // When saving a theme, we shouldn't modify existing URLs, but ensure they're valid
+    // If we detect invalid URLs, set them to empty string to avoid validation errors
+    try {
+      if (updatedStore.logoURL && updatedStore.logoURL.trim() !== '') {
+        new URL(updatedStore.logoURL);
+      }
+    } catch (e) {
+      console.warn('Invalid logoURL detected, setting to empty to avoid validation error');
+      updatedStore.logoURL = '';
     }
-    if (!updatedStore.fontColor?.startsWith('#')) {
-      updatedStore.fontColor = '#' + updatedStore.fontColor;
+    
+    try {
+      if (updatedStore.bannerURL && updatedStore.bannerURL.trim() !== '') {
+        new URL(updatedStore.bannerURL);
+      }
+    } catch (e) {
+      console.warn('Invalid bannerURL detected, setting to empty to avoid validation error');
+      updatedStore.bannerURL = '';
     }
     
     console.log('Sending updated store to API:', updatedStore);
@@ -326,7 +373,14 @@ export class ThemesComponent implements OnInit {
         // Update the current store with the response from the server
         this.currentStore = response;
         
-        // Update CSS variables to reflect the new theme
+        // Update theme values from the response to ensure consistency
+        this.customTheme.mainColor = this.currentStore.theme_1;
+        this.customTheme.secondColor = this.currentStore.theme_2;
+        this.customTheme.thirdColor = this.currentStore.theme_3;
+        this.customTheme.altColor = this.currentStore.fontColor;
+        this.customTheme.mainFontFam = this.currentStore.fontFamily;
+        
+        // Update RGB CSS variables to reflect the new theme
         this.updateRgbVariables();
         
         // Reset the 'themeChanged' flag
@@ -344,18 +398,39 @@ export class ThemesComponent implements OnInit {
         this.saveError = true;
         
         // Extract meaningful error message if possible
-        if (err.error && typeof err.error === 'string') {
+        if (err.error && err.error.errors) {
+          // Detailed validation errors
+          const errorKeys = Object.keys(err.error.errors);
+          if (errorKeys.length > 0) {
+            this.errorMessage = 'Validation error in theme data';
+            // Build detailed error message
+            this.errorDetails = errorKeys.map(key => 
+              `${key}: ${err.error.errors[key]}`
+            ).join('\n');
+          } else {
+            this.errorMessage = 'Server validation error. Please check your input.';
+          }
+        } else if (err.error && typeof err.error === 'string') {
           this.errorMessage = err.error;
         } else if (err.message) {
           this.errorMessage = err.message;
+          
+          // Try to extract more details if available
+          if (err.error && err.error.title) {
+            this.errorDetails = `${err.error.title}\n${err.error.traceId || ''}`;
+          }
         } else {
           this.errorMessage = 'Failed to save theme. Please try again.';
         }
         
+        // Keep the error visible longer for complicated errors
+        const hideTimeout = this.errorDetails ? 10000 : 5000;
+        
         setTimeout(() => {
           this.saveError = false;
           this.errorMessage = '';
-        }, 5000);
+          this.errorDetails = '';
+        }, hideTimeout);
       }
     });
   }

@@ -185,9 +185,10 @@
           </div>
         </div>
       </div>
-      
-     
-  <!-- Save Theme Actions (Only appears at the bottom) -->
+    </div>
+  </div>
+  
+  <!-- Save Theme Actions (Always visible at the bottom) -->
   <div class="actions-container">
     <div class="save-status-info" *ngIf="themeChanged">
       <span class="pending-indicator"></span>
@@ -205,6 +206,12 @@
     </div>
     <div class="error-message" *ngIf="saveError">
       <span class="error-icon">⚠</span> {{errorMessage}}
+      <div class="error-details" *ngIf="errorDetails">
+        <small>{{errorDetails}}</small>
+      </div>
+      <div class="error-actions" *ngIf="saveError">
+        <button class="retry-button" (click)="saveTheme()">Retry</button>
+      </div>
     </div>
   </div>
 </div>
