@@ -75,47 +75,61 @@ namespace Server.Controllers
             string city = addressParts.Length > 1 ? addressParts[1].Trim() : null;
             string stateZip = addressParts.Length > 2 ? addressParts[2].Trim() : null;
 
-            // Using a transaction to ensure atomicity
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            try
             {
-                try {
-                    // Create a new user object
-                    var newUser = new User
-                    {
-                        FirstName = registration.FirstName,
-                        LastName = registration.LastName,
-                        Email = registration.Email,
-                        Phone = registration.Phone,
-                        Address = mainAddress,
-                        City = city,
-                        State = stateZip,
-                        Country = registration.Country,
-                        Password = hashedPassword,  // Store hashed password
-                        Verified = false, // Default to not verified
-                        Subscribed = registration.Subscribed,
-                        DOB = registration.DOB
-                    };
-
-                    _context.Users.Add(newUser);
-                    await _context.SaveChangesAsync();
-
-                    // Here is where to insert email validation using an email service
-                    /*
-                    // Generate verification token and save it
-                    string token = Guid.NewGuid().ToString();
-                    
-                    // TODO: When EmailService is implemented:
-                    // await _emailService.SendEmailVerificationAsync(newUser.Email, token);
-                    */
-
-                    await transaction.CommitAsync();
-                    return Ok(true);
-                }
-                catch (Exception ex)
+                // Create a new user object
+                var newUser = new User
                 {
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, "An error occurred during registration: " + ex.Message);
-                }
+                    FirstName = registration.FirstName,
+                    LastName = registration.LastName,
+                    Email = registration.Email,
+                    Phone = registration.Phone,
+                    Address = mainAddress,
+                    City = city,
+                    State = stateZip,
+                    Country = registration.Country,
+                    Password = hashedPassword,  // Store hashed password
+                    Verified = false, // Default to not verified
+                    Subscribed = registration.Subscribed,
+                    DOB = registration.DOB
+                };
+
+                // Use the proper execution strategy for EF Core transactions
+                var strategy = _context.Database.CreateExecutionStrategy();
+                await strategy.ExecuteAsync(async () =>
+                {
+                    // Use a transaction
+                    using (var transaction = await _context.Database.BeginTransactionAsync())
+                    {
+                        try
+                        {
+                            _context.Users.Add(newUser);
+                            await _context.SaveChangesAsync();
+
+                            // Here is where to insert email validation using an email service
+                            /*
+                            // Generate verification token and save it
+                            string token = Guid.NewGuid().ToString();
+                            
+                            // TODO: When EmailService is implemented:
+                            // await _emailService.SendEmailVerificationAsync(newUser.Email, token);
+                            */
+
+                            await transaction.CommitAsync();
+                        }
+                        catch
+                        {
+                            await transaction.RollbackAsync();
+                            throw;
+                        }
+                    }
+                });
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred during registration: " + ex.Message);
             }
         }
 
