@@ -28,6 +28,7 @@ import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-poli
 import { TermsOfServiceComponent } from './components/terms-of-service/terms-of-service.component';
 import { DocsComponent } from './components/docs/docs.component';
 import { SupportComponent } from './components/support/support.component';
+import { StoreRedirectComponent } from './components/store-redirect/store-redirect.component';
 
 export const appRoutes: Routes = [
   // Public routes with PublicLayoutComponent
@@ -47,6 +48,7 @@ export const appRoutes: Routes = [
       { path: 'login', component: LoginComponent },
       { path: 'create-store', component: CreateStoreComponent },
       { path: '404', component: PageNotFoundComponent },
+      { path: 'store', component: StoreRedirectComponent }, // Use the redirect component to go to user's store
     ]
   },
   

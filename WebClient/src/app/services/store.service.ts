@@ -157,7 +157,16 @@ export class StoreService {
 
   // Active getStoreDetails method: maps the response to a new StoreDetails instance.
   getStoreDetails(url: string): Observable<StoreDetails> {
-    return this.http.get<StoreDetails>(`${this.apiUrl}/${url}`).pipe(
+    // Check if url is valid and not a reserved word
+    if (!url || url.trim() === '') {
+      console.error('Invalid store URL provided:', url);
+      this.router.navigate(['/404']);
+      return throwError(() => new Error('Invalid store URL.'));
+    }
+
+    // Ensure the URL is properly formatted
+    const storeUrl = encodeURIComponent(url.trim());
+    return this.http.get<StoreDetails>(`${this.apiUrl}/${storeUrl}`).pipe(
       map(resp => this.deserializeStore(resp)),
       tap((storeDetails) => {
         this.activeStoreSubject.next(storeDetails);

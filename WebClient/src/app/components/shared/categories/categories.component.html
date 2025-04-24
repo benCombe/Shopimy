@@ -9,7 +9,7 @@
   <!-- Categories display -->
   <ul *ngIf="categoriesToShow && categoriesToShow.length > 0" class="categories-grid" role="list">
     <li *ngFor="let category of categoriesToShow" class="category-item" role="listitem">
-      <a [routerLink]="['category', category.name]" class="category-link">
+      <a [routerLink]="['/', storeData?.url, category.name]" class="category-link">
         <div class="category-card">
           <div class="category-details">
             <h3 class="category-title">{{ category.name }}</h3>
