@@ -1,7 +1,7 @@
-<div class="container">
+<div class="container" [ngClass]="{'store-context': isStoreContext}">
 <!--   <app-store-nav></app-store-nav> -->
-  <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3" role="main">
-    <div class="checkout-container theme2" [style.background-color]="storeDetails?.theme_2" role="form" aria-labelledby="shipping-heading">
+  <div id="main" class="theme3" role="main">
+    <div class="checkout-container theme2" role="form" aria-labelledby="shipping-heading">
       <!-- Remove Step Indicator -->
       <!-- 
       <div class="steps">
@@ -14,96 +14,141 @@
       <!-- Keep only Shipping Details - Remove *ngIf -->
       <h2 id="shipping-heading">Shipping Details</h2>
       <form [formGroup]="shippingForm" novalidate>
-        <div class="form-row">
-          <label for="firstName" class="fc" [style.color]="storeDetails?.fontColor">First Name:</label>
-          <input type="text" id="firstName" formControlName="firstName" placeholder="Enter your first name" 
-                 aria-required="true" [attr.aria-invalid]="shippingForm.get('firstName')?.invalid && shippingForm.get('firstName')?.touched">
-          <div *ngIf="shippingForm.get('firstName')?.invalid && shippingForm.get('firstName')?.touched" class="error-message">
+        <div class="form-group">
+          <label for="firstName" class="fc">First Name</label>
+          <input 
+            type="text" 
+            id="firstName" 
+            formControlName="firstName" 
+            placeholder="Enter your first name" 
+            [class.is-invalid]="shippingForm.get('firstName')?.invalid && shippingForm.get('firstName')?.touched"
+            aria-required="true">
+          <div class="invalid-feedback" *ngIf="shippingForm.get('firstName')?.invalid && shippingForm.get('firstName')?.touched">
             Please enter your first name
           </div>
         </div>
 
-        <div class="form-row">
-          <label for="lastName" class="fc" [style.color]="storeDetails?.fontColor">Last Name:</label>
-          <input type="text" id="lastName" formControlName="lastName" placeholder="Enter your last name"
-                 aria-required="true" [attr.aria-invalid]="shippingForm.get('lastName')?.invalid && shippingForm.get('lastName')?.touched">
-          <div *ngIf="shippingForm.get('lastName')?.invalid && shippingForm.get('lastName')?.touched" class="error-message">
+        <div class="form-group">
+          <label for="lastName" class="fc">Last Name</label>
+          <input 
+            type="text" 
+            id="lastName" 
+            formControlName="lastName" 
+            placeholder="Enter your last name"
+            [class.is-invalid]="shippingForm.get('lastName')?.invalid && shippingForm.get('lastName')?.touched"
+            aria-required="true">
+          <div class="invalid-feedback" *ngIf="shippingForm.get('lastName')?.invalid && shippingForm.get('lastName')?.touched">
             Please enter your last name
           </div>
         </div>
 
-        <div class="form-row">
-          <label for="address" class="fc" [style.color]="storeDetails?.fontColor">Address:</label>
-          <input type="text" id="address" formControlName="address" placeholder="Enter your address"
-                 aria-required="true" [attr.aria-invalid]="shippingForm.get('address')?.invalid && shippingForm.get('address')?.touched">
-          <div *ngIf="shippingForm.get('address')?.invalid && shippingForm.get('address')?.touched" class="error-message">
+        <div class="form-group">
+          <label for="address" class="fc">Address</label>
+          <input 
+            type="text" 
+            id="address" 
+            formControlName="address" 
+            placeholder="Enter your address"
+            [class.is-invalid]="shippingForm.get('address')?.invalid && shippingForm.get('address')?.touched"
+            aria-required="true">
+          <div class="invalid-feedback" *ngIf="shippingForm.get('address')?.invalid && shippingForm.get('address')?.touched">
             Please enter your address
           </div>
         </div>
 
-        <div class="form-row">
-          <label for="city" class="fc" [style.color]="storeDetails?.fontColor">City:</label>
-          <input type="text" id="city" formControlName="city" placeholder="Enter your city"
-                 aria-required="true" [attr.aria-invalid]="shippingForm.get('city')?.invalid && shippingForm.get('city')?.touched">
-          <div *ngIf="shippingForm.get('city')?.invalid && shippingForm.get('city')?.touched" class="error-message">
+        <div class="form-group">
+          <label for="city" class="fc">City</label>
+          <input 
+            type="text" 
+            id="city" 
+            formControlName="city" 
+            placeholder="Enter your city"
+            [class.is-invalid]="shippingForm.get('city')?.invalid && shippingForm.get('city')?.touched"
+            aria-required="true">
+          <div class="invalid-feedback" *ngIf="shippingForm.get('city')?.invalid && shippingForm.get('city')?.touched">
             Please enter your city
           </div>
         </div>
 
-        <div class="form-row">
-          <label for="province" class="fc" [style.color]="storeDetails?.fontColor">Province/State:</label>
-          <input type="text" id="province" formControlName="province" placeholder="Enter your province or state"
-                 aria-required="true" [attr.aria-invalid]="shippingForm.get('province')?.invalid && shippingForm.get('province')?.touched">
-          <div *ngIf="shippingForm.get('province')?.invalid && shippingForm.get('province')?.touched" class="error-message">
+        <div class="form-group">
+          <label for="province" class="fc">Province/State</label>
+          <input 
+            type="text" 
+            id="province" 
+            formControlName="province" 
+            placeholder="Enter your province or state"
+            [class.is-invalid]="shippingForm.get('province')?.invalid && shippingForm.get('province')?.touched"
+            aria-required="true">
+          <div class="invalid-feedback" *ngIf="shippingForm.get('province')?.invalid && shippingForm.get('province')?.touched">
             Please enter your province or state
           </div>
         </div>
 
-        <div class="form-row">
-          <label for="country" class="fc" [style.color]="storeDetails?.fontColor">Country:</label>
-          <input type="text" id="country" formControlName="country" placeholder="Enter your country"
-                 aria-required="true" [attr.aria-invalid]="shippingForm.get('country')?.invalid && shippingForm.get('country')?.touched">
-          <div *ngIf="shippingForm.get('country')?.invalid && shippingForm.get('country')?.touched" class="error-message">
+        <div class="form-group">
+          <label for="country" class="fc">Country</label>
+          <input 
+            type="text" 
+            id="country" 
+            formControlName="country" 
+            placeholder="Enter your country"
+            [class.is-invalid]="shippingForm.get('country')?.invalid && shippingForm.get('country')?.touched"
+            aria-required="true">
+          <div class="invalid-feedback" *ngIf="shippingForm.get('country')?.invalid && shippingForm.get('country')?.touched">
             Please enter your country
           </div>
         </div>
 
-        <div class="form-row">
-          <label for="postalCode" class="fc" [style.color]="storeDetails?.fontColor">Zip/Postal Code:</label>
-          <input type="text" id="postalCode" formControlName="postalCode" placeholder="Enter your postal code"
-                 aria-required="true" [attr.aria-invalid]="shippingForm.get('postalCode')?.invalid && shippingForm.get('postalCode')?.touched">
-          <div *ngIf="shippingForm.get('postalCode')?.invalid && shippingForm.get('postalCode')?.touched" class="error-message">
+        <div class="form-group">
+          <label for="postalCode" class="fc">Zip/Postal Code</label>
+          <input 
+            type="text" 
+            id="postalCode" 
+            formControlName="postalCode" 
+            placeholder="Enter your postal code"
+            [class.is-invalid]="shippingForm.get('postalCode')?.invalid && shippingForm.get('postalCode')?.touched"
+            aria-required="true">
+          <div class="invalid-feedback" *ngIf="shippingForm.get('postalCode')?.invalid && shippingForm.get('postalCode')?.touched">
             Please enter your postal code
           </div>
         </div>
 
-        <div class="form-row">
-          <label for="email" class="fc" [style.color]="storeDetails?.fontColor">Email:</label>
-          <input type="email" id="email" formControlName="email" placeholder="Enter your email"
-                 aria-required="true" [attr.aria-invalid]="shippingForm.get('email')?.invalid && shippingForm.get('email')?.touched">
-          <div *ngIf="shippingForm.get('email')?.invalid && shippingForm.get('email')?.touched" class="error-message">
+        <div class="form-group">
+          <label for="email" class="fc">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            placeholder="Enter your email"
+            [class.is-invalid]="shippingForm.get('email')?.invalid && shippingForm.get('email')?.touched"
+            aria-required="true">
+          <div class="invalid-feedback" *ngIf="shippingForm.get('email')?.invalid && shippingForm.get('email')?.touched">
             Please enter a valid email address
           </div>
         </div>
 
-        <div class="form-row">
-          <label for="phone" class="fc" [style.color]="storeDetails?.fontColor">Phone:</label>
-          <input type="text" id="phone" formControlName="phone" placeholder="Enter your phone number"
-                 aria-required="true" [attr.aria-invalid]="shippingForm.get('phone')?.invalid && shippingForm.get('phone')?.touched">
-          <div *ngIf="shippingForm.get('phone')?.invalid && shippingForm.get('phone')?.touched" class="error-message">
+        <div class="form-group">
+          <label for="phone" class="fc">Phone</label>
+          <input 
+            type="text" 
+            id="phone" 
+            formControlName="phone" 
+            placeholder="Enter your phone number"
+            [class.is-invalid]="shippingForm.get('phone')?.invalid && shippingForm.get('phone')?.touched"
+            aria-required="true">
+          <div class="invalid-feedback" *ngIf="shippingForm.get('phone')?.invalid && shippingForm.get('phone')?.touched">
             Please enter your phone number
           </div>
         </div>
       </form>
       <button 
-        class="standard-button"
-        [class.loading]="isLoading"
-        [style.background-color]="storeDetails?.theme_1"
-        [style.color]="storeDetails?.fontColor"
+        id="checkout-btn"
+        class="proceed-to-payment-btn"
         (click)="proceedToPayment()" 
-        [disabled]="!shippingForm.valid || isLoading"
-        [attr.aria-disabled]="!shippingForm.valid || isLoading">
-        Proceed To Payment
+        [disabled]="!shippingForm.valid || isLoading">
+        <span *ngIf="!isLoading">Proceed To Payment</span>
+        <span *ngIf="isLoading">
+          <i class="fas fa-spinner fa-spin"></i> Processing...
+        </span>
       </button>
     </div>
 
@@ -147,7 +192,7 @@
     </div> 
     -->
 
-    <app-order-summary [storeDetails]="storeDetails"></app-order-summary>
+    <app-order-summary [storeDetails]="storeDetails" [theme]="theme"></app-order-summary>
   </div>
 </div>
 

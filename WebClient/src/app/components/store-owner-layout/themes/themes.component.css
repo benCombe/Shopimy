@@ -242,7 +242,6 @@ input[type="color"] {
   height: 40px;
   border-radius: var(--border-radius);
   cursor: pointer;
-  padding: 0;
   margin-right: var(--spacing-md);
 }
 
@@ -370,64 +369,7 @@ select {
   background-color: white;
 }
 
-/* Save Button Styles */
-.save-theme-button, .save-button {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border: none;
-  background-color: var(--second-color);
-  color: white;
-  border-radius: var(--border-radius);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 200px;
-  margin-top: var(--spacing-sm);
-  font-size: 1.1rem;
-  box-shadow: var(--shadow-md), 0 0 0 2px rgba(255, 255, 255, 0.2);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
-}
-
-.save-theme-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transition: all 0.6s ease;
-}
-
-.save-theme-button:hover::before {
-  left: 100%;
-}
-
-.save-theme-button:hover, .save-button:hover {
-  background-color: var(--main-color);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg), 0 0 0 3px rgba(255, 255, 255, 0.3);
-}
-
-.save-theme-button:disabled, .save-button:disabled {
-  background-color: #cccccc;
-  color: #666666;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-  opacity: 0.7;
-}
-
+/* Loading spinner styles */
 .loading-spinner {
   display: inline-block;
   width: 16px;
@@ -490,22 +432,6 @@ select {
   margin-top: var(--spacing-md);
   display: flex;
   justify-content: flex-end;
-}
-
-.retry-button {
-  background-color: var(--second-color);
-  color: white;
-  border: none;
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
-}
-
-.retry-button:hover {
-  background-color: var(--main-color);
-  transform: translateY(-2px);
 }
 
 /* Responsive Styles */

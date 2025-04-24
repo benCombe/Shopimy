@@ -1,40 +1,42 @@
 <!-- Main store navigation -->
 <nav id="main" class="store-nav theme-primary" [ngStyle]="{'background-color': storeDetails?.theme_1}" aria-label="Store navigation">
-  <!-- Store name/logo with logo -->
-  <div class="store-brand" (click)="navigateToHome()">
-    <div class="nav-logo-wrapper">
-      <img *ngIf="storeDetails?.logoURL" class="nav-logo" [src]="storeDetails?.logoURL" [alt]="storeDetails?.name + ' logo'" />
-      <ng-template [ngIf]="!storeDetails?.logoURL">
-        <div class="default-nav-logo" [style.color]="storeDetails?.fontColor" [style.background-color]="storeDetails?.theme_2">
-          {{ storeDetails?.name?.[0]?.toUpperCase() }}
-        </div>
-      </ng-template>
+  <div class="store-nav-content">
+    <!-- Store name/logo with logo -->
+    <div class="store-brand" (click)="navigateToHome()">
+      <div class="nav-logo-wrapper">
+        <img *ngIf="storeDetails?.logoURL" class="nav-logo" [src]="storeDetails?.logoURL" [alt]="storeDetails?.name + ' logo'" />
+        <ng-template [ngIf]="!storeDetails?.logoURL">
+          <div class="default-nav-logo" [style.color]="storeDetails?.fontColor" [style.background-color]="storeDetails?.theme_2">
+            {{ storeDetails?.name?.[0]?.toUpperCase() }}
+          </div>
+        </ng-template>
+      </div>
+      <h1 id="store-name" class="store-title" [style.color]="storeDetails?.fontColor">
+        {{ storeDetails?.name }}
+      </h1>
     </div>
-    <h1 id="store-name" class="store-title" [style.color]="storeDetails?.fontColor">
-      {{ storeDetails?.name }}
-    </h1>
-  </div>
-  
-  <!-- Categories and cart wrapper -->
-  <div id="categories-wrapper" class="nav-container">
-    <!-- Shopping cart button - always visible -->
-    <div id="cart-btn-wrapper" class="cart-container">
-      <div *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</div>
-      <button id="cart-btn" class="cart-button" [ngStyle]="{'color': storeDetails?.fontColor}" 
-              (click)="navigateToCart()" aria-label="View shopping cart" 
-              (keydown.enter)="navigateToCart()" (keydown.space)="navigateToCart()">
-        <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
-        <span class="sr-only">Shopping Cart</span>
-      </button>
-    </div>
-        
-    <!-- Hamburger Menu (Always visible regardless of viewport) -->
-    <div id="hamburger-menu" class="mobile-menu-container">
-      <button id="menu-icon" class="menu-toggle" (click)="toggleMobileMenu()" 
-              [ngStyle]="{'color': storeDetails?.fontColor}" 
-              [attr.aria-expanded]="isMobileMenuOpen" aria-label="Toggle menu">
-        <i class="fas fa-bars"></i>
-      </button>
+    
+    <!-- Categories and cart wrapper -->
+    <div id="categories-wrapper" class="nav-container">
+      <!-- Shopping cart button - always visible -->
+      <div id="cart-btn-wrapper" class="cart-container">
+        <div *ngIf="cartItemCount > 0" class="cart-badge">{{ cartItemCount }}</div>
+        <button id="cart-btn" class="cart-button" [ngStyle]="{'color': storeDetails?.fontColor}" 
+                (click)="navigateToCart()" aria-label="View shopping cart" 
+                (keydown.enter)="navigateToCart()" (keydown.space)="navigateToCart()">
+          <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          <span class="sr-only">Shopping Cart</span>
+        </button>
+      </div>
+          
+      <!-- Hamburger Menu (Always visible regardless of viewport) -->
+      <div id="hamburger-menu" class="mobile-menu-container">
+        <button id="menu-icon" class="menu-toggle" (click)="toggleMobileMenu()" 
+                [ngStyle]="{'color': storeDetails?.fontColor}" 
+                [attr.aria-expanded]="isMobileMenuOpen" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
     </div>
   </div>
 </nav>

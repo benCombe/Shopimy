@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../services/store.service';
+import { ThemeService } from '../../services/theme.service';
 import { StoreDetails } from '../../models/store-details';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -20,6 +21,7 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   constructor(
     private storeService: StoreService,
+    private themeService: ThemeService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -39,6 +41,13 @@ export class FooterComponent implements OnInit, OnDestroy {
           this.isStoreContext = false;
         }
       });
+      
+    // Subscribe to theme service to know when we're in store context
+    this.themeService.inStoreContext$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(inStore => {
+        this.isStoreContext = inStore;
+      });
   }
 
   ngOnDestroy(): void {
@@ -46,31 +55,17 @@ export class FooterComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  // The following methods are kept for backward compatibility
+  // but they should eventually be removed since we're using CSS variables
   getFooterStyles(): { [key: string]: string } {
-    if (this.isStoreContext && this.storeData) {
-      return {
-        'background-color': this.storeData.theme_1 || 'var(--main-color)',
-        'color': this.storeData.fontColor || 'var(--third-color)'
-      };
-    }
-    return {};
+    return {}; // Return empty object as styles are now handled via CSS variables
   }
 
   getHeadingStyles(): { [key: string]: string } {
-    if (this.isStoreContext && this.storeData) {
-      return {
-        'color': this.storeData.theme_2 || 'var(--second-color)'
-      };
-    }
-    return {};
+    return {}; // Return empty object as styles are now handled via CSS variables
   }
 
   getLinkStyles(): { [key: string]: string } {
-    if (this.isStoreContext && this.storeData) {
-      return {
-        'color': this.storeData.fontColor || 'var(--third-color)'
-      };
-    }
-    return {};
+    return {}; // Return empty object as styles are now handled via CSS variables
   }
 }

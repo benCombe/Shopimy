@@ -62,24 +62,6 @@
   transform: scale(1.05);
 }
 
-.close-sidebar-btn {
-  background: none;
-  border: none;
-  color: var(--third-color);
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: var(--spacing-xs);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease;
-}
-
-.close-sidebar-btn:hover {
-  transform: scale(1.1);
-  color: var(--second-color);
-}
-
 /* Navigation container */
 .nav-container {
   flex: 1;
@@ -212,108 +194,98 @@
   font-size: 1.1rem;
 }
 
-/* Mobile sidebar toggle */
+/* Mobile sidebar toggle - Keep positioning but use standard-button styling */
 .mobile-sidebar-toggle {
-  display: none;
   position: fixed;
   top: var(--spacing-md);
-  left: var(--spacing-md);
+  right: var(--spacing-md);
   z-index: 1001;
-  background-color: var(--main-color);
-  color: var(--third-color);
-  border: none;
   width: 44px;
   height: 44px;
-  border-radius: var(--border-radius-round);
-  font-size: 1.5rem;
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  align-items: center;
-  justify-content: center;
+  cursor: grab;
+  display: none;
+  animation: wiggle 2s ease-in-out 1s;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(5px); }
+  50% { transform: translateY(-2px); }
+  75% { transform: translateX(-5px); }
 }
 
 .mobile-sidebar-toggle:active {
-  transform: scale(0.95);
-  box-shadow: var(--shadow-sm);
+  cursor: grabbing;
 }
 
-.mobile-sidebar-toggle:hover, 
-.mobile-sidebar-toggle:focus {
-  color: var(--second-color);
-  outline: none;
-}
-
-/* Overlay for mobile sidebar */
+/* Overlay for when sidebar is open */
 .sidebar-overlay {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .sidebar-overlay.active {
-  display: block;
   opacity: 1;
+  visibility: visible;
 }
 
-/* Responsive adjustments */
+/* Media queries for responsive behavior */
 @media (max-width: 991px) {
   #sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    width: 250px;
   }
 }
 
 @media (max-width: 768px) {
   #sidebar {
-    width: 260px;
-    z-index: 1010;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
-  
+
   #sidebar.mobile-visible {
     transform: translateX(0);
   }
-  
+
   .mobile-sidebar-toggle {
     display: flex;
   }
-  
+
   #shopimy-logo {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
-  
+
   .nav-item, .subnav-item {
-    padding: var(--spacing-sm) var(--spacing-sm);
+    font-size: 0.9rem;
   }
-  
+
   .subnav-item {
-    padding-left: 42px;
+    padding-left: 40px;
   }
 }
 
 @media (max-width: 480px) {
   #sidebar {
-    width: 240px;
+    width: 90%;
   }
-  
+
   #sidebar.mobile-visible {
-    width: 240px;
+    transform: translateX(0);
   }
-  
+
   #shopimy-logo {
-    font-size: 1.6rem;
+    font-size: 1.3rem;
   }
-  
+
   .mobile-sidebar-toggle {
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
   }
 }

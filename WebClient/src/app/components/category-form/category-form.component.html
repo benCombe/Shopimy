@@ -20,11 +20,10 @@
           id="name" 
           type="text" 
           formControlName="name" 
-          [class.error]="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched"
+          [class.is-invalid]="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched"
           placeholder="Enter category name"
           aria-required="true">
-        <div class="error-message" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
-          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        <div class="invalid-feedback" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
           <span *ngIf="categoryForm.get('name')?.errors?.['required']">Category name is required.</span>
           <span *ngIf="categoryForm.get('name')?.errors?.['maxlength']">Category name cannot exceed 100 characters.</span>
           <span *ngIf="categoryForm.get('name')?.errors?.['duplicateName']">A category with this name already exists.</span>
@@ -48,18 +47,17 @@
 
       <div class="form-actions">
         <button type="button" (click)="navigateBack()" class="standard-button secondary">
-          <i class="fa fa-times" aria-hidden="true"></i> Cancel
+          Cancel
         </button>
         <button 
           type="submit" 
-          class="standard-button primary" 
+          id="category-btn"
           [disabled]="categoryForm.invalid || saving">
           <span *ngIf="!saving">
-            <i class="fa" [ngClass]="isEditMode ? 'fa-check' : 'fa-plus'" aria-hidden="true"></i>
             {{ isEditMode ? 'Update Category' : 'Create Category' }}
           </span>
-          <span *ngIf="saving" class="saving-indicator">
-            <div class="spinner-small"></div> Saving...
+          <span *ngIf="saving">
+            <i class="fa-solid fa-spinner fa-spin"></i>
           </span>
         </button>
       </div>

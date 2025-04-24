@@ -79,12 +79,16 @@ main, .container {
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
+  align-items: center; /* Center children horizontally */
+  width: 100%;
 }
 
 app-root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
+  align-items: center; /* Center children horizontally */
 }
 
 /* Add this to fix mobile overflow issues */
@@ -92,6 +96,33 @@ app-root {
   max-width: 100%;
   box-sizing: border-box;
   word-wrap: break-word;
+}
+
+/* Center all app components */
+app-store-page,
+app-hero-banner,
+app-store-header,
+app-featured-products,
+app-categories,
+app-testimonials,
+app-newsletter,
+app-shopping-cart,
+app-checkout,
+app-item-page,
+app-item-reviews,
+app-order-summary,
+app-recommended-items,
+app-shopping-cart,
+app-store-header,
+app-store-nav,
+app-category-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1400px; /* Constrain maximum width */
+  margin: 0 auto; /* Center horizontally */
 }
 
 /* Add this for any absolute mobile containers */
@@ -128,6 +159,27 @@ app-analytics {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+}
+
+/* Ensure sections are centered */
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1400px; /* Match other max widths */
+  margin: 0 auto;
+}
+
+/* Ensure all store content is centered */
+.store-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Additional style to fix table overflow */
@@ -403,12 +455,16 @@ body::-webkit-scrollbar-thumb {
 @media (min-width: 576px) {
   .container {
     max-width: 540px;
+    margin: 0 auto;
+    width: 100%;
   }
 }
 
 @media (min-width: 768px) {
   .container {
     max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
   }
   
   .standard-table td,
@@ -431,18 +487,24 @@ body::-webkit-scrollbar-thumb {
 @media (min-width: 992px) {
   .container {
     max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
   }
 }
 
 @media (min-width: 1200px) {
   .container {
     max-width: 1140px;
+    margin: 0 auto;
+    width: 100%;
   }
 }
 
 @media (min-width: 1400px) {
   .container {
     max-width: 1320px;
+    margin: 0 auto;
+    width: 100%;
   }
 }
 

@@ -28,27 +28,26 @@
 }
 
 .form-group {
-  margin-bottom: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: var(--spacing-xs);
+  font-family: var(--main-font-fam);
   font-weight: 500;
   color: var(--main-color);
-  font-family: var(--main-font-fam);
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: var(--spacing-sm);
-  border: 1px solid var(--border-color, #d1d5db);
-  border-radius: var(--border-radius);
-  font-family: var(--main-font-fam);
-  font-size: 0.95rem;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
   background-color: rgba(255, 255, 255, 0.9);
-  transition: border-color 0.2s, box-shadow 0.2s;
   color: var(--main-color);
 }
 
@@ -60,10 +59,9 @@
   background-color: white;
 }
 
-.form-group input.error,
-.form-group select.error {
+.form-group input.is-invalid,
+.form-group select.is-invalid {
   border-color: #e02424;
-  background-color: rgba(224, 36, 36, 0.05);
 }
 
 .form-group .helper-text {
@@ -73,6 +71,11 @@
   opacity: 0.7;
   font-size: 0.85rem;
   font-style: italic;
+}
+
+.invalid-feedback {
+  color: #e02424;
+  font-size: 0.875rem;
 }
 
 .error-message {
@@ -98,6 +101,30 @@
   margin-top: var(--spacing-lg);
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding-top: var(--spacing-md);
+}
+
+#category-btn {
+  width: 100%;
+  max-width: 200px;
+  padding: 0.75rem;
+  background-color: var(--main-color);
+  color: var(--second-color);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#category-btn:hover:not(:disabled) {
+  background-color: var(--second-color);
+  color: white;
+}
+
+#category-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .form-actions .standard-button {

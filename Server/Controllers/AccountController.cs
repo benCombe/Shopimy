@@ -72,8 +72,8 @@ namespace Server.Controllers
             // Parse address components
             string[] addressParts = registration.Address.Split(',', 3);
             string mainAddress = addressParts[0].Trim();
-            string city = addressParts.Length > 1 ? addressParts[1].Trim() : null;
-            string stateZip = addressParts.Length > 2 ? addressParts[2].Trim() : null;
+            string? city = addressParts.Length > 1 ? addressParts[1].Trim() : null;
+            string? stateZip = addressParts.Length > 2 ? addressParts[2].Trim() : null;
 
             try
             {
@@ -427,14 +427,13 @@ namespace Server.Controllers
         {
             try
             {
-                // Extract user ID from JWT token
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
                 {
                     return Unauthorized("Invalid token. User ID not found.");
                 }
 
-                if (!int.TryParse(userIdClaim, out int userId))
+                if (!int.TryParse(userIdClaim.Value, out int userId))
                 {
                     return BadRequest("Invalid user ID format.");
                 }
@@ -461,7 +460,8 @@ namespace Server.Controllers
                     using (SqlCommand countCommand = new SqlCommand(countQuery, connection))
                     {
                         countCommand.Parameters.AddWithValue("@userId", userId);
-                        totalPurchases = (int)await countCommand.ExecuteScalarAsync();
+                        var result = await countCommand.ExecuteScalarAsync();
+                        totalPurchases = result != null ? Convert.ToInt32(result) : 0;
                     }
 
                     // Then get the paginated orders with their store names
@@ -469,7 +469,7 @@ namespace Server.Controllers
                         SELECT o.Id AS order_id, o.CreatedAt AS order_date, o.TotalAmount AS total_amount, o.Status AS status, 
                                s.Name AS store_name
                         FROM Orders o
-                        JOIN Stores s ON o.StoreId = s.StoreId
+                        JOIN Stores s ON o.StoreId = s.store_id
                         WHERE o.UserId = @userId
                         ORDER BY o.CreatedAt DESC
                         OFFSET @offset ROWS

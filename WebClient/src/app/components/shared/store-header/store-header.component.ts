@@ -42,21 +42,26 @@ export class StoreHeaderComponent {
    * Prioritizes the theme input, falls back to storeData values, then default colors
    */
   getThemeStyles(): { [key: string]: string } {
-    // Set default values
-    const styles: { [key: string]: string } = {
-      '--header-bg-color': '#393727',
-      '--header-text-color': '#ffffff'
-    };
+    // Set default values with fallbacks
+    const styles: { [key: string]: string } = {};
     
-    // First try to use the theme input
+    // Apply direct background color
     if (this.theme) {
+      styles['background-color'] = this.theme.mainColor || '#393727';
       styles['--header-bg-color'] = this.theme.mainColor || '#393727';
       styles['--header-text-color'] = this.theme.altColor || '#ffffff';
+      styles['--header-hover-color'] = this.theme.thirdColor || '#D3CEBB';
+      styles['--header-logo-bg'] = this.theme.secondColor || '#D0933D';
+      styles['--header-shadow-color'] = 'rgba(0, 0, 0, 0.1)';
     }
     // Fallback to using storeData styles directly if theme isn't available
     else if (this.storeData) {
+      styles['background-color'] = this.storeData.theme_1 || '#393727';
       styles['--header-bg-color'] = this.storeData.theme_1 || '#393727';
       styles['--header-text-color'] = this.storeData.fontColor || '#ffffff';
+      styles['--header-hover-color'] = this.storeData.theme_3 || '#D3CEBB';
+      styles['--header-logo-bg'] = this.storeData.theme_2 || '#D0933D';
+      styles['--header-shadow-color'] = 'rgba(0, 0, 0, 0.1)';
     }
     
     return styles;

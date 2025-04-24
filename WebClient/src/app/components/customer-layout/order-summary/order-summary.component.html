@@ -1,18 +1,18 @@
-<div id="order-summary" class="theme2" [style.background-color]="storeDetails?.theme_2" role="complementary" aria-labelledby="order-summary-heading">
+<div id="order-summary" class="theme2" [ngClass]="{'store-context': isStoreContext}" role="complementary" aria-labelledby="order-summary-heading">
   <h2 id="order-summary-heading">Order Summary</h2>
   
   <div class="summary-item-container">
     <!-- Subtotal -->
-    <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+    <div class="summary-item center-spaced fc">
       <span id="subtotal-label">Subtotal</span>
       <span aria-labelledby="subtotal-label">${{subtotal.toFixed(2)}}</span>
     </div>
     
     <!-- Shipping estimate -->
-    <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+    <div class="summary-item center-spaced fc">
       <span id="shipping-label">Shipping Estimate</span>
       <ng-container *ngIf="subtotal > 30; else shippingcost">
-        <span aria-labelledby="shipping-label">FREE</span>
+        <span aria-labelledby="shipping-label" class="free-shipping">FREE</span>
       </ng-container>
       <ng-template #shippingcost>
         <span aria-labelledby="shipping-label">${{shippingCost.toFixed(2)}}</span>
@@ -20,13 +20,13 @@
     </div>
     
     <!-- Tax estimate -->
-    <div class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+    <div class="summary-item center-spaced fc">
       <span id="tax-label">Taxes Estimate</span>
       <span aria-labelledby="tax-label">${{taxEstimate.toFixed(2)}}</span>
     </div>
     
     <!-- Total -->
-    <div id="total" class="summary-item center-spaced fc" [style.color]="storeDetails?.fontColor">
+    <div id="total" class="summary-item center-spaced fc">
       <span id="total-label">Total Estimate</span>
       <span aria-labelledby="total-label">${{totalEstimate.toFixed(2)}}</span>
     </div>
@@ -35,9 +35,7 @@
   <!-- Checkout button -->
   <div class="checkout-opt center-col">
     <button 
-      class="checkout-btn center theme1 standard-button"
-      [style.background-color]="storeDetails?.theme_1"
-      [style.color]="storeDetails?.fontColor"
+      class="checkout-btn standard-button"
       (click)="nextStep()"
       [attr.aria-label]="submitMessage">
       {{submitMessage}}

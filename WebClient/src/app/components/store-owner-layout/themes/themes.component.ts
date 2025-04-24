@@ -4,12 +4,12 @@ import { StoreService } from '../../../services/store.service';
 import { StoreDetails } from '../../../models/store-details';
 import { FormsModule } from '@angular/forms';
 import { StoreTheme } from '../../../models/store-theme.model';
-import { StorePreviewComponent } from '../../../components/shared/store-preview/store-preview.component';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-themes',
   standalone: true,
-  imports: [CommonModule, FormsModule, StorePreviewComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './themes.component.html',
   styleUrl: './themes.component.css'
 })
@@ -108,7 +108,8 @@ export class ThemesComponent implements OnInit {
   themeChanged: boolean = false;
 
   constructor(
-    private storeService: StoreService
+    private storeService: StoreService,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit(): void {
@@ -173,7 +174,7 @@ export class ThemesComponent implements OnInit {
     };
     
     // Make sure font family is one of the valid options
-    const validFonts = ["'Inria Serif', serif", "'Roboto', sans-serif", "'Open Sans', sans-serif", "'Lato', sans-serif"];
+    const validFonts = ["'Inria Serif', serif", "'Roboto', sans-serif", "'Open Sans', sans-serif", "'Lato', sans-serif", "'Comic Sans MS', cursive"];
     if (!validFonts.includes(this.customTheme.mainFontFam)) {
       this.customTheme.mainFontFam = "'Roboto', sans-serif";
     }
@@ -223,6 +224,9 @@ export class ThemesComponent implements OnInit {
       // Update RGB CSS variables for the selected theme
       this.updateRgbVariables();
       
+      // Apply theme immediately for preview
+      this.applySelectedTheme();
+      
       // If in inline mode, emit theme updated event
       if (this.inlineMode) {
         this.emitThemeUpdate();
@@ -239,10 +243,19 @@ export class ThemesComponent implements OnInit {
     // Update RGB CSS variables for the custom theme
     this.updateRgbVariables();
     
+    // Apply theme immediately for preview
+    this.applySelectedTheme();
+    
     // If in inline mode, emit theme updated event
     if (this.inlineMode) {
       this.emitThemeUpdate();
     }
+  }
+
+  // Apply the current theme immediately (new method)
+  private applySelectedTheme() {
+    const themeToApply = this.getCurrentTheme();
+    this.themeService.applyTheme(themeToApply);
   }
 
   // Convert hex color to RGB values for CSS variables
@@ -323,6 +336,9 @@ export class ThemesComponent implements OnInit {
       fontFamily: this.customTheme.mainFontFam
     });
     
+    // Apply theme immediately while saving for instant feedback
+    this.applySelectedTheme();
+    
     // Create a StoreDetails object with updated theme values
     // Clone the current store to avoid mutating the original
     const updatedStore = { 
@@ -380,6 +396,9 @@ export class ThemesComponent implements OnInit {
         
         // Update the current store with the response from the server
         this.currentStore = response;
+        
+        // Explicitly apply the theme again to ensure consistency
+        this.themeService.applyStoreTheme(response);
         
         // Update theme values from the response to ensure consistency
         this.customTheme.mainColor = this.currentStore.theme_1;

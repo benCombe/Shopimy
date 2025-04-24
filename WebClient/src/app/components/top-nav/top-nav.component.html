@@ -1,12 +1,7 @@
-<nav id="main" class="center-spaced" aria-label="Main navigation">
+<nav id="main" class="center-spaced" [ngClass]="{'store-context': inStoreContext}" aria-label="Main navigation">
   <a id="shopimy-logo" routerLink="" aria-label="Shopimy homepage">Shopimy</a>
 
   <div id="nav-wrapper" class="center" [ngClass]="{ 'mobile-menu': isMobileMenuOpen }">
-    <!-- Auth Buttons for not logged in users -->
-    <div *ngIf="!isLoggedIn" class="auth-buttons">
-      <a id="register-btn" routerLink="/register" class="standard-button outline small">Register</a>
-      <a id="login-btn" routerLink="/login" class="standard-button primary small">Log In</a>
-    </div>
 
     <!-- Hamburger Menu Button -->
     <button id="hamburger" (click)="toggleMobileMenu()" 
@@ -20,7 +15,7 @@
 <div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()" aria-hidden="true"></div>
 
 <!-- Mobile Menu Dropdown -->
-<nav id="mobile-menu" [class.show-mobile-menu]="isMobileMenuOpen" aria-label="Mobile navigation" *ngIf="isMobileMenuOpen">
+<nav id="mobile-menu" [class.show-mobile-menu]="isMobileMenuOpen" [ngClass]="{'store-context': inStoreContext}" aria-label="Mobile navigation" *ngIf="isMobileMenuOpen">
   <div class="mobile-menu-header">
     <span class="mobile-menu-title">Menu</span>
     <button class="mobile-close-btn" (click)="closeMobileMenu()" aria-label="Close menu">

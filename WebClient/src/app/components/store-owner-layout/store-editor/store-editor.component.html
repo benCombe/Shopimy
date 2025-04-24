@@ -99,10 +99,10 @@
         <p class="panel-description">Choose which components to display on your store.</p>
         
         <div class="component-navigation">
-          <button class="component-nav-btn" [class.active]="allComponentsSelected" (click)="toggleAllComponents(true)">
+          <button class="standard-button small" [class.active]="allComponentsSelected" (click)="toggleAllComponents(true)">
             Select All
           </button>
-          <button class="component-nav-btn" [class.active]="!anyComponentSelected" (click)="toggleAllComponents(false)">
+          <button class="standard-button small" [class.active]="!anyComponentSelected" (click)="toggleAllComponents(false)">
             Deselect All
           </button>
           <div class="component-preview-toggle">
@@ -130,7 +130,7 @@
         </div>
         
         <div *ngIf="!autoPreview" class="component-actions">
-          <button class="update-preview-btn" (click)="updatePreview()">
+          <button class="standard-button secondary small" (click)="updatePreview()">
             Update Preview
           </button>
         </div>
@@ -142,7 +142,7 @@
         <p class="panel-description">Manage and organize your store products.</p>
         
         <div class="action-buttons">
-          <a [routerLink]="['/owner/products']" class="nav-button">
+          <a [routerLink]="['/owner/products']" class="standard-button secondary">
             Go to Product Management
           </a>
         </div>
@@ -185,33 +185,30 @@
         <div class="preview-controls">
           <div class="device-selector">
             <button 
-              class="device-btn" 
+              class="standard-button small" 
               [class.active]="previewDevice === 'desktop'"
               (click)="setPreviewDevice('desktop')"
               tabindex="0"
-              role="button"
               aria-label="Desktop preview"
               [attr.aria-pressed]="previewDevice === 'desktop'"
               title="Desktop preview">
               <i class="fa fa-desktop"></i>
             </button>
             <button 
-              class="device-btn" 
+              class="standard-button small" 
               [class.active]="previewDevice === 'tablet'"
               (click)="setPreviewDevice('tablet')"
               tabindex="0"
-              role="button"
               aria-label="Tablet preview"
               [attr.aria-pressed]="previewDevice === 'tablet'"
               title="Tablet preview">
               <i class="fa fa-tablet"></i>
             </button>
             <button 
-              class="device-btn" 
+              class="standard-button small" 
               [class.active]="previewDevice === 'mobile'"
               (click)="setPreviewDevice('mobile')"
               tabindex="0"
-              role="button"
               aria-label="Mobile preview"
               [attr.aria-pressed]="previewDevice === 'mobile'"
               title="Mobile preview">

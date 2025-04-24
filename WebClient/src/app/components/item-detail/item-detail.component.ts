@@ -7,6 +7,7 @@ import { ItemService } from '../../services/item.service';
 import { BasicItem } from '../../models/basic-item';
 import { ProductReviewsComponent } from '../product-reviews/product-reviews.component';
 import { StoreDetails } from '../../models/store-details';
+import { StoreTheme } from '../../models/store-theme.model';
 
 @Component({
   selector: 'app-item-detail',
@@ -22,6 +23,7 @@ import { StoreDetails } from '../../models/store-details';
 export class ItemDetailComponent implements OnInit {
   @Input() itemId!: number; // This will be set from the parent component or route
   @Input() storeDetails: StoreDetails | null = null;
+  @Input() theme: StoreTheme | null = null;
   item: BasicItem | null = null;
 
 

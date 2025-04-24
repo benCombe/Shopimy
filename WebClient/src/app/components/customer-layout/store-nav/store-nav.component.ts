@@ -163,11 +163,10 @@ export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
    */
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.themeService.setThemeOne("theme1");
-      this.themeService.setThemeTwo("theme2");
-      this.themeService.setThemeThree("theme3");
-      this.themeService.setFontColor("fc");
-      this.themeService.setButtonHoverColor("cat");
+      // Apply store theme if details are available, otherwise use base theme
+      if (this.storeDetails) {
+        this.themeService.applyStoreTheme(this.storeDetails);
+      }
     });
   }
 

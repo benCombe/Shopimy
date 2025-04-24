@@ -322,7 +322,7 @@ Always consider accessibility when implementing styles:
 |-----------|--------------|--------------|
 | Standard Button | `styles.css` | `<button class="standard-button">Button</button>` |
 | Cards | `styles.css`, Component CSS | `<div class="global-card">Content</div>` |
-| Forms | Component CSS | See specific component implementations |
+| Forms | Component CSS | `LoginComponent` | `RegisterComponent` |
 | Navigation | `top-nav.component.css` | See `TopNavComponent` |
 | Footer | `footer.component.css` | See `FooterComponent` |
 | Status Badges | `styles.css` | `<span class="status-badge status-shipped">Shipped</span>` |

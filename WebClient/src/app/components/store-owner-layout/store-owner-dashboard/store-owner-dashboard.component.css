@@ -2,13 +2,14 @@
   width: 100%;
   min-height: 100vh;
   background-color: var(--third-color);
-  padding: var(--spacing-xl) var(--spacing-md);
+  /* padding: var(--spacing-xl) var(--spacing-md); */
   box-sizing: border-box;
   display: flex;
   align-items: stretch;
   justify-content: center;
   overflow-x: hidden;
   max-width: 100vw;
+  position: relative;
 }
 
 /* Add margin-left for desktop views to account for sidebar */
@@ -24,14 +25,26 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
   overflow-x: hidden;
   padding: 0;
+}
+
+.page-content {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
+  box-sizing: border-box;
+  flex: 1;
+}
+
+app-footer {
+  margin-top: auto;
 }
 
 @keyframes fadeIn {
@@ -219,7 +232,7 @@
 
 @media (max-width: 768px) {
   #container {
-    padding: var(--spacing-md) var(--spacing-xs);
+    /* padding: var(--spacing-md) var(--spacing-xs); */
     overflow-x: hidden;
   }
   
@@ -258,7 +271,7 @@
 
 @media (max-width: 480px) {
   #container {
-    padding: var(--spacing-xs);
+    /* padding: var(--spacing-xs); */
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;

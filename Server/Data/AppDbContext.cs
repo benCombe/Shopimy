@@ -36,6 +36,7 @@ namespace Server.Data
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Quantity> Quantity{get; set;}
         public DbSet<Total> Total{get; set;}
+        public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
 
 
         // Ensure table names match conventions  
@@ -84,6 +85,18 @@ namespace Server.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
+            modelBuilder.Entity<DeliveryAddress>(entity =>
+            {
+                entity.ToTable("DeliveryAddresses");
+                
+                entity.HasKey(e => e.Id);
+                
+                // Establish relationship with User
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             modelBuilder.Entity<Store>().ToTable("Stores");
             modelBuilder.Entity<StoreTheme>().ToTable("StoreThemes");
@@ -104,6 +117,7 @@ namespace Server.Data
             modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
             modelBuilder.Entity<StoreVisit>().ToTable("StoreVisits");
             modelBuilder.Entity<Promotion>().ToTable("Promotions");
+            modelBuilder.Entity<DeliveryAddress>().ToTable("DeliveryAddresses");
         }
     }
 }

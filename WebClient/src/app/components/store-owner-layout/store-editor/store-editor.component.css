@@ -372,43 +372,6 @@ input:checked + .slider:before {
   justify-content: flex-end;
 }
 
-.standard-button {
-  padding: var(--spacing-md) var(--spacing-xl);
-  font-size: 0.95rem;
-  font-weight: 500;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: all var(--transition-speed);
-  border: 1px solid transparent;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 120px;
-  font-family: var(--main-font-fam);
-}
-
-.standard-button.primary {
-  background-color: var(--second-color);
-  color: white;
-  border-color: var(--second-color);
-}
-
-.standard-button.primary:hover {
-  background-color: #c58835;
-  box-shadow: var(--box-shadow-sm);
-}
-
-.standard-button.secondary {
-  background-color: transparent;
-  color: var(--main-color);
-  border-color: #dddddd;
-}
-
-.standard-button.secondary:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  border-color: #cccccc;
-}
-
 .loading-container {
   display: flex;
   align-items: center;
@@ -503,11 +466,6 @@ app-themes {
     min-width: 70px;
   }
   
-  .standard-button {
-    padding: var(--spacing-sm) var(--spacing-lg);
-    font-size: 0.9rem;
-  }
-  
   .standard-form-control {
     padding: var(--spacing-sm) var(--spacing-md);
     font-size: 0.95rem;
@@ -577,12 +535,6 @@ app-themes {
     min-width: auto;
   }
   
-  .standard-button {
-    padding: var(--spacing-xs) var(--spacing-md);
-    font-size: 0.85rem;
-    min-width: 90px;
-  }
-  
   .preview-frame-wrapper {
     min-height: 300px;
     max-height: 500px;
@@ -595,6 +547,38 @@ app-themes {
   .live-store-preview-wrapper {
     min-height: 300px;
     max-height: 500px;
+  }
+  
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+    width: 100%;
+  }
+  
+  /* Use global styles and only add the width and justify properties */
+  .standard-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .component-item {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .form-group {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .component-name {
+    font-size: 0.85rem;
+  }
+  
+  .alert {
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    font-size: 0.85rem;
   }
 }
 
@@ -642,12 +626,14 @@ app-themes {
     color: var(--second-color);
   }
   
+  /* Use global style instead
   .standard-button:active {
-    transform: translateY(1px);
     opacity: 0.9;
   }
+  */
 }
 
+/* Fix for live preview */
 .live-store-preview-wrapper {
   width: 100%;
   height: 100%;
@@ -657,6 +643,14 @@ app-themes {
   display: block;
   background-color: #fff;
   border-radius: var(--border-radius);
+  overflow: hidden; /* Added to fix content overflow */
+  position: relative; /* Added to establish proper positioning context */
+}
+
+/* Remove any potential red line issues */
+.live-store-preview-wrapper::before,
+.live-store-preview-wrapper::after {
+  display: none; /* Remove any pseudo-elements that might be causing the red line */
 }
 
 input, textarea, select, button {
@@ -737,15 +731,13 @@ input, textarea, select, button {
     hyphens: auto;
   }
   
+  /* Use global style instead
   .standard-button {
     padding: var(--spacing-sm) var(--spacing-lg);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     min-width: 100px;
   }
-  
-  .component-item {
-    padding: var(--spacing-md) var(--spacing-lg);
-  }
+  */
   
   .preview-header {
     margin-bottom: var(--spacing-lg);
@@ -824,6 +816,7 @@ input, textarea, select, button {
   align-items: center;
 }
 
+/* Replace with standard-button primary class instead
 .nav-button {
   display: inline-flex;
   align-items: center;
@@ -841,39 +834,7 @@ input, textarea, select, button {
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
-
-@media (max-width: 480px) {
-  .actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-xl);
-    width: 100%;
-  }
-  
-  .standard-button {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .component-item {
-    padding: var(--spacing-md) var(--spacing-lg);
-  }
-  
-  .form-group {
-    margin-bottom: var(--spacing-md);
-  }
-  
-  .component-name {
-    font-size: 0.85rem;
-  }
-  
-  .alert {
-    padding: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-    font-size: 0.85rem;
-  }
-}
+*/
 
 /* Responsive improvements for all screen sizes */
 @media (min-width: 1200px) {
@@ -919,31 +880,9 @@ input, textarea, select, button {
 
 .component-navigation {
   display: flex;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
-  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-}
-
-.component-nav-btn {
-  padding: var(--spacing-xs) var(--spacing-md);
-  border: 1px solid var(--border-color, #ddd);
-  background-color: white;
-  border-radius: var(--border-radius-sm);
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.component-nav-btn:hover {
-  background-color: rgba(var(--second-color-rgb), 0.1);
-  border-color: var(--second-color);
-}
-
-.component-nav-btn.active {
-  background-color: var(--second-color);
-  color: white;
-  border-color: var(--second-color);
+  margin-bottom: var(--spacing-lg);
 }
 
 .component-preview-toggle {
@@ -976,182 +915,106 @@ input, textarea, select, button {
   margin-top: var(--spacing-lg);
 }
 
-.update-preview-btn {
-  background-color: var(--second-color);
-  color: white;
-  border: none;
-  padding: var(--spacing-sm) var(--spacing-xl);
-  border-radius: var(--border-radius);
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-}
-
-.update-preview-btn:hover {
-  background-color: #c58835;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-}
-
-.update-preview-btn:active {
-  transform: translateY(0);
-}
-
-.update-preview-btn::before {
-  content: "\f021"; /* Font Awesome refresh icon */
-  font-family: "FontAwesome";
-  font-size: 0.9rem;
-}
-
-.preview-controls {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: var(--spacing-md);
-}
-
 .device-selector {
   display: flex;
   gap: var(--spacing-xs);
-  background-color: rgba(var(--main-color-rgb), 0.05);
-  padding: var(--spacing-xxs);
-  border-radius: var(--border-radius-round);
-}
-
-.device-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  border: none;
-  border-radius: var(--border-radius-round);
-  color: var(--main-color);
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
 }
 
-.device-btn:hover {
-  background-color: rgba(var(--second-color-rgb), 0.1);
-  color: var(--second-color);
-}
-
-.device-btn.active {
-  background-color: var(--second-color);
-  color: white;
-}
-
-/* Device-specific preview sizes */
 .preview-desktop {
   width: 100%;
-  min-height: 600px;
-  max-height: 800px;
-  transition: all 0.5s ease;
+  height: 100%;
   position: relative;
+  display: block;
 }
 
 .preview-desktop::after {
-  content: 'Desktop View';
+  content: '';
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(var(--main-color-rgb), 0.1);
-  color: var(--main-color);
-  padding: 4px 8px;
-  border-radius: var(--border-radius-sm);
-  font-size: 0.7rem;
-  opacity: 0.7;
-  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 10px;
+  border: 1px solid currentColor;
+  border-radius: 1px;
 }
 
 .preview-tablet {
-  width: 768px;
-  max-width: 100%;
-  min-height: 600px;
-  max-height: 800px;
-  margin: 0 auto;
-  transition: all 0.5s ease;
-  border-left: 1px solid var(--border-color, #ddd);
-  border-right: 1px solid var(--border-color, #ddd);
+  width: 100%;
+  height: 100%;
   position: relative;
+  display: block;
 }
 
 .preview-tablet::after {
-  content: 'Tablet View';
+  content: '';
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(var(--main-color-rgb), 0.1);
-  color: var(--main-color);
-  padding: 4px 8px;
-  border-radius: var(--border-radius-sm);
-  font-size: 0.7rem;
-  opacity: 0.7;
-  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 14px;
+  border: 1px solid currentColor;
+  border-radius: 1px;
 }
 
 .preview-mobile {
-  width: 375px;
-  max-width: 100%;
-  min-height: 600px;
-  max-height: 800px;
-  margin: 0 auto;
-  transition: all 0.5s ease;
-  border-left: 1px solid var(--border-color, #ddd);
-  border-right: 1px solid var(--border-color, #ddd);
+  width: 100%;
+  height: 100%;
   position: relative;
+  display: block;
 }
 
 .preview-mobile::after {
-  content: 'Mobile View';
+  content: '';
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(var(--main-color-rgb), 0.1);
-  color: var(--main-color);
-  padding: 4px 8px;
-  border-radius: var(--border-radius-sm);
-  font-size: 0.7rem;
-  opacity: 0.7;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 14px;
+  border: 1px solid currentColor;
+  border-radius: 1px;
+}
+
+/* Keep these special states as they're specific to this component's functionality */
+.standard-button.primary.saving {
+  background-color: #6c757d;
+  border-color: #6c757d;
   pointer-events: none;
 }
 
-@media (max-width: 768px) {
-  .preview-tablet {
-    width: 100%;
-    border: none;
-  }
-  
-  .preview-mobile {
-    width: 100%;
-    max-width: 375px;
-  }
-}
-
-.action-buttons {
-  display: flex;
-  gap: var(--spacing-md);
-  align-items: center;
-}
-
-.standard-button.primary.saving {
-  background-color: #aaa;
-  border-color: #aaa;
-  cursor: wait;
-}
-
 .standard-button.primary.saved {
-  background-color: #22c55e;
-  border-color: #22c55e;
+  background-color: #28a745;
+  border-color: #28a745;
 }
 
 .standard-button.primary.error {
-  background-color: #ef4444;
-  border-color: #ef4444;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+/* Device Preview Classes */
+.preview-desktop app-store-preview {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.preview-tablet app-store-preview {
+  width: 768px;
+  max-width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  display: block;
+}
+
+.preview-mobile app-store-preview {
+  width: 375px;
+  max-width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  display: block;
 } 

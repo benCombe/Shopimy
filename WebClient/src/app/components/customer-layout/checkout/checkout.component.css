@@ -8,6 +8,13 @@
   font-family: var(--main-font-fam);
   display: flex;
   flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Store context specific styles */
+.container.store-context {
+  /* Using CSS variables that are dynamically set by ThemeService */
+  font-family: var(--main-font-fam);
 }
 
 #main {
@@ -23,6 +30,12 @@
   flex-wrap: wrap;
   flex: 1 0 auto;
   background-color: var(--third-color);
+  transition: background-color 0.3s ease;
+}
+
+/* Store-specific main area styling */
+.store-context #main {
+  background-color: var(--third-color);
 }
 
 .checkout-container {
@@ -34,6 +47,13 @@
   border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--shadow-md);
   background-color: var(--second-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Store-specific checkout container styling */
+.store-context .checkout-container {
+  background-color: var(--second-color);
+  border-color: var(--border-color, rgba(0, 0, 0, 0.1));
 }
 
 .checkout-container h2 {
@@ -43,6 +63,13 @@
   padding-bottom: var(--spacing-sm);
   border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   font-weight: 600;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Store-specific heading styling */
+.store-context .checkout-container h2 {
+  color: var(--main-color);
+  border-bottom-color: var(--border-color, rgba(0, 0, 0, 0.1));
 }
 
 /* Steps indicator (commented out in HTML but styled for future use) */
@@ -82,6 +109,18 @@ label {
   margin-bottom: var(--spacing-xs);
   color: var(--main-color);
   font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.fc {
+  color: var(--main-color);
+  transition: color 0.3s ease;
+}
+
+/* Store-specific text color styling */
+.store-context label,
+.store-context .fc {
+  color: var(--main-color);
 }
 
 input {
@@ -103,6 +142,51 @@ input:focus {
 input[aria-invalid="true"] {
   border-color: var(--color-error);
   background-color: var(--color-error-light);
+}
+
+/* Custom proceed to payment button */
+.proceed-to-payment-btn {
+  width: 100%;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: var(--main-color);
+  color: var(--alt-color);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--main-font-fam);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Store-specific button styling */
+.store-context .proceed-to-payment-btn {
+  background-color: var(--main-color);
+  color: var(--alt-color);
+}
+
+.proceed-to-payment-btn:hover:not([disabled]) {
+  background-color: var(--second-color);
+  color: var(--main-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Store-specific button hover styling */
+.store-context .proceed-to-payment-btn:hover:not([disabled]) {
+  background-color: var(--second-color);
+  color: var(--main-color);
+}
+
+.proceed-to-payment-btn[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background-color: var(--color-text-light, #6b7280);
+  transform: none;
+  box-shadow: none;
 }
 
 /* Using standard button styling from design system */
@@ -163,6 +247,12 @@ input[aria-invalid="true"] {
 .error-message {
   font-size: 0.85rem;
   color: var(--color-error);
+  margin-top: var(--spacing-xs);
+}
+
+.invalid-feedback {
+  font-size: 0.85rem;
+  color: var(--color-error, #e02424);
   margin-top: var(--spacing-xs);
 }
 
@@ -231,6 +321,11 @@ app-order-summary {
   }
   
   .standard-button.loading::after {
-    animation-duration: 0s;
+    animation: none;
+  }
+  
+  .proceed-to-payment-btn:hover:not([disabled]) {
+    transform: none;
+    transition: none;
   }
 }

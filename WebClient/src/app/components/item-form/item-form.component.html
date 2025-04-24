@@ -1,20 +1,48 @@
 <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label>Name</label>
-    <input formControlName="name">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input 
+      type="text" 
+      id="name" 
+      formControlName="name"
+      placeholder="Enter product name"
+      [class.is-invalid]="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
+    <div class="invalid-feedback" *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
+      Product name is required
+    </div>
   </div>
-  <div>
-    <label>Original Price</label>
-    <input type="number" formControlName="originalPrice">
+
+  <div class="form-group">
+    <label for="originalPrice">Original Price</label>
+    <input 
+      type="number" 
+      id="originalPrice" 
+      formControlName="originalPrice"
+      placeholder="0.00"
+      [class.is-invalid]="itemForm.get('originalPrice')?.invalid && itemForm.get('originalPrice')?.touched">
+    <div class="invalid-feedback" *ngIf="itemForm.get('originalPrice')?.invalid && itemForm.get('originalPrice')?.touched">
+      Please enter a valid price
+    </div>
   </div>
+
   <!-- Other item fields... -->
-  <div>
-    <label>Select Categories</label>
-    <select formControlName="categoryIds" multiple>
+  <div class="form-group">
+    <label for="categoryIds">Select Categories</label>
+    <select 
+      id="categoryIds" 
+      formControlName="categoryIds" 
+      multiple
+      [class.is-invalid]="itemForm.get('categoryIds')?.invalid && itemForm.get('categoryIds')?.touched">
       <option *ngFor="let category of categories" [value]="category.CategoryId">
         {{ category.Name }}
       </option>
     </select>
+    <div class="invalid-feedback" *ngIf="itemForm.get('categoryIds')?.invalid && itemForm.get('categoryIds')?.touched">
+      Please select at least one category
+    </div>
   </div>
-  <button type="submit" [disabled]="itemForm.invalid">Save Item</button>
+
+  <button type="submit" id="item-btn" [disabled]="itemForm.invalid">
+    <span>Save Item</span>
+  </button>
 </form>

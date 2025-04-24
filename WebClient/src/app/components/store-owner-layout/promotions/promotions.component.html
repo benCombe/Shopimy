@@ -60,10 +60,10 @@
         </div>
         
         <div class="promotion-actions">
-          <button class="icon-button" (click)="openEditForm(promotion)" title="Edit">
+          <button class="standard-button small secondary" (click)="openEditForm(promotion)" title="Edit">
             <i class="fa-solid fa-edit"></i> Edit
           </button>
-          <button class="icon-button delete" (click)="confirmDelete(promotion.promotionId)" title="Delete">
+          <button class="standard-button small secondary danger" (click)="confirmDelete(promotion.promotionId)" title="Delete">
             <i class="fa-solid fa-trash"></i> Delete
           </button>
         </div>
@@ -77,7 +77,7 @@
   <div class="modal-content">
     <div class="modal-header">
       <h3>{{ isEditMode ? 'Edit Promotion' : 'Create New Promotion' }}</h3>
-      <button class="close-btn" (click)="closeForm()">
+      <button class="standard-button small secondary" (click)="closeForm()">
         <i class="fa-solid fa-times"></i>
       </button>
     </div>
@@ -155,7 +155,7 @@
   <div class="modal-content confirm-modal">
     <div class="modal-header">
       <h3>Confirm Delete</h3>
-      <button class="close-btn" (click)="cancelDelete()">
+      <button class="standard-button small secondary" (click)="cancelDelete()">
         <i class="fa-solid fa-times"></i>
       </button>
     </div>

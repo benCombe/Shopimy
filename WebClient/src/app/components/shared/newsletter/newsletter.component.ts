@@ -34,13 +34,31 @@ export class NewsletterComponent implements OnInit {
     const styles: { [key: string]: string } = {};
     
     if (this.theme) {
+      // Apply direct background
+      styles['background-color'] = this.theme.mainColor || '#393727';
+      
+      // Newsletter section variables
       styles['--newsletter-bg'] = this.theme.mainColor || '#393727';
       styles['--newsletter-text-color'] = this.theme.altColor || '#ffffff';
       styles['--newsletter-button-bg'] = this.theme.secondColor || '#D0933D';
+      styles['--newsletter-heading-color'] = this.theme.altColor || '#ffffff';
+      styles['--newsletter-input-bg'] = '#ffffff';
+      styles['--newsletter-input-text'] = this.theme.mainColor || '#393727';
+      styles['--newsletter-border-color'] = 'rgba(255, 255, 255, 0.2)';
+      styles['--newsletter-shadow'] = 'rgba(0, 0, 0, 0.1)';
     } else if (this.storeData) {
-      styles['--newsletter-bg'] = this.storeData.theme_1;
-      styles['--newsletter-text-color'] = this.storeData.fontColor;
-      styles['--newsletter-button-bg'] = this.storeData.theme_2;
+      // Apply direct background
+      styles['background-color'] = this.storeData.theme_1 || '#393727';
+      
+      // Newsletter section variables
+      styles['--newsletter-bg'] = this.storeData.theme_1 || '#393727';
+      styles['--newsletter-text-color'] = this.storeData.fontColor || '#ffffff';
+      styles['--newsletter-button-bg'] = this.storeData.theme_2 || '#D0933D';
+      styles['--newsletter-heading-color'] = this.storeData.fontColor || '#ffffff';
+      styles['--newsletter-input-bg'] = '#ffffff';
+      styles['--newsletter-input-text'] = this.storeData.theme_1 || '#393727';
+      styles['--newsletter-border-color'] = 'rgba(255, 255, 255, 0.2)';
+      styles['--newsletter-shadow'] = 'rgba(0, 0, 0, 0.1)';
     }
     
     return styles;

@@ -1,0 +1,35 @@
+<!-- Store Owner Layout Component -->
+<div class="app-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="logo-container">
+      <img src="assets/images/logo.png" alt="Shopimy Logo" class="logo">
+      <span class="logo-text">Shopimy</span>
+    </div>
+    <div class="header-actions">
+      <!-- User profile/actions would go here -->
+    </div>
+  </header>
+  
+  <!-- Sidebar/Navigation -->
+  <div class="sidebar" [class.collapsed]="sidebarCollapsed">
+    <button class="standard-button small secondary sidebar-toggle" (click)="toggleSidebar()">
+      <i class="fa" [ngClass]="sidebarCollapsed ? 'fa-angle-right' : 'fa-angle-left'"></i>
+    </button>
+    
+    <ul class="nav-menu">
+      <!-- Navigation items will be rendered by the side-nav component -->
+    </ul>
+  </div>
+  
+  <!-- Sidebar overlay for mobile -->
+  <div class="sidebar-overlay" [class.active]="sidebarOpen" (click)="closeSidebar()"></div>
+  
+  <!-- Main Content Area -->
+  <div class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+    <div class="dashboard-container">
+      <!-- The store-owner-dashboard handles the different pages -->
+      <app-store-owner-dashboard></app-store-owner-dashboard>
+    </div>
+  </div>
+</div> 

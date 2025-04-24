@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { TopNavComponent } from '../top-nav/top-nav.component';
-import { FooterComponent } from '../footer/footer.component';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TopNavComponent, FooterComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.css']
 })

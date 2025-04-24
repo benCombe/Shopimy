@@ -173,7 +173,107 @@ Defined in `src/styles.css`, these styles provide the foundation for the entire 
 * **Error Messages:**
   * **`.invalid-feedback`, `.error-message`:** Red text for validation errors.
 
-### 3.3 Cards & Containers
+### 3.3 Forms
+
+The `LoginComponent` (`WebClient/src/app/components/account/login/`) and `RegisterComponent` (`WebClient/src/app/components/account/register/`) serve as the primary reference for form structure and styling throughout the application. All forms should follow these standardized patterns.
+
+#### HTML Structure
+* Forms should be wrapped in a card-like container (e.g., `#login-card`, `#register-card`)
+* Each input should be contained within a `.form-group` div
+* Standard element hierarchy:
+  ```html
+  <div class="form-group">
+    <label for="inputId">Label Text</label>
+    <input 
+      type="text" 
+      id="inputId" 
+      name="inputName"
+      [(ngModel)]="modelProperty"
+      required
+      #inputReference="ngModel"
+      [class.is-invalid]="inputReference.invalid && inputReference.touched"
+      placeholder="Placeholder text">
+    <div class="invalid-feedback" *ngIf="inputReference.invalid && inputReference.touched">
+      Error message here
+    </div>
+  </div>
+  ```
+* Use `.form-row` for horizontally grouped inputs:
+  ```html
+  <div class="form-row">
+    <div class="form-group">
+      <!-- First input -->
+    </div>
+    <div class="form-group">
+      <!-- Second input -->
+    </div>
+  </div>
+  ```
+* Password inputs should use the `.password-input-group` pattern with visibility toggle:
+  ```html
+  <div class="password-input-group">
+    <input 
+      [type]="showPassword ? 'text' : 'password'"
+      id="password"
+      name="password"
+      [(ngModel)]="password"
+      required>
+    <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+      <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+    </button>
+  </div>
+  ```
+* Submit buttons should use `#login-btn` or `#register-btn` style, which aligns with `.standard-button`
+
+#### CSS Styling
+* Forms should use these CSS properties:
+  * Container cards: 
+    * `background-color: var(--third-color)`
+    * `border-radius: 12px`
+    * `box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)`
+    * `padding: 2rem`
+  * Form groups:
+    * `display: flex`
+    * `flex-direction: column`
+    * `gap: 0.5rem`
+  * Labels:
+    * `font-family: var(--main-font-fam)`
+    * `font-weight: 500`
+    * `color: var(--main-color)`
+  * Inputs:
+    * `padding: 0.75rem`
+    * `border: 1px solid #d1d5db`
+    * `border-radius: 6px`
+    * `font-size: 1rem`
+    * `transition: border-color 0.2s`
+  * Input focus:
+    * `outline: none`
+    * `border-color: var(--second-color)`
+    * `box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2)`
+  * Invalid inputs:
+    * `border-color: #e02424`
+  * Error messages:
+    * `color: #e02424`
+    * `font-size: 0.875rem`
+  * Submit buttons should match standard button styling, typically with:
+    * `width: 100%`
+    * `background-color: var(--main-color)`
+    * `color: var(--second-color)`
+
+#### Validation Patterns
+* Use Angular's built-in validation attributes (`required`, `email`, etc.)
+* Apply `.is-invalid` class conditionally: `[class.is-invalid]="inputControl.invalid && inputControl.touched"`
+* Show validation errors conditionally: `*ngIf="inputControl.invalid && inputControl.touched"`
+* Use `.invalid-feedback` for error messages
+* For custom validation, implement validation methods in the component class
+
+#### Responsive Behavior
+* Form containers should have appropriate max-width (`450px` for single-column forms, `650px` for more complex forms)
+* Use `.form-row` for multi-column layouts on desktop
+* Forms should collapse to single column on mobile (`@media (max-width: 768px)`)
+* Input padding should adjust for smaller screens (`@media (max-width: 480px)`)
+
+### 3.4 Cards & Containers
 
 * **Basic Cards:**
   * **`.global-card`:** Standard card with padding, border-radius, background, and shadow.
@@ -186,7 +286,7 @@ Defined in `src/styles.css`, these styles provide the foundation for the entire 
 * **Feature Cards:**
   * **`.feature-card`:** Used for showcasing features with accent colors and hover effects.
 
-### 3.4 Navigation & Page Structure
+### 3.5 Navigation & Page Structure
 
 * **Top Navigation:**
   * **Main Bar:** Full-width bar with logo and navigation items.
@@ -201,7 +301,7 @@ Defined in `src/styles.css`, these styles provide the foundation for the entire 
   * **Links:** Standard styling for footer links.
   * **Social Icons:** Consistent styling for social media links.
 
-### 3.5 Status & Feedback Elements
+### 3.6 Status & Feedback Elements
 
 * **Status Badges (`.status-badge`):**
   * **`.status-shipped`, `.status-delivered`, etc.:** Color-coded badges for different states.

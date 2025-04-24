@@ -26,11 +26,25 @@ export class StoreFooterComponent {
     const styles: { [key: string]: string } = {};
     
     if (this.theme) {
+      // Apply direct background style
+      styles['background-color'] = this.theme.mainColor || '#393727';
+      
+      // Footer specific variables
       styles['--footer-bg'] = this.theme.mainColor || '#393727';
       styles['--footer-text-color'] = this.theme.altColor || '#ffffff';
+      styles['--footer-border-color'] = 'rgba(255, 255, 255, 0.2)';
+      styles['--footer-hover-color'] = this.theme.secondColor || '#D0933D';
+      styles['--footer-shadow'] = 'rgba(0, 0, 0, 0.1)';
     } else if (this.storeData) {
-      styles['--footer-bg'] = this.storeData.theme_1;
-      styles['--footer-text-color'] = this.storeData.fontColor;
+      // Apply direct background style
+      styles['background-color'] = this.storeData.theme_1 || '#393727';
+      
+      // Footer specific variables
+      styles['--footer-bg'] = this.storeData.theme_1 || '#393727';
+      styles['--footer-text-color'] = this.storeData.fontColor || '#ffffff';
+      styles['--footer-border-color'] = 'rgba(255, 255, 255, 0.2)';
+      styles['--footer-hover-color'] = this.storeData.theme_2 || '#D0933D';
+      styles['--footer-shadow'] = 'rgba(0, 0, 0, 0.1)';
     }
     
     return styles;

@@ -1,11 +1,44 @@
 :host {
   display: block;
-  background-color: var(--third-color);
+  background-color: var(--secondary-color);
+}
+
+.public-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--secondary-color);
+  color: var(--main-color);
+  font-family: var(--main-font-fam);
+  width: 100%;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease;
 }
 
 .content-container {
-  min-height: calc(100vh - 160px); /* Adjust based on your header and footer height */
-  display: flex;
-  flex-direction: column;
-  background-color: var(--third-color); /* Add default background color */
-} 
+  flex: 1;
+  /*  max-width: 1200px; */
+  width: 100%;
+  /*margin: 0 auto;*/
+  box-sizing: border-box;
+  transition: padding 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .content-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-container {
+    max-width: 100%;
+  }
+}

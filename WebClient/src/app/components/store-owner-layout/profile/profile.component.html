@@ -55,47 +55,47 @@
       <div *ngIf="!editMode" class="info-container">
         <div class="field-group">
           <label>First Name</label>
-          <div class="field-value">{{ user?.FirstName || 'Not provided' }}</div>
+          <div class="field-value">{{ user.FirstName || 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>Last Name</label>
-          <div class="field-value">{{ user?.LastName || 'Not provided' }}</div>
+          <div class="field-value">{{ user.LastName || 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>Email</label>
-          <div class="field-value">{{ user?.Email || 'Not provided' }}</div>
+          <div class="field-value">{{ user.Email || 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>Phone Number</label>
-          <div class="field-value">{{ user?.Phone || 'Not provided' }}</div>
+          <div class="field-value">{{ user.Phone || 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>Address</label>
-          <div class="field-value">{{ user?.Address || 'Not provided' }}</div>
+          <div class="field-value">{{ user.Address || 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>City</label>
-          <div class="field-value">{{ user?.City || 'Not provided' }}</div>
+          <div class="field-value">{{ user.City || 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>State/Province</label>
-          <div class="field-value">{{ user?.State || 'Not provided' }}</div>
+          <div class="field-value">{{ user.State || 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>Postal Code</label>
-          <div class="field-value">{{ user?.PostalCode || 'Not provided' }}</div>
+          <div class="field-value">{{ user.PostalCode || 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>Country</label>
-          <div class="field-value">{{ user?.Country || 'Not provided' }}</div>
+          <div class="field-value">{{ user.Country || 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>Date of Birth</label>
-          <div class="field-value">{{ user?.DOB ? (user?.DOB | date) : 'Not provided' }}</div>
+          <div class="field-value">{{ user.DOB ? (user.DOB | date) : 'Not provided' }}</div>
         </div>
         <div class="field-group">
           <label>Subscription Status</label>
-          <div class="field-value">{{ user?.Subscribed ? 'Subscribed' : 'Not Subscribed' }}</div>
+          <div class="field-value">{{ user.Subscribed ? 'Subscribed' : 'Not Subscribed' }}</div>
         </div>
       </div>
 

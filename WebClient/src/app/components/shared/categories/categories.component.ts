@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { StoreDetails } from '../../../models/store-details';
 import { StoreTheme } from '../../../models/store-theme.model';
 import { Category } from '../../../models/category';
@@ -7,7 +8,7 @@ import { Category } from '../../../models/category';
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.css']
 })

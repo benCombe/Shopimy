@@ -1,5 +1,5 @@
 import { ThemeService } from './../../../services/theme.service';
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Item } from '../../../models/item';
 import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { StoreService } from '../../../services/store.service';
@@ -9,6 +9,8 @@ import { ShoppingService } from '../../../services/shopping.service';
 import { BasicItem } from '../../../models/basic-item';
 import { NgFor, NgIf, CommonModule } from '@angular/common';
 import { OrderSummaryComponent } from "../order-summary/order-summary.component";
+import { Subject, takeUntil } from 'rxjs';
+import { StoreTheme } from '../../../models/store-theme.model';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -17,39 +19,48 @@ import { OrderSummaryComponent } from "../order-summary/order-summary.component"
   styleUrl: './shopping-cart.component.css'
 })
 
-
-
-export class ShoppingCartComponent implements AfterViewInit, OnInit {
+export class ShoppingCartComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @Input() storeDetails: StoreDetails | null = null;
+  @Input() theme: StoreTheme | null = null;
 
   //storeDetails: StoreDetails | null = null;
   cartItems: { item: BasicItem, quantity: number }[] = [];
   subtotal: number = 0.00;
   shippingCost: number = 0;
   promoCode: string = '';
-
- // tempImages: string[] = ["resources/images/sweater-sample.jpg", "resources/images/sweater-sample2.jpg"]
+  isStoreContext: boolean = false;
+  
+  private destroy$ = new Subject<void>();
 
   constructor(
     private storeService: StoreService,
     private storeNavService: StoreNavService,
     private shopService: ShoppingService,
+    private themeService: ThemeService
   ) {}
 
 
   ngOnInit(): void {
-    this.storeService.activeStore$.subscribe(s =>{
+    this.storeService.activeStore$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(s => {
       this.storeDetails = s;
+      this.isStoreContext = !!s && s.id > 0;
     });
 
-    this.shopService.Cart$.subscribe(cart => {
+    this.shopService.Cart$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(cart => {
       this.cartItems = cart;
       cart.forEach(i => {
         console.log(i.item.name + " ("+ i.quantity +")")
       });
     });
-    this.shopService.SubTotal$.subscribe(total => {
+    
+    this.shopService.SubTotal$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(total => {
       this.subtotal = total;
       if (this.subtotal < 30){
         this.shippingCost = 10;
@@ -58,16 +69,26 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit {
         this.shippingCost = 0;
       }
     });
+    
+    // Subscribe to theme service to know when we're in store context
+    this.themeService.inStoreContext$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(inStore => {
+      this.isStoreContext = inStore;
+    });
   }
 
 
   ngAfterViewInit(): void {
-    /* this.themeService.setThemeOne("theme1");
-    this.themeService.setThemeTwo("theme2");
-    this.themeService.setThemeThree("theme3");
-    this.themeService.setFontColor("fc");
-    this.themeService.setFontFamily('*:not(.fa-solid)');
-    this.themeService.setButtonHoverColor("hover"); */
+    // Apply theme if we have store details
+    if (this.storeDetails && this.storeDetails.id > 0) {
+      this.themeService.applyStoreTheme(this.storeDetails);
+    }
+  }
+  
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   addToUrl(segment: string): void {

@@ -19,6 +19,8 @@ import { ActivatedRoute } from '@angular/router';
 import { StoreService } from '../../../services/store.service';
 import { LoadingService } from '../../../services/loading.service';
 import { StoreDetails } from '../../../models/store-details';
+import { ThemeService } from '../../../services/theme.service';
+import { FooterComponent } from '../../footer/footer.component';
 
 @Component({
   selector: 'app-store-owner-dashboard',
@@ -36,7 +38,8 @@ import { StoreDetails } from '../../../models/store-details';
     PromotionsComponent,
     AnalyticsComponent,
     StoreEditorComponent,
-    CategoryListComponent
+    CategoryListComponent,
+    FooterComponent
   ],
   templateUrl: './store-owner-dashboard.component.html',
   styleUrl: './store-owner-dashboard.component.css'
@@ -56,7 +59,8 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     private storeService: StoreService,
     private route: ActivatedRoute,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit() {
@@ -97,6 +101,8 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
       // If user has no store, show create store prompt
       if (!this.hasStore) {
         this.showCreateStorePrompt = true;
+        // Apply base theme when no store exists
+        this.themeService.applyBaseTheme();
         // Only redirect to Store Editor if no specific page was requested in the URL
         if (this.currentPage === "Overview") {
           this.currentPage = "Store Editor";
@@ -107,7 +113,9 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
         }
       } else {
         // Explicitly set to false if the user *does* have a store
-        this.showCreateStorePrompt = false; 
+        this.showCreateStorePrompt = false;
+        // Apply store theme since we have a valid store
+        this.themeService.applyStoreTheme(store);
       }
       
       this.loadingService.setIsLoading(false);

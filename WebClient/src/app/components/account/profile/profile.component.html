@@ -56,62 +56,62 @@
         <div *ngIf="!editMode" class="user-info-display">
           <div class="field-display">
             <label>First Name</label>
-            <div class="value">{{ user?.FirstName }}</div>
+            <div class="value">{{ user.FirstName }}</div>
           </div>
           
           <div class="field-display">
             <label>Last Name</label>
-            <div class="value">{{ user?.LastName }}</div>
+            <div class="value">{{ user.LastName }}</div>
           </div>
           
           <div class="field-display">
             <label>Email</label>
-            <div class="value">{{ user?.Email }}</div>
+            <div class="value">{{ user.Email }}</div>
           </div>
           
           <div class="field-display">
             <label>Phone Number</label>
-            <div class="value">{{ user?.Phone }}</div>
+            <div class="value">{{ user.Phone }}</div>
           </div>
           
           <div class="field-display">
             <label>Address</label>
-            <div class="value">{{ user?.Address }}</div>
+            <div class="value">{{ user.Address }}</div>
           </div>
           
           <div class="field-display">
             <label>City</label>
-            <div class="value">{{ user?.City }}</div>
+            <div class="value">{{ user.City }}</div>
           </div>
           
           <div class="field-display">
             <label>State/Province</label>
-            <div class="value">{{ user?.State }}</div>
+            <div class="value">{{ user.State }}</div>
           </div>
           
           <div class="field-display">
             <label>Postal Code</label>
-            <div class="value">{{ user?.PostalCode }}</div>
+            <div class="value">{{ user.PostalCode }}</div>
           </div>
           
           <div class="field-display">
             <label>Country</label>
-            <div class="value">{{ user?.Country }}</div>
+            <div class="value">{{ user.Country }}</div>
           </div>
           
           <div class="field-display">
             <label>Date of Birth</label>
-            <div class="value">{{ user?.DOB | date }}</div>
+            <div class="value">{{ user.DOB | date }}</div>
           </div>
           
           <div class="field-display">
             <label>Subscription Status</label>
-            <div class="value">{{ user?.Subscribed ? 'Subscribed' : 'Not Subscribed' }}</div>
+            <div class="value">{{ user.Subscribed ? 'Subscribed' : 'Not Subscribed' }}</div>
           </div>
         </div>
 
         <!-- Edit mode form -->
-        <form *ngIf="editMode" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <form *ngIf="editMode" [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
           <div class="form-group">
             <label for="firstName">First Name</label>
             <input 
@@ -120,9 +120,9 @@
               formControlName="firstName" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.FirstName || 'First name' : ''">
-            <div *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> First Name is required
+              placeholder="Enter your first name">
+            <div *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched" class="error-message">
+              First Name is required
             </div>
           </div>
           
@@ -134,9 +134,9 @@
               formControlName="lastName" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.LastName || 'Last name' : ''">
-            <div *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> Last Name is required
+              placeholder="Enter your last name">
+            <div *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched" class="error-message">
+              Last Name is required
             </div>
           </div>
 
@@ -148,10 +148,9 @@
               formControlName="email" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [value]="user?.Email || ''"
-              [attr.placeholder]="!editMode ? user?.Email || 'Email address' : ''">
-            <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> Please enter a valid email address
+              placeholder="Enter your email address">
+            <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="error-message">
+              Please enter a valid email address
             </div>
           </div>
 
@@ -163,9 +162,9 @@
               formControlName="phone" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.Phone || 'Phone number' : ''">
-            <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched" class="error">
-              <i class="fas fa-exclamation-circle"></i> Phone number is required
+              placeholder="Enter your phone number">
+            <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched" class="error-message">
+              Phone number is required
             </div>
           </div>
 
@@ -177,7 +176,10 @@
               formControlName="address" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.Address || 'Address' : ''">
+              placeholder="Enter your address">
+            <div *ngIf="profileForm.get('address')?.invalid && profileForm.get('address')?.touched" class="error-message">
+              Address is required
+            </div>
           </div>
 
           <div class="form-group">
@@ -188,7 +190,7 @@
               formControlName="city" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.City || 'City' : ''">
+              [attr.placeholder]="!editMode ? user.City || 'City' : ''">
           </div>
 
           <div class="form-group">
@@ -199,7 +201,7 @@
               formControlName="state" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.State || 'State/Province' : ''">
+              [attr.placeholder]="!editMode ? user.State || 'State/Province' : ''">
           </div>
 
           <div class="form-group">
@@ -210,7 +212,7 @@
               formControlName="postalCode" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.PostalCode || 'Postal Code' : ''">
+              [attr.placeholder]="!editMode ? user.PostalCode || 'Postal Code' : ''">
           </div>
 
           <div class="form-group">
@@ -221,7 +223,7 @@
               formControlName="country" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.Country || 'Country' : ''">
+              [attr.placeholder]="!editMode ? user.Country || 'Country' : ''">
           </div>
 
           <div class="form-group">
@@ -249,7 +251,7 @@
 
           <!-- Edit Mode Buttons -->
           <div *ngIf="editMode" class="button-group">
-            <button type="submit" class="save-button" [disabled]="!profileForm.valid || isSavingProfile">
+            <button type="submit" class="save-button" [class.saving]="isSavingProfile" [disabled]="!profileForm.valid || isSavingProfile">
               <i class="fas" [class.fa-save]="!isSavingProfile" [class.fa-spinner]="isSavingProfile" [class.fa-spin]="isSavingProfile"></i>
               {{ isSavingProfile ? 'Saving...' : 'Save Changes' }}
             </button>
@@ -297,7 +299,94 @@
           <p>No delivery addresses saved. Add your first address.</p>
         </div>
         
-        <!-- Add address form would go here -->
+        <!-- Add address form -->
+        <form *ngIf="showAddDelivery" [formGroup]="deliveryForm" (ngSubmit)="saveDeliveryAddress()" class="address-form">
+          <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" formControlName="address" placeholder="Enter street address">
+            <div *ngIf="deliveryForm.get('address')?.invalid && deliveryForm.get('address')?.touched" class="error-message">
+              Address is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" formControlName="city" placeholder="Enter city">
+            <div *ngIf="deliveryForm.get('city')?.invalid && deliveryForm.get('city')?.touched" class="error-message">
+              City is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="state">State/Province</label>
+            <input type="text" id="state" formControlName="state" placeholder="Enter state or province">
+            <div *ngIf="deliveryForm.get('state')?.invalid && deliveryForm.get('state')?.touched" class="error-message">
+              State/Province is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" id="country" formControlName="country" placeholder="Enter country">
+            <div *ngIf="deliveryForm.get('country')?.invalid && deliveryForm.get('country')?.touched" class="error-message">
+              Country is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="postalCode">Postal Code</label>
+            <input type="text" id="postalCode" formControlName="postalCode" placeholder="Enter postal code">
+            <div *ngIf="deliveryForm.get('postalCode')?.invalid && deliveryForm.get('postalCode')?.touched" class="error-message">
+              Postal Code is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" formControlName="phone" placeholder="Enter phone number">
+            <div *ngIf="deliveryForm.get('phone')?.invalid && deliveryForm.get('phone')?.touched" class="error-message">
+              Phone is required
+            </div>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label for="isDefault">
+              <input type="checkbox" id="isDefault" formControlName="isDefault">
+              Set as default address
+            </label>
+          </div>
+
+          <div class="button-group">
+            <button type="submit" class="save-button" [class.saving]="isSavingDelivery" [disabled]="!deliveryForm.valid || isSavingDelivery">
+              <i class="fas" [class.fa-save]="!isSavingDelivery" [class.fa-spinner]="isSavingDelivery" [class.fa-spin]="isSavingDelivery"></i>
+              {{ isSavingDelivery ? 'Saving...' : 'Save Address' }}
+            </button>
+            <button type="button" class="cancel-button" (click)="toggleAddDelivery()">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+        </form>
+        
+        <!-- Display saved addresses -->
+        <div *ngIf="deliveryAddresses.length > 0" class="address-list">
+          <div *ngFor="let address of deliveryAddresses" class="address-card">
+            <div *ngIf="address.isDefault" class="default-badge">Default</div>
+            <div class="address-details">
+              <p>{{ address.address }}</p>
+              <p>{{ address.city }}, {{ address.state }} {{ address.postalCode }}</p>
+              <p>{{ address.country }}</p>
+              <p>{{ address.phone }}</p>
+            </div>
+            <div class="address-actions">
+              <button *ngIf="!address.isDefault" class="standard-button secondary small" (click)="address.id && setDefaultAddress(address.id)">
+                <i class="fas fa-check"></i> Set as Default
+              </button>
+              <button class="standard-button secondary small danger" (click)="address.id && deleteAddress(address.id)">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     

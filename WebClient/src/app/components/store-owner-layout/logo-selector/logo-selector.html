@@ -13,7 +13,7 @@
         <div *ngIf="logoLoadError" class="image-error-message">
           Unable to load logo image. The file might be missing or inaccessible.
         </div>
-        <button class="delete-button" (click)="deleteLogo()" [disabled]="isDeleting">
+        <button class="standard-button small secondary" (click)="deleteLogo()" [disabled]="isDeleting">
           <span *ngIf="!isDeleting">Remove Logo</span>
           <span *ngIf="isDeleting">Removing...</span>
         </button>
@@ -44,8 +44,8 @@
         <img [src]="logoPreviewUrl" alt="Logo Preview" class="preview-image">
       </div>
       <div class="action-buttons">
-        <button class="cancel-button" (click)="cancelSelection()">Cancel</button>
-        <button class="upload-button standard-button" (click)="uploadLogo()" [disabled]="isUploading">
+        <button class="standard-button small secondary" (click)="cancelSelection()">Cancel</button>
+        <button class="standard-button primary" (click)="uploadLogo()" [disabled]="isUploading">
           <span *ngIf="!isUploading">Upload Logo</span>
           <span *ngIf="isUploading">Uploading...</span>
         </button>

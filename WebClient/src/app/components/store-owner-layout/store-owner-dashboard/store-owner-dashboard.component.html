@@ -1,66 +1,69 @@
 <div id="container">
   <app-side-nav (pageChange)="onPageChange($event)"></app-side-nav>
   <div id="main" #main>
-    <!-- Create Store Prompt -->
-    <!-- 
-    <div *ngIf="showCreateStorePrompt && currentPage === 'Overview'" class="dashboard-card create-store-prompt">
-      <div class="card-header">
-        <h2>Welcome to Shopimy</h2>
-      </div>
-      <div class="card-content">
-        <p>You don't have a store yet. Let's create one now!</p>
-        <div class="prompt-actions">
-          <button class="standard-button primary" (click)="onPageChange('Store Editor')">Create Your Store</button>
+    <div class="page-content">
+      <!-- Create Store Prompt -->
+      <!-- 
+      <div *ngIf="showCreateStorePrompt && currentPage === 'Overview'" class="dashboard-card create-store-prompt">
+        <div class="card-header">
+          <h2>Welcome to Shopimy</h2>
         </div>
-      </div>
-    </div>
-    -->
-    
-    <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
-      <app-overview (pageNavigate)="onPageChange($event)"></app-overview>
-    </div>
-    <div *ngIf="currentPage === 'Profile'" id="profile" class="page">
-      <app-profile [user]="user"></app-profile>
-    </div>
-    <div *ngIf="currentPage === 'Settings'" id="settings" class="page">
-      <app-settings></app-settings>
-    </div>
-    <div *ngIf="currentPage === 'Products'" id="products" class="page">
-      <app-product-management></app-product-management>
-    </div>
-    <div *ngIf="currentPage === 'Categories'" id="categories" class="page">
-      <app-category-list></app-category-list>
-    </div>
-    <div *ngIf="currentPage === 'Orders'" id="orders" class="page">
-      <app-orders></app-orders>
-    </div>
-    <div *ngIf="currentPage === 'Themes & Logos'" id="themes" class="page">
-      <div class="themes-logos-container">
-        <!-- Tabs for Themes and Logos -->
-        <div class="tabs-container">
-          <div class="tab" [class.active]="themeLogoTab === 'themes'" (click)="themeLogoTab = 'themes'">
-            Store Appearance
-          </div>
-          <div class="tab" [class.active]="themeLogoTab === 'logos'" (click)="themeLogoTab = 'logos'">
-            Brand Logo
+        <div class="card-content">
+          <p>You don't have a store yet. Let's create one now!</p>
+          <div class="prompt-actions">
+            <button class="standard-button primary" (click)="onPageChange('Store Editor')">Create Your Store</button>
           </div>
         </div>
-        
-        <!-- Content based on selected tab -->
-        <div class="tab-content">
-          <app-themes *ngIf="themeLogoTab === 'themes'"></app-themes>
-          <app-logo-selector *ngIf="themeLogoTab === 'logos'"></app-logo-selector>
+      </div>
+      -->
+      
+      <div *ngIf="currentPage === 'Overview'" id="overview" class="page">
+        <app-overview (pageNavigate)="onPageChange($event)"></app-overview>
+      </div>
+      <div *ngIf="currentPage === 'Profile'" id="profile" class="page">
+        <app-profile [user]="user"></app-profile>
+      </div>
+      <div *ngIf="currentPage === 'Settings'" id="settings" class="page">
+        <app-settings></app-settings>
+      </div>
+      <div *ngIf="currentPage === 'Products'" id="products" class="page">
+        <app-product-management></app-product-management>
+      </div>
+      <div *ngIf="currentPage === 'Categories'" id="categories" class="page">
+        <app-category-list></app-category-list>
+      </div>
+      <div *ngIf="currentPage === 'Orders'" id="orders" class="page">
+        <app-orders></app-orders>
+      </div>
+      <div *ngIf="currentPage === 'Themes & Logos'" id="themes" class="page">
+        <div class="themes-logos-container">
+          <!-- Tabs for Themes and Logos -->
+          <div class="tabs-container">
+            <div class="tab" [class.active]="themeLogoTab === 'themes'" (click)="themeLogoTab = 'themes'">
+              Store Appearance
+            </div>
+            <div class="tab" [class.active]="themeLogoTab === 'logos'" (click)="themeLogoTab = 'logos'">
+              Brand Logo
+            </div>
+          </div>
+          
+          <!-- Content based on selected tab -->
+          <div class="tab-content">
+            <app-themes *ngIf="themeLogoTab === 'themes'"></app-themes>
+            <app-logo-selector *ngIf="themeLogoTab === 'logos'"></app-logo-selector>
+          </div>
         </div>
       </div>
+      <div *ngIf="currentPage === 'Store Editor'" id="store-editor" class="page">
+        <app-store-editor></app-store-editor>
+      </div>
+      <div *ngIf="currentPage === 'Promotions'" id="promos" class="page">
+        <app-promotions></app-promotions>
+      </div>
+      <div *ngIf="currentPage === 'Traffic & Sales'" id="analytics" class="page">
+        <app-analytics></app-analytics>
+      </div>
     </div>
-    <div *ngIf="currentPage === 'Store Editor'" id="store-editor" class="page">
-      <app-store-editor></app-store-editor>
-    </div>
-    <div *ngIf="currentPage === 'Promotions'" id="promos" class="page">
-      <app-promotions></app-promotions>
-    </div>
-    <div *ngIf="currentPage === 'Traffic & Sales'" id="analytics" class="page">
-      <app-analytics></app-analytics>
-    </div>
+    <app-footer></app-footer>
   </div>
 </div>

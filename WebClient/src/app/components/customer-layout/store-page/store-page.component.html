@@ -1,4 +1,4 @@
-<main id="store-container" class="store-layout" aria-labelledby="store-name">
+<main class="store-layout" aria-labelledby="store-name">
   <app-store-nav (ViewChanged)="changeView($event)" aria-label="Store navigation"></app-store-nav>
   
   <div id="store-page" class="store-content" *ngIf="isStorePageView()">
@@ -6,57 +6,76 @@
     <h1 id="store-name" class="visually-hidden">{{ storeData?.name || 'Online Store' }}</h1>
 
     <!-- Hero Banner Section -->
-    <section aria-label="Hero Banner">
+    <section aria-label="Hero Banner" class="hero-section">
       <app-hero-banner 
         *ngIf="storeData?.componentVisibility?.hero" 
-        [storeData]="storeData">
+        [storeData]="storeData"
+        [theme]="storeTheme">
       </app-hero-banner>
     </section>
 
     <!-- Store Header/Logo Section -->
-    <section aria-label="Store Header">
+    <section aria-label="Store Header" class="header-section">
       <app-store-header 
         *ngIf="storeData?.componentVisibility?.header" 
-        [storeData]="storeData">
+        [storeData]="storeData"
+        [theme]="storeTheme">
       </app-store-header>
     </section>
 
     <!-- Featured Products Section -->
-    <section aria-label="Featured Products">
+    <section aria-label="Featured Products" class="featured-section">
       <app-featured-products 
         *ngIf="storeData?.componentVisibility?.featured" 
         [storeData]="storeData"
+        [theme]="storeTheme"
         [isPreview]="false">
       </app-featured-products>
     </section>
 
+    <!-- Categories Section -->
+    <section aria-label="Categories" class="categories-section">
+      <app-categories
+        *ngIf="storeData?.componentVisibility?.categories"
+        [storeData]="storeData"
+        [theme]="storeTheme"
+        [isPreview]="false">
+      </app-categories>
+    </section>
+
     <!-- Testimonials Section -->
-    <section aria-label="Customer Testimonials">
+    <section aria-label="Customer Testimonials" class="testimonials-section">
       <app-testimonials 
         *ngIf="storeData?.componentVisibility?.testimonials" 
-        [storeData]="storeData">
+        [storeData]="storeData"
+        [theme]="storeTheme">
       </app-testimonials>
     </section>
 
     <!-- Newsletter Section -->
-    <section aria-label="Newsletter Signup">
+    <section aria-label="Newsletter Signup" class="newsletter-section">
       <app-newsletter 
         *ngIf="storeData?.componentVisibility?.newsletter" 
-        [storeData]="storeData">
+        [storeData]="storeData"
+        [theme]="storeTheme">
       </app-newsletter>
     </section>
   </div>
   
   <!-- Other Views -->
-  <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData"></app-shopping-cart>
-  <app-checkout *ngIf="isCheckoutView()"></app-checkout>
-  <app-item-detail *ngIf="isItemView()" [storeDetails]="storeData" [itemId]="currentItemView"></app-item-detail>
+  <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData" [theme]="storeTheme"></app-shopping-cart>
+  <app-checkout *ngIf="isCheckoutView()" [theme]="storeTheme"></app-checkout>
+  <app-item-detail *ngIf="isItemView()" [storeDetails]="storeData" [itemId]="currentItemView" [theme]="storeTheme"></app-item-detail>
   
   <!-- The category page is loaded if the url is "shopimy.com/[storeurl]/[category-name]" -->
   <ng-container *ngFor="let c of storeData?.categories">
     <app-category-page *ngIf="isCategoryView(c.name) && storeData?.componentVisibility?.categories" 
                       [category]="c" 
-                      [storeDetails]="storeData">
+                      [storeDetails]="storeData"
+                      [theme]="storeTheme">
     </app-category-page>
   </ng-container>
+  
+  <!-- Footer -->
+  <app-footer></app-footer>
 </main>

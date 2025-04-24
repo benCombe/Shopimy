@@ -51,6 +51,18 @@ export class StorePreviewComponent implements OnChanges {
         components: this.selectedComponents,
         theme: this.theme
       });
+    } else {
+      // Log when preview is not ready with reason
+      console.warn('Preview not ready:', {
+        hasStoreData: !!this.storeData,
+        hasTheme: !!this.theme,
+        hasComponents: !!this.selectedComponents && this.selectedComponents.length > 0
+      });
+      
+      // Set default components if none are selected
+      if (!this.selectedComponents || this.selectedComponents.length === 0) {
+        this.selectedComponents = ['header', 'hero', 'featured', 'testimonials', 'newsletter'];
+      }
     }
   }
 

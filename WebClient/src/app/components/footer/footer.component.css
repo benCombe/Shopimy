@@ -1,20 +1,29 @@
 /* Standardized Footer Component */
 .footer-container {
   width: 100%;
+  padding: 3rem 2rem 1rem;
   background-color: var(--main-color);
-  padding: var(--spacing-lg) 5%;
+  color: var(--secondary-color);
+  margin-top: 2rem;
   box-sizing: border-box;
-  color: var(--third-color);
   font-family: var(--main-font-fam);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Store context specific styles - uses CSS variables already set by ThemeService */
+.footer-container.store-context {
+  background-color: var(--store-footer-bg, var(--main-color));
+  color: var(--store-footer-text, var(--secondary-color));
+  width: 100%;
 }
 
 .footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--spacing-xl);
+  gap: 2rem;
 }
 
 .footer-section {
@@ -27,6 +36,11 @@
   font-size: 1.2rem;
   margin-bottom: var(--spacing-md);
   font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.store-context .footer-heading {
+  color: var(--second-color);
 }
 
 .footer-section p {
@@ -34,6 +48,11 @@
   font-size: 0.9rem;
   line-height: 1.6;
   margin: var(--spacing-sm) 0;
+  transition: color 0.3s ease;
+}
+
+.store-context .footer-section p {
+  color: var(--third-color);
 }
 
 .footer-links {
@@ -55,11 +74,20 @@
   display: inline-block;
 }
 
+.store-context .footer-links a {
+  color: var(--third-color);
+}
+
 .footer-links a:hover,
 .footer-links a:focus {
   color: var(--second-color);
   transform: translateX(var(--spacing-xs));
   outline: none;
+}
+
+.store-context .footer-links a:hover,
+.store-context .footer-links a:focus {
+  color: var(--second-color);
 }
 
 .footer-links a:focus-visible {
@@ -86,12 +114,22 @@
   transition: all 0.3s ease;
 }
 
+.store-context .social-icons a {
+  color: var(--third-color);
+}
+
 .social-icons a:hover,
 .social-icons a:focus {
   background-color: var(--second-color);
   color: var(--main-color);
   transform: translateY(-3px);
   outline: none;
+}
+
+.store-context .social-icons a:hover,
+.store-context .social-icons a:focus {
+  background-color: var(--second-color);
+  color: var(--main-color);
 }
 
 .social-icons a:focus-visible {
@@ -114,6 +152,11 @@
   color: var(--third-color);
   font-size: 0.8rem;
   opacity: 0.8;
+  transition: color 0.3s ease;
+}
+
+.store-context .footer-bottom p {
+  color: var(--third-color);
 }
 
 /* Media Queries */
@@ -129,7 +172,7 @@
 
 @media only screen and (max-width: 768px) {
   .footer-container {
-    padding: var(--spacing-md) 5%;
+    padding: 2rem 1rem 1rem;
   }
 
   .footer-content {
@@ -146,6 +189,10 @@
 }
 
 @media only screen and (max-width: 480px) {
+  .footer-container {
+    padding: 1.5rem 1rem 0.75rem;
+  }
+
   .footer-section {
     min-width: 100%;
   }

@@ -1,6 +1,6 @@
 <div id="container">
   <div class="create-store-container">
-    <div class="create-store-card global-card">
+    <div class="create-store-card">
       <h2>Create Your Store</h2>
       <p class="subtitle">Set up your online store to start selling products</p>
 
@@ -15,13 +15,13 @@
             type="text"
             id="storeName"
             formControlName="storeName"
-            class="form-control"
-            [ngClass]="{ 'is-invalid': storeForm.get('storeName')?.touched && storeForm.get('storeName')?.invalid }"
+            placeholder="Enter your store name"
+            [class.is-invalid]="storeForm.get('storeName')?.touched && storeForm.get('storeName')?.invalid"
           />
-          <div *ngIf="storeForm.get('storeName')?.touched && storeForm.get('storeName')?.errors" class="invalid-feedback">
-            <div *ngIf="storeForm.get('storeName')?.errors?.['required']">Store name is required</div>
-            <div *ngIf="storeForm.get('storeName')?.errors?.['minlength']">Store name must be at least 3 characters</div>
-            <div *ngIf="storeForm.get('storeName')?.errors?.['maxlength']">Store name cannot exceed 50 characters</div>
+          <div class="invalid-feedback" *ngIf="storeForm.get('storeName')?.touched && storeForm.get('storeName')?.errors">
+            <span *ngIf="storeForm.get('storeName')?.errors?.['required']">Store name is required</span>
+            <span *ngIf="storeForm.get('storeName')?.errors?.['minlength']">Store name must be at least 3 characters</span>
+            <span *ngIf="storeForm.get('storeName')?.errors?.['maxlength']">Store name cannot exceed 50 characters</span>
           </div>
         </div>
 
@@ -32,24 +32,24 @@
             <input
               type="text"
               id="storeUrl"
-              formControlName="storeUrl"
-              class="form-control"
-              [ngClass]="{ 'is-invalid': storeForm.get('storeUrl')?.touched && storeForm.get('storeUrl')?.invalid }"
+              formControlName="storeUrl" 
+              placeholder="your-store-url"
+              [class.is-invalid]="storeForm.get('storeUrl')?.touched && storeForm.get('storeUrl')?.invalid"
             />
           </div>
-          <div *ngIf="storeForm.get('storeUrl')?.touched && storeForm.get('storeUrl')?.errors" class="invalid-feedback">
-            <div *ngIf="storeForm.get('storeUrl')?.errors?.['required']">Store URL is required</div>
-            <div *ngIf="storeForm.get('storeUrl')?.errors?.['pattern']">URL can only contain letters, numbers, and hyphens</div>
-            <div *ngIf="storeForm.get('storeUrl')?.errors?.['minlength']">URL must be at least 3 characters</div>
-            <div *ngIf="storeForm.get('storeUrl')?.errors?.['maxlength']">URL cannot exceed 30 characters</div>
+          <div class="invalid-feedback" *ngIf="storeForm.get('storeUrl')?.touched && storeForm.get('storeUrl')?.errors">
+            <span *ngIf="storeForm.get('storeUrl')?.errors?.['required']">Store URL is required</span>
+            <span *ngIf="storeForm.get('storeUrl')?.errors?.['pattern']">URL can only contain letters, numbers, and hyphens</span>
+            <span *ngIf="storeForm.get('storeUrl')?.errors?.['minlength']">URL must be at least 3 characters</span>
+            <span *ngIf="storeForm.get('storeUrl')?.errors?.['maxlength']">URL cannot exceed 30 characters</span>
           </div>
           <small class="form-text">Choose a simple, memorable URL for your store</small>
         </div>
 
         <div class="action-buttons">
-          <button type="submit" class="standard-button" [disabled]="storeForm.invalid || loading">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Create Store
+          <button type="submit" id="create-btn" [disabled]="storeForm.invalid || loading">
+            <span *ngIf="!loading">Create Store</span>
+            <span *ngIf="loading"><i class="fa-solid fa-spinner fa-spin"></i></span>
           </button>
           <button type="button" class="standard-button secondary" (click)="quickCreate()">
             Quick Setup

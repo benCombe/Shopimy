@@ -1,9 +1,9 @@
 .newsletter-container {
-  background-color: #fff;
+  background-color: var(--newsletter-bg, var(--main-color, #393727));
   padding: 2.5rem 1.5rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
-  margin: var(--spacing-md) 0;
+  border-radius: var(--border-radius, 8px);
+  box-shadow: var(--shadow-sm, 0 2px 4px var(--newsletter-shadow, rgba(0, 0, 0, 0.1)));
+  margin: var(--spacing-md, 16px) 0;
 }
 
 .newsletter-content {
@@ -16,12 +16,26 @@
   margin-bottom: 20px;
   font-size: 2rem;
   font-weight: 600;
-  color: #333;
+  color: var(--newsletter-heading-color, var(--alt-color, #ffffff));
+  position: relative;
+  padding-bottom: var(--spacing-xs, 4px);
+}
+
+.section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--newsletter-button-bg, var(--second-color, #D0933D));
+  border-radius: 2px;
 }
 
 .newsletter-description {
   margin-bottom: 1.5rem;
-  color: var(--main-color, #333);
+  color: var(--newsletter-text-color, var(--alt-color, #ffffff));
   font-size: 1rem;
   opacity: 0.8;
 }
@@ -29,7 +43,7 @@
 .newsletter-form {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: 1rem;
   margin-bottom: 1rem;
   max-width: 500px;
   margin-left: auto;
@@ -38,8 +52,10 @@
 
 .form-group {
   flex: 1;
-  margin-bottom: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .visually-hidden {
@@ -53,49 +69,63 @@
   width: 1px;
 }
 
-.form-control {
+.form-group input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: var(--border-radius);
+  padding: 0.75rem;
+  border: 1px solid var(--newsletter-border-color, #d1d5db);
+  border-radius: 6px;
   font-size: 1rem;
-  background-color: #fff;
+  transition: border-color 0.2s;
+  background-color: var(--newsletter-input-bg, #ffffff);
+  color: var(--newsletter-input-text, var(--main-color, #393727));
 }
 
-.form-control:focus {
+.form-group input:focus {
   outline: none;
-  border-color: var(--main-color, #393727);
-  box-shadow: 0 0 0 3px rgba(57, 55, 39, 0.1);
+  border-color: var(--newsletter-button-bg, var(--second-color, #D0933D));
+  box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2);
 }
 
-.btn-subscribe {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--second-color, #D0933D);
-  color: white;
-  border: none;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-  white-space: nowrap;
+.form-group input.is-invalid {
+  border-color: #e02424;
 }
 
-.btn-subscribe:hover:not(:disabled) {
-  background-color: var(--main-color, #393727);
-  transform: translateY(-2px);
-}
-
-.btn-subscribe:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.error-message {
-  color: #dc3545;
+.invalid-feedback {
+  color: #e02424;
   font-size: 0.875rem;
-  margin-top: 0.25rem;
   text-align: left;
   position: absolute;
+  top: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 2px;
+}
+
+#newsletter-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--newsletter-button-bg, var(--second-color, #D0933D));
+  color: var(--newsletter-text-color, var(--alt-color, #ffffff));
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+#newsletter-btn:hover:not(:disabled) {
+  background-color: var(--main-color, #393727);
+  color: var(--newsletter-text-color, var(--alt-color, #ffffff));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md, 0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+#newsletter-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .success-message {
@@ -103,6 +133,9 @@
   margin-top: 1rem;
   font-weight: 500;
   display: inline-block;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
 }
 
 @media (max-width: 576px) {
@@ -111,10 +144,33 @@
   }
   
   .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
   
-  .btn-subscribe {
+  #newsletter-btn {
     width: 100%;
+  }
+  
+  .section-heading {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .newsletter-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .section-heading {
+    font-size: 1.25rem;
+  }
+  
+  .newsletter-description {
+    font-size: 0.875rem;
+  }
+  
+  .form-group input,
+  #newsletter-btn {
+    padding: 0.5rem 0.75rem;
   }
 } 

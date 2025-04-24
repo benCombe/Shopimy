@@ -1,0 +1,183 @@
+.categories-container {
+  padding: 3rem 1.5rem;
+  background-color: var(--categories-bg, #D3CEBB);
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.section-heading {
+  color: var(--categories-heading-color, #393727);
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  position: relative;
+  width: 100%;
+}
+
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background-color: var(--categories-underline-color, #D0933D);
+  margin: 0.5rem auto 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+}
+
+.empty-message {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.categories-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  list-style-type: none;
+  padding: 0;
+  margin: 0 auto;
+  width: 90%;
+  max-width: 1200px;
+}
+
+.category-item {
+  flex: 0 0 auto;
+  width: calc(33.333% - 2rem);
+  max-width: 320px;
+  min-width: 250px;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  justify-content: center;
+}
+
+.category-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.category-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.category-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-icon {
+  height: 180px;
+  overflow: hidden;
+}
+
+.category-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-details {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.category-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  width: 100%;
+}
+
+.category-description {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.5;
+  text-align: center;
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .categories-container {
+    padding: 2rem 1rem;
+  }
+  
+  .category-item {
+    width: calc(50% - 2rem);
+    min-width: 220px;
+  }
+  
+  .section-heading {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-item {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* For when there are fewer items than would fill the grid */
+@media (min-width: 992px) {
+  .categories-grid:has(.category-item:nth-child(1):nth-last-child(1)),
+  .categories-grid:has(.category-item:nth-child(1):nth-last-child(2)),
+  .categories-grid:has(.category-item:nth-child(2):nth-last-child(1)) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .categories-grid:has(.category-item:nth-child(1):nth-last-child(1)) .category-item,
+  .categories-grid:has(.category-item:nth-child(1):nth-last-child(2)) .category-item,
+  .categories-grid:has(.category-item:nth-child(2):nth-last-child(1)) .category-item {
+    flex: 0 0 auto;
+    width: 280px;
+    margin: 0 var(--spacing-lg, 1rem);
+  }
+}
+
+/* For older browsers without :has() support, use flexbox fallback */
+@supports not (selector(:has(*))) {
+  .categories-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .category-item {
+    flex: 0 0 280px;
+    margin: 0 1rem 2rem;
+    max-width: 280px;
+  }
+} 

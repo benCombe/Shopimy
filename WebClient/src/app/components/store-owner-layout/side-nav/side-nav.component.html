@@ -1,7 +1,7 @@
 <div id="sidebar" [class.mobile-visible]="isMobileSidebarOpen">
   <div class="sidebar-header">
     <div id="shopimy-logo" routerLink="">Shopimy</div>
-    <button *ngIf="isMobile" class="close-sidebar-btn" (click)="toggleMobileSidebar()">
+    <button *ngIf="isMobile" class="standard-button small secondary" (click)="toggleMobileSidebar()">
       <i class="fa-solid fa-xmark"></i>
     </button>
   </div>
@@ -103,14 +103,15 @@
 </div>
 
 <!-- Mobile toggle button - visible only on mobile -->
-<div *ngIf="isMobile" class="mobile-sidebar-toggle"
+<button *ngIf="isMobile" class="standard-button small mobile-sidebar-toggle"
      (click)="toggleMobileSidebar()"
      [style.top.px]="hamburgerPosition.y"
      [style.right.px]="hamburgerPosition.right"
      (mousedown)="onDragStart($event)"
-     (touchstart)="onTouchStart($event)">
+     (touchstart)="onTouchStart($event)"
+     title="Menu (drag to reposition)">
   <i class="fa-solid fa-bars"></i>
-</div>
+</button>
 
 <!-- Overlay for mobile when sidebar is open -->
 <div

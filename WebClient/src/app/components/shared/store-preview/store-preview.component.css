@@ -14,6 +14,7 @@
   max-width: 100%;
   font-family: var(--main-font-fam);
   scroll-behavior: smooth;
+  position: relative;
 }
 
 .store-preview-content {
@@ -30,6 +31,7 @@
   display: block !important;
   box-sizing: border-box;
   scroll-behavior: smooth;
+  z-index: 1;
 }
 
 .store-preview-content::-webkit-scrollbar {
@@ -55,6 +57,18 @@
   padding-bottom: var(--spacing-md);
   box-sizing: border-box;
   background-color: var(--preview-third-color, var(--third-color));
+  min-height: 300px;
+  visibility: visible !important;
+  position: relative;
+  z-index: 2;
+}
+
+/* Make sure each component inside is visible */
+.store-preview > * {
+  visibility: visible !important;
+  display: block !important;
+  width: 100%;
+  position: relative;
 }
 
 /* Banner Section */
@@ -502,14 +516,34 @@
 
 /* No data message */
 .no-store-data {
-  padding: var(--spacing-lg);
-  text-align: center;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  color: var(--text-color);
-  font-style: italic;
+  min-height: 300px;
+  padding: var(--spacing-lg);
+  background-color: var(--third-color, #f5f5f5);
+  text-align: center;
+  border-radius: var(--border-radius);
+  margin: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.no-store-data p {
+  margin-bottom: var(--spacing-md);
+  color: var(--main-color, #333);
+  font-size: 1rem;
+}
+
+.no-store-data ul {
+  text-align: left;
+  margin: 0;
+  padding-left: var(--spacing-xl);
+}
+
+.no-store-data li {
+  margin-bottom: var(--spacing-sm);
+  color: var(--main-color, #555);
 }
 
 /* Ensure proper display in landscape mode */

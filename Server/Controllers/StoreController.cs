@@ -13,7 +13,12 @@ using System.Text.Json;
 using System.Linq; // Add this for LINQ operations on claims
 // Add for Execution Strategy
 using Microsoft.EntityFrameworkCore.Storage;
-
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using System.Text.Json.Serialization;
 
 namespace Server.Controllers
 {
@@ -110,7 +115,7 @@ namespace Server.Controllers
             {
                 int? userId = null;
                 // Check if the user is authenticated
-                if (User?.Identity?.IsAuthenticated == true)
+                if (User?.Identity?.IsAuthenticated == true && User.Claims != null)
                 {
                     // Try to get the user ID from the claims
                     var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -149,9 +154,9 @@ namespace Server.Controllers
         {
             // Get the user ID from the token - look for numeric claim
             int userId = 0;
-            if (User == null)
+            if (User == null || User.Claims == null)
             {
-                Console.WriteLine("ERROR: User is null");
+                Console.WriteLine("ERROR: User or User.Claims is null");
                 return Unauthorized("Invalid user authentication token.");
             }
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
@@ -171,7 +176,14 @@ namespace Server.Controllers
                 Console.WriteLine("ERROR (GetCurrentUserStore): Failed to find a valid numeric User ID from claims.");
                 // Dump claims for debugging if user ID not found
                 Console.WriteLine("--- Dumping Claims in GetCurrentUserStore ---");
-                foreach (var claim in User.Claims) { Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}"); }
+                if (User?.Claims != null)
+                {
+                    foreach (var claim in User.Claims) { Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}"); }
+                }
+                else
+                {
+                    Console.WriteLine("User.Claims is null");
+                }
                 Console.WriteLine("--- End Claim Dump ---");
                 return Unauthorized("Invalid user authentication token.");
             }
@@ -238,7 +250,7 @@ namespace Server.Controllers
         {
             // === DETAILED CLAIM LOGGING START ===
             Console.WriteLine("--- Dumping Claims in CreateStore ---");
-            if (User?.Identity?.IsAuthenticated == true)
+            if (User?.Identity?.IsAuthenticated == true && User.Claims != null)
             {
                 foreach (var claim in User.Claims)
                 {
@@ -247,21 +259,29 @@ namespace Server.Controllers
             }
             else
             {
-                Console.WriteLine("User is not authenticated or ClaimsPrincipal is null.");
-                return Unauthorized("User is not authenticated."); // Return early if not authenticated
+                Console.WriteLine("User is not authenticated or claims are null.");
             }
             Console.WriteLine("--- End Claim Dump ---");
             // === DETAILED CLAIM LOGGING END ===
-
-            // Get the user ID from the token - look for numeric claim
-            int userId = 0;
-            if (User == null) // Should be redundant due to Authorize and previous check, but safe
+            
+            // Validate input
+            if (storeDetails == null)
             {
-                Console.WriteLine("ERROR: User is null in CreateStore after authentication check.");
+                return BadRequest("Store details are required.");
+            }
+
+            // Get the user ID from the token (claims)
+            int userId = 0;
+
+            // Check if User or User.Claims is null before accessing
+            if (User == null || User.Claims == null)
+            {
+                Console.WriteLine("ERROR: User or User.Claims is null");
                 return Unauthorized("Invalid user authentication token.");
             }
+            
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
-
+            
             // Try to find the claim with numeric value (user ID)
             foreach (var claim in nameIdentifierClaims)
             {
@@ -487,17 +507,53 @@ namespace Server.Controllers
         [Authorize]
         public async Task<ActionResult<StoreDetails>> UpdateStore([FromBody] StoreDetails storeDetails)
         {
-            // === CLAIM LOGGING START ===
-            Console.WriteLine("--- Dumping Claims in UpdateStore ---");
-            if (User?.Identity?.IsAuthenticated == true) { foreach (var claim in User.Claims) { Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}"); } } else { Console.WriteLine("User is not authenticated."); return Unauthorized(); }
-            Console.WriteLine("--- End Claim Dump ---");
-            // === CLAIM LOGGING END ===
+            // Dump claims for trace diagnostics - ensure null safety
+            if (User?.Identity?.IsAuthenticated == true && User.Claims != null) 
+            { 
+                foreach (var claim in User.Claims) 
+                { 
+                    Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}"); 
+                } 
+            } 
+            else 
+            { 
+                Console.WriteLine("User is not authenticated or claims are null."); 
+                return Unauthorized(); 
+            }
+            
+            // Validate input
+            if (storeDetails == null)
+            {
+                return BadRequest("Store details are required.");
+            }
 
-            // Get User ID
+            // Get user ID from token
             int userId = 0;
+            
+            // Check if User or User.Claims is null before accessing
+            if (User == null || User.Claims == null)
+            {
+                Console.WriteLine("ERROR: User or User.Claims is null");
+                return Unauthorized("Invalid user authentication token.");
+            }
+            
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
-            foreach (var claim in nameIdentifierClaims) { if (int.TryParse(claim.Value, out int parsedId) && parsedId > 0) { userId = parsedId; break; } }
-            if (userId == 0) { Console.WriteLine("ERROR (UpdateStore): Failed to find valid numeric User ID."); return Unauthorized("Invalid token."); }
+            
+            // Try to find the claim with numeric value (user ID)
+            foreach (var claim in nameIdentifierClaims)
+            {
+                if (int.TryParse(claim.Value, out int parsedId) && parsedId > 0)
+                {
+                    userId = parsedId;
+                    break;
+                }
+            }
+
+            if (userId == 0)
+            {
+                Console.WriteLine("ERROR (UpdateStore): Failed to find valid numeric User ID.");
+                return Unauthorized("Invalid token.");
+            }
 
             // Validate Input - Use Id property
             if (storeDetails == null || storeDetails.Id <= 0)
@@ -545,14 +601,43 @@ namespace Server.Controllers
                             theme = new StoreTheme { StoreId = store.StoreId };
                             _context.StoreThemes.Add(theme);
                         }
-                        theme.Theme_1 = storeDetails.Theme_1 ?? theme.Theme_1; // Keep existing if null
+                        theme.Theme_1 = storeDetails.Theme_1 ?? theme.Theme_1;
                         theme.Theme_2 = storeDetails.Theme_2 ?? theme.Theme_2;
                         theme.Theme_3 = storeDetails.Theme_3 ?? theme.Theme_3;
                         theme.FontColor = storeDetails.FontColor ?? theme.FontColor;
                         theme.FontFamily = storeDetails.FontFamily ?? theme.FontFamily;
                         theme.BannerText = storeDetails.BannerText ?? theme.BannerText; // Allow empty string
                         theme.LogoText = storeDetails.LogoText ?? theme.LogoText; // Allow empty string
-                        theme.ComponentVisibility = storeDetails.ComponentVisibility ?? theme.ComponentVisibility;
+                        
+                        // Add safe handling for ComponentVisibility
+                        if (storeDetails.ComponentVisibility != null)
+                        {
+                            // Validate it's proper JSON before saving
+                            try 
+                            {
+                                // Attempt to parse and reserialize to ensure valid JSON
+                                var jsonObj = System.Text.Json.JsonDocument.Parse(storeDetails.ComponentVisibility);
+                                
+                                // Reserialize to ensure it's valid and well-formatted
+                                theme.ComponentVisibility = System.Text.Json.JsonSerializer.Serialize(
+                                    System.Text.Json.JsonSerializer.Deserialize<object>(storeDetails.ComponentVisibility)
+                                );
+                                
+                                Console.WriteLine("ComponentVisibility is valid JSON: " + theme.ComponentVisibility);
+                            }
+                            catch (System.Text.Json.JsonException ex)
+                            {
+                                Console.WriteLine("Invalid ComponentVisibility JSON: " + ex.Message);
+                                Console.WriteLine("Original value: " + storeDetails.ComponentVisibility);
+                                // If invalid JSON, use empty object as fallback
+                                theme.ComponentVisibility = "{}";
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("ComponentVisibility is null, using default empty object");
+                            theme.ComponentVisibility = "{}";
+                        }
 
                         // Update Banner settings
                         var banner = await _context.StoreBanners.FirstOrDefaultAsync(b => b.StoreID == store.StoreId);
@@ -579,29 +664,101 @@ namespace Server.Controllers
                         }
 
                         // Update Categories (More complex: requires handling additions, deletions, updates)
-                        // Simple approach: Replace existing categories with provided ones
-                        // WARNING: This deletes existing categories not present in the request.
-                        // A better approach might involve tracking changes or specific add/delete endpoints.
                         if (storeDetails.Categories != null)
                         {
                             var existingCategories = await _context.Categories.Where(c => c.StoreId == store.StoreId).ToListAsync();
-                            _context.Categories.RemoveRange(existingCategories); // Remove old ones
-
-                            List<Category> updatedCategories = new List<Category>();
-                            foreach (var catInput in storeDetails.Categories)
+                            
+                            // Instead of removing all categories, check which ones can be safely deleted
+                            foreach (var existingCategory in existingCategories)
                             {
-                                if (!string.IsNullOrWhiteSpace(catInput.Name))
+                                // Check if category has listings using raw SQL since there might not be a DbSet<Listing>
+                                string checkQuery = "SELECT COUNT(1) FROM Listing WHERE category = @categoryId";
+                                bool hasListings = false;
+                                
+                                using (var command = _context.Database.GetDbConnection().CreateCommand())
                                 {
-                                    // Create Category without Description
-                                    var newCat = new Category
+                                    command.CommandText = checkQuery;
+                                    var parameter = command.CreateParameter();
+                                    parameter.ParameterName = "@categoryId";
+                                    
+                                    // Add null check for existingCategory
+                                    if (existingCategory == null)
                                     {
-                                        StoreId = store.StoreId,
-                                        Name = catInput.Name.Trim()
-                                        // Description = catInput.Description?.Trim() ?? "" // Removed Description
-                                        // Preserve ID if frontend sends it for updates? Requires more logic.
-                                    };
-                                    _context.Categories.Add(newCat);
-                                    updatedCategories.Add(newCat);
+                                        parameter.Value = DBNull.Value;
+                                    }
+                                    else
+                                    {
+                                        parameter.Value = existingCategory.CategoryId;
+                                    }
+                                    
+                                    command.Parameters.Add(parameter);
+                                    
+                                    // Associate the command with the current transaction
+                                    command.Transaction = transaction.GetDbTransaction();
+                                    
+                                    if (command.Connection.State != System.Data.ConnectionState.Open)
+                                        await command.Connection.OpenAsync();
+                                    
+                                    var result = await command.ExecuteScalarAsync();
+                                    hasListings = Convert.ToInt32(result) > 0;
+                                }
+                                
+                                // If the category is not in the new list and has no listings, delete it
+                                bool keepCategory = false;
+                                if (storeDetails.Categories != null && existingCategory != null && existingCategory.Name != null)
+                                {
+                                    keepCategory = storeDetails.Categories.Any(c => 
+                                        c != null && 
+                                        c.Name != null && 
+                                        !string.IsNullOrWhiteSpace(c.Name) && 
+                                        c.Name.Trim().Equals(existingCategory.Name, StringComparison.OrdinalIgnoreCase));
+                                }
+                                
+                                if (existingCategory != null && !keepCategory && !hasListings)
+                                {
+                                    _context.Categories.Remove(existingCategory);
+                                }
+                            }
+
+                            // Add new categories
+                            List<Category> updatedCategories = new List<Category>();
+                            if (storeDetails.Categories != null)
+                            {
+                                foreach (var catInput in storeDetails.Categories)
+                                {
+                                    if (catInput != null && catInput.Name != null && !string.IsNullOrWhiteSpace(catInput.Name))
+                                    {
+                                        string normalizedName = catInput.Name.Trim();
+                                        
+                                        // Check if this category already exists (case-insensitive)
+                                        Category? existingCategory = null;
+                                        foreach (var c in existingCategories)
+                                        {
+                                            if (c != null && c.Name != null && 
+                                                c.Name.Equals(normalizedName, StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                existingCategory = c;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        if (existingCategory != null)
+                                        {
+                                            // Keep existing category
+                                            updatedCategories.Add(existingCategory);
+                                        }
+                                        else
+                                        {
+                                            // Create new category
+                                            var newCat = new Category
+                                            {
+                                                StoreId = store.StoreId,
+                                                Name = normalizedName
+                                            };
+                                            _context.Categories.Add(newCat);
+                                            updatedCategories.Add(newCat);
+                                        }
+                                    }
                                 }
                             }
                             storeDetails.Categories = updatedCategories; // Reflect changes in response DTO
@@ -645,6 +802,17 @@ namespace Server.Controllers
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Error updating store: {ex.ToString()}");
+                        Console.WriteLine($"Exception type: {ex.GetType().FullName}");
+                        Console.WriteLine($"Exception message: {ex.Message}");
+                        Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                        
+                        if (ex.InnerException != null)
+                        {
+                            Console.WriteLine($"Inner exception type: {ex.InnerException.GetType().FullName}");
+                            Console.WriteLine($"Inner exception message: {ex.InnerException.Message}");
+                            Console.WriteLine($"Inner exception stack trace: {ex.InnerException.StackTrace}");
+                        }
+                        
                         // Transaction rolls back via using block
                         return new ObjectResult("An error occurred while updating the store.") { StatusCode = 500 };
                     }
@@ -665,14 +833,21 @@ namespace Server.Controllers
         {
             // Get User ID (ensure helper method or copy logic)
             int userId = 0;
+            
+            // Add null check for User before accessing Claims
+            if (User == null || User.Claims == null)
+            {
+                return Unauthorized("Invalid user authentication token.");
+            }
+            
             var nameIdentifierClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
             foreach (var claim in nameIdentifierClaims) { if (int.TryParse(claim.Value, out int parsedId) && parsedId > 0) { userId = parsedId; break; } }
             if (userId == 0) { return Unauthorized("Invalid token."); }
 
             // Validate input - ThemeUpdateRequest doesn't have StoreId
-            if (request == null /* || request.StoreId <= 0 */) // Removed StoreId check from request
+            if (request == null)
             {
-                // return BadRequest("Invalid theme update request.");
+                return BadRequest("Invalid theme update request.");
             }
 
             var strategy = _context.Database.CreateExecutionStrategy();
@@ -757,7 +932,7 @@ namespace Server.Controllers
         }
 
         // Helper method to get full StoreDetails by ID (used after updates)
-        private async Task<StoreDetails> GetStoreById(int storeId)
+        private async Task<StoreDetails?> GetStoreById(int storeId)
         {
             var store = await _context.Stores.FindAsync(storeId);
             if (store == null) return null;
@@ -767,17 +942,20 @@ namespace Server.Controllers
             var logo = await _context.StoreLogos.FirstOrDefaultAsync(l => l.StoreID == storeId);
             var categories = await _context.Categories.Where(c => c.StoreId == storeId).ToListAsync();
 
+            // Make sure store has a non-null name
+            var storeName = store.Name ?? "My Store";
+
             return new StoreDetails(
                 store.StoreId,
                 store.StoreUrl,
-                store.Name,
+                storeName,
                 themes?.Theme_1 ?? "#393727",
                 themes?.Theme_2 ?? "#D0933D",
                 themes?.Theme_3 ?? "#D3CEBB",
                 themes?.FontColor ?? "#FFFFFF",
                 themes?.FontFamily ?? "sans-serif",
                 themes?.BannerText ?? "",
-                themes?.LogoText ?? store.Name,
+                themes?.LogoText ?? storeName,
                 banner?.BannerURL ?? "",
                 logo?.LogoURL ?? "",
                 categories,
