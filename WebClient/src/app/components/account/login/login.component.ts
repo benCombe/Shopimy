@@ -1,6 +1,5 @@
 import { LoadingService } from './../../../services/loading.service';
 import { Component } from '@angular/core';
-import { TopNavComponent } from "../../top-nav/top-nav.component";
 import { RouterLink, Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +9,7 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [TopNavComponent, RouterLink, FormsModule, NgIf],
+  imports: [RouterLink, FormsModule, NgIf],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })

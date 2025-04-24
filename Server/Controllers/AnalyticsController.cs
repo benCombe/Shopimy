@@ -147,9 +147,19 @@ namespace Server.Controllers
             authHeader= authHeader.Remove(0,7);
             storeid=10000005;
             var activeUser = await _context.ActiveUsers.FromSqlRaw(@"SELECT * from ActiveUsers au where au.token ={0}",authHeader).ToListAsync();
+            if (activeUser == null || activeUser.Count == 0)
+            {
+                return BadRequest("Invalid authentication token.");
+            }
+            
             var store = await _context.Stores
                 .Where(s => s.StoreOwnerId == activeUser[0].UserId)
                 .FirstOrDefaultAsync();
+                
+            if (store == null)
+            {
+                return NotFound("Store not found for the user.");
+            }
             
             var quality= await _context.Quantity.FromSqlRaw(@"select l.name as Name ,SUM(pl.quantity) AS TotalQuantity 
                                                         from PurchaseLog pl
@@ -169,9 +179,19 @@ namespace Server.Controllers
             authHeader= authHeader.Remove(0,7);
             storeid=10000005;
             var activeUser = await _context.ActiveUsers.FromSqlRaw(@"SELECT * from ActiveUsers au where au.token ={0}",authHeader).ToListAsync();
+            if (activeUser == null || activeUser.Count == 0)
+            {
+                return BadRequest("Invalid authentication token.");
+            }
+            
             var store = await _context.Stores
                 .Where(s => s.StoreOwnerId == activeUser[0].UserId)
                 .FirstOrDefaultAsync();
+                
+            if (store == null)
+            {
+                return NotFound("Store not found for the user.");
+            }
             
             var total= await _context.Total.FromSqlRaw(@"select l.name as Name ,SUM(pl.quantity)*i.price AS TotalPrice
                                                         from PurchaseLog pl

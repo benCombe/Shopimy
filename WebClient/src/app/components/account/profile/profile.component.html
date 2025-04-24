@@ -56,57 +56,57 @@
         <div *ngIf="!editMode" class="user-info-display">
           <div class="field-display">
             <label>First Name</label>
-            <div class="value">{{ user?.FirstName }}</div>
+            <div class="value">{{ user.FirstName }}</div>
           </div>
           
           <div class="field-display">
             <label>Last Name</label>
-            <div class="value">{{ user?.LastName }}</div>
+            <div class="value">{{ user.LastName }}</div>
           </div>
           
           <div class="field-display">
             <label>Email</label>
-            <div class="value">{{ user?.Email }}</div>
+            <div class="value">{{ user.Email }}</div>
           </div>
           
           <div class="field-display">
             <label>Phone Number</label>
-            <div class="value">{{ user?.Phone }}</div>
+            <div class="value">{{ user.Phone }}</div>
           </div>
           
           <div class="field-display">
             <label>Address</label>
-            <div class="value">{{ user?.Address }}</div>
+            <div class="value">{{ user.Address }}</div>
           </div>
           
           <div class="field-display">
             <label>City</label>
-            <div class="value">{{ user?.City }}</div>
+            <div class="value">{{ user.City }}</div>
           </div>
           
           <div class="field-display">
             <label>State/Province</label>
-            <div class="value">{{ user?.State }}</div>
+            <div class="value">{{ user.State }}</div>
           </div>
           
           <div class="field-display">
             <label>Postal Code</label>
-            <div class="value">{{ user?.PostalCode }}</div>
+            <div class="value">{{ user.PostalCode }}</div>
           </div>
           
           <div class="field-display">
             <label>Country</label>
-            <div class="value">{{ user?.Country }}</div>
+            <div class="value">{{ user.Country }}</div>
           </div>
           
           <div class="field-display">
             <label>Date of Birth</label>
-            <div class="value">{{ user?.DOB | date }}</div>
+            <div class="value">{{ user.DOB | date }}</div>
           </div>
           
           <div class="field-display">
             <label>Subscription Status</label>
-            <div class="value">{{ user?.Subscribed ? 'Subscribed' : 'Not Subscribed' }}</div>
+            <div class="value">{{ user.Subscribed ? 'Subscribed' : 'Not Subscribed' }}</div>
           </div>
         </div>
 
@@ -190,7 +190,7 @@
               formControlName="city" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.City || 'City' : ''">
+              [attr.placeholder]="!editMode ? user.City || 'City' : ''">
           </div>
 
           <div class="form-group">
@@ -201,7 +201,7 @@
               formControlName="state" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.State || 'State/Province' : ''">
+              [attr.placeholder]="!editMode ? user.State || 'State/Province' : ''">
           </div>
 
           <div class="form-group">
@@ -212,7 +212,7 @@
               formControlName="postalCode" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.PostalCode || 'Postal Code' : ''">
+              [attr.placeholder]="!editMode ? user.PostalCode || 'Postal Code' : ''">
           </div>
 
           <div class="form-group">
@@ -223,7 +223,7 @@
               formControlName="country" 
               [readonly]="!editMode"
               [class.disabled-input]="!editMode"
-              [attr.placeholder]="!editMode ? user?.Country || 'Country' : ''">
+              [attr.placeholder]="!editMode ? user.Country || 'Country' : ''">
           </div>
 
           <div class="form-group">

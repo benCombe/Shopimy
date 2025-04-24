@@ -4,13 +4,12 @@ import { StoreService } from '../../../services/store.service';
 import { StoreDetails } from '../../../models/store-details';
 import { FormsModule } from '@angular/forms';
 import { StoreTheme } from '../../../models/store-theme.model';
-import { StorePreviewComponent } from '../../../components/shared/store-preview/store-preview.component';
 import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-themes',
   standalone: true,
-  imports: [CommonModule, FormsModule, StorePreviewComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './themes.component.html',
   styleUrl: './themes.component.css'
 })

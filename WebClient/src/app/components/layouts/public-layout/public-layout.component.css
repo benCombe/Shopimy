@@ -27,19 +27,18 @@
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .content-container {
-    max-width: 960px;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 768px) {
   .content-container {
-    padding: 0 15px;
     max-width: 100%;
   }
 }
 
 @media (max-width: 480px) {
   .content-container {
-    padding: 0 10px;
+    max-width: 100%;
   }
 }

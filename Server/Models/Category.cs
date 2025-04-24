@@ -28,7 +28,7 @@ namespace Shopimy.Server.Models
 
         public class UpdateCategory
         {
-            public string Name { get; set; }
+            public required string Name { get; set; }
             public int? ParentCategory { get; set; }
         }
         

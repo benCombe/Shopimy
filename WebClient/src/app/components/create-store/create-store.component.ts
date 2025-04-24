@@ -6,14 +6,13 @@ import { StoreDetails } from '../../models/store-details';
 import { DEFAULT_VISIBILITY } from '../../models/component-visibility.model';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TopNavComponent } from '../top-nav/top-nav.component';
 
 @Component({
   selector: 'app-create-store',
   templateUrl: './create-store.component.html',
   styleUrls: ['./create-store.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TopNavComponent]
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class CreateStoreComponent implements OnInit {
   storeForm: FormGroup;

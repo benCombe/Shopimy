@@ -1,6 +1,5 @@
 import { UserService } from './../../../services/user.service';
 import { Component, OnInit } from '@angular/core';
-import { TopNavComponent } from "../../top-nav/top-nav.component";
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RegistrationDetails } from '../../../models/registration-details';
@@ -10,7 +9,7 @@ import { LoadingService } from '../../../services/loading.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [TopNavComponent, NgIf, NgFor, FormsModule, RouterLink],
+  imports: [NgIf, NgFor, FormsModule, RouterLink],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
