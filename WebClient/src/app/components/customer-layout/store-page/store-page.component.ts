@@ -20,6 +20,7 @@ import { StoreHeaderComponent } from "../../shared/store-header/store-header.com
 import { FeaturedProductsComponent } from "../../shared/featured-products/featured-products.component";
 import { TestimonialsComponent } from "../../shared/testimonials/testimonials.component";
 import { NewsletterComponent } from "../../shared/newsletter/newsletter.component";
+import { CategoriesComponent } from "../../shared/categories/categories.component";
 import { StoreTheme } from '../../../models/store-theme.model';
 
 // Using a more flexible type that allows category names while maintaining type safety for known values
@@ -41,7 +42,8 @@ type ViewType = 'store-page' | 'cart' | 'checkout' | string;
     StoreHeaderComponent,
     FeaturedProductsComponent,
     TestimonialsComponent,
-    NewsletterComponent
+    NewsletterComponent,
+    CategoriesComponent
   ],
   templateUrl: './store-page.component.html',
   styleUrls: ['./store-page.component.css']
@@ -193,24 +195,47 @@ export class StorePageComponent implements AfterViewInit, OnInit, OnDestroy {
     // Apply theme using ThemeService
     this.themeService.applyStoreTheme(storeData);
     
-    // Also apply section-specific variables explicitly on the root element
+    // Set component-specific variables directly on the root element
     const rootElement = document.documentElement;
     
-    // Set component-specific variables based on the store's theme
-    rootElement.style.setProperty('--banner-section-bg', storeData.theme_2);
-    rootElement.style.setProperty('--banner-text-bg', storeData.theme_1);
-    rootElement.style.setProperty('--banner-text-color', storeData.fontColor);
-    rootElement.style.setProperty('--header-bg-color', storeData.theme_1);
-    rootElement.style.setProperty('--featured-bg', storeData.theme_3);
-    rootElement.style.setProperty('--featured-heading-color', storeData.theme_1);
-    rootElement.style.setProperty('--action-button-bg', storeData.theme_2);
-    rootElement.style.setProperty('--categories-bg', storeData.theme_3);
-    rootElement.style.setProperty('--categories-heading-color', storeData.theme_1);
-    rootElement.style.setProperty('--categories-underline-color', storeData.theme_2);
-    rootElement.style.setProperty('--newsletter-bg', storeData.theme_3);
-    rootElement.style.setProperty('--newsletter-heading-color', storeData.theme_1);
-    rootElement.style.setProperty('--testimonials-bg', storeData.theme_3);
-    rootElement.style.setProperty('--testimonials-heading-color', storeData.theme_1);
+    // Apply the primary theme variables first - ensuring they're set correctly
+    rootElement.style.setProperty('--main-color', storeData.theme_1 || '#393727');
+    rootElement.style.setProperty('--second-color', storeData.theme_2 || '#D0933D');
+    rootElement.style.setProperty('--third-color', storeData.theme_3 || '#D3CEBB');
+    rootElement.style.setProperty('--alt-color', storeData.fontColor || '#FFFFFF');
+    rootElement.style.setProperty('--main-font-fam', storeData.fontFamily || 'Inria Serif, serif');
+    
+    // Then set component-specific variables for banner section
+    rootElement.style.setProperty('--banner-section-bg', storeData.theme_2 || '#D0933D');
+    rootElement.style.setProperty('--banner-text-bg', storeData.theme_1 || '#393727');
+    rootElement.style.setProperty('--banner-text-color', storeData.fontColor || '#FFFFFF');
+    
+    // Header section variables
+    rootElement.style.setProperty('--header-bg-color', storeData.theme_1 || '#393727');
+    
+    // Featured products section variables
+    rootElement.style.setProperty('--featured-bg', storeData.theme_3 || '#D3CEBB');
+    rootElement.style.setProperty('--featured-heading-color', storeData.theme_1 || '#393727');
+    rootElement.style.setProperty('--action-button-bg', storeData.theme_2 || '#D0933D');
+    
+    // Categories section variables
+    rootElement.style.setProperty('--categories-bg', storeData.theme_3 || '#D3CEBB');
+    rootElement.style.setProperty('--categories-heading-color', storeData.theme_1 || '#393727');
+    rootElement.style.setProperty('--categories-underline-color', storeData.theme_2 || '#D0933D');
+    
+    // Newsletter section variables
+    rootElement.style.setProperty('--newsletter-bg', storeData.theme_3 || '#D3CEBB');
+    rootElement.style.setProperty('--newsletter-heading-color', storeData.theme_1 || '#393727');
+    rootElement.style.setProperty('--newsletter-button-bg', storeData.theme_2 || '#D0933D');
+    rootElement.style.setProperty('--newsletter-text-color', storeData.theme_1 || '#393727');
+    rootElement.style.setProperty('--newsletter-input-bg', storeData.fontColor || '#FFFFFF');
+    
+    // Testimonials section variables
+    rootElement.style.setProperty('--testimonials-bg', storeData.theme_3 || '#D3CEBB');
+    rootElement.style.setProperty('--testimonials-heading-color', storeData.theme_1 || '#393727');
+    rootElement.style.setProperty('--testimonials-text-color', storeData.theme_1 || '#393727');
+    rootElement.style.setProperty('--testimonials-author-color', storeData.theme_2 || '#D0933D');
+    rootElement.style.setProperty('--testimonials-card-bg', storeData.fontColor || '#FFFFFF');
   }
 
   changeView(v: string): void{

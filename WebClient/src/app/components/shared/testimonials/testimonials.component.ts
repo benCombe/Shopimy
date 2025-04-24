@@ -57,11 +57,29 @@ export class TestimonialsComponent {
     const styles: { [key: string]: string } = {};
     
     if (this.theme) {
+      // Apply direct background style
+      styles['background-color'] = this.theme.thirdColor || '#D3CEBB';
+      
+      // Testimonials section specific variables
       styles['--testimonials-bg'] = this.theme.thirdColor || '#D3CEBB';
       styles['--testimonials-text-color'] = this.theme.mainColor || '#393727';
+      styles['--testimonials-heading-color'] = this.theme.mainColor || '#393727';
+      styles['--testimonials-heading-underline'] = this.theme.secondColor || '#D0933D';
+      styles['--testimonials-author-color'] = this.theme.secondColor || '#D0933D';
+      styles['--testimonials-card-bg'] = this.theme.altColor || '#FFFFFF';
+      styles['--testimonials-card-shadow'] = 'rgba(0, 0, 0, 0.1)';
     } else if (this.storeData) {
-      styles['--testimonials-bg'] = this.storeData.theme_3;
-      styles['--testimonials-text-color'] = this.storeData.theme_1;
+      // Apply direct background style
+      styles['background-color'] = this.storeData.theme_3 || '#D3CEBB';
+      
+      // Testimonials section specific variables
+      styles['--testimonials-bg'] = this.storeData.theme_3 || '#D3CEBB';
+      styles['--testimonials-text-color'] = this.storeData.theme_1 || '#393727';
+      styles['--testimonials-heading-color'] = this.storeData.theme_1 || '#393727';
+      styles['--testimonials-heading-underline'] = this.storeData.theme_2 || '#D0933D';
+      styles['--testimonials-author-color'] = this.storeData.theme_2 || '#D0933D';
+      styles['--testimonials-card-bg'] = this.storeData.fontColor || '#FFFFFF';
+      styles['--testimonials-card-shadow'] = 'rgba(0, 0, 0, 0.1)';
     }
     
     return styles;

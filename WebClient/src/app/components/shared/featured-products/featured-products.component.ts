@@ -59,13 +59,31 @@ export class FeaturedProductsComponent implements OnInit {
     const styles: { [key: string]: string } = {};
     
     if (this.theme) {
+      // Apply direct background style
+      styles['background-color'] = this.theme.thirdColor || '#D3CEBB';
+      
+      // Featured products section specific variables
       styles['--featured-bg'] = this.theme.thirdColor || '#D3CEBB';
       styles['--featured-heading-color'] = this.theme.mainColor || '#393727';
+      styles['--featured-heading-underline'] = this.theme.secondColor || '#D0933D';
       styles['--action-button-bg'] = this.theme.secondColor || '#D0933D';
+      styles['--action-button-color'] = this.theme.altColor || '#FFFFFF';
+      styles['--product-card-bg'] = this.theme.altColor || '#FFFFFF';
+      styles['--product-title-color'] = this.theme.mainColor || '#393727';
+      styles['--product-price-color'] = this.theme.secondColor || '#D0933D';
     } else if (this.storeData) {
-      styles['--featured-bg'] = this.storeData.theme_3;
-      styles['--featured-heading-color'] = this.storeData.theme_1;
-      styles['--action-button-bg'] = this.storeData.theme_2;
+      // Apply direct background style
+      styles['background-color'] = this.storeData.theme_3 || '#D3CEBB';
+      
+      // Featured products section specific variables
+      styles['--featured-bg'] = this.storeData.theme_3 || '#D3CEBB';
+      styles['--featured-heading-color'] = this.storeData.theme_1 || '#393727';
+      styles['--featured-heading-underline'] = this.storeData.theme_2 || '#D0933D';
+      styles['--action-button-bg'] = this.storeData.theme_2 || '#D0933D';
+      styles['--action-button-color'] = this.storeData.fontColor || '#FFFFFF';
+      styles['--product-card-bg'] = this.storeData.fontColor || '#FFFFFF';
+      styles['--product-title-color'] = this.storeData.theme_1 || '#393727';
+      styles['--product-price-color'] = this.storeData.theme_2 || '#D0933D';
     }
     
     return styles;

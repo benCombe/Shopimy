@@ -1,0 +1,24 @@
+<section class="categories-container" aria-labelledby="categories-heading" [ngStyle]="getThemeStyles()">
+  <h2 id="categories-heading" class="section-heading">Categories</h2>
+  
+  <!-- Empty state -->
+  <div *ngIf="!categoriesToShow || categoriesToShow.length === 0" class="empty-state" aria-live="polite" role="status">
+    <p class="empty-message">No categories available at this time</p>
+  </div>
+  
+  <!-- Categories display -->
+  <ul *ngIf="categoriesToShow && categoriesToShow.length > 0" class="categories-grid" role="list">
+    <li *ngFor="let category of categoriesToShow" class="category-item" role="listitem">
+      <a [routerLink]="['category', category.name]" class="category-link">
+        <div class="category-card">
+          <div class="category-details">
+            <h3 class="category-title">{{ category.name }}</h3>
+            <p class="category-description" *ngIf="category.subCategories && category.subCategories.length > 0">
+              {{ category.subCategories.length }} subcategories
+            </p>
+          </div>
+        </div>
+      </a>
+    </li>
+  </ul>
+</section> 

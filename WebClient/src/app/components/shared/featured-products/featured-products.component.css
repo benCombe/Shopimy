@@ -4,10 +4,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: var(--featured-bg, var(--third-color, #D3CEBB));
 }
 
 .section-heading {
-  color: var(--main-color, #393727);
+  color: var(--featured-heading-color, var(--main-color, #393727));
   font-size: 1.75rem;
   font-weight: 600;
   margin-bottom: var(--spacing-md, 1rem);
@@ -24,7 +25,7 @@
   transform: translateX(-50%);
   width: 50px;
   height: 3px;
-  background-color: var(--second-color, #D0933D);
+  background-color: var(--featured-heading-underline, var(--second-color, #D0933D));
   border-radius: 2px;
 }
 
@@ -48,7 +49,7 @@
 
 /* Preview Mode Styles */
 .product-card {
-  background-color: white;
+  background-color: var(--product-card-bg, var(--alt-color, white));
   border-radius: var(--border-radius, 8px);
   box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
   overflow: hidden;
@@ -82,22 +83,22 @@
 .product-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--main-color, #393727);
+  color: var(--product-title-color, var(--main-color, #393727));
   margin: 0 0 var(--spacing-xs, 0.5rem) 0;
 }
 
 .product-price {
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--second-color, #D0933D);
+  color: var(--product-price-color, var(--second-color, #D0933D));
   margin: 0 0 var(--spacing-sm, 0.75rem) 0;
 }
 
 .add-to-cart-btn {
   margin-top: auto;
   padding: var(--spacing-sm, 0.75rem) var(--spacing-md, 1rem);
-  background-color: var(--main-color, #393727);
-  color: var(--alt-color, #ffffff);
+  background-color: var(--action-button-bg, var(--main-color, #393727));
+  color: var(--action-button-color, var(--alt-color, #ffffff));
   border: none;
   border-radius: var(--border-radius, 8px);
   font-size: 0.9rem;
@@ -127,7 +128,7 @@
 
 .empty-message {
   font-size: 1.1rem;
-  color: var(--main-color, #393727);
+  color: var(--featured-heading-color, var(--main-color, #393727));
   font-style: italic;
 }
 
@@ -148,8 +149,8 @@
 
 .load-more-btn {
   padding: var(--spacing-sm, 0.75rem) var(--spacing-lg, 2rem);
-  background-color: var(--main-color, #393727);
-  color: var(--alt-color, #ffffff);
+  background-color: var(--action-button-bg, var(--main-color, #393727));
+  color: var(--action-button-color, var(--alt-color, #ffffff));
   border: none;
   border-radius: var(--border-radius, 8px);
   font-size: 1rem;

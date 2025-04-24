@@ -21,11 +21,18 @@ export class HeroBannerComponent {
   getThemeStyles(): { [key: string]: any } {
     const styles: { [key: string]: any } = {};
     
+    // Apply direct background color
+    if (this.theme) {
+      styles['background-color'] = this.theme.secondColor || '#D0933D';
+    } else if (this.storeData) {
+      styles['background-color'] = this.storeData.theme_2 || '#D0933D';
+    }
+    
     // Banner section background
     if (this.theme) {
       styles['--banner-section-bg'] = this.theme.secondColor || '#D0933D';
     } else if (this.storeData) {
-      styles['--banner-section-bg'] = this.storeData.theme_2;
+      styles['--banner-section-bg'] = this.storeData.theme_2 || '#D0933D';
     }
     
     // Banner text background and color
@@ -33,8 +40,8 @@ export class HeroBannerComponent {
       styles['--banner-text-bg'] = this.theme.mainColor || '#393727';
       styles['--banner-text-color'] = this.theme.altColor || '#ffffff';
     } else if (this.storeData) {
-      styles['--banner-text-bg'] = this.storeData.theme_1;
-      styles['--banner-text-color'] = this.storeData.fontColor;
+      styles['--banner-text-bg'] = this.storeData.theme_1 || '#393727';
+      styles['--banner-text-color'] = this.storeData.fontColor || '#ffffff';
     }
     
     // If there's a banner URL, use it as background image

@@ -33,6 +33,16 @@
       </app-featured-products>
     </section>
 
+    <!-- Categories Section -->
+    <section aria-label="Categories">
+      <app-categories
+        *ngIf="storeData?.componentVisibility?.categories"
+        [storeData]="storeData"
+        [theme]="storeTheme"
+        [isPreview]="false">
+      </app-categories>
+    </section>
+
     <!-- Testimonials Section -->
     <section aria-label="Customer Testimonials">
       <app-testimonials 
