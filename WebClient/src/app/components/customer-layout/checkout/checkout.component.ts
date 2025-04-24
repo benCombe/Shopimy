@@ -1,5 +1,5 @@
 import { ShoppingCartComponent } from './../shopping-cart/shopping-cart.component';
-import { AfterViewInit, Component, Input, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, inject, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import { ThemeService } from '../../../services/theme.service';
 import { OrderSummaryComponent } from "../order-summary/order-summary.component";
@@ -8,9 +8,11 @@ import { ShoppingService } from '../../../services/shopping.service';
 import { CheckoutItem } from '../../../models/checkout-item.model';
 import { ActivatedRoute } from '@angular/router';
 import { StoreService } from '../../../services/store.service';
-import { switchMap, take } from 'rxjs/operators';
+import { switchMap, take, takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { StoreDetails } from '../../../models/store-details';
+import { Subject } from 'rxjs';
+import { StoreTheme } from '../../../models/store-theme.model';
 
 @Component({
   selector: 'app-checkout',
@@ -20,8 +22,9 @@ import { StoreDetails } from '../../../models/store-details';
   styleUrl: './checkout.component.css'
 })
 
-export class CheckoutComponent implements OnInit {
-
+export class CheckoutComponent implements OnInit, OnDestroy {
+  @Input() theme: StoreTheme | null = null;
+  
   shippingForm: FormGroup;
   paymentForm: FormGroup;
   storeUrl: string = '';
@@ -29,14 +32,17 @@ export class CheckoutComponent implements OnInit {
   checkoutItems: CheckoutItem[] = [];
   isLoading: boolean = false;
   storeDetails: StoreDetails | null = null;
+  isStoreContext: boolean = false;
   
+  private destroy$ = new Subject<void>();
   private formBuilder = inject(FormBuilder);
   
   constructor(
     private route: ActivatedRoute,
     private storeService: StoreService,
     private shoppingService: ShoppingService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private themeService: ThemeService
   ) {
     this.shippingForm = this.formBuilder.group({
       firstName: ['', Validators.required],
@@ -60,6 +66,18 @@ export class CheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCheckoutData();
+    
+    // Subscribe to theme service to know when we're in store context
+    this.themeService.inStoreContext$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(inStore => {
+        this.isStoreContext = inStore;
+      });
+  }
+  
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadCheckoutData(): void {
@@ -83,6 +101,12 @@ export class CheckoutComponent implements OnInit {
         }
         this.storeDetails = storeDetails;
         this.storeId = storeDetails.id;
+        
+        // Apply theme from store data
+        if (storeDetails && storeDetails.id > 0) {
+          this.themeService.applyStoreTheme(storeDetails);
+        }
+        
         this.checkoutItems = this.shoppingService.CartSubject.getValue().map(cartItem => ({
           id: cartItem.item.listId,
           name: cartItem.item.name,

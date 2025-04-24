@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemService } from '../../../services/item.service';
 import { BasicItem } from '../../../models/basic-item';
+import { StoreTheme } from '../../../models/store-theme.model';
 
 @Component({
   selector: 'app-category-page',
@@ -21,6 +22,7 @@ export class CategoryPageComponent implements OnInit {
 
   @Input() category: Category | null = null;
   @Input() storeDetails: StoreDetails | null = null;
+  @Input() theme: StoreTheme | null = null;
 
   categoryName: string = '';
   items: BasicItem[] = [];

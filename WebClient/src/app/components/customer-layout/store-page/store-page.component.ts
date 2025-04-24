@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { StoreNavComponent } from "../store-nav/store-nav.component";
 import { ThemeService } from '../../../services/theme.service';
 import { StoreService } from '../../../services/store.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { StoreDetails } from '../../../models/store-details';
 import { LoadingService } from '../../../services/loading.service';
 import { ShoppingCartComponent } from "../shopping-cart/shopping-cart.component";
@@ -12,6 +12,7 @@ import { StoreNavService } from '../../../services/store-nav.service';
 import { CategoryPageComponent } from '../category-page/category-page.component';
 import { ItemDetailComponent } from "../../item-detail/item-detail.component";
 import { FooterComponent } from "../../footer/footer.component";
+import { filter, Subject, takeUntil } from 'rxjs';
 
 // Import the new shared components
 import { HeroBannerComponent } from "../../shared/hero-banner/hero-banner.component";
@@ -19,6 +20,7 @@ import { StoreHeaderComponent } from "../../shared/store-header/store-header.com
 import { FeaturedProductsComponent } from "../../shared/featured-products/featured-products.component";
 import { TestimonialsComponent } from "../../shared/testimonials/testimonials.component";
 import { NewsletterComponent } from "../../shared/newsletter/newsletter.component";
+import { StoreTheme } from '../../../models/store-theme.model';
 
 // Using a more flexible type that allows category names while maintaining type safety for known values
 type ViewType = 'store-page' | 'cart' | 'checkout' | string;
@@ -45,17 +47,20 @@ type ViewType = 'store-page' | 'cart' | 'checkout' | string;
   styleUrls: ['./store-page.component.css']
 })
 
-export class StorePageComponent implements AfterViewInit, OnInit{
+export class StorePageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   storeData: StoreDetails | null = null;
   currentUrl: string = "";
   currentView: ViewType = "store-page";
   currentItemView: number = 0;
+  storeTheme: StoreTheme | null = null;
 
   loadingStore: boolean = false;
 
   isMobile: boolean = false;
   initialLoad: boolean = true;
+  
+  private destroy$ = new Subject<void>();
 
   currentBannerUrl: string = '';
 /*   bannerImages: string[] = [
@@ -96,6 +101,18 @@ export class StorePageComponent implements AfterViewInit, OnInit{
       }
     }
 
+    // Listen for route changes to reset theme when navigating away from store page
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationStart),
+      takeUntil(this.destroy$)
+    ).subscribe((event: NavigationStart) => {
+      // If navigating away from a store page
+      if (!event.url.includes(this.currentUrl) && this.storeData) {
+        console.log('Navigating away from store, resetting theme');
+        this.themeService.applyBaseTheme();
+      }
+    });
+
     this.loadingService.setIsLoading(true);
     this.route.paramMap.subscribe(params => {
       const storeUrl = params.get('storeUrl'); // Use 'storeUrl' as defined in routes
@@ -112,6 +129,9 @@ export class StorePageComponent implements AfterViewInit, OnInit{
  */
            // this.startBannerRotation();
             this.storeNavService.initialize();
+
+            // Create theme object from store data
+            this.updateStoreTheme(data);
 
             // Apply theme from store data
             console.log("Applying store theme:", data.theme_1, data.theme_2, data.theme_3);
@@ -152,8 +172,17 @@ export class StorePageComponent implements AfterViewInit, OnInit{
   ngAfterViewInit(): void {
     // Apply theme on after view init as well to ensure components have loaded
     if (this.storeData) {
+      this.updateStoreTheme(this.storeData);
       this.applyStoreTheme(this.storeData);
     }
+  }
+  
+  ngOnDestroy(): void {
+    // Reset to base theme when component is destroyed
+    this.themeService.applyBaseTheme();
+    
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // New method to apply the store theme
@@ -163,6 +192,25 @@ export class StorePageComponent implements AfterViewInit, OnInit{
 
     // Apply theme using ThemeService
     this.themeService.applyStoreTheme(storeData);
+    
+    // Also apply section-specific variables explicitly on the root element
+    const rootElement = document.documentElement;
+    
+    // Set component-specific variables based on the store's theme
+    rootElement.style.setProperty('--banner-section-bg', storeData.theme_2);
+    rootElement.style.setProperty('--banner-text-bg', storeData.theme_1);
+    rootElement.style.setProperty('--banner-text-color', storeData.fontColor);
+    rootElement.style.setProperty('--header-bg-color', storeData.theme_1);
+    rootElement.style.setProperty('--featured-bg', storeData.theme_3);
+    rootElement.style.setProperty('--featured-heading-color', storeData.theme_1);
+    rootElement.style.setProperty('--action-button-bg', storeData.theme_2);
+    rootElement.style.setProperty('--categories-bg', storeData.theme_3);
+    rootElement.style.setProperty('--categories-heading-color', storeData.theme_1);
+    rootElement.style.setProperty('--categories-underline-color', storeData.theme_2);
+    rootElement.style.setProperty('--newsletter-bg', storeData.theme_3);
+    rootElement.style.setProperty('--newsletter-heading-color', storeData.theme_1);
+    rootElement.style.setProperty('--testimonials-bg', storeData.theme_3);
+    rootElement.style.setProperty('--testimonials-heading-color', storeData.theme_1);
   }
 
   changeView(v: string): void{
@@ -212,6 +260,18 @@ export class StorePageComponent implements AfterViewInit, OnInit{
 
   isCategoryView(categoryName: string): boolean {
     return this.currentView === categoryName;
+  }
+
+  updateStoreTheme(storeData: StoreDetails): void {
+    if (!storeData) return;
+    
+    this.storeTheme = {
+      mainColor: storeData.theme_1,
+      secondColor: storeData.theme_2,
+      thirdColor: storeData.theme_3,
+      altColor: storeData.fontColor,
+      mainFontFam: storeData.fontFamily
+    };
   }
 
 }

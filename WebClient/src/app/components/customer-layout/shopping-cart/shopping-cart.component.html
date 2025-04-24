@@ -1,9 +1,9 @@
-<div class="container">
+<div class="container" [ngClass]="{'store-context': isStoreContext}">
   <!-- <app-store-nav></app-store-nav> -->
-  <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3" role="main">
+  <div id="main" class="theme3" role="main">
     <h2 id="cart-heading">Your Basket</h2>
     <div id="basket" aria-labelledby="cart-heading">
-      <div id="cart-items-container" class="theme2" [style.background-color]="storeDetails?.theme_2" role="region" [attr.aria-label]="'Cart items'">
+      <div id="cart-items-container" class="theme2" role="region" [attr.aria-label]="'Cart items'">
         <div *ngFor="let i of cartItems" class="cart-item" role="listitem">
           <div class="item-img-container">
             <img [src]="i.item.blob" class="item-img" [alt]="i.item.name">
@@ -39,7 +39,7 @@
       </div>
 
       <div id="order-summary-container" role="complementary" [attr.aria-label]="'Order summary'">
-        <app-order-summary [storeDetails]="storeDetails"></app-order-summary>
+        <app-order-summary [storeDetails]="storeDetails" [theme]="theme"></app-order-summary>
         <div class="promo-code">
           <label for="promo">Apply Promo Code:</label>
           <div class="promo-input-group">

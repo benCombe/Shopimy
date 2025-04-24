@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../services/store.service';
+import { ThemeService } from '../../services/theme.service';
 import { StoreDetails } from '../../models/store-details';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -20,6 +21,7 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   constructor(
     private storeService: StoreService,
+    private themeService: ThemeService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -38,6 +40,13 @@ export class FooterComponent implements OnInit, OnDestroy {
           this.storeData = null;
           this.isStoreContext = false;
         }
+      });
+      
+    // Subscribe to theme service to know when we're in store context
+    this.themeService.inStoreContext$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(inStore => {
+        this.isStoreContext = inStore;
       });
   }
 

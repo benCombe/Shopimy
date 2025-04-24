@@ -1,7 +1,7 @@
-<div class="container">
+<div class="container" [ngClass]="{'store-context': isStoreContext}">
 <!--   <app-store-nav></app-store-nav> -->
-  <div id="main" class="theme3" [style.background-color]="storeDetails?.theme_3" role="main">
-    <div class="checkout-container theme2" [style.background-color]="storeDetails?.theme_2" role="form" aria-labelledby="shipping-heading">
+  <div id="main" class="theme3" role="main">
+    <div class="checkout-container theme2" role="form" aria-labelledby="shipping-heading">
       <!-- Remove Step Indicator -->
       <!-- 
       <div class="steps">
@@ -15,7 +15,7 @@
       <h2 id="shipping-heading">Shipping Details</h2>
       <form [formGroup]="shippingForm" novalidate>
         <div class="form-group">
-          <label for="firstName" class="fc" [style.color]="storeDetails?.fontColor">First Name</label>
+          <label for="firstName" class="fc">First Name</label>
           <input 
             type="text" 
             id="firstName" 
@@ -29,7 +29,7 @@
         </div>
 
         <div class="form-group">
-          <label for="lastName" class="fc" [style.color]="storeDetails?.fontColor">Last Name</label>
+          <label for="lastName" class="fc">Last Name</label>
           <input 
             type="text" 
             id="lastName" 
@@ -43,7 +43,7 @@
         </div>
 
         <div class="form-group">
-          <label for="address" class="fc" [style.color]="storeDetails?.fontColor">Address</label>
+          <label for="address" class="fc">Address</label>
           <input 
             type="text" 
             id="address" 
@@ -57,7 +57,7 @@
         </div>
 
         <div class="form-group">
-          <label for="city" class="fc" [style.color]="storeDetails?.fontColor">City</label>
+          <label for="city" class="fc">City</label>
           <input 
             type="text" 
             id="city" 
@@ -71,7 +71,7 @@
         </div>
 
         <div class="form-group">
-          <label for="province" class="fc" [style.color]="storeDetails?.fontColor">Province/State</label>
+          <label for="province" class="fc">Province/State</label>
           <input 
             type="text" 
             id="province" 
@@ -85,7 +85,7 @@
         </div>
 
         <div class="form-group">
-          <label for="country" class="fc" [style.color]="storeDetails?.fontColor">Country</label>
+          <label for="country" class="fc">Country</label>
           <input 
             type="text" 
             id="country" 
@@ -99,7 +99,7 @@
         </div>
 
         <div class="form-group">
-          <label for="postalCode" class="fc" [style.color]="storeDetails?.fontColor">Zip/Postal Code</label>
+          <label for="postalCode" class="fc">Zip/Postal Code</label>
           <input 
             type="text" 
             id="postalCode" 
@@ -113,7 +113,7 @@
         </div>
 
         <div class="form-group">
-          <label for="email" class="fc" [style.color]="storeDetails?.fontColor">Email</label>
+          <label for="email" class="fc">Email</label>
           <input 
             type="email" 
             id="email" 
@@ -127,7 +127,7 @@
         </div>
 
         <div class="form-group">
-          <label for="phone" class="fc" [style.color]="storeDetails?.fontColor">Phone</label>
+          <label for="phone" class="fc">Phone</label>
           <input 
             type="text" 
             id="phone" 
@@ -142,8 +142,7 @@
       </form>
       <button 
         id="checkout-btn"
-        [style.background-color]="storeDetails?.theme_1"
-        [style.color]="storeDetails?.fontColor"
+        class="proceed-to-payment-btn"
         (click)="proceedToPayment()" 
         [disabled]="!shippingForm.valid || isLoading">
         <span *ngIf="!isLoading">Proceed To Payment</span>
@@ -193,7 +192,7 @@
     </div> 
     -->
 
-    <app-order-summary [storeDetails]="storeDetails"></app-order-summary>
+    <app-order-summary [storeDetails]="storeDetails" [theme]="theme"></app-order-summary>
   </div>
 </div>
 

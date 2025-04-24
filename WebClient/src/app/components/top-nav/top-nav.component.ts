@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, Router, NavigationEnd, Event as RouterEvent } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { StoreService } from '../../services/store.service';
+import { ThemeService } from '../../services/theme.service';
 import { Subscription, filter } from 'rxjs';
 
 // Define interfaces for the navigation categories and options
@@ -34,10 +35,12 @@ export class TopNavComponent implements OnInit, OnDestroy, AfterViewInit {
   isUserMenuOpen: boolean = false;
   hasStore: boolean = false;
   activeLink: string = '';
+  inStoreContext: boolean = false;
   
   private routerSubscription: Subscription | undefined;
   private userSubscription: Subscription | undefined;
   private storeSubscription: Subscription | undefined;
+  private themeSubscription: Subscription | undefined;
 
   // Organized navigation by categories
   navCategories: NavCategory[] = [
@@ -71,6 +74,7 @@ export class TopNavComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private userService: UserService, 
     private storeService: StoreService,
+    private themeService: ThemeService,
     private router: Router,
     private elementRef: ElementRef
   ) {}
@@ -100,6 +104,13 @@ export class TopNavComponent implements OnInit, OnDestroy, AfterViewInit {
         // Log page view for analytics purposes
         this.logNavigation(event.urlAfterRedirects);
       });
+      
+    // Subscribe to theme service to know when we're in store context
+    this.themeSubscription = this.themeService.inStoreContext$.subscribe(
+      inStore => {
+        this.inStoreContext = inStore;
+      }
+    );
   }
   
   ngAfterViewInit(): void {
@@ -116,6 +127,9 @@ export class TopNavComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (this.storeSubscription) {
       this.storeSubscription.unsubscribe();
+    }
+    if (this.themeSubscription) {
+      this.themeSubscription.unsubscribe();
     }
     
     // Remove event listeners
@@ -248,23 +262,18 @@ export class TopNavComponent implements OnInit, OnDestroy, AfterViewInit {
 
   navigateAndCloseMenu(link: string) {
     this.closeMobileMenu();
-    // Track menu item clicks for usage analytics
+    this.isDropdownOpen = false;
+    this.isUserMenuOpen = false;
+    
+    // Log the menu item click for analytics
     this.logMenuItemClick(link);
   }
   
   private logMenuItemClick(link: string): void {
-    // In a real app, this would connect to an analytics service
     console.log(`Menu item clicked: ${link}`);
   }
   
   isActive(link: string): boolean {
-    // Handle root path special case
-    if (link === '/' && this.activeLink === '/') {
-      return true;
-    }
-    
-    // For other paths, check if the current route starts with the link
-    // This handles active states for nested routes
-    return link !== '/' && this.activeLink.startsWith(link);
+    return this.activeLink === link;
   }
 }

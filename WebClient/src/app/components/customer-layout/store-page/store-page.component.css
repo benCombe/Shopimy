@@ -49,6 +49,34 @@ app-category-page {
   max-width: 1200px;
 }
 
+/* Apply theme variables to all sections */
+section {
+  width: 100%;
+  border-radius: var(--border-radius, 8px);
+  margin-bottom: var(--spacing-md, 16px);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Ensure section components get proper styling */
+section > * {
+  width: 100%;
+  --banner-section-bg: var(--second-color);
+  --banner-text-bg: var(--main-color);
+  --banner-text-color: var(--alt-color);
+  --header-bg-color: var(--main-color);
+  --featured-bg: var(--third-color);
+  --featured-heading-color: var(--main-color);
+  --action-button-bg: var(--second-color);
+  --categories-bg: var(--third-color);
+  --categories-heading-color: var(--main-color);
+  --categories-underline-color: var(--second-color);
+  --newsletter-bg: var(--third-color);
+  --newsletter-heading-color: var(--main-color);
+  --testimonials-bg: var(--third-color);
+  --testimonials-heading-color: var(--main-color);
+}
+
 /* Banner styling */
 #banner {
   position: relative;

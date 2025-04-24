@@ -5,6 +5,15 @@
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-md);
   font-family: var(--main-font-fam);
+  background-color: var(--second-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Store context specific styles */
+#order-summary.store-context {
+  /* Uses CSS variables dynamically set by ThemeService */
+  background-color: var(--second-color);
+  border-color: var(--border-color, rgba(0, 0, 0, 0.1));
 }
 
 #order-summary h2 {
@@ -25,6 +34,10 @@
   width: 100%;
   font-size: 1.1rem;
   padding: var(--spacing-xs) 0;
+  color: var(--main-color);
+}
+
+.fc {
   color: var(--main-color);
 }
 
@@ -63,11 +76,31 @@
   transition: all 0.3s ease;
   border: none;
   cursor: pointer;
+  background-color: var(--main-color);
+  color: var(--alt-color);
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Store context specific button styles */
+.store-context .checkout-btn {
+  background-color: var(--main-color);
+  color: var(--alt-color);
 }
 
 .checkout-btn:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
+  background-color: var(--second-color);
+  color: var(--main-color);
+}
+
+/* Store context specific button hover styles */
+.store-context .checkout-btn:hover {
+  background-color: var(--second-color);
+  color: var(--main-color);
 }
 
 .checkout-btn:focus {
@@ -76,7 +109,7 @@
 }
 
 .checkout-btn:disabled {
-  background-color: var(--color-text-light);
+  background-color: var(--color-text-light, #6b7280);
   cursor: not-allowed;
   opacity: 0.7;
 }

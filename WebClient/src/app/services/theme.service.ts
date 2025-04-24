@@ -2,7 +2,7 @@ import { StoreService } from './store.service';
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { StoreDetails } from '../models/store-details';
 import { StoreTheme } from '../models/store-theme.model';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root' // Ensures the service is available throughout the app
@@ -16,6 +16,10 @@ export class ThemeService {
     altColor: '#FFFFFF',
     mainFontFam: 'Cambria, Cochin'
   };
+  
+  // Add a behavior subject to track if we're in a store context
+  private inStoreContextSubject = new BehaviorSubject<boolean>(false);
+  public inStoreContext$ = this.inStoreContextSubject.asObservable();
 
   constructor(rendererFactory: RendererFactory2, private storeService: StoreService) {
     this.renderer = rendererFactory.createRenderer(null, null);
@@ -26,6 +30,7 @@ export class ThemeService {
    * This is used for general Shopimy platform pages
    */
   applyBaseTheme(): void {
+    this.inStoreContextSubject.next(false);
     this.applyThemeToRootElement({
       mainColor: getComputedStyle(document.documentElement).getPropertyValue('--main-color').trim() || this.defaultTheme.mainColor,
       secondColor: getComputedStyle(document.documentElement).getPropertyValue('--second-color').trim() || this.defaultTheme.secondColor,
@@ -42,6 +47,7 @@ export class ThemeService {
   applyStoreTheme(store: StoreDetails): void {
     if (!store) return;
     
+    this.inStoreContextSubject.next(true);
     this.applyThemeToRootElement({
       mainColor: store.theme_1 || this.defaultTheme.mainColor,
       secondColor: store.theme_2 || this.defaultTheme.secondColor,

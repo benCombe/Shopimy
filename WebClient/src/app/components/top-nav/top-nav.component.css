@@ -18,6 +18,13 @@
   overflow: visible;
 }
 
+/* Store context specific styles */
+#main.center-spaced.store-context {
+  /* All colors use the CSS variables which are dynamically set by ThemeService */
+  background-color: var(--main-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 #shopimy-logo {
   color: var(--second-color);
   font-family: var(--main-font-fam);
@@ -91,6 +98,10 @@
   background-color: rgba(208, 147, 61, 0.2);
 }
 
+.store-context #hamburger:hover {
+  background-color: rgba(var(--second-color-rgb), 0.2);
+}
+
 #hamburger:hover i {
   color: var(--second-color);
 }
@@ -119,11 +130,17 @@
   z-index: 2002;
   box-shadow: var(--shadow-lg);
   transform: translateX(100%);
-  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, background-color 0.3s ease, color 0.3s ease;
   overflow-y: auto;
   padding-top: 0;
   display: block;
   scrollbar-width: thin;
+  scrollbar-color: var(--second-color) var(--main-color);
+}
+
+/* Store context specific mobile menu styles */
+#mobile-menu.store-context {
+  background-color: var(--main-color);
   scrollbar-color: var(--second-color) var(--main-color);
 }
 
@@ -217,6 +234,10 @@
   color: var(--second-color);
 }
 
+.store-context .mobile-close-btn:hover {
+  background-color: rgba(var(--second-color-rgb), 0.2);
+}
+
 .mobile-section-header {
   padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
   color: var(--second-color);
@@ -248,7 +269,6 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  text-align: left;
 }
 
 #mobile-menu .opt {

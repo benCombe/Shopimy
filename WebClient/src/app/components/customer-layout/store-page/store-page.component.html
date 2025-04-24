@@ -9,7 +9,8 @@
     <section aria-label="Hero Banner">
       <app-hero-banner 
         *ngIf="storeData?.componentVisibility?.hero" 
-        [storeData]="storeData">
+        [storeData]="storeData"
+        [theme]="storeTheme">
       </app-hero-banner>
     </section>
 
@@ -17,7 +18,8 @@
     <section aria-label="Store Header">
       <app-store-header 
         *ngIf="storeData?.componentVisibility?.header" 
-        [storeData]="storeData">
+        [storeData]="storeData"
+        [theme]="storeTheme">
       </app-store-header>
     </section>
 
@@ -26,6 +28,7 @@
       <app-featured-products 
         *ngIf="storeData?.componentVisibility?.featured" 
         [storeData]="storeData"
+        [theme]="storeTheme"
         [isPreview]="false">
       </app-featured-products>
     </section>
@@ -34,7 +37,8 @@
     <section aria-label="Customer Testimonials">
       <app-testimonials 
         *ngIf="storeData?.componentVisibility?.testimonials" 
-        [storeData]="storeData">
+        [storeData]="storeData"
+        [theme]="storeTheme">
       </app-testimonials>
     </section>
 
@@ -42,21 +46,23 @@
     <section aria-label="Newsletter Signup">
       <app-newsletter 
         *ngIf="storeData?.componentVisibility?.newsletter" 
-        [storeData]="storeData">
+        [storeData]="storeData"
+        [theme]="storeTheme">
       </app-newsletter>
     </section>
   </div>
   
   <!-- Other Views -->
-  <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData"></app-shopping-cart>
-  <app-checkout *ngIf="isCheckoutView()"></app-checkout>
-  <app-item-detail *ngIf="isItemView()" [storeDetails]="storeData" [itemId]="currentItemView"></app-item-detail>
+  <app-shopping-cart *ngIf="isCartView()" [storeDetails]="storeData" [theme]="storeTheme"></app-shopping-cart>
+  <app-checkout *ngIf="isCheckoutView()" [theme]="storeTheme"></app-checkout>
+  <app-item-detail *ngIf="isItemView()" [storeDetails]="storeData" [itemId]="currentItemView" [theme]="storeTheme"></app-item-detail>
   
   <!-- The category page is loaded if the url is "shopimy.com/[storeurl]/[category-name]" -->
   <ng-container *ngFor="let c of storeData?.categories">
     <app-category-page *ngIf="isCategoryView(c.name) && storeData?.componentVisibility?.categories" 
                       [category]="c" 
-                      [storeDetails]="storeData">
+                      [storeDetails]="storeData"
+                      [theme]="storeTheme">
     </app-category-page>
   </ng-container>
   
