@@ -633,6 +633,7 @@ app-themes {
   */
 }
 
+/* Fix for live preview */
 .live-store-preview-wrapper {
   width: 100%;
   height: 100%;
@@ -642,6 +643,14 @@ app-themes {
   display: block;
   background-color: #fff;
   border-radius: var(--border-radius);
+  overflow: hidden; /* Added to fix content overflow */
+  position: relative; /* Added to establish proper positioning context */
+}
+
+/* Remove any potential red line issues */
+.live-store-preview-wrapper::before,
+.live-store-preview-wrapper::after {
+  display: none; /* Remove any pseudo-elements that might be causing the red line */
 }
 
 input, textarea, select, button {
@@ -913,8 +922,8 @@ input, textarea, select, button {
 }
 
 .preview-desktop {
-  width: 16px;
-  height: 16px;
+  width: 100%;
+  height: 100%;
   position: relative;
   display: block;
 }
@@ -931,8 +940,8 @@ input, textarea, select, button {
 }
 
 .preview-tablet {
-  width: 12px;
-  height: 16px;
+  width: 100%;
+  height: 100%;
   position: relative;
   display: block;
 }
@@ -949,8 +958,8 @@ input, textarea, select, button {
 }
 
 .preview-mobile {
-  width: 8px;
-  height: 16px;
+  width: 100%;
+  height: 100%;
   position: relative;
   display: block;
 }
@@ -981,4 +990,31 @@ input, textarea, select, button {
 .standard-button.primary.error {
   background-color: #dc3545;
   border-color: #dc3545;
+}
+
+/* Device Preview Classes */
+.preview-desktop app-store-preview {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.preview-tablet app-store-preview {
+  width: 768px;
+  max-width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  display: block;
+}
+
+.preview-mobile app-store-preview {
+  width: 375px;
+  max-width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  display: block;
 } 

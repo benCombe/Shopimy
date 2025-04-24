@@ -42,7 +42,14 @@
     
     <!-- Show a message if no store data is available -->
     <div *ngIf="!storeData" class="no-store-data">
-      <p>Store preview is loading... If you don't see a preview, try saving your store settings first.</p>
+      <p>Your store preview is loading...</p>
+      <p>If nothing appears, please try:</p>
+      <ul>
+        <li>Enter all required store details</li>
+        <li>Select a theme</li>
+        <li>Choose at least one component</li>
+        <li>Click "Save Changes" to apply your settings</li>
+      </ul>
     </div>
   </div>
 </div> 
