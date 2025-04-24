@@ -319,6 +319,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   saveDeliveryAddress(): void {
+    console.log('saveDeliveryAddress called.');
+    console.log('Form valid?:', this.deliveryForm.valid);
+    console.log('User ID:', this.user?.Id);
+    console.log('Form value:', this.deliveryForm.value);
+    console.log('Form errors:', this.deliveryForm.errors);
+
     if (this.deliveryForm.valid && this.user.Id > 0) {
       this.isSavingDelivery = true;
       const newAddress = new DeliveryDetails(

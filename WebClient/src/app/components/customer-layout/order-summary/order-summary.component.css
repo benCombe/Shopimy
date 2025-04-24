@@ -6,7 +6,12 @@
   box-shadow: var(--shadow-md);
   font-family: var(--main-font-fam);
   background-color: var(--second-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#order-summary:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
 }
 
 /* Store context specific styles */
@@ -28,13 +33,20 @@
 .summary-item-container {
   width: 100%;
   margin-bottom: var(--spacing-lg);
+  background-color: var(--third-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 .summary-item {
   width: 100%;
   font-size: 1.1rem;
-  padding: var(--spacing-xs) 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
   color: var(--main-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .fc {
@@ -60,6 +72,10 @@
   font-weight: 600;
 }
 
+#total span:last-child {
+  color: var(--main-color);
+}
+
 .checkout-opt {
   width: 100%;
   margin-top: var(--spacing-md);
@@ -67,7 +83,7 @@
 
 /* Using standard button class with checkout-btn styling */
 .checkout-btn {
-  width: 80%;
+  width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
   font-weight: 600;
   font-size: 1.2rem;
@@ -82,6 +98,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  height: 50px;
 }
 
 /* Store context specific button styles */
@@ -112,6 +129,14 @@
   background-color: var(--color-text-light, #6b7280);
   cursor: not-allowed;
   opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Special price formatting */
+.free-shipping {
+  color: var(--color-success, #059669);
+  font-weight: bold;
 }
 
 @media only screen and (max-width: 992px) {
@@ -137,6 +162,7 @@
   .checkout-btn {
     font-size: 1.1rem;
     width: 100%;
+    height: 45px;
   }
 }
 
@@ -148,10 +174,20 @@
   .summary-item {
     font-size: 0.9rem;
   }
+  
+  .checkout-btn {
+    height: 40px;
+    font-size: 1rem;
+  }
 }
 
 /* For reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
+  #order-summary:hover {
+    transform: none;
+    transition: none;
+  }
+  
   .checkout-btn:hover {
     transform: none;
     transition: none;

@@ -59,8 +59,8 @@
       <div class="card-header">
         <h2>Visits to Store</h2>
         <div class="card-actions">
-          <button class="card-action-btn" (click)="changeTimeRange('weekly')" [ngClass]="{'active': selectedTimeRange === 'weekly'}">Week</button>
-          <button class="card-action-btn" (click)="changeTimeRange('monthly')" [ngClass]="{'active': selectedTimeRange === 'monthly'}">Month</button>
+          <button class="standard-button small" (click)="changeTimeRange('weekly')" [ngClass]="{'primary': selectedTimeRange === 'weekly', 'secondary': selectedTimeRange !== 'weekly'}">Week</button>
+          <button class="standard-button small" (click)="changeTimeRange('monthly')" [ngClass]="{'primary': selectedTimeRange === 'monthly', 'secondary': selectedTimeRange !== 'monthly'}">Month</button>
         </div>
       </div>
       <div class="card-content">

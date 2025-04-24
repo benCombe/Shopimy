@@ -161,12 +161,12 @@
       </div>
 
       <div class="button-group">
-        <button *ngIf="!isEditing" id="edit-btn" (click)="toggleEdit()">Edit</button>
-        <button *ngIf="isEditing" id="save-btn" (click)="saveProfile()" [disabled]="isSaving || profileForm.invalid">
+        <button *ngIf="!isEditing" id="edit-btn" class="standard-button primary" (click)="toggleEdit()">Edit</button>
+        <button *ngIf="isEditing" id="save-btn" class="standard-button primary" (click)="saveProfile()" [disabled]="isSaving || profileForm.invalid">
           <span *ngIf="!isSaving">Save</span>
           <span *ngIf="isSaving">Saving...</span>
         </button>
-        <button *ngIf="isEditing" class="cancel-button" (click)="toggleEdit()" [disabled]="isSaving">Cancel</button>
+        <button *ngIf="isEditing" class="standard-button secondary" (click)="toggleEdit()" [disabled]="isSaving">Cancel</button>
       </div>
     </fieldset>
   </div>
@@ -216,7 +216,7 @@
   </div>
 
   <div class="section save-section">
-    <button id="settings-save-btn" (click)="saveSettings()">Save All Settings</button>
+    <button id="settings-save-btn" class="standard-button primary full-width" (click)="saveSettings()">Save All Settings</button>
   </div>
 
 </div>

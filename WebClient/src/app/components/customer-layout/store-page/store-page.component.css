@@ -7,6 +7,7 @@
   font-family: var(--main-font-fam, sans-serif);
   overflow-x: hidden;
   background-color: var(--third-color, #D3CEBB);
+  align-items: center;
 }
 
 #store-page {
@@ -14,10 +15,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   padding-bottom: var(--spacing-xl, 3rem);
   gap: var(--spacing-lg, 2rem);
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Ensure other main components also take up appropriate space */
@@ -29,6 +32,9 @@ app-category-page {
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Accessibility: Visually hidden elements for screen readers */
@@ -43,19 +49,73 @@ app-category-page {
   border: 0;
 }
 
-/* Each component should take up to 95% width on larger screens */
+/* Each component should take up to 95% width on larger screens and be centered */
 #store-page > * {
   width: 90%;
   max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
-/* Apply theme variables to all sections */
+/* Apply theme variables to all sections and ensure they're centered */
 section {
   width: 100%;
   border-radius: var(--border-radius, 8px);
   margin-bottom: var(--spacing-md, 16px);
   box-sizing: border-box;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Specific section styling */
+.hero-section,
+.header-section,
+.featured-section,
+.categories-section,
+.testimonials-section,
+.newsletter-section {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Store Header styling - ensure centered */
+section[aria-label="Store Header"],
+.header-section {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Featured Products styling - ensure centered */
+section[aria-label="Featured Products"],
+.featured-section {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Categories styling - ensure centered */
+section[aria-label="Categories"],
+.categories-section {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Ensure section components get proper styling */
@@ -86,14 +146,15 @@ section > * {
   background-size: cover;
   background-position: center;
   z-index: 0;
+  text-align: center;
 }
 
 #banner-text {
   position: absolute;
-  top: 25%;
-  left: 5%;
-  max-width: 25%;
-  height: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 80%;
   border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-lg);
@@ -121,7 +182,7 @@ section > * {
 }
 
 #logo-container {
-  width: 58.5%;
+  width: 80%;
   height: calc(85% - var(--spacing-sm));
   border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   border-radius: var(--border-radius-lg);
@@ -133,6 +194,8 @@ section > * {
   background-color: var(--third-color);
   position: relative;
   z-index: 10;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 #logo-wrapper {
@@ -170,11 +233,12 @@ section > * {
 /* Product container styling */
 #product-container {
   padding: var(--spacing-md) var(--spacing-lg);
-  width: 60%;
+  width: 80%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-lg);
-  margin: var(--spacing-lg) 0;
+  margin: var(--spacing-lg) auto;
+  max-width: 1200px;
 }
 
 .product {
@@ -358,54 +422,57 @@ section > * {
 /* Responsive Styles */
 @media only screen and (max-width: 1024px) {
   #product-container {
+    width: 90%;
     grid-template-columns: repeat(2, 1fr);
-    width: 80%;
   }
   
   #testimonials-section,
   #newsletter-section {
-    width: 80%;
+    width: 90%;
   }
 }
 
 @media only screen and (max-width: 768px) {
   #store-page {
-    padding: 0 0 var(--spacing-lg);
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
   }
   
   #store-page > * {
     width: 95%;
+    margin-left: auto;
+    margin-right: auto;
   }
-
+  
   #banner-text {
-    max-width: 50%;
-    font-size: 1.75rem;
+    max-width: 90%;
+    font-size: 2rem;
   }
   
   #product-container {
-    padding: var(--spacing-sm);
-    width: 90%;
+    width: 95%;
+    gap: var(--spacing-md);
   }
   
   .newsletter-form {
     flex-direction: column;
-    width: 90%;
+    align-items: center;
   }
   
   .newsletter-form input {
-    border-radius: var(--border-radius);
+    margin-right: 0;
     margin-bottom: var(--spacing-sm);
   }
   
   .newsletter-form button {
-    border-radius: var(--border-radius);
     width: 100%;
   }
 }
 
 @media only screen and (max-width: 480px) {
   #store-page {
-    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
   }
   
   #store-page > * {
@@ -413,28 +480,28 @@ section > * {
   }
   
   #product-container {
+    width: 100%;
     grid-template-columns: 1fr;
-    width: 95%;
+    padding: var(--spacing-sm);
     gap: var(--spacing-md);
   }
   
   #banner-text {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 80%;
+    max-width: 95%;
     font-size: 1.5rem;
+    height: auto;
+    padding: var(--spacing-sm);
   }
-
+  
   #testimonials-section,
   #newsletter-section {
-    width: 95%;
+    width: 100%;
     padding: var(--spacing-md);
   }
   
   #testimonials-section h3,
   #newsletter-section h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 }
 

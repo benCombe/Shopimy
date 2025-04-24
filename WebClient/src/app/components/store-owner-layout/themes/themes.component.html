@@ -157,6 +157,7 @@
             <option value="'Roboto', sans-serif">Roboto</option>
             <option value="'Open Sans', sans-serif">Open Sans</option>
             <option value="'Lato', sans-serif">Lato</option>
+            <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
           </select>
         </div>
         
@@ -194,7 +195,7 @@
       <span class="pending-indicator"></span>
       <span class="pending-text">Theme changes are ready to be saved</span>
     </div>
-    <button class="save-theme-button" (click)="saveTheme()" [disabled]="isLoading || !themeChanged">
+    <button class="standard-button primary" (click)="saveTheme()" [disabled]="isLoading || !themeChanged">
       <span *ngIf="!isLoading">Save Theme</span>
       <span *ngIf="isLoading">
         <span class="loading-spinner"></span>
@@ -210,7 +211,7 @@
         <small>{{errorDetails}}</small>
       </div>
       <div class="error-actions" *ngIf="saveError">
-        <button class="retry-button" (click)="saveTheme()">Retry</button>
+        <button class="standard-button secondary small" (click)="saveTheme()">Retry</button>
       </div>
     </div>
   </div>

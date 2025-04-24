@@ -6,7 +6,7 @@
     <h1 id="store-name" class="visually-hidden">{{ storeData?.name || 'Online Store' }}</h1>
 
     <!-- Hero Banner Section -->
-    <section aria-label="Hero Banner">
+    <section aria-label="Hero Banner" class="hero-section">
       <app-hero-banner 
         *ngIf="storeData?.componentVisibility?.hero" 
         [storeData]="storeData"
@@ -15,7 +15,7 @@
     </section>
 
     <!-- Store Header/Logo Section -->
-    <section aria-label="Store Header">
+    <section aria-label="Store Header" class="header-section">
       <app-store-header 
         *ngIf="storeData?.componentVisibility?.header" 
         [storeData]="storeData"
@@ -24,7 +24,7 @@
     </section>
 
     <!-- Featured Products Section -->
-    <section aria-label="Featured Products">
+    <section aria-label="Featured Products" class="featured-section">
       <app-featured-products 
         *ngIf="storeData?.componentVisibility?.featured" 
         [storeData]="storeData"
@@ -34,7 +34,7 @@
     </section>
 
     <!-- Categories Section -->
-    <section aria-label="Categories">
+    <section aria-label="Categories" class="categories-section">
       <app-categories
         *ngIf="storeData?.componentVisibility?.categories"
         [storeData]="storeData"
@@ -44,7 +44,7 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section aria-label="Customer Testimonials">
+    <section aria-label="Customer Testimonials" class="testimonials-section">
       <app-testimonials 
         *ngIf="storeData?.componentVisibility?.testimonials" 
         [storeData]="storeData"
@@ -53,7 +53,7 @@
     </section>
 
     <!-- Newsletter Section -->
-    <section aria-label="Newsletter Signup">
+    <section aria-label="Newsletter Signup" class="newsletter-section">
       <app-newsletter 
         *ngIf="storeData?.componentVisibility?.newsletter" 
         [storeData]="storeData"

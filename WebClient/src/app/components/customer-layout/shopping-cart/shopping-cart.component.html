@@ -12,11 +12,11 @@
             <div class="item-info">
               <span class="item-lbl">{{i.item.name}}</span>
               <ng-container *ngIf="i.item.salePrice < i.item.price; else notOnSale">
-                <span class="sale-price">${{ i.item.salePrice }}</span>
-                <span class="original-price strikethrough">${{ i.item.price }}</span>
+                <span class="sale-price">${{ i.item.salePrice.toFixed(2) }}</span>
+                <span class="original-price strikethrough">${{ i.item.price.toFixed(2) }}</span>
               </ng-container>
               <ng-template #notOnSale>
-                <span>${{ i.item.price }}</span>
+                <span>${{ i.item.price.toFixed(2) }}</span>
               </ng-template>
               <span class="item-details"></span>
             </div>

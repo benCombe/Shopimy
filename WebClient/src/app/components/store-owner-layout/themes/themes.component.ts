@@ -174,7 +174,7 @@ export class ThemesComponent implements OnInit {
     };
     
     // Make sure font family is one of the valid options
-    const validFonts = ["'Inria Serif', serif", "'Roboto', sans-serif", "'Open Sans', sans-serif", "'Lato', sans-serif"];
+    const validFonts = ["'Inria Serif', serif", "'Roboto', sans-serif", "'Open Sans', sans-serif", "'Lato', sans-serif", "'Comic Sans MS', cursive"];
     if (!validFonts.includes(this.customTheme.mainFontFam)) {
       this.customTheme.mainFontFam = "'Roboto', sans-serif";
     }

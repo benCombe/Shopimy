@@ -1,10 +1,14 @@
 .featured-products-container {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: var(--spacing-md, 1rem) 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   background-color: var(--featured-bg, var(--third-color, #D3CEBB));
+  text-align: center;
 }
 
 .section-heading {
@@ -15,6 +19,7 @@
   text-align: center;
   position: relative;
   padding-bottom: 0.5rem;
+  width: 100%;
 }
 
 .section-heading::after {
@@ -29,22 +34,25 @@
   border-radius: 2px;
 }
 
-/* Product Grid */
+/* Product Grid - Flexbox Version for Assured Centering */
 .product-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--spacing-lg, 2rem);
-  width: 100%;
+  width: 90%;
   max-width: 1200px;
-  margin: var(--spacing-md, 1rem) 0;
+  margin: var(--spacing-md, 1rem) auto;
   padding: 0;
   list-style: none;
 }
 
 .product-item {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  flex: 0 0 auto;
+  width: calc(33.333% - var(--spacing-lg, 2rem));
+  max-width: 350px;
+  min-width: 280px;
+  margin-bottom: var(--spacing-lg, 2rem);
 }
 
 /* Preview Mode Styles */
@@ -78,6 +86,8 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  align-items: center;
+  text-align: center;
 }
 
 .product-title {
@@ -85,6 +95,8 @@
   font-weight: 600;
   color: var(--product-title-color, var(--main-color, #393727));
   margin: 0 0 var(--spacing-xs, 0.5rem) 0;
+  text-align: center;
+  width: 100%;
 }
 
 .product-price {
@@ -92,6 +104,8 @@
   font-weight: 700;
   color: var(--product-price-color, var(--second-color, #D0933D));
   margin: 0 0 var(--spacing-sm, 0.75rem) 0;
+  text-align: center;
+  width: 100%;
 }
 
 .add-to-cart-btn {
@@ -172,8 +186,8 @@
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .product-item {
+    width: calc(50% - var(--spacing-lg, 2rem));
   }
 }
 
@@ -188,8 +202,9 @@
 }
 
 @media (max-width: 480px) {
-  .product-grid {
-    grid-template-columns: 1fr;
+  .product-item {
+    width: 100%;
+    max-width: 320px;
   }
   
   .section-heading {
@@ -198,5 +213,39 @@
   
   .product-image {
     height: 150px;
+  }
+}
+
+/* For when there are fewer items than would fill the grid */
+@media (min-width: 992px) {
+  .product-grid:has(.product-item:nth-child(1):nth-last-child(1)),
+  .product-grid:has(.product-item:nth-child(1):nth-last-child(2)),
+  .product-grid:has(.product-item:nth-child(2):nth-last-child(1)) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .product-grid:has(.product-item:nth-child(1):nth-last-child(1)) .product-item,
+  .product-grid:has(.product-item:nth-child(1):nth-last-child(2)) .product-item,
+  .product-grid:has(.product-item:nth-child(2):nth-last-child(1)) .product-item {
+    flex: 0 0 auto;
+    width: 300px;
+    margin: 0 var(--spacing-lg, 1rem);
+  }
+}
+
+/* For older browsers without :has() support, use flexbox fallback */
+@supports not (selector(:has(*))) {
+  .product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .product-item {
+    flex: 0 0 300px;
+    margin: 0 var(--spacing-md, 1rem) var(--spacing-lg, 2rem);
+    max-width: 300px;
   }
 } 

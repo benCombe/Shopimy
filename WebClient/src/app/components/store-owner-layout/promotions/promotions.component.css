@@ -265,36 +265,6 @@ main {
   color: var(--color-error, #e02424);
 }
 
-.icon-button {
-  background: none;
-  border: none;
-  color: var(--main-color, #393727);
-  display: flex;
-  align-items: center;
-  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  border-radius: var(--border-radius, 8px);
-}
-
-.icon-button i {
-  margin-right: var(--spacing-xs, 4px);
-}
-
-.icon-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: var(--second-color, #D0933D);
-}
-
-.icon-button.delete {
-  color: var(--color-error, #e02424);
-}
-
-.icon-button.delete:hover {
-  background-color: var(--color-error-light, #fde8e8);
-}
-
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -386,19 +356,6 @@ main {
 .modal-body {
   padding: var(--spacing-lg, 24px);
   flex: 1;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: var(--main-color, #393727);
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: var(--spacing-xs, 4px);
-  border-radius: var(--border-radius-round, 50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .form-group {
@@ -590,6 +547,7 @@ textarea {
     gap: var(--spacing-sm, 8px);
   }
   
+  /* Only apply width styles, let global styles handle other properties */
   .form-actions .standard-button {
     width: 100%;
   }

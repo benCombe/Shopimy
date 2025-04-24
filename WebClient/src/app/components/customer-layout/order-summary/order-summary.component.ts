@@ -110,7 +110,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     }
 
     get totalEstimate(): number {
-      return Math.round(((this.subtotal * 1.13) + this.shippingCost) * 100) / 100;
+      return Math.round((this.subtotal + this.taxEstimate + this.shippingCost) * 100) / 100;
     }
 
     get taxEstimate(): number {

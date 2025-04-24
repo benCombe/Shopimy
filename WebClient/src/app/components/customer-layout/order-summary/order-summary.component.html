@@ -12,7 +12,7 @@
     <div class="summary-item center-spaced fc">
       <span id="shipping-label">Shipping Estimate</span>
       <ng-container *ngIf="subtotal > 30; else shippingcost">
-        <span aria-labelledby="shipping-label">FREE</span>
+        <span aria-labelledby="shipping-label" class="free-shipping">FREE</span>
       </ng-container>
       <ng-template #shippingcost>
         <span aria-labelledby="shipping-label">${{shippingCost.toFixed(2)}}</span>

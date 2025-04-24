@@ -5,7 +5,7 @@
                 <h2>Product Management</h2>
             </div>
             <p class="section-description">Manage your products and inventory</p>
-            <button id="new-product-btn" (click)="showAddProductForm()" *ngIf="currentListId === null">
+            <button id="new-product-btn" class="standard-button primary" (click)="showAddProductForm()" *ngIf="currentListId === null">
                 <span>Add New Product</span>
             </button>
         </div>
@@ -157,7 +157,7 @@
                 <div class="variants-section">
                     <div class="section-header">
                         <h4>Product Variants</h4>
-                        <button type="button" id="add-variant-btn" (click)="addVariant()" [disabled]="isSaving">
+                        <button type="button" id="add-variant-btn" class="standard-button secondary small" (click)="addVariant()" [disabled]="isSaving">
                             <span>Add Variant</span>
                         </button>
                     </div>
@@ -169,7 +169,7 @@
                                 <div class="variant-header">
                                     <h5>Variant #{{ i + 1 }}</h5>
                                     <!-- Remove button -->
-                                    <button type="button" id="remove-variant-btn-{{i}}" class="remove-variant" (click)="removeVariant(i)" *ngIf="variants.length > 1" [disabled]="isSaving">
+                                    <button type="button" id="remove-variant-btn-{{i}}" class="standard-button secondary small" (click)="removeVariant(i)" *ngIf="variants.length > 1" [disabled]="isSaving">
                                         <span>✕</span>
                                     </button>
                                 </div>
@@ -181,7 +181,7 @@
                                         <!-- Preview -->
                                         <div class="image-preview-container" *ngIf="variantGroup.get('imagePreview')?.value as previewUrl; else noImageVariant">
                                             <img [src]="previewUrl" alt="Variant preview" class="image-preview">
-                                            <button type="button" id="remove-image-btn-{{i}}" class="remove-image-btn" (click)="removeSelectedImage(i)" [disabled]="isSaving">
+                                            <button type="button" id="remove-image-btn-{{i}}" class="standard-button secondary small" (click)="removeSelectedImage(i)" [disabled]="isSaving">
                                                 <span>✕</span>
                                             </button>
                                         </div>
@@ -203,6 +203,7 @@
                                             <button
                                                 type="button"
                                                 id="upload-image-btn-{{i}}"
+                                                class="standard-button secondary small"
                                                 (click)="variantFileInput.click()"
                                                 [disabled]="isSaving">
                                                 <span>{{ variantGroup.get('imageUrl')?.value ? 'Change Image' : 'Upload Image' }}</span>
@@ -211,7 +212,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <!-- Variant Fields -->
                                 <div class="form-row">
@@ -250,55 +250,66 @@
                                             id="quantity-{{i}}"
                                             type="number"
                                             formControlName="quantity"
-                                            placeholder="Enter quantity"
+                                            placeholder="0"
                                             min="0"
                                             step="1"
                                             [class.is-invalid]="variantGroup.get('quantity')?.invalid && variantGroup.get('quantity')?.touched"
                                             aria-required="true">
                                         <div class="invalid-feedback" *ngIf="variantGroup.get('quantity')?.invalid && variantGroup.get('quantity')?.touched">
-                                            Quantity is required and must be greater than or equal to zero
+                                            Quantity must be 0 or greater
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label for="type-{{i}}">Type</label>
-                                        <input id="type-{{i}}" type="text" formControlName="type" placeholder="e.g., T-Shirt, Mug">
+                                        <label for="type-{{i}}">Type/Style</label>
+                                        <input
+                                            id="type-{{i}}"
+                                            type="text"
+                                            formControlName="type"
+                                            placeholder="E.g., Standard, Premium, etc.">
                                     </div>
                                     <div class="form-group">
                                         <label for="size-{{i}}">Size</label>
-                                        <input id="size-{{i}}" type="text" formControlName="size" placeholder="e.g., Large, 11oz">
+                                        <input
+                                            id="size-{{i}}"
+                                            type="text"
+                                            formControlName="size"
+                                            placeholder="E.g., S, M, L, XL, etc.">
                                     </div>
                                     <div class="form-group">
-                                        <label for="colour-{{i}}">Colour</label>
-                                        <input id="colour-{{i}}" type="text" formControlName="colour" placeholder="e.g., Red, Black">
+                                        <label for="color-{{i}}">Color</label>
+                                        <input
+                                            id="color-{{i}}"
+                                            type="text"
+                                            formControlName="color"
+                                            placeholder="E.g., Red, Blue, etc.">
                                     </div>
                                 </div>
-
-                                <!-- Hidden field for variant ID (for existing variants) -->
-                                <input type="hidden" formControlName="itemId">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Form Actions -->
                 <div class="form-actions">
-                    <button type="button" class="cancel-button" (click)="cancelEdit()" [disabled]="isSaving">Cancel</button>
-                    <!-- Save Draft Button -->
-                     <button type="button" id="save-draft-btn" (click)="saveProduct(false)" [disabled]="isSaving || productForm.invalid">
-                        <span *ngIf="!isSaving">Save Draft</span>
-                        <span *ngIf="isSaving">
-                            <i class="fas fa-spinner fa-spin"></i> Saving...
+                    <button 
+                        type="button" 
+                        class="standard-button primary" 
+                        (click)="saveProduct()" 
+                        [disabled]="productForm.invalid || isSaving || variants.length === 0">
+                        <span *ngIf="!isSaving">{{ isEditMode ? 'Update Product' : 'Save Product' }}</span>
+                        <span *ngIf="isSaving" class="saving-indicator">
+                            <span class="spinner-small"></span> 
+                            Saving...
                         </span>
                     </button>
-                    <!-- Publish/Update Button -->
-                    <button type="button" id="publish-btn" (click)="saveProduct(true)" [disabled]="isSaving || productForm.invalid">
-                        <span *ngIf="!isSaving">{{ isEditMode ? 'Update Product' : 'Publish Product' }}</span>
-                        <span *ngIf="isSaving">
-                            <i class="fas fa-spinner fa-spin"></i> Saving...
-                        </span>
+                    <button 
+                        type="button" 
+                        class="standard-button secondary" 
+                        (click)="cancelEdit()" 
+                        [disabled]="isSaving">
+                        Cancel
                     </button>
                 </div>
             </form>

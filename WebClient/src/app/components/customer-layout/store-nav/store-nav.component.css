@@ -41,6 +41,17 @@
   z-index: 1000;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
+  width: 100%;
+}
+
+/* Center the navigation contents */
+.store-nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Store brand with logo styling */

@@ -93,36 +93,6 @@
   gap: var(--spacing-xs);
 }
 
-.card-action-btn {
-  background: none;
-  border: 1px solid transparent;
-  color: var(--main-color);
-  opacity: 0.6;
-  cursor: pointer;
-  transition: 
-    opacity 0.2s ease, 
-    color 0.2s ease, 
-    background-color 0.2s ease,
-    border-color 0.2s ease;
-  font-size: 0.9rem;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--border-radius);
-}
-
-.card-action-btn:hover, .card-action-btn.active {
-  opacity: 1;
-  color: var(--second-color);
-  background-color: rgba(208, 147, 61, 0.1);
-  border-color: var(--second-color);
-}
-
-.card-action-btn.active {
-  font-weight: 600;
-}
-
 /* Card Content */
 .card-content {
   padding: var(--spacing-lg);
@@ -1009,7 +979,7 @@
   animation-delay: calc(var(--index, 0) * 0.1s);
 }
 
-/* Chart action buttons styling improvements */
+/* Remove Chart action buttons styling */
 .card-action-btn {
   border: 1px solid transparent;
   transition: 

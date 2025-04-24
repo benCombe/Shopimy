@@ -205,47 +205,6 @@ label h2 {
   }
 }
 
-/* Use the global standard-button class instead of defining it here */
-.standard-button {
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: var(--border-radius);
-  background-color: var(--main-color);
-  color: var(--second-color);
-  border: none;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  text-align: center;
-  white-space: nowrap;
-  min-height: 40px;
-}
-
-.standard-button:hover {
-  background-color: var(--second-color);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.standard-button:active {
-  transform: translateY(0);
-  box-shadow: var(--shadow-sm);
-}
-
-.standard-button:disabled {
-  background-color: #ccc;
-  color: #666;
-  transform: none;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -262,14 +221,14 @@ label h2 {
 }
 
 .form-group input[readonly] {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
+  opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .error-message {
-  color: #e74c3c;
-  font-size: 0.85rem;
-  margin-top: 5px;
+  color: var(--color-error, #e02424);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
 }
 
 .button-group {
@@ -278,90 +237,68 @@ label h2 {
   margin-top: var(--spacing-md);
 }
 
-.button-group button {
-  min-width: 100px;
-}
-
 small {
-  color: #666;
-  font-size: 0.8rem;
+  color: var(--main-color);
+  opacity: 0.7;
   display: block;
-  margin-top: 3px;
-}
-
-.standard-button.secondary {
-  background-color: #f8f9fa;
-  color: var(--main-color);
-  border: 1px solid var(--border-color-light);
-}
-
-.standard-button.secondary:hover {
-  background-color: #e9ecef;
-  color: var(--main-color);
-}
-
-.standard-button.primary {
-  background-color: var(--second-color);
-  color: white;
-}
-
-.standard-button.primary:hover {
-  background-color: #c17d2e; /* Darker version of second-color */
+  font-size: 0.8rem;
+  margin-top: var(--spacing-xs);
 }
 
 .form-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--spacing-md);
-  flex-wrap: wrap;
 }
 
 .form-row .form-group {
-  flex: 1;
-  min-width: 200px;
-}
-
-.full-width {
+  margin-bottom: 0;
   width: 100%;
 }
 
+.full-width {
+  grid-column: 1 / -1;
+}
+
 .success-message {
+  color: var(--color-success, #059669);
   padding: var(--spacing-sm);
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--color-success-light, #e8f5e9);
   border-radius: var(--border-radius);
   margin-bottom: var(--spacing-md);
-  animation: fadeOut 5s forwards;
+  animation: fadeOut 5s ease 3s forwards;
 }
 
 @keyframes fadeOut {
-  0% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+  from { opacity: 1; }
+  to { opacity: 0; visibility: hidden; }
 }
 
 .checkbox-group {
-  margin: var(--spacing-md) 0;
+  margin-top: var(--spacing-sm);
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
   cursor: pointer;
+  user-select: none;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: auto;
   margin: 0;
+  min-width: 16px;
+  height: 16px;
 }
 
 .checkbox-label span {
-  margin-left: var(--spacing-xs);
+  font-weight: normal;
 }
 
 .checkbox-label input[disabled] + span {
-  color: #666;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
@@ -372,8 +309,8 @@ select {
   border: 1px solid var(--border-color-light);
   border-radius: var(--border-radius);
   font-size: 0.95rem;
-  background-color: white;
   transition: border-color 0.3s ease;
+  background-color: white;
 }
 
 select:focus {
@@ -383,28 +320,27 @@ select:focus {
 }
 
 select[disabled] {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
+  opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .payment-info-note {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-sm);
-  background-color: #f8f9fa;
+  padding: var(--spacing-md);
+  background-color: rgba(0, 0, 0, 0.03);
   border-radius: var(--border-radius);
-  border-left: 3px solid var(--second-color);
+  margin-top: var(--spacing-md);
+  border-left: 4px solid var(--second-color);
   font-size: 0.9rem;
 }
 
-/* Responsive adjustments for form rows */
 @media (max-width: 768px) {
   .form-row {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: var(--spacing-sm);
   }
   
   .form-row .form-group {
-    width: 100%;
+    margin-bottom: var(--spacing-sm);
   }
 }
 

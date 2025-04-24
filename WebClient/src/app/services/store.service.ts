@@ -228,44 +228,60 @@ export class StoreService {
 
     // Validate and format URLs
     if (storeDataCopy.logoURL && storeDataCopy.logoURL.trim() !== '') {
-      try {
-        // Try to create a URL object to validate it
-        new URL(storeDataCopy.logoURL);
-      } catch (e) {
-        // If URL doesn't start with http:// or https://, prepend https://
-        if (!storeDataCopy.logoURL.match(/^https?:\/\//)) {
-          storeDataCopy.logoURL = `https://${storeDataCopy.logoURL}`;
+      // If URL starts with '/', it's a relative path, convert to absolute using environment API URL
+      if (storeDataCopy.logoURL.startsWith('/')) {
+        // Extract base URL (protocol + domain) from environment.apiUrl
+        const apiUrlObj = new URL(environment.apiUrl);
+        const baseUrl = `${apiUrlObj.protocol}//${apiUrlObj.host}`;
+        storeDataCopy.logoURL = `${baseUrl}${storeDataCopy.logoURL}`;
+      } else {
+        try {
+          // Try to create a URL object to validate it
+          new URL(storeDataCopy.logoURL);
+        } catch (e) {
+          // If URL doesn't start with http:// or https://, prepend https://
+          if (!storeDataCopy.logoURL.match(/^https?:\/\//)) {
+            storeDataCopy.logoURL = `https://${storeDataCopy.logoURL}`;
+          }
         }
-      }
-      
-      // Final check - if it's still not a valid URL after our fix attempts, set to empty
-      try {
-        new URL(storeDataCopy.logoURL);
-      } catch (e) {
-        console.warn('Invalid logoURL format even after fixing, setting to empty string');
-        storeDataCopy.logoURL = '';
+        
+        // Final check - if it's still not a valid URL after our fix attempts, set to empty
+        try {
+          new URL(storeDataCopy.logoURL);
+        } catch (e) {
+          console.warn('Invalid logoURL format even after fixing, setting to empty string');
+          storeDataCopy.logoURL = '';
+        }
       }
     } else {
       storeDataCopy.logoURL = ''; // Empty string if no URL
     }
 
     if (storeDataCopy.bannerURL && storeDataCopy.bannerURL.trim() !== '') {
-      try {
-        // Try to create a URL object to validate it
-        new URL(storeDataCopy.bannerURL);
-      } catch (e) {
-        // If URL doesn't start with http:// or https://, prepend https://
-        if (!storeDataCopy.bannerURL.match(/^https?:\/\//)) {
-          storeDataCopy.bannerURL = `https://${storeDataCopy.bannerURL}`;
+      // If URL starts with '/', it's a relative path, convert to absolute using environment API URL
+      if (storeDataCopy.bannerURL.startsWith('/')) {
+        // Extract base URL (protocol + domain) from environment.apiUrl
+        const apiUrlObj = new URL(environment.apiUrl);
+        const baseUrl = `${apiUrlObj.protocol}//${apiUrlObj.host}`;
+        storeDataCopy.bannerURL = `${baseUrl}${storeDataCopy.bannerURL}`;
+      } else {
+        try {
+          // Try to create a URL object to validate it
+          new URL(storeDataCopy.bannerURL);
+        } catch (e) {
+          // If URL doesn't start with http:// or https://, prepend https://
+          if (!storeDataCopy.bannerURL.match(/^https?:\/\//)) {
+            storeDataCopy.bannerURL = `https://${storeDataCopy.bannerURL}`;
+          }
         }
-      }
-      
-      // Final check - if it's still not a valid URL after our fix attempts, set to empty
-      try {
-        new URL(storeDataCopy.bannerURL);
-      } catch (e) {
-        console.warn('Invalid bannerURL format even after fixing, setting to empty string');
-        storeDataCopy.bannerURL = '';
+        
+        // Final check - if it's still not a valid URL after our fix attempts, set to empty
+        try {
+          new URL(storeDataCopy.bannerURL);
+        } catch (e) {
+          console.warn('Invalid bannerURL format even after fixing, setting to empty string');
+          storeDataCopy.bannerURL = '';
+        }
       }
     } else {
       storeDataCopy.bannerURL = ''; // Empty string if no URL

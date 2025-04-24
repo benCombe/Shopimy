@@ -1,19 +1,21 @@
 <div class="logo-section">
   <div class="logo-container" [ngStyle]="getThemeStyles()" tabindex="0" role="button" 
        aria-label="Store logo and name" (click)="navigateToHome()" (keydown.enter)="navigateToHome()">
-    <div class="logo-wrapper">
-      <img class="logo" [src]="storeData?.logoURL" alt="store-logo" 
-           *ngIf="storeData?.logoURL; else defaultLogo">
-      <ng-template #defaultLogo>
-        <div class="default-logo" aria-hidden="true">
-          {{ storeData?.name?.charAt(0) || 'S' }}
-        </div>
-      </ng-template>
-    </div>
-    <div class="logo-text-wrapper">
-      <h2 class="logo-text">
-        {{ getLogoText() }}
-      </h2>
+    <div class="center-content">
+      <div class="logo-wrapper">
+        <img class="logo" [src]="storeData?.logoURL" alt="store-logo" 
+             *ngIf="storeData?.logoURL; else defaultLogo">
+        <ng-template #defaultLogo>
+          <div class="default-logo" aria-hidden="true">
+            {{ storeData?.name?.charAt(0) || 'S' }}
+          </div>
+        </ng-template>
+      </div>
+      <div class="logo-text-wrapper">
+        <h2 class="logo-text">
+          {{ getLogoText() }}
+        </h2>
+      </div>
     </div>
   </div>
 </div> 

@@ -335,12 +335,19 @@
     grid-template-columns: 1fr;
   }
   
-  .standard-button, 
-  .standard-button.secondary {
-    width: 100%;
-    margin-bottom: var(--spacing-xs);
+  .tab-navigation {
+    gap: var(--spacing-xs);
   }
   
+  .tab {
+    padding: var(--spacing-sm);
+  }
+  
+  .section-description {
+    font-size: 0.9rem;
+  }
+  
+  /* These are needed for layout but we can avoid hardcoding styles */
   .payment-actions,
   .address-actions {
     flex-direction: column;
@@ -350,23 +357,6 @@
   .payment-actions button,
   .address-actions button {
     width: 100%;
-  }
-  
-  .tab-navigation {
-    gap: var(--spacing-xs);
-  }
-  
-  .tab {
-    padding: var(--spacing-sm);
-  }
-  
-  .standard-button {
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: 0.9rem;
-  }
-  
-  .section-description {
-    font-size: 0.9rem;
   }
 }
 
@@ -567,57 +557,6 @@
   font-size: 0.875rem;
 }
 
-.standard-button {
-  padding: var(--spacing-md) var(--spacing-lg);
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  text-align: center;
-  border: none;
-  font-family: var(--main-font-fam);
-}
-
-.standard-button.primary {
-  background-color: var(--main-color);
-  color: var(--second-color);
-}
-
-.standard-button.primary:hover:not([disabled]) {
-  background-color: var(--second-color);
-  color: white;
-}
-
-.standard-button.secondary {
-  background-color: white;
-  color: var(--main-color);
-  border: 1px solid var(--main-color);
-}
-
-.standard-button.secondary:hover:not([disabled]) {
-  background-color: var(--main-color);
-  color: var(--third-color);
-}
-
-.standard-button.secondary.danger {
-  color: var(--color-error, #e02424);
-}
-
-.standard-button.secondary.danger:hover {
-  background-color: var(--color-error, #e02424);
-  color: white;
-}
-
-.standard-button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 .full-width {
   width: 100%;
 }
@@ -778,10 +717,6 @@
     gap: var(--spacing-sm);
   }
   
-  .standard-button {
-    width: 100%;
-  }
-  
   .info-item {
     padding: var(--spacing-sm);
   }
@@ -824,11 +759,6 @@ form {
 .empty-state, .section-description {
   max-width: 100%;
   overflow-wrap: break-word;
-}
-
-.standard-button span {
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .pagination-controls {

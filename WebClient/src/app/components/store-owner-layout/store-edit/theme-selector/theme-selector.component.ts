@@ -16,7 +16,8 @@ export class ThemeSelectorComponent {
     '"Inria Serif", serif',
     '"Roboto", sans-serif',
     '"Open Sans", sans-serif',
-    '"Lato", sans-serif'
+    '"Lato", sans-serif',
+    '"Comic Sans MS", cursive'
   ];
 
   theme: StoreTheme = {
@@ -31,7 +32,7 @@ export class ThemeSelectorComponent {
 
   saveTheme(): void {
     // Apply the full theme to the store container only
-    this.themeService.applyThemeToContainer(this.theme, '.store-container');
+    this.themeService.applyTheme(this.theme);
     // Optionally, persist theme settings via an API call
   }
 }
