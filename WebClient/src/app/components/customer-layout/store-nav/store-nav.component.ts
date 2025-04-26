@@ -48,6 +48,8 @@ export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
   private userStoreSubscription: Subscription | undefined;
 
   resourceOptions: ResourceOption[] = [
+    { title: 'Home', route: '/home', icon: 'fa-home' },
+    { title: 'About', route: '/about', icon: 'fa-info-circle' },
     { title: 'Blog', route: '/blog', icon: 'fa-newspaper' },
     { title: 'Documentation', route: '/docs', icon: 'fa-book' },
     { title: 'Support', route: '/support', icon: 'fa-headset' },
@@ -266,7 +268,14 @@ export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
    * Navigate to the user's store management dashboard
    */
   navigateToMyStore(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/store']);
+    this.closeMobileMenu();
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/dashboard'], {
+      queryParams: { page: 'Profile' }
+    });
     this.closeMobileMenu();
   }
 }

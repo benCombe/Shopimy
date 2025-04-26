@@ -1,8 +1,8 @@
 .newsletter-container {
-  background-color: var(--newsletter-bg, var(--main-color, #393727));
+  background-color: var(--main-color, #393727);
   padding: 2.5rem 1.5rem;
   border-radius: var(--border-radius, 8px);
-  box-shadow: var(--shadow-sm, 0 2px 4px var(--newsletter-shadow, rgba(0, 0, 0, 0.1)));
+  box-shadow: 0 2px 4px var(--third-color, rgba(0, 0, 0, 0.1));
   margin: var(--spacing-md, 16px) 0;
 }
 
@@ -16,7 +16,7 @@
   margin-bottom: 20px;
   font-size: 2rem;
   font-weight: 600;
-  color: var(--newsletter-heading-color, var(--alt-color, #ffffff));
+  color: var(--alt-color, #ffffff);
   position: relative;
   padding-bottom: var(--spacing-xs, 4px);
 }
@@ -29,13 +29,13 @@
   transform: translateX(-50%);
   width: 50px;
   height: 3px;
-  background-color: var(--newsletter-button-bg, var(--second-color, #D0933D));
+  background-color: var(--second-color, #D0933D);
   border-radius: 2px;
 }
 
 .newsletter-description {
   margin-bottom: 1.5rem;
-  color: var(--newsletter-text-color, var(--alt-color, #ffffff));
+  color: var(--alt-color, #ffffff);
   font-size: 1rem;
   opacity: 0.8;
 }
@@ -72,31 +72,31 @@
 .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--newsletter-border-color, #d1d5db);
+  border: 1px solid var(--third-color, rgba(255, 255, 255, 0.2));
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.2s;
-  background-color: var(--newsletter-input-bg, #ffffff);
-  color: var(--newsletter-input-text, var(--main-color, #393727));
+  background-color: var(--alt-color, #ffffff);
+  color: var(--main-color, #393727);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--newsletter-button-bg, var(--second-color, #D0933D));
-  box-shadow: 0 0 0 2px rgba(208, 147, 61, 0.2);
+  border-color: var(--second-color, #D0933D);
+  box-shadow: 0 0 0 2px var(--third-color, rgba(208, 147, 61, 0.2));
 }
 
 .form-group input.is-invalid {
-  border-color: #e02424;
+  border-color: var(--third-color, #e02424);
 }
 
 .invalid-feedback {
-  color: #e02424;
+  color: var(--third-color, #e02424);
   font-size: 0.875rem;
   text-align: left;
   position: absolute;
   top: 100%;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--alt-color, rgba(255, 255, 255, 0.9));
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   margin-top: 2px;
@@ -104,8 +104,8 @@
 
 #newsletter-btn {
   padding: 0.75rem 1.5rem;
-  background-color: var(--newsletter-button-bg, var(--second-color, #D0933D));
-  color: var(--newsletter-text-color, var(--alt-color, #ffffff));
+  background-color: var(--second-color, #D0933D);
+  color: var(--third-color, #ffffff);
   border: none;
   border-radius: 6px;
   font-size: 1rem;
@@ -113,14 +113,14 @@
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
-  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  box-shadow: 0 2px 4px var(--third-color, rgba(0, 0, 0, 0.1));
 }
 
 #newsletter-btn:hover:not(:disabled) {
   background-color: var(--main-color, #393727);
-  color: var(--newsletter-text-color, var(--alt-color, #ffffff));
+  color: var(--alt-color, #ffffff);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md, 0 4px 8px rgba(0, 0, 0, 0.15));
+  box-shadow: 0 4px 8px var(--third-color, rgba(0, 0, 0, 0.15));
 }
 
 #newsletter-btn:disabled {
@@ -129,11 +129,11 @@
 }
 
 .success-message {
-  color: #28a745;
+  color: var(--second-color, #28a745);
   margin-top: 1rem;
   font-weight: 500;
   display: inline-block;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--alt-color, rgba(255, 255, 255, 0.9));
   padding: 0.5rem 1rem;
   border-radius: 6px;
 }

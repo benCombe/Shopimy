@@ -62,7 +62,7 @@
   <!-- Options for logged in users -->
   <ul *ngIf="isLoggedIn" role="menu" aria-labelledby="mobile-account-header">
     <li role="menuitem">
-      <a class="opt" [class.active]="isActive('/dashboard')" routerLink="/dashboard" (click)="navigateAndCloseMenu('/dashboard')" tabindex="0">
+      <a class="opt" [class.active]="isActive('/dashboard')" routerLink="/dashboard" (click)="navigateAndCloseMenu('/dashboard'); $event.preventDefault()" tabindex="0">
         <i class="fa-solid fa-gauge" aria-hidden="true"></i> Dashboard
       </a>
     </li>
@@ -72,7 +72,7 @@
       </a>
     </li>
     <li role="menuitem">
-      <a class="opt" [class.active]="isActive('/profile')" routerLink="/profile" (click)="navigateAndCloseMenu('/profile')" tabindex="0">
+      <a class="opt" [class.active]="isActive('/dashboard')" (click)="navigateToProfile()" tabindex="0">
         <i class="fa-solid fa-user" aria-hidden="true"></i> Profile
       </a>
     </li>

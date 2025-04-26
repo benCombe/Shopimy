@@ -8,13 +8,14 @@ import { StoreNavService } from '../../../services/store-nav.service';
 import { ShoppingService } from '../../../services/shopping.service';
 import { BasicItem } from '../../../models/basic-item';
 import { NgFor, NgIf, CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { OrderSummaryComponent } from "../order-summary/order-summary.component";
 import { Subject, takeUntil } from 'rxjs';
 import { StoreTheme } from '../../../models/store-theme.model';
 
 @Component({
   selector: 'app-shopping-cart',
-  imports: [NgFor, NgIf, OrderSummaryComponent, CommonModule],
+  imports: [NgFor, NgIf, OrderSummaryComponent, CommonModule, FormsModule],
   templateUrl: './shopping-cart.component.html',
   styleUrl: './shopping-cart.component.css'
 })
@@ -29,6 +30,8 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit, OnDestroy {
   subtotal: number = 0.00;
   shippingCost: number = 0;
   promoCode: string = '';
+  promoMessage: string = '';
+  promoSuccess: boolean = false;
   isStoreContext: boolean = false;
   
   private destroy$ = new Subject<void>();
@@ -112,26 +115,39 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   applyPromoCode(): void {
-    const promoInput = document.getElementById('promo') as HTMLInputElement;
-    if (promoInput && promoInput.value) {
-      this.promoCode = promoInput.value;
-      
-      // Simple validation example - in a real app, this would call a service
-      if (this.promoCode === 'WELCOME10') {
-        // Apply 10% discount
-        this.shopService.applyDiscount(0.10);
-        alert('Promo code applied: 10% discount!');
-      } else if (this.promoCode === 'FREESHIP') {
-        // Make shipping free
-        this.shippingCost = 0;
-        alert('Promo code applied: Free shipping!');
-      } else {
-        alert('Invalid promo code');
-      }
-      
-      // Clear the input after processing
-      promoInput.value = '';
+    if (!this.promoCode || this.promoCode.trim() === '') {
+      this.promoMessage = 'Please enter a promo code';
+      this.promoSuccess = false;
+      return;
     }
+    
+    // Simple validation example - in a real app, this would call a service
+    if (this.promoCode.toUpperCase() === 'WELCOME10') {
+      // Apply 10% discount
+      this.shopService.applyDiscount(0.10);
+      this.promoMessage = 'Success! 10% discount applied';
+      this.promoSuccess = true;
+    } else if (this.promoCode.toUpperCase() === 'FREESHIP') {
+      // Make shipping free
+      this.shippingCost = 0;
+      this.promoMessage = 'Success! Free shipping applied';
+      this.promoSuccess = true;
+    } else {
+      this.promoMessage = 'Invalid promo code: ' + this.promoCode;
+      this.promoSuccess = false;
+    }
+    
+    // Clear the input after processing
+    setTimeout(() => {
+      if (this.promoSuccess) {
+        this.promoCode = '';
+      }
+    }, 1500);
+    
+    // Auto-clear message after 5 seconds
+    setTimeout(() => {
+      this.promoMessage = '';
+    }, 5000);
   }
 
 }

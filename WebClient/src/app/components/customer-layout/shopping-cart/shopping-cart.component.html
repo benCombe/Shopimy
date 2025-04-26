@@ -12,11 +12,13 @@
             <div class="item-info">
               <span class="item-lbl">{{i.item.name}}</span>
               <ng-container *ngIf="i.item.salePrice < i.item.price; else notOnSale">
-                <span class="sale-price">${{ i.item.salePrice.toFixed(2) }}</span>
-                <span class="original-price strikethrough">${{ i.item.price.toFixed(2) }}</span>
+                <div class="price-container">
+                  <span class="sale-price">${{ i.item.salePrice.toFixed(2) }}</span>
+                  <span class="original-price strikethrough">${{ i.item.price.toFixed(2) }}</span>
+                </div>
               </ng-container>
               <ng-template #notOnSale>
-                <span>${{ i.item.price.toFixed(2) }}</span>
+                <span class="regular-price">${{ i.item.price.toFixed(2) }}</span>
               </ng-template>
               <span class="item-details"></span>
             </div>
@@ -40,11 +42,20 @@
 
       <div id="order-summary-container" role="complementary" [attr.aria-label]="'Order summary'">
         <app-order-summary [storeDetails]="storeDetails" [theme]="theme"></app-order-summary>
-        <div class="promo-code">
-          <label for="promo">Apply Promo Code:</label>
+        <div class="promo-code" aria-labelledby="promo-label">
+          <label id="promo-label" for="promo">Apply Promo Code:</label>
           <div class="promo-input-group">
-            <input type="text" name="promo" id="promo" placeholder="Enter code" [attr.aria-label]="'Promo code'">
-            <button class="apply-promo-btn standard-button small" (click)="applyPromoCode()" [attr.aria-label]="'Apply promo code'">Apply</button>
+            <input type="text" name="promo" id="promo" placeholder="Enter code" [attr.aria-label]="'Promo code'" 
+                   [(ngModel)]="promoCode" (keyup.enter)="applyPromoCode()">
+            <button class="apply-promo-btn standard-button small" 
+                    (click)="applyPromoCode()" 
+                    [attr.aria-label]="'Apply promo code'" 
+                    [disabled]="!promoCode || promoCode.trim() === ''">
+              Apply
+            </button>
+          </div>
+          <div *ngIf="promoMessage" class="promo-message" [class.promo-success]="promoSuccess" [class.promo-error]="!promoSuccess" aria-live="polite">
+            {{ promoMessage }}
           </div>
         </div>
       </div>

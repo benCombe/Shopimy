@@ -47,12 +47,15 @@ export class TopNavComponent implements OnInit, OnDestroy, AfterViewInit {
     {
       name: 'Resources',
       options: [
+        { label: 'Home', link: '/home', icon: 'fa-home' },
+        { label: 'About', link: '/about', icon: 'fa-info-circle' },
         { label: 'Documentation', link: '/docs', icon: 'fa-book' },
         { label: 'Support', link: '/support', icon: 'fa-headset' },
         { label: 'Blog', link: '/blog', icon: 'fa-blog' },
         { label: 'Contact', link: '/contact', icon: 'fa-envelope' }
       ]
-    },
+    }
+    /*
     {
       name: 'Quick Actions',
       options: [
@@ -60,6 +63,7 @@ export class TopNavComponent implements OnInit, OnDestroy, AfterViewInit {
         { label: 'About', link: '/about', icon: 'fa-info-circle' }
       ]
     }
+    */
   ];
 
   // Legacy options array for backward compatibility
@@ -260,20 +264,27 @@ export class TopNavComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  navigateAndCloseMenu(link: string) {
+  navigateAndCloseMenu(path: string): void {
     this.closeMobileMenu();
     this.isDropdownOpen = false;
     this.isUserMenuOpen = false;
     
     // Log the menu item click for analytics
-    this.logMenuItemClick(link);
+    this.logMenuItemClick(path);
   }
   
-  private logMenuItemClick(link: string): void {
-    console.log(`Menu item clicked: ${link}`);
+  private logMenuItemClick(path: string): void {
+    console.log(`Menu item clicked: ${path}`);
   }
   
   isActive(link: string): boolean {
     return this.activeLink === link;
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/dashboard'], {
+      queryParams: { page: 'Profile' }
+    });
+    this.closeMobileMenu();
   }
 }

@@ -95,12 +95,42 @@
   </ul>
   
   <div class="mobile-menu-divider"></div>
-  
-  <!-- Mobile Menu Resources Section -->
-  <div class="mobile-menu-header">Resources</div>
-  <ul class="mobile-menu-list">
-    <!-- My Store link (when logged in and has a store) -->
-    <li class="mobile-resource-item" *ngIf="isLoggedIn && userStore">
+
+  <!-- Mobile Menu Account Section -->
+  <div class="mobile-menu-header">Account</div>
+  <!-- Options for logged out users -->
+  <ul class="mobile-menu-list" *ngIf="!isLoggedIn">
+    <li class="mobile-resource-item">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           routerLink="/account/login"
+           (click)="closeMobileMenu()">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Log In</span>
+      </div>
+    </li>
+    <li class="mobile-resource-item">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           routerLink="/account/register"
+           (click)="closeMobileMenu()">
+        <i class="fas fa-user-plus"></i>
+        <span>Register</span>
+      </div>
+    </li>
+  </ul>
+  <!-- Options for logged in users -->
+  <ul class="mobile-menu-list" *ngIf="isLoggedIn">
+    <li class="mobile-resource-item">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           routerLink="/dashboard"
+           (click)="closeMobileMenu()">
+        <i class="fas fa-gauge"></i>
+        <span>Dashboard</span>
+      </div>
+    </li>
+    <li class="mobile-resource-item" *ngIf="userStore">
       <div class="mobile-resource-link" 
            [style.color]="storeDetails?.fontColor"
            (click)="navigateToMyStore()">
@@ -108,10 +138,32 @@
         <span>My Store</span>
       </div>
     </li>
+    <li class="mobile-resource-item">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="navigateToProfile()">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </div>
+    </li>
+    <li class="mobile-resource-item">
+      <div class="mobile-resource-link" 
+           [style.color]="storeDetails?.fontColor"
+           (click)="logout(); closeMobileMenu()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </div>
+    </li>
+  </ul>
+  
+  <!-- Mobile Menu Resources Section -->
+  <div class="mobile-menu-header">Resources</div>
+  <ul class="mobile-menu-list">
     <li class="mobile-resource-item" *ngFor="let resource of resourceOptions">
       <div class="mobile-resource-link" 
            [style.color]="storeDetails?.fontColor"
-           [routerLink]="resource.route">
+           [routerLink]="resource.route"
+           (click)="closeMobileMenu()">
         <i *ngIf="resource.icon" [class]="'fas ' + resource.icon"></i>
         <span>{{ resource.title }}</span>
       </div>
@@ -119,26 +171,4 @@
   </ul>
   
   <div class="mobile-menu-divider"></div>
-  
-  <!-- Mobile Menu Account Actions -->
-  <ul class="mobile-menu-list">
-    <!-- Login Option -->
-    <li class="mobile-resource-item" *ngIf="!isLoggedIn">
-      <div class="mobile-resource-link" 
-           [style.color]="storeDetails?.fontColor"
-           (click)="navigateToLogin()">
-        <i class="fas fa-sign-in-alt"></i>
-        <span>Login</span>
-      </div>
-    </li>
-    <!-- Logout Option -->
-    <li class="mobile-resource-item" *ngIf="isLoggedIn">
-      <div class="mobile-resource-link" 
-           [style.color]="storeDetails?.fontColor"
-           (click)="logout()">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Logout</span>
-      </div>
-    </li>
-  </ul>
 </div>
