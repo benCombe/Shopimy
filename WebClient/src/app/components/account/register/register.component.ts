@@ -15,43 +15,43 @@ import { LoadingService } from '../../../services/loading.service';
 })
 export class RegisterComponent implements OnInit {
   // Form variables
-  firstname: string = "";
-  lastname: string = "";
-  email: string = "";
-  phone: string = "";
-  address: string = "";
-  provState: string = "";
-  zip: string = "";
+  firstname = "";
+  lastname = "";
+  email = "";
+  phone = "";
+  address = "";
+  provState = "";
+  zip = "";
   dob: Date | null = null;
-  selectedCountry: string = "";
+  selectedCountry = "";
 
-  password: string = "";
-  confirmPassword: string = "";
+  password = "";
+  confirmPassword = "";
   
-  showPassword: boolean = false;
-  showConfirmPassword: boolean = false;
-  isLoading: boolean = false;
+  showPassword = false;
+  showConfirmPassword = false;
+  isLoading = false;
 
-  subscribed: boolean = false;
-  acceptTAC: boolean = false;
+  subscribed = false;
+  acceptTAC = false;
 
   // Registration status
-  registrationSuccess: boolean = false;
-  registrationError: string = "";
+  registrationSuccess = false;
+  registrationError = "";
 
   // Password check
-  hasValidLength: boolean = false;
-  hasUpperLower: boolean = false;
-  pwMatch: boolean = false;
+  hasValidLength = false;
+  hasUpperLower = false;
+  pwMatch = false;
 
   // Validation state flags
-  isFirstNameValid: boolean = true;
-  isLastNameValid: boolean = true;
-  isEmailValid: boolean = true;
-  isPhoneValid: boolean = true;
-  isDobValid: boolean = true;
-  isPasswordValid: boolean = true;
-  isConfirmPasswordValid: boolean = true;
+  isFirstNameValid = true;
+  isLastNameValid = true;
+  isEmailValid = true;
+  isPhoneValid = true;
+  isDobValid = true;
+  isPasswordValid = true;
+  isConfirmPasswordValid = true;
 
   countries = [
     { value: 'US', label: 'United States' },
@@ -111,7 +111,7 @@ export class RegisterComponent implements OnInit {
   // Format phone number as user types
   formatPhoneNumber(event: any): void {
     // Get input value and remove all non-digits
-    let input = event.target.value.replace(/\D/g, '');
+    const input = event.target.value.replace(/\D/g, '');
     
     // Check if we have enough digits to format
     if (input.length > 0) {

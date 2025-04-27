@@ -9,7 +9,7 @@ export class CookieService {
   constructor() {}
 
   // Set a cookie with a given name, value, and expiration in days
-  set(name: string, value: string, days: number, path: string = '/') {
+  set(name: string, value: string, days: number, path = '/') {
     let expires = '';
     if (days) {
       const date = new Date();
@@ -25,7 +25,7 @@ export class CookieService {
     const nameEQ = `${name}=`;
     const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
-      let cookie = cookies[i].trim();
+      const cookie = cookies[i].trim();
       if (cookie.indexOf(nameEQ) === 0) {
         return decodeURIComponent(cookie.substring(nameEQ.length, cookie.length));
       }
@@ -39,8 +39,8 @@ export class CookieService {
   }
 
   // Delete a cookie by setting its expiration date in the past
-  delete(name: string, path: string = '/', domain?: string) {
-    let domainStr = domain ? `; domain=${domain}` : '';
+  delete(name: string, path = '/', domain?: string) {
+    const domainStr = domain ? `; domain=${domain}` : '';
     document.cookie = `${encodeURIComponent(name)}=; path=${path}${domainStr}; expires=Thu, 01 Jan 1970 00:00:00 UTC`;
   }
 

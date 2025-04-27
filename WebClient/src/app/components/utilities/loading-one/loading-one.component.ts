@@ -10,7 +10,7 @@ import { LoadingService } from '../../../services/loading.service';
 })
 export class LoadingOneComponent implements OnInit {
 
-  isLoading: boolean = false;
+  isLoading = false;
 
   icons: string[] = [
     "fa-solid fa-shirt",

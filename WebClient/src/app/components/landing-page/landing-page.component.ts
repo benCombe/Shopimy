@@ -10,8 +10,8 @@ import { Component } from '@angular/core';
 
 export class LandingPageComponent {
 
-  topImageUrl: String = "resources/images/woman-typing.jpg";
-  midImageUrl: String = "resources/images/workgroup.jpg"
-  bottomImageUrl: String = "resources/images/mancheckwatch.jpg"
+  topImageUrl = "resources/images/woman-typing.jpg";
+  midImageUrl = "resources/images/workgroup.jpg"
+  bottomImageUrl = "resources/images/mancheckwatch.jpg"
 
 }

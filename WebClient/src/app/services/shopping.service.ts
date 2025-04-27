@@ -8,7 +8,7 @@ export class Order{
   purchaserId: number | -1;
   purchaserEmail: string;
   deliveryAddress: string;
-  StripeToken: string = '123456';
+  StripeToken = '123456';
   orderDate: Date;
   status: string;
   items: OrderItem[] = [];
@@ -54,10 +54,10 @@ import { StoreService } from './store.service';
 export class ShoppingService {
 
   private apiUrl = `${environment.apiUrl}/api/shoppingcart`;
-  storeToDB: boolean = false;
-  currentStore: string = '';
-  currentStoreId: number = 0;
-  currentUserEmail: string = '';
+  storeToDB = false;
+  currentStore = '';
+  currentStoreId = 0;
+  currentUserEmail = '';
 
   // Updated CartSubject type to store item and quantity
   CartSubject: BehaviorSubject<{ item: BasicItem, quantity: number }[]> = new BehaviorSubject<{ item: BasicItem, quantity: number }[]>([]);
@@ -67,7 +67,7 @@ export class ShoppingService {
   SubTotal$ = this.SubTotalSubject.asObservable();
 
   // Track if a discount has been applied and the amount
-  private discountRate: number = 0;
+  private discountRate = 0;
 
   constructor(
     private storeService: StoreService,
@@ -179,7 +179,7 @@ export class ShoppingService {
 
 
   updateItemQuantity(item: BasicItem, change: number): void {
-    let updatedCart = this.CartSubject.getValue().map(cartItem => {
+    const updatedCart = this.CartSubject.getValue().map(cartItem => {
       if (cartItem.item.listId === item.listId) {
         return { ...cartItem, quantity: cartItem.quantity + change };
       }
@@ -226,7 +226,7 @@ export class ShoppingService {
   }
 
   public placeOrder(email: string, deliveryAddress: string): Observable<number> {
-    var order: Order = this.createOrder(email, deliveryAddress);
+    const order: Order = this.createOrder(email, deliveryAddress);
     return this.http.post<{ orderId: number }>(`${this.apiUrl}/place_order`, order).pipe(
       map(response => {
         console.log("Order Placed, Order ID:", response.orderId);
@@ -242,11 +242,11 @@ export class ShoppingService {
 
 
   createOrder(email: string, deliveryAddress: string): Order {
-    var userID: number = this.userService.getActiveUser().Id;
+    let userID: number = this.userService.getActiveUser().Id;
     if (userID === 0) {
       userID = -1;
     }
-    var result: Order = new Order(
+    const result: Order = new Order(
       this.currentStoreId,
       userID,
       email,

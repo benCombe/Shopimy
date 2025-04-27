@@ -14,12 +14,12 @@ import { NgIf } from '@angular/common';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  email: string = "";
-  password: string = "";
-  rememberMe: boolean = false;
-  showPassword: boolean = false;
-  isLoading: boolean = false;
-  loginFalied: boolean = false;
+  email = "";
+  password = "";
+  rememberMe = false;
+  showPassword = false;
+  isLoading = false;
+  loginFalied = false;
 
   constructor(
     private userService: UserService, 

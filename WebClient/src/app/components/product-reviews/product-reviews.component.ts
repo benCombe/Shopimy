@@ -21,7 +21,7 @@ export class ProductReviewsComponent implements OnInit, OnChanges {
 
   averageRating$: Observable<number | null> = of(null);
   reviews$: Observable<Review[]> = of([]);
-  loadingError: boolean = false;
+  loadingError = false;
 
   constructor(private reviewService: ReviewService) { }
 

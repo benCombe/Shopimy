@@ -22,12 +22,12 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
     @Input() theme: StoreTheme | null = null;
 
     cartItems: { item: BasicItem, quantity: number }[] = [];
-    subtotal: number = 0.00;
-    shippingCost: number = 0;
-    isStoreContext: boolean = false;
+    subtotal = 0.00;
+    shippingCost = 0;
+    isStoreContext = false;
 
-    submitMessage: string = "Checkout";
-    currentView: string = "";
+    submitMessage = "Checkout";
+    currentView = "";
     
     private destroy$ = new Subject<void>();
 

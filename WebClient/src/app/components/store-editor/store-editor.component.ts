@@ -1,3 +1,4 @@
+/*
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -123,7 +124,7 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     }
     
     // Ensure URL follows valid format (letters, numbers, hyphens only)
-    const urlPattern = /^[a-zA-Z0-9\-]+$/;
+    const urlPattern = /^[a-zA-Z0-9\\-]+$/;
     this.isUrlValid = urlPattern.test(this.store.url);
     
     if (!this.isUrlValid) {
@@ -251,6 +252,7 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
         }
       });
     } else {
+      // Update existing store
       this.storeService.updateStore(this.store).subscribe({
         next: (updatedStore) => {
           console.log('Store updated successfully', updatedStore);
@@ -270,13 +272,14 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Method to handle theme updates from the ThemesComponent
   updateStoreTheme(theme: StoreTheme): void {
-    if (this.store) {
-      this.store.theme_1 = theme.mainColor;
-      this.store.theme_2 = theme.secondColor;
-      this.store.theme_3 = theme.thirdColor;
-      this.store.fontColor = theme.altColor;
-      this.store.fontFamily = theme.mainFontFam;
-    }
+    if (!this.store) return;
+    this.store.primaryColor = theme.primaryColor;
+    this.store.secondaryColor = theme.secondaryColor;
+    this.store.backgroundColor = theme.backgroundColor;
+    this.store.textColor = theme.textColor;
+    this.store.fontFamily = theme.fontFamily;
   }
-} 
+}
+*/ 

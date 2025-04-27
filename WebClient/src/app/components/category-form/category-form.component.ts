@@ -23,12 +23,12 @@ export class CategoryFormComponent implements OnInit, OnChanges {
 
   categoryForm: FormGroup;
   isEditMode = false;
-  categoryId: number = 0;
+  categoryId = 0;
   loading = false;
   saving = false;
   error: string | null = null;
   isDashboard = false;
-  private currentStoreId: number = 0;
+  private currentStoreId = 0;
 
   constructor(
     private fb: FormBuilder,

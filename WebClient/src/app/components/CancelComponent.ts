@@ -1,3 +1,4 @@
+/*
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -148,3 +149,4 @@ export class CancelComponent implements OnInit {
       }
   }
 }
+*/

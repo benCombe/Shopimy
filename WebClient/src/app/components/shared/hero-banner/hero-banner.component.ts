@@ -18,8 +18,8 @@ export class HeroBannerComponent {
     return this.storeData?.bannerText || 'Welcome to our store';
   }
   
-  getThemeStyles(): { [key: string]: any } {
-    const styles: { [key: string]: any } = {};
+  getThemeStyles(): Record<string, any> {
+    const styles: Record<string, any> = {};
     
     // Apply direct background color
     if (this.theme) {

@@ -27,12 +27,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   
   shippingForm: FormGroup;
   paymentForm: FormGroup;
-  storeUrl: string = '';
-  storeId: number = 0;
+  storeUrl = '';
+  storeId = 0;
   checkoutItems: CheckoutItem[] = [];
-  isLoading: boolean = false;
+  isLoading = false;
   storeDetails: StoreDetails | null = null;
-  isStoreContext: boolean = false;
+  isStoreContext = false;
   
   private destroy$ = new Subject<void>();
   private formBuilder = inject(FormBuilder);

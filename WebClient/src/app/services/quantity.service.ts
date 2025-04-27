@@ -26,7 +26,7 @@ export class QuantityService {
    */
   getItems(): Observable<VisitAnalytics[]> {
     // Set up query parameters
-    let params = new HttpParams()
+    const params = new HttpParams()
       .set('storeid', 5);
     const token = this.cookieService.get('auth_token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`)

@@ -1,13 +1,24 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { StoreService } from '../../services/store.service';
-import { StoreDetails } from '../../models/store-details';
+//import { StoreDetails } from '../../models/store-details';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { SideNavComponent } from './side-nav/side-nav.component';
+import { StoreOwnerDashboardComponent } from './store-owner-dashboard/store-owner-dashboard.component';
 
 @Component({
   selector: 'app-store-owner-layout',
   templateUrl: './store-owner-layout.component.html',
-  styleUrls: ['./store-owner-layout.component.css']
+  styleUrls: ['./store-owner-layout.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    SideNavComponent,
+    StoreOwnerDashboardComponent
+  ]
 })
 export class StoreOwnerLayoutComponent implements OnInit, OnDestroy {
   sidebarCollapsed = false;

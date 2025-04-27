@@ -52,19 +52,19 @@ type ViewType = 'store-page' | 'cart' | 'checkout' | string;
 export class StorePageComponent implements AfterViewInit, OnInit, OnDestroy {
 
   storeData: StoreDetails | null = null;
-  currentUrl: string = "";
+  currentUrl = "";
   currentView: ViewType = "store-page";
-  currentItemView: number = 0;
+  currentItemView = 0;
   storeTheme: StoreTheme | null = null;
 
-  loadingStore: boolean = false;
+  loadingStore = false;
 
-  isMobile: boolean = false;
-  initialLoad: boolean = true;
+  isMobile = false;
+  initialLoad = true;
   
   private destroy$ = new Subject<void>();
 
-  currentBannerUrl: string = '';
+  currentBannerUrl = '';
 /*   bannerImages: string[] = [
     'https://picsum.photos/1200/300?random=1',
   'https://picsum.photos/1200/300?random=2',
@@ -278,7 +278,7 @@ export class StorePageComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   isItemView(): boolean {
-    var result: boolean = this.currentView.split("/")[0] === 'item';
+    const result: boolean = this.currentView.split("/")[0] === 'item';
     //console.log(result + " " + this.currentView);
     return result;
   }

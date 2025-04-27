@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { User } from '../../../models/user';
@@ -18,11 +18,11 @@ import { catchError, finalize, switchMap, timeout } from 'rxjs/operators';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   @Input() user: User | null | undefined;
 
   // Tab navigation
-  activeTab: string = 'account';
+  activeTab = 'account';
   tabs = [
     { id: 'account', name: 'Account Info' },
     { id: 'payments', name: 'Payment Methods' },
@@ -31,9 +31,9 @@ export class ProfileComponent implements OnInit {
   ];
 
   // Profile edit variables
-  editMode: boolean = false;
+  editMode = false;
   profileForm!: FormGroup;
-  isSavingProfile: boolean = false;
+  isSavingProfile = false;
   profileError: string | null = null;
 
   // Existing variables
@@ -41,8 +41,8 @@ export class ProfileComponent implements OnInit {
   paymentMethods: any[] = [];
   wishlists: any[] = [];
   deliveryForm!: FormGroup;
-  showAddDelivery: boolean = false;
-  showAddPayment: boolean = false;
+  showAddDelivery = false;
+  showAddPayment = false;
   stripe: Stripe | null = null;
   cardElement: StripeCardElement | null = null;
   @ViewChild('cardElement') cardElementRef!: ElementRef;
@@ -52,17 +52,17 @@ export class ProfileComponent implements OnInit {
 
   // Purchase history variables
   purchaseHistory: OrderHistoryItemDTO[] = [];
-  isLoadingHistory: boolean = false;
+  isLoadingHistory = false;
   historyError: string | null = null;
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
-  totalPages: number = 0;
+  currentPage = 1;
+  itemsPerPage = 10;
+  totalPages = 0;
   
   // Subscription for user data
   private userSubscription: Subscription | null = null;
 
   // Loading state for user profile
-  isLoadingProfile: boolean = false;
+  isLoadingProfile = false;
 
   constructor(
     private fb: FormBuilder,

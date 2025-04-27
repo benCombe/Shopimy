@@ -30,8 +30,8 @@ export class NewsletterComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getThemeStyles(): { [key: string]: string } {
-    const styles: { [key: string]: string } = {};
+  getThemeStyles(): Record<string, string> {
+    const styles: Record<string, string> = {};
     
     if (this.theme) {
       // Apply theme colors directly

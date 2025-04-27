@@ -57,15 +57,15 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   // The following methods are kept for backward compatibility
   // but they should eventually be removed since we're using CSS variables
-  getFooterStyles(): { [key: string]: string } {
+  getFooterStyles(): Record<string, string> {
     return {}; // Return empty object as styles are now handled via CSS variables
   }
 
-  getHeadingStyles(): { [key: string]: string } {
+  getHeadingStyles(): Record<string, string> {
     return {}; // Return empty object as styles are now handled via CSS variables
   }
 
-  getLinkStyles(): { [key: string]: string } {
+  getLinkStyles(): Record<string, string> {
     return {}; // Return empty object as styles are now handled via CSS variables
   }
 }

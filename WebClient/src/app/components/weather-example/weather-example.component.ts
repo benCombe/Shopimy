@@ -15,7 +15,7 @@ export class WeatherExampleComponent implements OnInit {
   //weather$: Observable<WeatherForecast[]> | undefined;
 
   weatherData: WeatherForecast[] = [];
-  loading: boolean = true;
+  loading = true;
   error: string | null = null;
 
 
@@ -47,7 +47,7 @@ export class WeatherExampleComponent implements OnInit {
 
 
   //method returns a dictionary<string, string> of css styles
-  getStyle(tempC: number): { [key: string]: string } {
+  getStyle(tempC: number): Record<string, string> {
 
     if (tempC <= 0) {
       return { 'background-color': '#00f3ff' };

@@ -60,9 +60,9 @@ export class AnalyticsService {
    * @param range The number of periods to include (e.g., 7 days, 6 months)
    * @returns Observable of visit analytics data with labels and data points
    */
-  getStoreVisits(period: string = 'daily', range: number = 7): Observable<VisitAnalytics> {
+  getStoreVisits(period = 'daily', range = 7): Observable<VisitAnalytics> {
     // Set up query parameters
-    let params = new HttpParams()
+    const params = new HttpParams()
       .set('period', period)
       .set('range', range.toString());
 
@@ -77,9 +77,9 @@ export class AnalyticsService {
    * @param range The number of periods to include (e.g., 30 days, 12 months)
    * @returns Observable of sales analytics data with labels and multiple data series
    */
-  getSalesData(period: string = 'daily', range: number = 30): Observable<SalesAnalytics> {
+  getSalesData(period = 'daily', range = 30): Observable<SalesAnalytics> {
     // Set up query parameters
-    let params = new HttpParams()
+    const params = new HttpParams()
       .set('period', period)
       .set('range', range.toString());
 
@@ -96,7 +96,7 @@ export class AnalyticsService {
    * @returns Observable of top products data
    */
   getTopProducts(
-    limit: number = 10, 
+    limit = 10, 
     startDate?: Date, 
     endDate?: Date
   ): Observable<TopProductsAnalytics> {

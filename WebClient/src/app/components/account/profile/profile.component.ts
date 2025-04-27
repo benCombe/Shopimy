@@ -28,23 +28,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
   profileForm!: FormGroup;
   deliveryForm!: FormGroup;
   
-  activeTab: string = 'profile';
-  showAddDelivery: boolean = false;
-  showAddPayment: boolean = false;
-  editMode: boolean = false;
+  activeTab = 'profile';
+  showAddDelivery = false;
+  showAddPayment = false;
+  editMode = false;
   
   // Add loading state
-  isLoading: boolean = true;
+  isLoading = true;
   
   // Pagination
-  currentPage: number = 1;
-  totalPages: number = 1;
-  itemsPerPage: number = 10;
+  currentPage = 1;
+  totalPages = 1;
+  itemsPerPage = 10;
   
   // Loading states
-  isSavingProfile: boolean = false;
-  isSavingDelivery: boolean = false;
-  isSavingPaymentMethod: boolean = false;
+  isSavingProfile = false;
+  isSavingDelivery = false;
+  isSavingPaymentMethod = false;
   
   stripe: Stripe | null = null;
   cardElement: StripeCardElement | null = null;
@@ -53,7 +53,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   newPaymentIsDefault = false;
   
   // Add a new property for purchase history loading state
-  isPurchaseHistoryLoading: boolean = false;
+  isPurchaseHistoryLoading = false;
   purchaseHistoryError: string | null = null;
   
   private userServiceSubscription: Subscription = new Subscription();
@@ -571,7 +571,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   getCardIcon(cardType: string): string {
-    const icons: { [key: string]: string } = {
+    const icons: Record<string, string> = {
       'visa': 'fa-brands fa-cc-visa',
       'mastercard': 'fa-brands fa-cc-mastercard',
       'amex': 'fa-brands fa-cc-amex',

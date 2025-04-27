@@ -15,7 +15,7 @@ import { Category } from '../../../models/category';
 export class CategoriesComponent implements OnInit {
   @Input() storeData: StoreDetails | null = null;
   @Input() theme: StoreTheme | null = null;
-  @Input() isPreview: boolean = false;
+  @Input() isPreview = false;
 
   categoriesToShow: Category[] = [];
 
@@ -27,8 +27,8 @@ export class CategoriesComponent implements OnInit {
     }
   }
 
-  getThemeStyles(): { [key: string]: string } {
-    const styles: { [key: string]: string } = {};
+  getThemeStyles(): Record<string, string> {
+    const styles: Record<string, string> = {};
     if (this.theme) {
       styles['--categories-bg'] = this.theme.thirdColor || '#D3CEBB';
       styles['--categories-heading-color'] = this.theme.mainColor || '#393727';

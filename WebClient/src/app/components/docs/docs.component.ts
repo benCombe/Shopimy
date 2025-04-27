@@ -25,8 +25,8 @@ interface DocSection {
   ]
 })
 export class DocsComponent implements OnInit {
-  activeTab: string = 'README';
-  loading: boolean = true;
+  activeTab = 'README';
+  loading = true;
   
   mainDocs: DocSection[] = [
     { title: 'Project Overview', file: 'README.md' },

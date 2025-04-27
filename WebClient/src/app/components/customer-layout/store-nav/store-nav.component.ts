@@ -42,7 +42,7 @@ export class StoreNavComponent implements AfterViewInit, OnInit, OnDestroy {
   primaryColor: string | undefined;
   secondaryColor: string | undefined;
   tertiaryColor: string | undefined;
-  isLoggedIn: boolean = false;
+  isLoggedIn = false;
   userStore: StoreDetails | null = null;
   private authSubscription: Subscription | undefined;
   private userStoreSubscription: Subscription | undefined;

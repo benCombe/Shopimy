@@ -24,9 +24,9 @@ export class CategoryPageComponent implements OnInit {
   @Input() storeDetails: StoreDetails | null = null;
   @Input() theme: StoreTheme | null = null;
 
-  categoryName: string = '';
+  categoryName = '';
   items: BasicItem[] = [];
-  itemsLoaded: boolean = false;
+  itemsLoaded = false;
 
   constructor(
     private catService: CategoryService,

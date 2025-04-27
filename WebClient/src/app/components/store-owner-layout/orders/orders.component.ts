@@ -14,14 +14,14 @@ import { of } from 'rxjs';
 })
 export class OrdersComponent implements OnInit {
   orders: Order[] = [];
-  isLoading: boolean = true;
+  isLoading = true;
   error: string | null = null;
   
   // Stats
-  totalSales: number = 0;
-  totalOrders: number = 0;
-  uniqueCustomers: number = 0;
-  completedOrders: number = 0;
+  totalSales = 0;
+  totalOrders = 0;
+  uniqueCustomers = 0;
+  completedOrders = 0;
 
   constructor(private orderService: OrderService) {}
 

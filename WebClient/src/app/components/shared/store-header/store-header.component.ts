@@ -41,9 +41,9 @@ export class StoreHeaderComponent {
    * Generates the inline CSS style object for the header based on theme settings
    * Prioritizes the theme input, falls back to storeData values, then default colors
    */
-  getThemeStyles(): { [key: string]: string } {
+  getThemeStyles(): Record<string, string> {
     // Set default values with fallbacks
-    const styles: { [key: string]: string } = {};
+    const styles: Record<string, string> = {};
     
     // Apply direct background color
     if (this.theme) {

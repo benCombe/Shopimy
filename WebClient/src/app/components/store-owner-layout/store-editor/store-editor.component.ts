@@ -40,12 +40,12 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
   private userSubscription: Subscription | undefined;
   private storeSubscription: Subscription | undefined;
 
-  activeTab: string = 'basic'; // basic, theme, components, products
-  isInitialSetup: boolean = false;
-  isLoading: boolean = true;
-  formErrors: { [key: string]: string } = {};
+  activeTab = 'basic'; // basic, theme, components, products
+  isInitialSetup = false;
+  isLoading = true;
+  formErrors: Record<string, string> = {};
   saveError: string | null = null;
-  saveStatus: string = ''; // '', 'saving', 'saved', 'error'
+  saveStatus = ''; // '', 'saving', 'saved', 'error'
 
   availableComponents = [
     { id: 'header', name: 'Header & Navigation', isSelected: true },
@@ -58,8 +58,8 @@ export class StoreEditorComponent implements OnInit, OnDestroy {
   ];
 
   // Additional properties for component selection enhancements
-  autoPreview: boolean = true;
-  previewDevice: string = 'desktop'; // desktop, tablet, mobile
+  autoPreview = true;
+  previewDevice = 'desktop'; // desktop, tablet, mobile
 
   get allComponentsSelected(): boolean {
     return this.availableComponents.every(c => c.isSelected);

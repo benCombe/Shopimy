@@ -27,12 +27,12 @@ export class ShoppingCartComponent implements AfterViewInit, OnInit, OnDestroy {
 
   //storeDetails: StoreDetails | null = null;
   cartItems: { item: BasicItem, quantity: number }[] = [];
-  subtotal: number = 0.00;
-  shippingCost: number = 0;
-  promoCode: string = '';
-  promoMessage: string = '';
-  promoSuccess: boolean = false;
-  isStoreContext: boolean = false;
+  subtotal = 0.00;
+  shippingCost = 0;
+  promoCode = '';
+  promoMessage = '';
+  promoSuccess = false;
+  isStoreContext = false;
   
   private destroy$ = new Subject<void>();
 

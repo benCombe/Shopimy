@@ -29,16 +29,16 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   topProductsChart: Chart | null = null;
 
   // Filter options
-  salesPeriod: string = 'monthly';
-  salesRange: number = 12;
-  visitsPeriod: string = 'daily';
-  visitsRange: number = 30;
+  salesPeriod = 'monthly';
+  salesRange = 12;
+  visitsPeriod = 'daily';
+  visitsRange = 30;
   
   // Loading states
-  isLoadingKPIs: boolean = false;
-  isLoadingSales: boolean = false;
-  isLoadingVisits: boolean = false;
-  isLoadingTopProducts: boolean = false;
+  isLoadingKPIs = false;
+  isLoadingSales = false;
+  isLoadingVisits = false;
+  isLoadingTopProducts = false;
   
   // Error states
   kpiError: string | null = null;

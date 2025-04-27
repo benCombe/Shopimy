@@ -1,11 +1,11 @@
 import { Component, OnInit, Injector } from '@angular/core';
-import { PopupComponent } from './components/utilities/popup/popup.component'; // Import PopupComponent
-import { LandingPageComponent } from "./components/landing-page/landing-page.component";
+// import { PopupComponent } from './components/utilities/popup/popup.component';
+// import { LandingPageComponent } from "./components/landing-page/landing-page.component";
 import { RouterOutlet } from '@angular/router';
-import { RouterLink } from '@angular/router';
-import { StoreOwnerDashboardComponent } from "./components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component";
-import { ShoppingCartComponent } from "./components/customer-layout/shopping-cart/shopping-cart.component";
-import { CheckoutComponent } from "./components/customer-layout/checkout/checkout.component";
+// import { RouterLink } from '@angular/router'; // This was listed but might be used by RouterOutlet, let's keep it for now
+// import { StoreOwnerDashboardComponent } from "./components/store-owner-layout/store-owner-dashboard/store-owner-dashboard.component";
+// import { ShoppingCartComponent } from "./components/customer-layout/shopping-cart/shopping-cart.component";
+// import { CheckoutComponent } from "./components/customer-layout/checkout/checkout.component";
 import { LoadingOneComponent } from "./components/utilities/loading-one/loading-one.component";
 import { UserService } from './services/user.service';
 import { ThemeService } from './services/theme.service';

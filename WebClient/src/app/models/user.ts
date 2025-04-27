@@ -21,9 +21,9 @@ export class User {
   constructor(
       Id: number, FirstName: string, LastName: string, Email: string,
       Phone: string, Address: string, Country: string, Password: string | null, Verified: boolean,
-      City: string = '', State: string = '', PostalCode: string = '',
+      City = '', State = '', PostalCode = '',
       PaymentMethod: string | null = null, LastFourDigits: string | null = null, CardExpiryDate: string | null = null,
-      Subscribed: boolean = false, DOB: string | null = null
+      Subscribed = false, DOB: string | null = null
   ) {
       this.Id = Id;
       this.FirstName = FirstName;

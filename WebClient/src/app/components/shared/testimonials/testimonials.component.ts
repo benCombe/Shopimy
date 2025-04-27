@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreDetails } from '../../../models/store-details';
 import { StoreTheme } from '../../../models/store-theme.model';
@@ -14,14 +14,14 @@ import { LoadingOneComponent } from '../../utilities/loading-one/loading-one.com
     '../styles/section-headings.css'
   ]
 })
-export class TestimonialsComponent {
+export class TestimonialsComponent implements OnInit {
   @Input() storeData: StoreDetails | null = null;
   @Input() theme: StoreTheme | null = null;
-  @Input() isPreview: boolean = false;
+  @Input() isPreview = false;
   
   // Define properties used in the template
   testimonials: any[] = [];
-  loading: boolean = false;
+  loading = false;
   sampleTestimonials: any[] = [
     { text: '"This store is amazing! Great products and service."', author: 'Happy Customer' },
     { text: '"Excellent quality and fast shipping."', author: 'Satisfied Shopper' },
@@ -53,8 +53,8 @@ export class TestimonialsComponent {
   //   }, 1500);
   // }
 
-  getThemeStyles(): { [key: string]: string } {
-    const styles: { [key: string]: string } = {};
+  getThemeStyles(): Record<string, string> {
+    const styles: Record<string, string> = {};
     
     if (this.theme) {
       // Apply direct background style

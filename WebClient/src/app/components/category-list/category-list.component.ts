@@ -17,15 +17,15 @@ import { environment } from '../../../environments/environment';
 })
 export class CategoryListComponent implements OnInit {
   categories: Category[] = [];
-  loading: boolean = false;
+  loading = false;
   error: string | null = null;
-  isDashboard: boolean = false;
+  isDashboard = false;
   viewMode: 'table' | 'grid' = 'table';
   
   // Modal state
-  isModalOpen: boolean = false;
+  isModalOpen = false;
   selectedCategory: Category | null = null;
-  private currentStoreId: number = 0;
+  private currentStoreId = 0;
 
   constructor(
     private categoryService: CategoryService, 

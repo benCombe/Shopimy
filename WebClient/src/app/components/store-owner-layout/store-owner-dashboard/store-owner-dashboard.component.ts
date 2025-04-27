@@ -50,10 +50,10 @@ export class StoreOwnerDashboardComponent implements OnInit, AfterViewInit {
   @ViewChild(SideNavComponent) sideNav!: SideNavComponent;
 
   user: User | null | undefined;
-  currentPage: string = "Overview"; // default page
-  hasStore: boolean = false;
-  showCreateStorePrompt: boolean = false;
-  themeLogoTab: string = 'themes'; // Default selected tab for Themes & Logos
+  currentPage = "Overview"; // default page
+  hasStore = false;
+  showCreateStorePrompt = false;
+  themeLogoTab = 'themes'; // Default selected tab for Themes & Logos
 
   constructor(
     private userService: UserService,

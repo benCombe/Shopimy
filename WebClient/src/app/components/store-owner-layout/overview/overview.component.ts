@@ -23,16 +23,16 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   error: string | null = null;
 
   // Analytics properties
-  totalVisits: number = 0;
-  totalRevenue: number = 0;
+  totalVisits = 0;
+  totalRevenue = 0;
   
   // Visit metrics
   visitsChange: number | null = null;
-  visitsChangePercentage: string = '0';
+  visitsChangePercentage = '0';
   averageDailyVisits: number | null = null;
   
   // Time range selection
-  selectedTimeRange: string = 'weekly';
+  selectedTimeRange = 'weekly';
   
   // Chart properties
   visitsChart: Chart | null = null;
@@ -98,7 +98,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     });
   }
 
-  loadVisitData(period: string = 'daily', range: number = 7): void {
+  loadVisitData(period = 'daily', range = 7): void {
     this.visitChartLoading = true;
     this.visitChartError = null;
 

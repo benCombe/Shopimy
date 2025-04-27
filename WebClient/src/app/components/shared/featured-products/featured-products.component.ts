@@ -19,11 +19,11 @@ import { LoadingOneComponent } from '../../utilities/loading-one/loading-one.com
 export class FeaturedProductsComponent implements OnInit {
   @Input() storeData: StoreDetails | null = null;
   @Input() theme: StoreTheme | null = null;
-  @Input() isPreview: boolean = false;
+  @Input() isPreview = false;
   
   itemIds: number[] = [];
-  displayCount: number = 6;
-  loading: boolean = false;
+  displayCount = 6;
+  loading = false;
   
   constructor(private storeService: StoreService) {}
   
@@ -55,8 +55,8 @@ export class FeaturedProductsComponent implements OnInit {
     }
   }
   
-  getThemeStyles(): { [key: string]: string } {
-    const styles: { [key: string]: string } = {};
+  getThemeStyles(): Record<string, string> {
+    const styles: Record<string, string> = {};
     
     if (this.theme) {
       // Apply direct background style

@@ -17,7 +17,7 @@ export class DeliveryDetails {
     country: string,
     postalCode: string,
     phone: string,
-    isDefault: boolean = false,
+    isDefault = false,
     id?: number
   ) {
     this.userId = userId;

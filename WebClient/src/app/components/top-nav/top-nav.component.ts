@@ -26,16 +26,16 @@ interface NavCategory {
   standalone: true
 })
 export class TopNavComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() hideAccountDropdown: boolean = false;
+  @Input() hideAccountDropdown = false;
 
-  isDropdownOpen: boolean = false;
-  isMobileMenuOpen: boolean = false;
-  isMobile: boolean = false;
-  isLoggedIn: boolean = false;
-  isUserMenuOpen: boolean = false;
-  hasStore: boolean = false;
-  activeLink: string = '';
-  inStoreContext: boolean = false;
+  isDropdownOpen = false;
+  isMobileMenuOpen = false;
+  isMobile = false;
+  isLoggedIn = false;
+  isUserMenuOpen = false;
+  hasStore = false;
+  activeLink = '';
+  inStoreContext = false;
   
   private routerSubscription: Subscription | undefined;
   private userSubscription: Subscription | undefined;

@@ -28,7 +28,7 @@ export class StorePreviewComponent implements OnChanges {
   @Input() storeData: StoreDetails | null = null;
   
   // Flag to track preview readiness
-  previewReady: boolean = false;
+  previewReady = false;
 
   ngOnChanges(changes: SimpleChanges): void {
     // When any input changes, update the preview
@@ -75,8 +75,8 @@ export class StorePreviewComponent implements OnChanges {
     return this.selectedComponents.includes(componentId);
   }
 
-  getThemeStyles(): { [key: string]: string } {
-    const styles: { [key: string]: string } = {
+  getThemeStyles(): Record<string, string> {
+    const styles: Record<string, string> = {
       '--preview-main-color': '#393727',
       '--preview-second-color': '#D0933D', 
       '--preview-third-color': '#D3CEBB',

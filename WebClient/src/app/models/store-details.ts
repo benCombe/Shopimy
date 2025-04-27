@@ -16,9 +16,9 @@ export class StoreDetails {
   logoURL: string;
   categories: Category[];
   componentVisibility: ComponentVisibility;
-  description: string = '';
-  customDomain: string = '';
-  isPublished: boolean = false;
+  description = '';
+  customDomain = '';
+  isPublished = false;
 
   constructor(
     id: number,

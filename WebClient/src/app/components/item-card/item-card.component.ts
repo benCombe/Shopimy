@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Item } from '../../models/item';
@@ -14,7 +14,7 @@ import { StoreNavService } from '../../services/store-nav.service';
   standalone: true,
   imports: [CommonModule, RouterModule]
 })
-export class ItemCardComponent implements OnInit {
+export class ItemCardComponent implements OnInit, OnChanges {
   @Input() itemId: number | null = null; // Ticket requires itemId as input
   item: BasicItem | null = null;
 

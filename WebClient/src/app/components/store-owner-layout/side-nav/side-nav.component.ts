@@ -16,9 +16,9 @@ import { StoreService } from '../../../services/store.service';
 export class SideNavComponent implements OnInit, OnDestroy {
   @Output() pageChange = new EventEmitter<string>();
 
-  activeNav: string = 'Overview';
-  isMobile: boolean = false;
-  isMobileSidebarOpen: boolean = false;
+  activeNav = 'Overview';
+  isMobile = false;
+  isMobileSidebarOpen = false;
   
   // Hamburger position tracking
   hamburgerPosition = { 

@@ -1,3 +1,4 @@
+/*
 import { Component, OnInit } from '@angular/core';
 import { StoreService } from '../../services/store.service';
 import { PaymentService } from '../../services/payment.service';
@@ -27,3 +28,4 @@ export class CheckoutComponent implements OnInit {
       });
   }
 }
+*/

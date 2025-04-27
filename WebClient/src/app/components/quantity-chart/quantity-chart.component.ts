@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, Injectable } from '@angular/core';
+import { Component, AfterViewInit, Injectable, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { QuantityService, VisitAnalytics } from '../../services/quantity.service';
 
@@ -12,10 +12,10 @@ import { QuantityService, VisitAnalytics } from '../../services/quantity.service
 
 
 
-export class QuantityChartComponent implements AfterViewInit {
+export class QuantityChartComponent implements AfterViewInit, OnInit {
   items: VisitAnalytics[]= [];
-  visitLabels: string="";
-  visitData: number=0;
+  visitLabels="";
+  visitData=0;
   constructor(private qs: QuantityService) {}
 
   ngOnInit(){

@@ -15,13 +15,13 @@ import { ThemeService } from '../../../services/theme.service';
 })
 export class ThemesComponent implements OnInit {
   @Input() currentStore: StoreDetails | null = null;
-  @Input() inlineMode: boolean = false; // Used when embedded in store editor
+  @Input() inlineMode = false; // Used when embedded in store editor
   @Output() themeUpdated = new EventEmitter<StoreTheme>();
   
   // Add missing properties referenced in the template
-  isInitialSetup: boolean = false; // Indicates if this is initial store setup
+  isInitialSetup = false; // Indicates if this is initial store setup
   store: StoreDetails | null = null; // Store data for the preview
-  previewDevice: string = 'desktop'; // Current preview device (desktop, tablet, mobile)
+  previewDevice = 'desktop'; // Current preview device (desktop, tablet, mobile)
   
   themeSwatches = [
     {
@@ -105,7 +105,7 @@ export class ThemesComponent implements OnInit {
   // Add storeData property to store the active store details
   storeData: StoreDetails | null = null;
 
-  themeChanged: boolean = false;
+  themeChanged = false;
 
   constructor(
     private storeService: StoreService,

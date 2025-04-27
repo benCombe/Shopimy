@@ -18,7 +18,7 @@ export class CreateStoreComponent implements OnInit {
   storeForm: FormGroup;
   loading = false;
   error = '';
-  returnUrl: string = '/';
+  returnUrl = '/';
 
   constructor(
     private fb: FormBuilder,

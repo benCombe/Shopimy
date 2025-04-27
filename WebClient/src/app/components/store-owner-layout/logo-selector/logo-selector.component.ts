@@ -15,7 +15,7 @@ import { catchError, finalize, of, Subscription } from 'rxjs';
 })
 export class LogoSelectorComponent implements OnInit, OnDestroy {
   // Current logo data URL
-  currentLogoUrl: string = '';
+  currentLogoUrl = '';
   
   // For temporary preview during selection
   logoPreviewUrl: string | ArrayBuffer | null = null;

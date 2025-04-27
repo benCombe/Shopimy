@@ -58,7 +58,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   currentListId: number | null = null;
   isSaving = false;
   storeId: number | null = null;
-  private currentStoreId: number = 0;
+  private currentStoreId = 0;
 
   private subscriptions: Subscription[] = [];
 
@@ -133,7 +133,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       const variantToRemove = this.variants.at(index);
       const itemIdToRemove = variantToRemove.get('itemId')?.value;
       if (itemIdToRemove > 0) {
-        let deletedIds = this.productForm.get('deletedVariantIds')?.value || [];
+        const deletedIds = this.productForm.get('deletedVariantIds')?.value || [];
         deletedIds.push(itemIdToRemove);
         if (!this.productForm.get('deletedVariantIds')) {
           this.productForm.addControl('deletedVariantIds', this.fb.control([]));
@@ -260,7 +260,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveProduct(publish: boolean = false): void {
+  saveProduct(publish = false): void {
     this.productForm.markAllAsTouched();
 
     if (this.productForm.invalid || !this.storeId) {

@@ -9,9 +9,9 @@ import { CommonModule } from '@angular/common';
 })
 
 export class PopupComponent {
-  @Input() question: string = 'Are you sure?';
+  @Input() question = 'Are you sure?';
   @Input() responses: string[] = ['Yes', 'No'];
-  @Input() isVisible: boolean = false;
+  @Input() isVisible = false;
 
   @Output() responseSelected = new EventEmitter<string>();
 

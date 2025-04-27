@@ -15,7 +15,7 @@ import { BasicItem } from '../../models/basic-item';
 export class ItemListComponent implements OnInit {
   @Input() items: BasicItem[] = [];
   @Input() categoryId?: string;
-  isLoading: boolean = false;
+  isLoading = false;
 
   constructor() {}
 

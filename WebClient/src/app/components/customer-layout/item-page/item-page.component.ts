@@ -10,12 +10,12 @@ import { ItemReviewsComponent } from '../item-reviews/item-reviews.component'; /
   styleUrl: './item-page.component.css'
 })
 export class ItemPageComponent implements OnInit {
-  @Input() itemId: number = 0; // Example Input, adjust as needed
+  @Input() itemId = 0; // Example Input, adjust as needed
 
   // --- Dummy Data (Replace with actual data fetching) ---
-  productName: string = 'Sample Product';
-  productPrice: number = 99.99;
-  productDescription: string = 'This is a sample product description. It details the features and benefits of the item.';
+  productName = 'Sample Product';
+  productPrice = 99.99;
+  productDescription = 'This is a sample product description. It details the features and benefits of the item.';
   productSizes: string | null = 'S, M, L, XL';
   productDetails: string | null = 'Material: Cotton, Color: Black';
   productImages: string[] = [
@@ -23,8 +23,8 @@ export class ItemPageComponent implements OnInit {
     'assets/images/placeholder2.png',
     'assets/images/placeholder3.png'
   ];
-  selectedImage: string = 'assets/images/placeholder.png';
-  isFavorite: boolean = false;
+  selectedImage = 'assets/images/placeholder.png';
+  isFavorite = false;
   // --- End Dummy Data ---
 
   constructor() { }

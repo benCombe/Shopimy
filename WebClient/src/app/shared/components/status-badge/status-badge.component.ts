@@ -51,7 +51,7 @@ export type StatusType = 'success' | 'warning' | 'error' | 'info' | 'pending';
 })
 export class StatusBadgeComponent {
   @Input() status: StatusType = 'info';
-  @Input() text: string = '';
+  @Input() text = '';
   
   get statusClass(): string {
     return this.status;
